@@ -1,0 +1,48 @@
+# Film Library Sorting Configuration - External Drive Setup
+# ========================================================
+
+# Project documents (Core whitelist, Reference canon, etc.)
+project_path: "/Users/mahesh/Downloads/film-sorting-database/docs"
+
+# External drive paths
+library_path: "/Volumes/One Touch/movies/Organized"    # Where sorted films will go
+source_path: "/Volumes/One Touch/movies/unsorted"      # Where unsorted films are now
+
+# External drive settings
+external_drive:
+  verify_available: true           # Check drive is mounted before starting
+  
+# API Configuration (optional - get key from https://themoviedb.org)
+tmdb_api_key: "ab15230b28468dca7eb9ce4754a561b7"
+
+# Processing settings
+fuzzy_matching:
+  director_threshold: 85
+  title_threshold: 85
+
+# File extensions to process
+video_extensions: ['.mkv', '.mp4', '.avi', '.mov', '.m4v', '.wmv']
+
+# Format signals that indicate Popcorn tier curation
+format_signals:
+  - "35mm"
+  - "open matte"
+  - "extended"
+  - "director's cut"
+  - "editor's cut"
+  - "criterion"
+
+# Satellite category caps (films exceeding caps go to staging)
+satellite_caps:
+  giallo: 30
+  pinku_eiga: 35
+  brazilian_exploitation: 45
+  hong_kong_action: 65
+  american_exploitation: 80
+  european_sexploitation: 25
+  nunsploitation: 15
+  blaxploitation: 20
+  wip_rape_revenge: 15
+  music_films: 20
+  mondo: 10
+  cult_oddities: 50

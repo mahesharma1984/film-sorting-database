@@ -1,0 +1,107 @@
+# Film Library Sorting Configuration
+# ===================================
+
+# Paths - External Drive Examples
+project_path: "/Users/mahesh/Downloads/film-sorting-database/docs"  # Path to folder containing CORE_DIRECTOR_WHITELIST_FINAL.md, etc.
+
+# External Drive Paths (choose your platform):
+# Windows:    "E:/Movies/Organized"  or  "F:/Cinema Library"
+# macOS:      "/Volumes/External Drive/Movies/Organized"
+# Linux:      "/media/username/DriveName/Movies/Organized"
+library_path: "/path/to/organized/library"  # CHANGE THIS - Destination for sorted films on external drive
+source_path: "/path/to/unsorted/films"      # CHANGE THIS - Source directory with films to sort (can be same drive)
+
+# API Configuration
+tmdb_api_key: ""  # Get free API key from https://www.themoviedb.org/settings/api
+                  # Leave empty to disable API enrichment (will rely on filename parsing only)
+
+# Sorting Behavior
+confidence_threshold: 0.7  # Minimum confidence for automatic sorting (0.0-1.0)
+dry_run_default: true     # Default to dry-run mode for safety
+
+# File Handling
+video_extensions:
+  - ".mkv"
+  - ".mp4"
+  - ".avi"
+  - ".mov"
+  - ".m4v"
+  - ".mpg"
+  - ".mpeg"
+  - ".ts"
+  - ".m2ts"
+
+# Format Detection Patterns
+format_signals:
+  - "35mm"
+  - "open matte"
+  - "extended"
+  - "director's cut"
+  - "editor's cut"
+  - "unrated"
+  - "redux"
+  - "final cut"
+  - "theatrical"
+  - "criterion"
+  - "4k"
+  - "uhd"
+  - "remux"
+  - "commentary"
+  - "special edition"
+
+# Fuzzy Matching Thresholds
+fuzzy_thresholds:
+  director_match: 85    # Minimum similarity for director name matching
+  title_match: 85       # Minimum similarity for title matching
+  
+# External Drive Settings
+external_drive:
+  verify_available: true     # Check if drive is mounted before starting
+  safe_eject: false         # Attempt to safely eject drive after completion (experimental)
+  chunk_size: 50            # Process files in chunks for better performance
+  verify_moves: true        # Verify each file move completed successfully
+
+# Performance for External Drives  
+performance:
+  parallel_processing: false    # Keep false for external drives to avoid timeouts
+  move_timeout: 300            # Timeout for individual file moves (5 minutes)
+  batch_delay: 0.1             # Small delay between file operations (seconds)
+
+# Logging
+log_level: "INFO"       # DEBUG, INFO, WARNING, ERROR
+log_file: "sorting.log" # Leave empty for console only
+
+# External Drive Tips:
+# 1. Always use --dry-run first to test paths and permissions
+# 2. Ensure external drive has enough free space (check with df -h on Linux/Mac)
+# 3. For large collections (1000+ files), consider processing in smaller batches
+# 4. USB 3.0+ recommended for faster transfers
+# 5. Don't unplug drive during sorting operation
+
+# Staging Rules
+staging_subdirectories:
+  unknown: "Unknown"        # Files with missing metadata
+  borderline: "Borderline"  # Films that could go to multiple tiers
+  unwatched: "Unwatched"    # Films user needs to watch first
+  evaluate: "Evaluate"     # Films being considered for removal
+
+# Satellite Category Caps (for future cap enforcement)
+satellite_caps:
+  "Giallo": 30
+  "Pinku Eiga": 35
+  "Brazilian Exploitation": 45
+  "Hong Kong Action": 65
+  "American Exploitation": 80
+  "European Sexploitation": 25
+  "Nunsploitation": 15
+  "Blaxploitation": 20
+  "WIP/Rape-Revenge": 15
+  "Music Films": 20
+  "Mondo": 10
+  "Cult Oddities": 50
+
+# Example Usage:
+# 1. Copy this file to config.yaml
+# 2. Update paths to match your setup
+# 3. Optionally get TMDb API key for director enrichment
+# 4. Run: python film_sorter.py /path/to/unsorted/films --config config.yaml --dry-run

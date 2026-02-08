@@ -1,0 +1,31 @@
+# Film Library Sorting Script Dependencies
+# =======================================
+
+# Core dependencies
+pyyaml>=6.0
+requests>=2.28.0
+pandas>=1.5.0
+
+# Fuzzy string matching for director/title matching
+fuzzywuzzy>=0.18.0
+python-levenshtein>=0.20.0  # Optional: speeds up fuzzywuzzy
+
+# Alternative fuzzy matching (faster)
+# rapidfuzz>=2.0.0  # Uncomment to use instead of fuzzywuzzy
+
+# Optional: Progress bars for large collections
+# tqdm>=4.64.0
+
+# Development dependencies (uncomment if needed)
+# pytest>=7.0.0
+# black>=22.0.0
+# flake8>=5.0.0
+
+# Installation instructions:
+# 1. pip install -r requirements.txt
+# 2. Or for conda: conda install --file requirements.txt
+
+# Note: Some dependencies may require system packages:
+# - On Ubuntu/Debian: apt-get install python3-dev
+# - On macOS: xcode-select --install
+# - On Windows: Microsoft Visual C++ Build Tools
