@@ -12,6 +12,8 @@ import unicodedata
 from pathlib import Path
 from typing import Optional, Dict, Tuple, List
 
+from lib.normalization import normalize_for_lookup
+
 logger = logging.getLogger(__name__)
 
 
@@ -24,45 +26,9 @@ class SortingDatabaseLookup:
         self.entry_count = 0
         self._parse_database(database_path)
 
-    def _normalize_title(self, title: str) -> str:
-        """
-        Normalize title for fuzzy matching
-        - Lowercase
-        - Remove accents/diacritics
-        - Remove punctuation
-        - Collapse whitespace
-        """
-        # Convert to NFD (decomposed) form to separate accents
-        title = unicodedata.normalize('NFD', title)
-        # Remove combining characters (accents)
-        title = ''.join(c for c in title if unicodedata.category(c) != 'Mn')
-        # Lowercase
-        title = title.lower()
-        # Remove punctuation except spaces
-        title = re.sub(r'[^\w\s]', '', title)
-        # Collapse whitespace
-        title = ' '.join(title.split())
-        return title.strip()
-
-    def _strip_format_signals(self, title: str) -> str:
-        """Strip format signals from title (35mm, open matte, etc.)"""
-        format_patterns = [
-            r'\s+35mm\s*',
-            r'\s+16mm\s*',
-            r'\s+2k\s*',
-            r'\s+open\s+matte\s*',
-            r'\s+extended\s*',
-            r'\s+director\'?s?\s+cut\s*',
-            r'\s+editor\'?s?\s+cut\s*',
-            r'\s+hbo\s+chronological\s+cut\s*',
-            r'\s+ib\s+tech\s*',
-            r'\s+criterion\s*',
-        ]
-
-        for pattern in format_patterns:
-            title = re.sub(pattern, ' ', title, flags=re.IGNORECASE)
-
-        return title.strip()
+    # NOTE: Normalization methods removed - now using shared normalize_for_lookup()
+    # from lib.normalization to ensure symmetric normalization between database
+    # building and querying. This fixes the critical asymmetric normalization bug.
 
     def _parse_database(self, file_path: Path):
         """Parse SORTING_DATABASE.md"""
@@ -99,8 +65,8 @@ class SortingDatabaseLookup:
                 match = re.match(pattern_standard, line)
                 if match:
                     title_raw, year_str, dest = match.groups()
-                    title_raw = self._strip_format_signals(title_raw)
-                    title = self._normalize_title(title_raw)
+                    # Use shared normalization with format signal stripping
+                    title = normalize_for_lookup(title_raw, strip_format_signals=True)
                     year = int(year_str)
                     dest = dest.strip()
 
@@ -111,7 +77,8 @@ class SortingDatabaseLookup:
                 match = re.match(pattern_year_prefix, line)
                 if match:
                     year_str, title_raw, dest = match.groups()
-                    title = self._normalize_title(title_raw)
+                    # Use shared normalization with format signal stripping
+                    title = normalize_for_lookup(title_raw, strip_format_signals=True)
                     year = int(year_str)
                     dest = dest.strip()
 
@@ -122,8 +89,8 @@ class SortingDatabaseLookup:
                 match = re.match(pattern_no_year, line)
                 if match:
                     title_raw, dest = match.groups()
-                    title_raw = self._strip_format_signals(title_raw)
-                    title = self._normalize_title(title_raw)
+                    # Use shared normalization with format signal stripping
+                    title = normalize_for_lookup(title_raw, strip_format_signals=True)
                     dest = dest.strip()
 
                     # Skip if destination contains year (likely parsing error)
@@ -167,24 +134,29 @@ class SortingDatabaseLookup:
         """
         Look up destination for title+year
 
+        CRITICAL: Uses identical normalization as database building (symmetric)
+        This ensures format signals don't block lookup matches
+
         Returns destination path if found, None otherwise
         """
-        normalized = self._normalize_title(title)
+        # Use SAME normalization as database building (with format signal stripping)
+        normalized = normalize_for_lookup(title, strip_format_signals=True)
 
         # Exact match with year
         key = (normalized, year)
         if key in self.lookup_table:
-            logger.debug(f"Lookup hit: '{title}' ({year})")
+            logger.debug(f"Lookup hit: '{title}' ({year}) → normalized: '{normalized}'")
             return self.lookup_table[key]
 
         # Try without year if year was provided
         if year is not None:
             key_no_year = (normalized, None)
             if key_no_year in self.lookup_table:
-                logger.debug(f"Lookup hit (no year): '{title}'")
+                logger.debug(f"Lookup hit (no year): '{title}' → normalized: '{normalized}'")
                 return self.lookup_table[key_no_year]
 
         # No match
+        logger.debug(f"Lookup miss: '{title}' ({year}) → normalized: '{normalized}'")
         return None
 
     def get_stats(self) -> Dict:
