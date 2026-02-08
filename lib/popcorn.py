@@ -6,6 +6,8 @@ Popcorn tier classification via format signals + lookup
 import logging
 from typing import Optional
 
+from lib.constants import FORMAT_SIGNALS
+
 logger = logging.getLogger(__name__)
 
 
@@ -13,12 +15,8 @@ class PopcornClassifier:
     """Classify Popcorn tier films based on format signals"""
 
     def __init__(self, lookup_db=None):
-        self.format_signals = [
-            '35mm', '16mm', '2k', 'open matte', 'extended',
-            "director's cut", "editor's cut", 'criterion',
-            'unrated', 'redux', 'final cut', 'theatrical',
-            '4k', 'uhd', 'remux', 'commentary', 'special edition'
-        ]
+        # Use shared format signals from constants.py (single source of truth)
+        self.format_signals = FORMAT_SIGNALS
         self.lookup_db = lookup_db
 
     def is_popcorn(self, metadata, year: Optional[int] = None) -> bool:
