@@ -51,18 +51,22 @@ class ClassificationResult:
     destination: str
     reason: str  # core_director_exact | explicit_lookup | format_signal | unsorted_*
 
-    def to_csv_row(self) -> Dict:
-        """Convert to CSV row"""
-        return {
+    def to_csv_row(self, metadata: Optional[FilmMetadata] = None) -> Dict:
+        """Convert to CSV row with optional metadata for new v0.2 fields"""
+        row = {
             'original_filename': self.original_filename,
             'new_filename': self.new_filename,
             'title': self.title,
             'year': self.year or '',
             'director': self.director or '',
+            'language': getattr(metadata, 'language', '') or '' if metadata else '',
+            'country': getattr(metadata, 'country', '') or '' if metadata else '',
+            'user_tag': getattr(metadata, 'user_tag', '') or '' if metadata else '',
             'tier': self.tier,
             'destination': self.destination,
             'reason': self.reason
         }
+        return row
 
 
 class FilmClassifierV01:
@@ -98,6 +102,37 @@ class FilmClassifierV01:
                 return part
 
         return 'Unknown'
+
+    def _parse_user_tag(self, tag: str) -> Dict[str, str]:
+        """Parse user tag into components
+
+        Examples:
+          - "Popcorn-1970s" → {tier: "Popcorn", decade: "1970s"}
+          - "Core-1960s-Jacques Demy" → {tier: "Core", decade: "1960s", director: "Jacques Demy"}
+          - "1980s-Satellite-Brazilian" → {decade: "1980s", tier: "Satellite", category: "Brazilian"}
+        """
+        parts = tag.split('-')
+        result = {}
+
+        for part in parts:
+            # Check if decade
+            if re.match(r'(19|20)\d{2}s', part):
+                result['decade'] = part
+            # Check if tier
+            elif part in ['Core', 'Reference', 'Satellite', 'Popcorn', 'Unsorted']:
+                result['tier'] = part
+            else:
+                # Category or director name (accumulate multi-word names)
+                if 'category' not in result and 'director' not in result:
+                    result['category'] = part
+                elif 'director' in result:
+                    result['director'] += f' {part}'
+                elif 'category' in result:
+                    result['category'] += f' {part}'
+                else:
+                    result['director'] = part
+
+        return result
 
     def classify(self, metadata: FilmMetadata) -> ClassificationResult:
         """
@@ -153,6 +188,86 @@ class FilmClassifierV01:
                     logger.debug(
                         f"Database lookup failed for '{metadata.title}' ({metadata.year}) "
                         f"with format signals: {metadata.format_signals}"
+                    )
+
+        # === NEW v0.2: Check 2.5: User tag recovery ===
+        if metadata.user_tag:
+            parsed_tag = self._parse_user_tag(metadata.user_tag)
+
+            if 'tier' in parsed_tag and 'decade' in parsed_tag:
+                tier = parsed_tag['tier']
+                decade = parsed_tag['decade']
+
+                # Build destination from tag components
+                if tier == 'Core' and 'director' in parsed_tag:
+                    destination = f"{decade}/{tier}/{parsed_tag['director']}/"
+                elif tier in ['Satellite', 'Popcorn']:
+                    category = parsed_tag.get('category', '')
+                    destination = f"{decade}/{tier}/{category}/" if category else f"{decade}/{tier}/"
+                elif tier == 'Reference':
+                    destination = f"{decade}/{tier}/"
+                else:
+                    destination = f"{tier}/"
+
+                self.stats['user_tag_recovery'] += 1
+                return ClassificationResult(
+                    original_filename=metadata.filename,
+                    new_filename='',
+                    title=metadata.title,
+                    year=metadata.year,
+                    director=metadata.director,
+                    tier=tier,
+                    destination=destination,
+                    reason='user_tag_recovery'
+                )
+
+        # === NEW v0.2: Check 3: Reference canon hardcoded lookup ===
+        if metadata.year:
+            from lib.normalization import normalize_for_lookup
+            from lib.constants import REFERENCE_CANON
+
+            normalized_title = normalize_for_lookup(metadata.title, strip_format_signals=True)
+            lookup_key = (normalized_title, metadata.year)
+
+            if lookup_key in REFERENCE_CANON:
+                decade = self._get_decade(metadata.year)
+                destination = f'{decade}/Reference/'
+
+                self.stats['reference_canon'] += 1
+                return ClassificationResult(
+                    original_filename=metadata.filename,
+                    new_filename='',
+                    title=metadata.title,
+                    year=metadata.year,
+                    director=metadata.director,
+                    tier='Reference',
+                    destination=destination,
+                    reason='reference_canon'
+                )
+
+        # === NEW v0.2: Check 4: Language/Country → Satellite wave routing ===
+        if metadata.country and metadata.year:
+            from lib.constants import COUNTRY_TO_WAVE
+
+            if metadata.country in COUNTRY_TO_WAVE:
+                wave_config = COUNTRY_TO_WAVE[metadata.country]
+                decade = self._get_decade(metadata.year)
+
+                # Conservative: only route if decade matches wave definition
+                if decade in wave_config['decades']:
+                    category = wave_config['category']
+                    destination = f'{decade}/Satellite/{category}/'
+
+                    self.stats['country_decade_satellite'] += 1
+                    return ClassificationResult(
+                        original_filename=metadata.filename,
+                        new_filename='',
+                        title=metadata.title,
+                        year=metadata.year,
+                        director=metadata.director,
+                        tier='Satellite',
+                        destination=destination,
+                        reason='country_decade_satellite'
                     )
 
         # === PASS 2: UNSORTED ===
@@ -248,6 +363,7 @@ class FilmClassifierV01:
         logger.info(f"Found {len(video_files)} video files")
 
         results = []
+        metadata_list = []  # Store metadata separately for CSV writing
         for i, file_path in enumerate(video_files, 1):
             if i % 100 == 0:
                 logger.info(f"Processing {i}/{len(video_files)}...")
@@ -266,26 +382,28 @@ class FilmClassifierV01:
                 result.new_filename = new_filename
 
                 results.append(result)
+                metadata_list.append(metadata)
 
             except Exception as e:
                 logger.error(f"Error processing {file_path.name}: {e}")
                 continue
 
-        return results
+        return results, metadata_list
 
-    def write_manifest(self, results: List[ClassificationResult], output_path: Path):
+    def write_manifest(self, results: List[ClassificationResult], metadata_list: List[FilmMetadata], output_path: Path):
         """Write classification results to CSV manifest"""
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(output_path, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=[
                 'original_filename', 'new_filename', 'title', 'year', 'director',
+                'language', 'country', 'user_tag',
                 'tier', 'destination', 'reason'
             ])
             writer.writeheader()
 
-            for result in results:
-                writer.writerow(result.to_csv_row())
+            for result, metadata in zip(results, metadata_list):
+                writer.writerow(result.to_csv_row(metadata))
 
         logger.info(f"Wrote manifest to {output_path}")
 
@@ -294,22 +412,31 @@ class FilmClassifierV01:
         total = sum(self.stats.values())
 
         print("\n" + "=" * 60)
-        print("CLASSIFICATION STATISTICS (v0.1 - FIXED)")
+        print("CLASSIFICATION STATISTICS (v0.2)")
         print("=" * 60)
         print(f"Total films processed: {total}")
         print()
         print("PASS 1: Exact Matches")
-        print(f"  Core director (exact):  {self.stats['core_director_exact']:4d}")
-        print(f"  Explicit lookup:        {self.stats['explicit_lookup']:4d}")
-        subtotal = self.stats['core_director_exact'] + self.stats['explicit_lookup']
-        print(f"  Subtotal:               {subtotal:4d}")
+        print(f"  Core director (exact):     {self.stats['core_director_exact']:4d}")
+        print(f"  Explicit lookup:           {self.stats['explicit_lookup']:4d}")
+        print()
+        print("NEW v0.2: Enhanced Classification")
+        print(f"  User tag recovery:         {self.stats['user_tag_recovery']:4d}")
+        print(f"  Reference canon:           {self.stats['reference_canon']:4d}")
+        print(f"  Country/decade → Satellite: {self.stats['country_decade_satellite']:4d}")
+        print()
+        classified = (self.stats['core_director_exact'] +
+                     self.stats['explicit_lookup'] +
+                     self.stats['user_tag_recovery'] +
+                     self.stats['reference_canon'] +
+                     self.stats['country_decade_satellite'])
+        print(f"  Total classified:          {classified:4d}")
         print()
         print("PASS 2: Unsorted (for manual review)")
-        print(f"  Needs manual review:    {self.stats['unsorted']:4d}")
+        print(f"  Needs manual review:       {self.stats['unsorted']:4d}")
         print()
-        accuracy_pct = subtotal / total * 100 if total > 0 else 0
-        print(f"Classification rate: {accuracy_pct:.1f}%")
-        print(f"  (Only counting exact matches - v0.1 principle)")
+        accuracy_pct = classified / total * 100 if total > 0 else 0
+        print(f"Classification rate: {accuracy_pct:.1f}% ({classified}/{total})")
         print("=" * 60)
 
 
@@ -332,10 +459,10 @@ def main():
 
     # Process files
     logger.info(f"Scanning directory: {args.source_dir}")
-    results = classifier.process_directory(args.source_dir)
+    results, metadata_list = classifier.process_directory(args.source_dir)
 
     # Write manifest
-    classifier.write_manifest(results, args.output)
+    classifier.write_manifest(results, metadata_list, args.output)
 
     # Print statistics
     classifier.print_stats()
