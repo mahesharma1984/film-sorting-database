@@ -20,6 +20,9 @@ class FilmMetadata:
     director: Optional[str] = None
     edition: Optional[str] = None  # 35mm, Open Matte, Extended, etc.
     format_signals: List[str] = field(default_factory=list)
+    language: Optional[str] = None  # ISO 639-1 code (e.g., 'pt', 'it', 'fr')
+    country: Optional[str] = None   # ISO 3166-1 alpha-2 (e.g., 'BR', 'IT', 'FR')
+    user_tag: Optional[str] = None  # Raw user tag content without brackets
 
 
 class FilenameParser:
@@ -83,6 +86,39 @@ class FilenameParser:
 
         return None
 
+    def _extract_language(self, filename: str) -> Optional[str]:
+        """Extract language from filename using LANGUAGE_PATTERNS"""
+        from lib.constants import LANGUAGE_PATTERNS
+
+        filename_lower = filename.lower()
+        for pattern, lang_code, country_code in LANGUAGE_PATTERNS:
+            if re.search(pattern, filename_lower):
+                return lang_code
+        return None
+
+    def _map_language_to_country(self, language: Optional[str]) -> Optional[str]:
+        """Map language code to country code"""
+        if not language:
+            return None
+        from lib.constants import LANGUAGE_TO_COUNTRY
+        return LANGUAGE_TO_COUNTRY.get(language)
+
+    def _extract_user_tag(self, filename: str) -> Optional[str]:
+        """Extract user-applied classification tags like [Popcorn-1970s]"""
+        match = re.search(r'\[([^\]]+)\]', filename)
+        if match:
+            tag_content = match.group(1)
+
+            # Validate it's a classification tag
+            valid_prefixes = ['Core', 'Reference', 'Satellite', 'Popcorn', 'Unsorted']
+            if any(tag_content.startswith(prefix) for prefix in valid_prefixes):
+                return tag_content
+            # Also check for decade prefix like "1970s-Satellite"
+            if re.match(r'(19|20)\d{2}s-', tag_content):
+                return tag_content
+
+        return None
+
     def parse(self, filename: str) -> FilmMetadata:
         """
         Extract metadata from filename
@@ -99,6 +135,37 @@ class FilenameParser:
         for signal in FORMAT_SIGNALS:
             if signal in name_lower:
                 format_signals.append(signal)
+
+        # Extract language and country
+        language = self._extract_language(filename)
+        country = self._map_language_to_country(language)
+
+        # Extract user tag
+        user_tag = self._extract_user_tag(filename)
+
+        # === PRIORITY 0: Check for (Director, Year) pattern FIRST ===
+        # Bug 3 fix: "A Bay of Blood (Mario Bava, 1971).mkv"
+        # This must come before standard parenthetical year to extract both director and year
+        director_year_match = re.search(r'\(([A-Z][^,]+),\s*(\d{4})\)', name)
+        if director_year_match:
+            director_name, year_str = director_year_match.groups()
+            year = int(year_str)
+
+            if 1920 <= year <= 2029:
+                # Remove (Director, Year) from title
+                title_part = re.sub(r'\s*\([^,]+,\s*\d{4}\)', '', name)
+                title = self._clean_title(title_part)
+
+                return FilmMetadata(
+                    filename=filename,
+                    title=title,
+                    year=year,
+                    director=director_name.strip(),
+                    format_signals=format_signals,
+                    language=language,
+                    country=country,
+                    user_tag=user_tag
+                )
 
         # === PRIORITY 1: Check for parenthetical year FIRST ===
         # This must come before Brazilian year-prefix to avoid "2001 - Film (1968)" bug
@@ -122,13 +189,31 @@ class FilenameParser:
                     if re.match(r'^\d{4}$', potential_director.strip()):
                         # This is a year, not a director - skip director extraction
                         pass
+                    # Bug 1 fix: Don't treat as director if it contains (YYYY)
+                    # Fixes: "Casablanca (1942) - 4K" where "Casablanca (1942)" should be title
+                    elif re.search(r'\(\d{4}\)', potential_director):
+                        # This contains a year in parens, it's the title not director
+                        # Extract just the title part (potential_director without year)
+                        title_only = re.sub(r'\s*\(\d{4}\)\s*', '', potential_director)
+                        title = self._clean_title(title_only)
+                        pass
                     else:
                         # Clean the potential title (remove year from it)
                         potential_title = re.sub(r'\s*\(\d{4}\)\s*', ' ', potential_title)
                         potential_title = self._clean_title(potential_title)
 
+                        # Bug 2 fix: Check if potential_title looks like a subtitle
+                        # Fixes: "Cinema Paradiso - Theatrical Cut (1988)" should NOT extract director
+                        from lib.constants import SUBTITLE_KEYWORDS
+                        potential_title_lower = potential_title.lower()
+                        is_subtitle = any(keyword in potential_title_lower for keyword in SUBTITLE_KEYWORDS)
+
+                        if is_subtitle:
+                            # This is "Title - Subtitle (Year)", not "Director - Title (Year)"
+                            # Skip director extraction
+                            pass
                         # Only treat as director if it's short and clean
-                        if len(potential_director.split()) <= 3 and not any(
+                        elif len(potential_director.split()) <= 3 and not any(
                             tag in potential_director.lower() for tag in ['1080p', '720p', 'bluray', 'x264', 'x265']
                         ):
                             return FilmMetadata(
@@ -136,14 +221,20 @@ class FilenameParser:
                                 title=potential_title,
                                 year=year,
                                 director=potential_director.strip(),
-                                format_signals=format_signals
+                                format_signals=format_signals,
+                                language=language,
+                                country=country,
+                                user_tag=user_tag
                             )
 
                 return FilmMetadata(
                     filename=filename,
                     title=title,
                     year=year,
-                    format_signals=format_signals
+                    format_signals=format_signals,
+                    language=language,
+                    country=country,
+                    user_tag=user_tag
                 )
 
         # === PRIORITY 2: Brazilian year-prefix format ===
@@ -158,7 +249,10 @@ class FilenameParser:
                     filename=filename,
                     title=self._clean_title(title),
                     year=year,
-                    format_signals=format_signals
+                    format_signals=format_signals,
+                    language=language,
+                    country=country,
+                    user_tag=user_tag
                 )
 
         # === PRIORITY 3: Structured patterns with director ===
@@ -173,7 +267,10 @@ class FilenameParser:
                         title=self._clean_title(title),
                         year=int(year),
                         director=director.strip(),
-                        format_signals=format_signals
+                        format_signals=format_signals,
+                        language=language,
+                        country=country,
+                        user_tag=user_tag
                     )
 
         # === PRIORITY 4: Title + year patterns (bracket year) ===
@@ -188,7 +285,10 @@ class FilenameParser:
                     filename=filename,
                     title=title,
                     year=year,
-                    format_signals=format_signals
+                    format_signals=format_signals,
+                    language=language,
+                    country=country,
+                    user_tag=user_tag
                 )
 
         # === PRIORITY 5: Fallback - extract year from anywhere ===
@@ -200,12 +300,18 @@ class FilenameParser:
                 filename=filename,
                 title=title,
                 year=year,
-                format_signals=format_signals
+                format_signals=format_signals,
+                language=language,
+                country=country,
+                user_tag=user_tag
             )
 
         # === LAST RESORT: No year found ===
         return FilmMetadata(
             filename=filename,
             title=self._clean_title(name),
-            format_signals=format_signals
+            format_signals=format_signals,
+            language=language,
+            country=country,
+            user_tag=user_tag
         )
