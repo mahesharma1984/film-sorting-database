@@ -8,7 +8,10 @@ from pathlib import Path
 from typing import Optional, Tuple, List
 from dataclasses import dataclass, field
 
-from lib.constants import FORMAT_SIGNALS, RELEASE_TAGS
+from lib.constants import (
+    FORMAT_SIGNALS, RELEASE_TAGS, LANGUAGE_PATTERNS,
+    LANGUAGE_TO_COUNTRY, SUBTITLE_KEYWORDS
+)
 
 
 @dataclass
@@ -88,8 +91,6 @@ class FilenameParser:
 
     def _extract_language(self, filename: str) -> Optional[str]:
         """Extract language from filename using LANGUAGE_PATTERNS"""
-        from lib.constants import LANGUAGE_PATTERNS
-
         filename_lower = filename.lower()
         for pattern, lang_code, country_code in LANGUAGE_PATTERNS:
             if re.search(pattern, filename_lower):
@@ -100,7 +101,6 @@ class FilenameParser:
         """Map language code to country code"""
         if not language:
             return None
-        from lib.constants import LANGUAGE_TO_COUNTRY
         return LANGUAGE_TO_COUNTRY.get(language)
 
     def _extract_user_tag(self, filename: str) -> Optional[str]:
@@ -204,7 +204,6 @@ class FilenameParser:
 
                         # Bug 2 fix: Check if potential_title looks like a subtitle
                         # Fixes: "Cinema Paradiso - Theatrical Cut (1988)" should NOT extract director
-                        from lib.constants import SUBTITLE_KEYWORDS
                         potential_title_lower = potential_title.lower()
                         is_subtitle = any(keyword in potential_title_lower for keyword in SUBTITLE_KEYWORDS)
 

@@ -190,7 +190,35 @@ class FilmClassifierV01:
                         f"with format signals: {metadata.format_signals}"
                     )
 
-        # === NEW v0.2: Check 2.5: User tag recovery ===
+        # === NEW v0.2: Check 2.5: Reference canon hardcoded lookup ===
+        # PRIORITY: Reference canon checked BEFORE user tags
+        # Canonical films (Casablanca, Citizen Kane, etc.) go to Reference tier
+        # even if they have user tags like [Popcorn-1940s]
+        if metadata.year:
+            from lib.normalization import normalize_for_lookup
+            from lib.constants import REFERENCE_CANON
+
+            normalized_title = normalize_for_lookup(metadata.title, strip_format_signals=True)
+            lookup_key = (normalized_title, metadata.year)
+
+            if lookup_key in REFERENCE_CANON:
+                decade = self._get_decade(metadata.year)
+                destination = f'{decade}/Reference/'
+
+                self.stats['reference_canon'] += 1
+                return ClassificationResult(
+                    original_filename=metadata.filename,
+                    new_filename='',
+                    title=metadata.title,
+                    year=metadata.year,
+                    director=metadata.director,
+                    tier='Reference',
+                    destination=destination,
+                    reason='reference_canon'
+                )
+
+        # === NEW v0.2: Check 3: User tag recovery ===
+        # User tags are respected for non-Reference films
         if metadata.user_tag:
             parsed_tag = self._parse_user_tag(metadata.user_tag)
 
@@ -219,30 +247,6 @@ class FilmClassifierV01:
                     tier=tier,
                     destination=destination,
                     reason='user_tag_recovery'
-                )
-
-        # === NEW v0.2: Check 3: Reference canon hardcoded lookup ===
-        if metadata.year:
-            from lib.normalization import normalize_for_lookup
-            from lib.constants import REFERENCE_CANON
-
-            normalized_title = normalize_for_lookup(metadata.title, strip_format_signals=True)
-            lookup_key = (normalized_title, metadata.year)
-
-            if lookup_key in REFERENCE_CANON:
-                decade = self._get_decade(metadata.year)
-                destination = f'{decade}/Reference/'
-
-                self.stats['reference_canon'] += 1
-                return ClassificationResult(
-                    original_filename=metadata.filename,
-                    new_filename='',
-                    title=metadata.title,
-                    year=metadata.year,
-                    director=metadata.director,
-                    tier='Reference',
-                    destination=destination,
-                    reason='reference_canon'
                 )
 
         # === NEW v0.2: Check 4: Language/Country → Satellite wave routing ===

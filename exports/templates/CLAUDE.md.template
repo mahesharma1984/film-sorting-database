@@ -1,0 +1,123 @@
+# Claude Code Guide
+
+<!--
+  TEMPLATE: Customize this file for your project.
+  Replace all [PLACEHOLDER] values with your project specifics.
+  Delete sections that don't apply.
+  This file goes in your project root as CLAUDE.md
+-->
+
+## 1) Startup Read
+
+Before any code change, read:
+
+1. `docs/CORE_DOCUMENTATION_INDEX.md`
+2. `docs/DEVELOPER_GUIDE.md`
+<!-- Add other essential docs for your project -->
+
+## Documentation Navigation
+
+**For task-specific routing:** Use [`docs/WORK_ROUTER.md`](docs/WORK_ROUTER.md) for symptom-based routing to specific documentation sections.
+
+**For comprehensive index:** See [`docs/CORE_DOCUMENTATION_INDEX.md`](docs/CORE_DOCUMENTATION_INDEX.md) for Q&A-style quick reference.
+
+## Git Commit Policy
+
+<!-- Define what should and shouldn't be committed -->
+
+Key outputs to commit:
+- [LIST YOUR COMMITTED OUTPUTS]
+
+Key outputs to ignore:
+- [LIST YOUR GITIGNORED OUTPUTS]
+
+---
+
+## 2) Work Modes
+
+### A) Build / Feature Work
+
+Use when adding/changing features, stages, or outputs.
+
+Read in order:
+1. [YOUR ARCHITECTURE DOC]
+2. [YOUR PIPELINE/WORKFLOW DOC]
+3. `docs/DEVELOPER_GUIDE.md`
+
+### B) Debugging / Regression Work
+
+Use when quality drops, output breaks, or behavior regresses.
+
+Read in order:
+1. [YOUR MEASUREMENT/METRICS DOC]
+2. `docs/DEBUG_RUNBOOK.md`
+3. [YOUR STAGE/CONTRACT DOC]
+
+### C) Understanding Architecture
+
+Use when learning the system or aligning to intent.
+
+Read in order:
+1. [YOUR ARCHITECTURE DOC]
+2. [YOUR METHODOLOGY DOCS]
+
+---
+
+## 3) Decision Rules While Working
+
+1. **Apply R/P Split:**
+   - REASONING tasks → Claude/LLM
+   - PRECISION tasks → code
+   - If mixed, split into separate steps
+
+2. **Explicit failure gates:**
+   - Every pipeline or script must declare hard vs soft failure gates
+   - Hard gates stop execution; soft gates warn and continue
+
+3. **Enforce Pattern-First:**
+   - Define pattern/schema first
+   - Populate instances second
+
+4. **Trace causality before edits:**
+   - What does this component consume?
+   - What does it produce?
+   - Which downstream components depend on it?
+
+5. **Keep boundaries stable** unless explicitly redesigning architecture.
+
+6. **Run verification** before finishing (smallest valid test set).
+
+<!--
+   ADD PROJECT-SPECIFIC RULES HERE
+   Example: "Always run linter before committing"
+   Example: "Update API docs when endpoints change"
+-->
+
+---
+
+## 4) Document Authority Rules
+
+When docs conflict:
+1. Prefer docs marked **AUTHORITATIVE** in `docs/CORE_DOCUMENTATION_INDEX.md`
+2. Prefer the file with the newest date
+3. If behavior changed in code, update docs in the same change set
+
+---
+
+## 5) Key Commands (Quick Reference)
+
+<!-- Replace with your project's key commands -->
+
+```bash
+# Build / Run
+[YOUR BUILD COMMAND]
+
+# Test
+[YOUR TEST COMMAND]
+
+# Measure quality
+[YOUR MEASUREMENT COMMAND]
+
+# Lint / Format
+[YOUR LINT COMMAND]
+```

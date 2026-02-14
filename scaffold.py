@@ -82,7 +82,7 @@ def create_folder_structure(config_path: Path):
             director_path = library_path / 'Core' / decade / director
             director_path.mkdir(parents=True, exist_ok=True)
 
-    logger.info(f"Created {len(core_db.all_directors)} Core director folders")
+    logger.info(f"Created {len(core_db.director_lookup)} Core director folders")
 
     # 3. Create decade-first Satellite structure
     logger.info("Creating Satellite category directories...")
@@ -117,7 +117,7 @@ def create_folder_structure(config_path: Path):
     print("=" * 60)
     print(f"\nLocation: {library_path}")
     print(f"\nStructure:")
-    print(f"  Core/{len(decades)} decades × {len(core_db.all_directors)} directors")
+    print(f"  Core/{len(decades)} decades × {len(core_db.director_lookup)} directors")
     print(f"  Reference/{len(decades)} decades")
     print(f"  Popcorn/{len(decades)} decades")
     print(f"  {len(decades)} decades/Satellite × {len(satellite_categories)} categories")

@@ -8,8 +8,14 @@ __pycache__/
 # macOS
 .DS_Store
 
-# Output files (comment out if you want to track these)
+# Output files (regenerable — never commit)
 output/*.csv
+output/tmdb_cache.json
+output/staging_report.txt
+
+# Configuration (contains local paths and API keys)
+config.yaml
+config_external.yaml
 
 # Virtual environments
 venv/

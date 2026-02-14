@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
 """
-move.py - Move files based on sorting manifest
+move.py - Move classified films to destination directories (v1.0)
 
-Pure PRECISION operation. Never classifies. Just reads manifest and moves.
+Pure PRECISION operation. Reads manifest CSV, moves files. Never classifies.
 
-Key features:
-- Same-filesystem detection (os.rename vs shutil.copy2)
-- Safety mechanisms (verify before delete, cleanup on failure)
-- Dry-run mode (default)
-- Resumability (skip files already at destination)
+Safety:
+- --dry-run is the DEFAULT (must pass --execute to actually move)
+- Same-filesystem detection: os.rename() for instant moves
+- Cross-filesystem: shutil.copy2() + verify + delete source
+- Resumable: skips files already at destination
+- Hard gate: source file must exist, destination parent must be writable
 """
 
-import os
 import sys
+import os
 import csv
 import shutil
 import logging
 import argparse
 from pathlib import Path
+from typing import Dict
 
 # Configure logging
 logging.basicConfig(
@@ -27,245 +29,237 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-class FileMover:
-    """File mover with same-filesystem optimization"""
+def same_filesystem(path_a: Path, path_b: Path) -> bool:
+    """Check if two paths are on the same filesystem"""
+    try:
+        return os.stat(path_a).st_dev == os.stat(path_b).st_dev
+    except OSError:
+        return False
 
-    def __init__(self, dry_run: bool = True):
-        self.dry_run = dry_run
-        self.stats = {
-            'success': 0,
-            'error': 0,
-            'skipped': 0,
-            'renamed_moves': 0,
-            'copied_moves': 0
-        }
 
-    def _is_same_filesystem(self, source: Path, dest: Path) -> bool:
-        """
-        Check if source and destination are on same filesystem
+def move_file(source: Path, dest: Path, use_rename: bool) -> bool:
+    """
+    Move a single file from source to dest.
 
-        Uses st_dev comparison - if device IDs match, it's the same filesystem
-        and we can use os.rename() for instant moves.
-        """
-        try:
-            # Ensure destination parent exists for stat
-            if not dest.parent.exists():
-                return False
+    Args:
+        source: Source file path
+        dest: Destination file path
+        use_rename: If True, use os.rename (same FS, instant).
+                    If False, use shutil.copy2 + verify + delete (cross FS).
 
-            return source.stat().st_dev == dest.parent.stat().st_dev
+    Returns:
+        True if successful, False otherwise
+    """
+    # Create destination directory
+    dest.parent.mkdir(parents=True, exist_ok=True)
 
-        except Exception as e:
-            logger.debug(f"Could not determine filesystem: {e}")
-            return False  # Assume cross-filesystem for safety
-
-    def move_file(self, source_file: Path, dest_file: Path) -> bool:
-        """
-        Move file using os.rename() or shutil.copy2() based on filesystem
-
-        Returns True if successful, False otherwise
-        """
-
-        if self.dry_run:
-            logger.info(f"DRY RUN: {source_file.name} → {dest_file}")
-            return True
-
-        # Validate source exists
-        if not source_file.exists():
-            logger.error(f"Source not found: {source_file}")
-            return False
-
-        # Create destination directory
-        dest_file.parent.mkdir(parents=True, exist_ok=True)
-
-        # Handle duplicate filenames
-        counter = 1
-        original_dest = dest_file
-        while dest_file.exists():
-            # Check if it's the same file (resumability)
-            if dest_file.stat().st_size == source_file.stat().st_size:
-                logger.info(f"⊙ Already exists (skipping): {source_file.name}")
-                self.stats['skipped'] += 1
-                return True
-
-            # Different file with same name - append counter
-            stem = original_dest.stem
-            suffix = original_dest.suffix
-            dest_file = dest_file.parent / f"{stem}_{counter}{suffix}"
-            counter += 1
-
-        try:
-            if self._is_same_filesystem(source_file, dest_file):
-                # FAST: Atomic rename (2-5 minutes for 1201 files)
-                os.rename(str(source_file), str(dest_file))
-                logger.info(f"✓ Renamed: {source_file.name}")
-                self.stats['renamed_moves'] += 1
-
-            else:
-                # SAFE: Copy + verify + delete (60-80 hours for cross-device)
-                shutil.copy2(str(source_file), str(dest_file))
-
-                # Verify copy
-                if dest_file.exists() and dest_file.stat().st_size == source_file.stat().st_size:
-                    source_file.unlink()  # Delete original only after verification
-                    logger.info(f"✓ Copied: {source_file.name}")
-                    self.stats['copied_moves'] += 1
-                else:
-                    logger.error(f"Copy verification failed: {dest_file}")
-                    if dest_file.exists():
-                        dest_file.unlink()  # Clean up failed copy
-                    return False
-
-            return True
-
-        except Exception as e:
-            logger.error(f"Error moving {source_file}: {e}")
-            return False
-
-    def process_manifest(self, manifest_path: Path, source_dir: Path):
-        """Read manifest and move all files"""
-
-        if not manifest_path.exists():
-            logger.error(f"Manifest not found: {manifest_path}")
-            return False
-
-        # Read manifest
-        with open(manifest_path, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            entries = list(reader)
-
-        logger.info(f"Processing {len(entries)} entries from manifest")
-
-        if self.dry_run:
-            logger.info("=" * 60)
-            logger.info("DRY RUN MODE - No files will be moved")
-            logger.info("=" * 60)
-        else:
-            logger.warning("EXECUTE MODE - Files will be moved!")
-
-        # Process each entry
-        for i, entry in enumerate(entries, 1):
-            if i % 50 == 0:
-                logger.info(f"Progress: {i}/{len(entries)}")
-
-            filename = entry['filename']  # Now stores relative path from source_dir
-            destination = entry['destination']
-
-            source_file = source_dir / filename
-            # Destination should use just the filename, not the full relative path
-            dest_file = Path(destination) / Path(filename).name
-
-            if self.move_file(source_file, dest_file):
-                self.stats['success'] += 1
-            else:
-                self.stats['error'] += 1
-
+    if use_rename:
+        os.rename(source, dest)
         return True
+    else:
+        # Cross-filesystem: copy, verify, delete
+        shutil.copy2(str(source), str(dest))
 
-    def print_statistics(self):
-        """Print move statistics"""
-
-        print("\n" + "=" * 60)
-        print("MOVE STATISTICS")
-        print("=" * 60)
-
-        total = self.stats['success'] + self.stats['error']
-
-        if self.dry_run:
-            print(f"  Mode: DRY RUN (no files moved)")
+        # Verify: destination exists and size matches
+        if dest.exists() and dest.stat().st_size == source.stat().st_size:
+            source.unlink()
+            return True
         else:
-            print(f"  Mode: EXECUTE")
+            logger.error(f"Verification failed: {dest} (size mismatch or missing)")
+            if dest.exists():
+                dest.unlink()  # Clean up failed copy
+            return False
 
-        print(f"  Total entries: {total}")
-        print(f"  Successful: {self.stats['success']}")
-        print(f"  Errors: {self.stats['error']}")
-        print(f"  Skipped (already at dest): {self.stats['skipped']}")
 
-        if not self.dry_run:
-            print(f"\n  Renamed (same-FS): {self.stats['renamed_moves']}")
-            print(f"  Copied (cross-FS): {self.stats['copied_moves']}")
+def process_manifest(
+    manifest_path: Path,
+    source_base: Path,
+    library_base: Path,
+    dry_run: bool = True
+) -> Dict[str, int]:
+    """
+    Process manifest and move (or dry-run) files.
 
-            if self.stats['renamed_moves'] > 0 and self.stats['copied_moves'] > 0:
-                print(f"\n  Performance: Mix of instant renames and byte copies")
-            elif self.stats['renamed_moves'] > 0:
-                print(f"\n  Performance: All same-filesystem (instant renames)")
-            elif self.stats['copied_moves'] > 0:
-                print(f"\n  Performance: All cross-filesystem (byte copies)")
+    Args:
+        manifest_path: Path to sorting_manifest.csv
+        source_base: Base directory where source films are located
+        library_base: Base directory for organized library
+        dry_run: If True, only report what would happen
 
-        print()
+    Returns:
+        Statistics dict
+    """
+    stats = {
+        'total': 0,
+        'moved': 0,
+        'skipped_unsorted': 0,
+        'skipped_exists': 0,
+        'skipped_missing': 0,
+        'errors': 0,
+    }
+
+    # Detect same-filesystem for optimization
+    use_rename = False
+    if not dry_run and source_base.exists() and library_base.exists():
+        use_rename = same_filesystem(source_base, library_base)
+        if use_rename:
+            logger.info(f"Same filesystem detected — using os.rename() (instant)")
+        else:
+            logger.info(f"Cross-filesystem detected — using shutil.copy2() (slower)")
+
+    with open(manifest_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            stats['total'] += 1
+            filename = row['filename']
+            tier = row['tier']
+            destination = row['destination']
+
+            # Skip unsorted films
+            if tier == 'Unsorted':
+                stats['skipped_unsorted'] += 1
+                continue
+
+            # Build paths
+            source_file = source_base / filename
+            dest_dir = library_base / destination.strip('/')
+            dest_file = dest_dir / Path(filename).name
+
+            # Check if already at destination (resumable)
+            if dest_file.exists():
+                stats['skipped_exists'] += 1
+                logger.debug(f"Already exists: {dest_file}")
+                continue
+
+            # Check source exists
+            if not source_file.exists():
+                stats['skipped_missing'] += 1
+                logger.warning(f"Source not found: {source_file}")
+                continue
+
+            # Execute or dry-run
+            if dry_run:
+                print(f"[DRY RUN] {filename}")
+                print(f"  -> {destination}")
+                stats['moved'] += 1
+            else:
+                try:
+                    success = move_file(source_file, dest_file, use_rename)
+                    if success:
+                        stats['moved'] += 1
+                        logger.info(f"Moved: {filename} -> {destination}")
+                    else:
+                        stats['errors'] += 1
+                except Exception as e:
+                    stats['errors'] += 1
+                    logger.error(f"Error moving {filename}: {e}")
+
+    return stats
+
+
+def print_stats(stats: Dict[str, int], dry_run: bool):
+    """Print summary statistics"""
+    print("\n" + "=" * 60)
+    if dry_run:
+        print("DRY RUN SUMMARY (no files were moved)")
+    else:
+        print("MOVE SUMMARY")
+    print("=" * 60)
+    print(f"  Total in manifest:   {stats['total']:5d}")
+    print(f"  {'Would move' if dry_run else 'Moved'}:          {stats['moved']:5d}")
+    print(f"  Skipped (unsorted):  {stats['skipped_unsorted']:5d}")
+    print(f"  Skipped (exists):    {stats['skipped_exists']:5d}")
+    print(f"  Skipped (missing):   {stats['skipped_missing']:5d}")
+    print(f"  Errors:              {stats['errors']:5d}")
+    print("=" * 60)
+
+    if dry_run:
+        print("\nTo execute, run again with --execute")
 
 
 def main():
-    """Main entry point"""
     parser = argparse.ArgumentParser(
-        description='Move films using sorting manifest',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description='Move classified films to destination directories (v1.0)',
         epilog="""
+SAFETY: Defaults to --dry-run. You must pass --execute to actually move files.
+
 Examples:
-  # Dry run (default - no files moved)
-  python move.py output/sorting_manifest.csv "/Volumes/One Touch/movies/unsorted"
-
-  # Execute moves
-  python move.py output/sorting_manifest.csv "/Volumes/One Touch/movies/unsorted" --execute
-
-Performance:
-  - Same filesystem: uses os.rename() for instant moves (2-5 minutes)
-  - Cross filesystem: uses shutil.copy2() + verify + delete (60-80 hours)
-
-Safety:
-  - Verifies copies before deleting source
-  - Cleans up failed copies
-  - Skips files already at destination (resumable)
-  - Dry-run mode by default
+  python move.py                           # Dry run with defaults
+  python move.py --execute                 # Actually move files
+  python move.py --manifest output/sorting_manifest.csv --execute
         """
     )
-    parser.add_argument('manifest', help='Path to sorting_manifest.csv')
-    parser.add_argument('source_dir', help='Source directory containing films')
-    parser.add_argument('--dry-run', action='store_true', default=True,
-                       help='Preview moves without executing (default)')
+    parser.add_argument('--manifest', '-m', type=Path,
+                       default=Path('output/sorting_manifest.csv'),
+                       help='Manifest CSV path (default: output/sorting_manifest.csv)')
+    parser.add_argument('--source', '-s', type=Path, default=None,
+                       help='Source directory (default: from config)')
+    parser.add_argument('--library', '-l', type=Path, default=None,
+                       help='Library base directory (default: from config)')
+    parser.add_argument('--config', type=Path, default=Path('config_external.yaml'),
+                       help='Configuration file (default: config_external.yaml)')
     parser.add_argument('--execute', action='store_true',
-                       help='Actually move files (overrides --dry-run)')
+                       help='Actually move files (default is dry-run)')
+    parser.add_argument('--dry-run', action='store_true', default=True,
+                       help='Show what would be done without moving (default)')
 
     args = parser.parse_args()
 
-    # Determine mode
+    # If --execute is passed, disable dry-run
     dry_run = not args.execute
 
-    # Check paths
-    manifest_path = Path(args.manifest)
-    if not manifest_path.exists():
-        logger.error(f"Manifest not found: {manifest_path}")
+    # Check manifest exists
+    if not args.manifest.exists():
+        logger.error(f"Manifest not found: {args.manifest}")
         sys.exit(1)
 
-    source_path = Path(args.source_dir)
-    if not source_path.exists():
-        logger.error(f"Source directory not found: {source_path}")
-        sys.exit(1)
+    # Get paths from config if not provided
+    source_base = args.source
+    library_base = args.library
 
-    # Initialize mover
-    mover = FileMover(dry_run=dry_run)
-
-    # Process manifest
-    try:
-        success = mover.process_manifest(manifest_path, source_path)
-
-        # Print statistics
-        mover.print_statistics()
-
-        if success:
-            if dry_run:
-                logger.info("Dry run completed! Review above, then run with --execute to move files.")
-            else:
-                logger.info("Move completed!")
-        else:
-            logger.error("Move failed!")
+    if source_base is None or library_base is None:
+        if not args.config.exists():
+            logger.error(f"Config file not found: {args.config}")
+            logger.error("Provide --source and --library, or a valid --config")
             sys.exit(1)
 
-    except Exception as e:
-        logger.error(f"Move failed: {e}")
-        import traceback
-        traceback.print_exc()
+        import yaml
+        with open(args.config, 'r') as f:
+            config = yaml.safe_load(f)
+
+        if source_base is None:
+            source_base = Path(config.get('source_path', ''))
+        if library_base is None:
+            library_base = Path(config.get('library_path', ''))
+
+    # Hard gate: verify paths
+    if not source_base.exists():
+        logger.error(f"Source directory not found: {source_base}")
         sys.exit(1)
+
+    if not library_base.exists():
+        logger.error(f"Library directory not found: {library_base}")
+        logger.error("Is the destination drive mounted?")
+        sys.exit(1)
+
+    # Execute
+    if dry_run:
+        print("\n" + "=" * 60)
+        print("DRY RUN MODE — no files will be moved")
+        print("=" * 60 + "\n")
+    else:
+        print("\n" + "=" * 60)
+        print("EXECUTING MOVES")
+        print(f"Source:  {source_base}")
+        print(f"Library: {library_base}")
+        print("=" * 60 + "\n")
+
+    stats = process_manifest(args.manifest, source_base, library_base, dry_run)
+    print_stats(stats, dry_run)
+
+    return 0 if stats['errors'] == 0 else 1
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
