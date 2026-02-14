@@ -1,26 +1,31 @@
 #!/usr/bin/env python3
 """
-Core director whitelist database with fuzzy matching
-Extracted from film_sorter.py lines 194-288
+Core director whitelist database with EXACT matching only
+
+- NO fuzzy matching (no fuzz.ratio, no substring, no last-name matching)
+- Exact case-insensitive string match only
+- O(1) lookup performance with dictionary
 """
 
 import re
 import logging
 from pathlib import Path
-from typing import Set, List
-from collections import defaultdict
-
-from fuzzywuzzy import fuzz
+from typing import Optional, Dict, Set
 
 logger = logging.getLogger(__name__)
 
 
 class CoreDirectorDatabase:
-    """Load and query Core director whitelist"""
+    """Load and query Core director whitelist - EXACT MATCH ONLY"""
 
     def __init__(self, whitelist_file: Path):
-        self.directors_by_decade = defaultdict(set)
-        self.all_directors = set()
+        # Structure: {'1960s': {'Jean-Luc Godard', 'Pier Paolo Pasolini', ...}, ...}
+        self.directors_by_decade: Dict[str, Set[str]] = {}
+
+        # All directors in lowercase for case-insensitive exact matching
+        # Maps: lowercase name → canonical name
+        self.director_lookup: Dict[str, str] = {}
+
         self._load_whitelist(whitelist_file)
 
     def _load_whitelist(self, file_path: Path):
@@ -38,110 +43,79 @@ class CoreDirectorDatabase:
             for line in content.split('\n'):
                 line = line.strip()
 
-                # Detect decade headers
+                # Detect decade headers: "## 1960s CORE"
                 if re.match(r'## \d{4}s CORE', line):
-                    decade_match = re.search(r'(\d{4})s', line)
+                    decade_match = re.search(r'(\d{4}s)', line)
                     if decade_match:
-                        current_decade = decade_match.group(1) + 's'
+                        current_decade = decade_match.group(1)
+                        if current_decade not in self.directors_by_decade:
+                            self.directors_by_decade[current_decade] = set()
                         continue
 
-                # Extract director names (bold text)
+                # Extract director names: "**Jean-Luc Godard**"
                 director_match = re.match(r'\*\*([^*]+)\*\*', line)
                 if director_match and current_decade:
                     director = director_match.group(1).strip()
-                    self.directors_by_decade[current_decade].add(director)
-                    self.all_directors.add(director)
 
-            logger.info(f"Loaded {len(self.all_directors)} core directors across {len(self.directors_by_decade)} decades")
+                    # Add to decade set
+                    self.directors_by_decade[current_decade].add(director)
+
+                    # Build lowercase lookup (for exact case-insensitive matching)
+                    director_key = director.lower().strip()
+                    self.director_lookup[director_key] = director
+
+            total = sum(len(d) for d in self.directors_by_decade.values())
+            logger.info(f"Loaded {total} core directors across {len(self.directors_by_decade)} decades (exact match only)")
 
         except Exception as e:
             logger.error(f"Error loading core director whitelist: {e}")
 
     def is_core_director(self, director_name: str) -> bool:
-        """Check if director is in Core whitelist (fuzzy matching)"""
+        """
+        Check if director is in Core whitelist - EXACT MATCH ONLY (case-insensitive)
+
+        NO fuzzy matching, NO substring matching, NO last-name matching
+        This is intentional to avoid false positives.
+        """
         if not director_name:
             return False
 
-        director_lower = director_name.lower().strip()
+        director_key = director_name.lower().strip()
+        return director_key in self.director_lookup
 
-        # Exact match first
-        for core_director in self.all_directors:
-            if director_lower == core_director.lower():
-                return True
+    def get_canonical_name(self, director_name: str) -> Optional[str]:
+        """
+        Get canonical director name from whitelist (for folder naming)
 
-        # Fuzzy matching for variations
-        for core_director in self.all_directors:
-            core_lower = core_director.lower()
-
-            # High similarity match
-            if fuzz.ratio(director_lower, core_lower) > 85:
-                return True
-
-            # Partial match for shortened names (e.g. "Godard" matches "Jean-Luc Godard")
-            if len(director_lower) > 3 and director_lower in core_lower:
-                return True
-
-            # Check if last name matches
-            core_parts = core_lower.split()
-            director_parts = director_lower.split()
-
-            if len(core_parts) > 1 and len(director_parts) > 0:
-                if director_parts[-1] == core_parts[-1]:  # Last name match
-                    return True
-
-        return False
-
-    def get_director_decades(self, director_name: str) -> List[str]:
-        """Get decades where director appears in Core whitelist"""
+        Returns the exact name as it appears in CORE_DIRECTOR_WHITELIST_FINAL.md
+        """
         if not director_name:
-            return []
+            return None
 
-        decades = []
-        director_lower = director_name.lower().strip()
+        director_key = director_name.lower().strip()
+        return self.director_lookup.get(director_key)
 
-        for decade, directors in self.directors_by_decade.items():
-            for core_director in directors:
-                core_lower = core_director.lower()
+    def get_director_decade(self, director_name: str, film_year: int) -> Optional[str]:
+        """
+        Get decade folder for director based on film year
 
-                # Check multiple matching strategies
-                if (director_lower == core_lower or
-                    fuzz.ratio(director_lower, core_lower) > 85 or
-                    (len(director_lower) > 3 and director_lower in core_lower) or
-                    (len(director_lower.split()) > 0 and len(core_lower.split()) > 1 and
-                     director_lower.split()[-1] == core_lower.split()[-1])):
-                    decades.append(decade)
-                    break
+        Validates that:
+        1. Director is in whitelist
+        2. Director appears in the decade corresponding to film_year
 
-        return decades
+        Returns decade string (e.g., "1960s") or None if validation fails
+        """
+        canonical = self.get_canonical_name(director_name)
+        if not canonical:
+            return None
 
-    def get_canonical_director_name(self, director_name: str) -> str:
-        """Get canonical director name from whitelist (for folder naming)"""
-        if not director_name:
-            return director_name
+        # Calculate decade from film year
+        decade = f"{(film_year // 10) * 10}s"
 
-        director_lower = director_name.lower().strip()
+        # Verify director appears in this decade's whitelist
+        if decade in self.directors_by_decade and canonical in self.directors_by_decade[decade]:
+            return decade
 
-        # Try exact match first
-        for core_director in self.all_directors:
-            if director_lower == core_director.lower():
-                return core_director
-
-        # Try fuzzy match
-        for core_director in self.all_directors:
-            core_lower = core_director.lower()
-
-            if fuzz.ratio(director_lower, core_lower) > 85:
-                return core_director
-
-            if len(director_lower) > 3 and director_lower in core_lower:
-                return core_director
-
-            # Last name match
-            core_parts = core_lower.split()
-            director_parts = director_lower.split()
-            if len(core_parts) > 1 and len(director_parts) > 0:
-                if director_parts[-1] == core_parts[-1]:
-                    return core_director
-
-        # No match - return original
-        return director_name
+        # Director exists but not in this decade
+        logger.debug(f"Director '{canonical}' not listed in {decade} (film year: {film_year})")
+        return None
