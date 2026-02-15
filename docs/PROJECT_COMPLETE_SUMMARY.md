@@ -10,14 +10,15 @@ Your decade-driven, wave-structured cinema archive is now fully defined and sort
 
 ### PHASE 1: FOUNDATION (COMPLETE ✓)
 
-**1. Core Director Whitelist** (38-43 directors)
+**1. Core Director Whitelist** (105 directors across 8 decades)
 - Organized by decade-strength
-- Godard, Rivette, Melville, Pasolini, Antonioni (1960s)
-- Cassavetes, Fassbinder, Tarkovsky, Coppola, Kubrick (1970s)
-- Yang, Lynch, Coen Brothers, Jarmusch (1980s)
-- Wong Kar-wai, Hou, Hartley (1990s)
-- Malick (2010s)
-- **Files in collection:** ~125 films
+- **1940s-1950s:** Orson Welles, Satyajit Ray, Billy Wilder, William Wyler
+- **1960s:** Godard, Rivette, Melville, Pasolini, Antonioni, Kubrick, Fellini, Chabrol, Bressane
+- **1970s:** Cassavetes, Fassbinder, Tarkovsky, Coppola, Scorsese, Malick
+- **1980s:** Yang, Lynch, Coen Brothers, Jarmusch, Almodóvar
+- **1990s:** Wong Kar-wai, Hou, Hartley, Gallo
+- **2000s-2010s:** Malick, Winding Refn, Paul Thomas Anderson
+- **Files in collection:** ~100 films (as of latest classification run)
 
 **2. Reference Canon** (50 films hard cap)
 - Classical Hollywood + canonical touchstones
@@ -55,19 +56,28 @@ Your decade-driven, wave-structured cinema archive is now fully defined and sort
 
 ## YOUR COLLECTION AT A GLANCE
 
-### Current State (Raw Collection)
-**~850 films total** across all decades and genres
+### Current State (Latest Classification - Feb 2026)
+**1,769 films total** across all decades and genres
+
+**Current Breakdown:**
+- **Core:** 100 films (5.7%)
+- **Reference:** 27 films (1.5%)
+- **Satellite:** 108 films (6.1%)
+- **Popcorn:** 100 films (5.7%)
+- **Unsorted:** 1,432 films (81.0%)
+
+**Classification Rate:** 19.0% (337 classified / 1,769 total)
 
 ### Post-Curation Target
-**~530 films** (lean, curated archive)
+**~530 films** (lean, curated archive after full classification and cuts)
 
-**Breakdown:**
+**Target Breakdown:**
 - Core: ~140 films (26%)
 - Satellite: ~240 films (45%)
 - Popcorn: ~100 films (19%)
 - Reference: ~50 films (9%)
 
-**To be cut:** ~250-320 films → /Out
+**To be cut/reviewed:** ~1,240 films from Unsorted → Staging → /Out
 
 ---
 
