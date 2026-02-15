@@ -195,3 +195,48 @@ class TestEdgeCases:
     def test_empty_extension(self, parser):
         meta = parser.parse("Film Title (1985)")
         assert meta.year == 1985
+
+
+class TestDirectorYearNoComma:
+    """Issue #5: (Director YYYY) pattern without comma"""
+
+    def test_ed_wood_tim_burton(self, parser):
+        """Real-world case from collection"""
+        meta = parser.parse("Ed Wood (Tim Burton 1994).mkv")
+        assert meta.year == 1994
+        assert meta.director == "Tim Burton"
+        assert "Ed Wood" in meta.title
+
+    def test_director_year_no_comma_generic(self, parser):
+        meta = parser.parse("Film Title (John Smith 1985).mkv")
+        assert meta.year == 1985
+        assert meta.director == "John Smith"
+        assert "Film Title" in meta.title
+
+    def test_comma_pattern_still_takes_priority(self, parser):
+        """Regression test: comma pattern should match first"""
+        meta = parser.parse("A Bay of Blood (Mario Bava, 1971).mkv")
+        assert meta.year == 1971
+        assert meta.director == "Mario Bava"
+        assert "Bay of Blood" in meta.title
+
+
+class TestBareYearAtEnd:
+    """Issue #5: Bare year without delimiters"""
+
+    def test_sermon_to_fish(self, parser):
+        """Real-world case from collection"""
+        meta = parser.parse("sermon to the fish 2022.mp4")
+        assert meta.year == 2022
+        assert "sermon" in meta.title.lower()
+
+    def test_generic_bare_year(self, parser):
+        meta = parser.parse("unknown film 1985.mkv")
+        assert meta.year == 1985
+        assert "unknown" in meta.title.lower()
+
+    def test_resolution_not_confused_with_year(self, parser):
+        """Ensure 1080p is not extracted as year"""
+        meta = parser.parse("film 1080p 2020.mkv")
+        assert meta.year == 2020
+        assert meta.year != 1080
