@@ -7,12 +7,13 @@ NEVER moves files. Only reads filenames and writes CSV.
 Classification priority order:
 1. [PRECISION] Parse filename → FilmMetadata
 2. [PRECISION] TMDb enrichment → canonical director, country, genre (cached, optional)
+   2b. [PRECISION] OMDb fallback → if TMDb fails (for obscure foreign films)
 3. [PRECISION] Explicit lookup → SORTING_DATABASE.md (human-curated, highest trust)
 4. [REASONING] Core director check → whitelist exact match
 5. [REASONING] Reference canon check → 50-film hardcoded list in constants.py
 6. [PRECISION] User tag recovery → trust previous human classification
 7. [REASONING] Language/country → Satellite routing (decade-bounded)
-8. [REASONING] Satellite classification → TMDb data (country + genre + decade)
+8. [REASONING] Satellite classification → TMDb/OMDb data (country + genre + decade)
 9. [PRECISION] Default → Unsorted with detailed reason code
 """
 
@@ -30,6 +31,7 @@ import yaml
 
 from lib.parser import FilenameParser, FilmMetadata
 from lib.tmdb import TMDbClient
+from lib.omdb import OMDbClient
 from lib.lookup import SortingDatabaseLookup
 from lib.core_directors import CoreDirectorDatabase
 from lib.satellite import SatelliteClassifier
@@ -102,6 +104,19 @@ class FilmClassifier:
                 logger.info("TMDb API enrichment disabled (--no-tmdb flag)")
             else:
                 logger.warning("TMDb API enrichment disabled (no API key in config)")
+
+        # OMDb client with caching (fallback for obscure films)
+        omdb_key = self.config.get('omdb_api_key')
+        if omdb_key and not self.no_tmdb:
+            self.omdb = OMDbClient(
+                api_key=omdb_key,
+                cache_path=Path('output/omdb_cache.json')
+            )
+            logger.info("OMDb API fallback enabled (with caching)")
+        else:
+            self.omdb = None
+            if not omdb_key:
+                logger.info("OMDb API fallback disabled (no API key in config)")
 
         # Explicit lookup database — checked BEFORE all heuristics
         self.lookup_db = SortingDatabaseLookup(
@@ -219,6 +234,27 @@ class FilmClassifier:
                 # Enrich country if not detected from filename
                 if not metadata.country and tmdb_data.get('countries'):
                     metadata.country = tmdb_data['countries'][0] if tmdb_data['countries'] else None
+
+        # === Stage 1b: OMDb fallback (for obscure films TMDb missed) ===
+        if not tmdb_data and self.omdb and metadata.title and metadata.year:
+            # Use same clean title as TMDb
+            clean_title = metadata.title
+            clean_title = re.sub(r'\s*\[.+?\]\s*', ' ', clean_title)
+            from lib.normalization import _strip_format_signals
+            clean_title = _strip_format_signals(clean_title)
+            clean_title = re.sub(r'\s*\(\s*\)', '', clean_title)
+            clean_title = ' '.join(clean_title.split())
+
+            omdb_data = self.omdb.search_film(clean_title.strip(), metadata.year)
+            if omdb_data:
+                # Enrich metadata with OMDb director if we don't have one
+                if not metadata.director and omdb_data.get('director'):
+                    metadata.director = omdb_data['director']
+                # Enrich country if not detected from filename
+                if not metadata.country and omdb_data.get('countries'):
+                    metadata.country = omdb_data['countries'][0] if omdb_data['countries'] else None
+                # Store for later use by satellite classifier
+                tmdb_data = omdb_data  # Treat OMDb data as equivalent to TMDb for classification
 
         # === Stage 2: Explicit lookup (highest trust — human-curated) ===
         if metadata.title:
