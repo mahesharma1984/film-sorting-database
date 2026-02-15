@@ -200,7 +200,18 @@ class FilmClassifier:
         # === Stage 1: TMDb enrichment (optional) ===
         tmdb_data = None
         if self.tmdb and metadata.title and metadata.year:
-            tmdb_data = self.tmdb.search_film(metadata.title, metadata.year)
+            # Clean title for TMDb query (remove user tags, format signals, but keep proper title structure)
+            clean_title = metadata.title
+            # Remove user tag brackets [...]
+            clean_title = re.sub(r'\s*\[.+?\]\s*', ' ', clean_title)
+            # Remove format signals using shared normalization (but not full normalization to preserve punctuation)
+            from lib.normalization import _strip_format_signals
+            clean_title = _strip_format_signals(clean_title)
+            # Clean up extra spaces and parentheses artifacts
+            clean_title = re.sub(r'\s*\(\s*\)', '', clean_title)  # Remove empty parens like "Criterion ("
+            clean_title = ' '.join(clean_title.split())
+
+            tmdb_data = self.tmdb.search_film(clean_title.strip(), metadata.year)
             if tmdb_data:
                 # Enrich metadata with TMDb director if we don't have one
                 if not metadata.director and tmdb_data.get('director'):
