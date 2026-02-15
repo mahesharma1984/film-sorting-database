@@ -1,4 +1,4 @@
-# Margins and Texture: Why This Archive Contains Exploitation Cinema
+# Margins and Texture: Why This Archive Contains Exploitation Cinema (Updated: Issue #6)
 
 > Satellite films are the margins that make Core feel centered. Without them, the auteur spine floats in abstraction. With them, the collection has a visible field.
 
@@ -16,24 +16,27 @@ To remove the margins would be to pretend that art cinema exists independently o
 
 ---
 
-## 2. Historically Bounded Categories
+## 2. Historically Bounded Categories (Decade-Validated Routing)
+
+**Issue #6 Update:** As of the v0.2 implementation, satellite routing applies **decade validation** to both country-based AND director-based classification. This prevents anachronistic classifications (e.g., a 2010s Argento film routing to Giallo, which historically ended in the 1980s).
 
 Each satellite category corresponds to a specific historical phenomenon — not an eternal genre, but a cultural event with a beginning and an end:
 
-| Category | Active Period | What It Was |
-|----------|--------------|-------------|
-| Brazilian Exploitation | 1970s-1980s | The pornochanchada boom in Boca do Lixo |
-| Giallo | 1960s-1980s | Italian genre cinema's golden age (Bava, Argento, Fulci) |
-| Pinku Eiga | 1960s-1980s | Japanese pink film / Roman Porno era |
-| Hong Kong Action | 1970s-1990s | Pre-handover martial arts / Category III boom |
-| Blaxploitation | 1970s | Civil rights-era Black action cinema |
-| American Exploitation | 1960s-1990s | Grindhouse, VHS cult, direct-to-video |
-| European Sexploitation | 1960s-1980s | Arthouse-adjacent European erotica |
-| Nunsploitation | 1970s | Religious exploitation (niche, peaked briefly) |
-| WIP / Rape-Revenge | 1970s-1980s | Women-in-prison and feminist exploitation |
-| Music Films | All decades | Concert films, music docs (non-Core directors) |
-| Mondo | 1960s-1980s | Shockumentary / documentary exploitation |
-| Cult Oddities | All decades | Uncategorizable weirdness |
+| Category | Active Period | What It Was | Directors (Issue #6) |
+|----------|--------------|-------------|---------------------|
+| Brazilian Exploitation | 1970s-1980s | The pornochanchada boom in Boca do Lixo | (Country-driven) |
+| Giallo | 1960s-1980s | Italian genre cinema's golden age | Bava, Argento, Fulci, Martino, Soavi, Lenzi |
+| Pinku Eiga | 1960s-1980s | Japanese pink film / Roman Porno era | Wakamatsu, Kumashiro, Tanaka, Masumura |
+| **Japanese Exploitation** | **1970s-1980s** | **Yakuza/action exploitation (NEW)** | **Kinji Fukasaku** |
+| Hong Kong Action | 1970s-1990s | Pre-handover martial arts / Category III boom | Tsui Hark, Ringo Lam, John Woo, Lam Nai-Choi |
+| Blaxploitation | 1970s, 1990s | Civil rights-era Black action cinema (extended to 1990s) | Gordon Parks, Jack Hill, Ernest Dickerson |
+| American Exploitation | 1960s-2000s | Grindhouse, VHS cult, direct-to-video | Russ Meyer, Abel Ferrara, Larry Cohen, Larry Clark |
+| European Sexploitation | 1960s-1980s | Arthouse-adjacent European erotica | Borowczyk, Metzger, Brass, Vadim |
+| Nunsploitation | 1970s | Religious exploitation (niche, peaked briefly) | (Genre-driven) |
+| WIP / Rape-Revenge | 1970s-1980s | Women-in-prison and feminist exploitation | (Thematic) |
+| Music Films | All decades | Concert films, music docs (non-Core directors) | (Genre, no decade bounds) |
+| Mondo | 1960s-1980s | Shockumentary / documentary exploitation | (Genre-driven) |
+| Cult Oddities | All decades | Uncategorizable weirdness | (Catch-all) |
 
 The date ranges are not arbitrary. Brazilian exploitation peaked during the pornochanchada cycle of 1970-1989. Giallo peaked with the Italian genre industry of 1960-1989. Hong Kong action peaked in the pre-handover era of 1970-1999. These are historical facts, encoded in the classification system.
 
@@ -71,8 +74,9 @@ Each satellite category has an individual cap:
 | Brazilian Exploitation | 45 | Significant interest in pornochanchada tradition |
 | Pinku Eiga | 35 | Moderate engagement with Japanese pink |
 | Giallo | 30 | Focused interest in Italian genre peak |
+| **Japanese Exploitation** | **25** | **NEW (Issue #6): Fukasaku yakuza/action films** |
 | European Sexploitation | 25 | Curated sample, not deep collection |
-| Blaxploitation | 20 | Representative sample |
+| Blaxploitation | 20 | Representative sample (extended to 1990s for Ernest Dickerson) |
 | Music Films | 20 | Selective — concert docs by non-Core directors |
 | Nunsploitation | 15 | Niche — kept tight |
 | WIP / Rape-Revenge | 15 | Niche — keep selective, avoid pure misery |

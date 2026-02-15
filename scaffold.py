@@ -5,11 +5,11 @@ scaffold.py - Create film library folder structure
 Pure PRECISION operation. Reads documentation, creates folders.
 Never moves files, never classifies anything.
 
-Folder structure:
-- Core/{decade}/{director}/         (tier-first)
-- Reference/{decade}/                (tier-first)
-- Popcorn/{decade}/                  (tier-first)
-- {decade}/Satellite/{category}/     (decade-first for Satellite)
+Folder structure (Issue #6 update):
+- Core/{decade}/{director}/              (tier-first)
+- Reference/{decade}/                     (tier-first)
+- Popcorn/{decade}/                       (tier-first)
+- Satellite/{category}/{decade}/          (category-first, Issue #6)
 - Staging/{Borderline|Unknown|Unwatched|Evaluate}/
 - Out/Cut/
 """
@@ -22,6 +22,7 @@ from pathlib import Path
 import yaml
 
 from lib.core_directors import CoreDirectorDatabase
+from lib.constants import SATELLITE_ROUTING_RULES
 
 # Configure logging
 logging.basicConfig(
@@ -50,18 +51,9 @@ def create_folder_structure(config_path: Path):
     decades = ['1940s', '1950s', '1960s', '1970s', '1980s',
                '1990s', '2000s', '2010s', '2020s']
 
-    # Satellite categories
-    satellite_categories = [
-        'Giallo',
-        'Pinku Eiga',
-        'Brazilian Exploitation',
-        'Hong Kong Action',
-        'American Exploitation',
-        'European Sexploitation',
-        'Blaxploitation',
-        'Music Films',
-        'Cult Oddities'
-    ]
+    # Satellite categories (imported from SATELLITE_ROUTING_RULES - Issue #6)
+    # Use the routing rules to ensure consistency between classification and scaffold
+    satellite_categories_with_decades = SATELLITE_ROUTING_RULES
 
     # 1. Create tier-first structure for Core, Reference, Popcorn
     logger.info("Creating Core, Reference, Popcorn directories...")
@@ -84,17 +76,20 @@ def create_folder_structure(config_path: Path):
 
     logger.info(f"Created {len(core_db.director_lookup)} Core director folders")
 
-    # 3. Create decade-first Satellite structure
+    # 3. Create category-first Satellite structure (Issue #6)
     logger.info("Creating Satellite category directories...")
 
     satellite_count = 0
-    for decade in decades:
-        for category in satellite_categories:
-            satellite_path = library_path / decade / 'Satellite' / category
+    for category, rules in satellite_categories_with_decades.items():
+        # Get decades for this category (None means all decades)
+        category_decades = rules['decades'] if rules['decades'] else decades
+
+        for decade in category_decades:
+            satellite_path = library_path / 'Satellite' / category / decade
             satellite_path.mkdir(parents=True, exist_ok=True)
             satellite_count += 1
 
-    logger.info(f"Created {satellite_count} Satellite category folders")
+    logger.info(f"Created {satellite_count} Satellite category/decade folders")
 
     # 4. Create Staging subdirectories
     logger.info("Creating Staging directories...")
@@ -120,7 +115,7 @@ def create_folder_structure(config_path: Path):
     print(f"  Core/{len(decades)} decades × {len(core_db.director_lookup)} directors")
     print(f"  Reference/{len(decades)} decades")
     print(f"  Popcorn/{len(decades)} decades")
-    print(f"  {len(decades)} decades/Satellite × {len(satellite_categories)} categories")
+    print(f"  Satellite/{len(satellite_categories_with_decades)} categories × decades (category-first)")
     print(f"  Staging/{len(staging_subdirs)} subdirectories")
     print(f"  Out/Cut/")
     print()

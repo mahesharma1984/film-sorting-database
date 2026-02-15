@@ -84,6 +84,103 @@ Use the Pattern-First audit:
 
 ---
 
+## Satellite Routing Architecture (Issue #6 Update)
+
+### Unified Decade-Validated Routing
+
+As of Issue #6, ALL Satellite routing uses the `SATELLITE_ROUTING_RULES` structure in `lib/constants.py`. This applies decade validation to BOTH country-based AND director-based routing.
+
+**Critical bug fixed:** Before Issue #6, directors like Argento could route a 2010s film to Giallo (historically ended in 1980s). Now, decade bounds prevent anachronistic classifications.
+
+### Adding a New Satellite Director
+
+1. **Determine the category:** Which exploitation/cult category does this director belong to?
+   - Giallo (Italian horror-thriller 1960s-1980s)
+   - Pinku Eiga (Japanese pink films 1960s-1980s)
+   - Japanese Exploitation (yakuza/action 1970s-1980s)
+   - Brazilian Exploitation (pornochanchada 1970s-1980s)
+   - Hong Kong Action (martial arts/Category III 1970s-1990s)
+   - American Exploitation (grindhouse 1960s-2000s)
+   - European Sexploitation (1960s-1980s)
+   - Blaxploitation (1970s, 1990s)
+
+2. **Add to `SATELLITE_ROUTING_RULES` in `lib/constants.py`:**
+   ```python
+   'Category Name': {
+       'country_codes': ['XX'],
+       'decades': ['1970s', '1980s'],  # Decade bounds
+       'genres': ['Genre1', 'Genre2'],
+       'directors': [
+           'existing director',
+           'new director',  # Add here (lowercase, substring match)
+       ],
+   }
+   ```
+
+3. **Update `docs/SATELLITE_CATEGORIES.md`:**
+   - Add director to category definition
+   - Document decade bounds
+   - Explain curatorial rationale
+
+4. **Add tests to `tests/test_satellite_director_routing.py`:**
+   ```python
+   def test_new_director_routes_correctly(mock_metadata):
+       """New Director 1970s → Category Name"""
+       tmdb_data = {
+           'director': 'New Director',
+           'year': 1975,
+           'countries': ['XX'],
+           'genres': ['Genre1']
+       }
+       classifier = SatelliteClassifier()
+       result = classifier.classify(mock_metadata, tmdb_data)
+       assert result == 'Category Name'
+
+   def test_new_director_outside_decade_not_routed(mock_metadata):
+       """New Director 2000s → None (outside decade bounds)"""
+       tmdb_data = {
+           'director': 'New Director',
+           'year': 2005,
+           'countries': ['XX'],
+           'genres': ['Genre1']
+       }
+       classifier = SatelliteClassifier()
+       result = classifier.classify(mock_metadata, tmdb_data)
+       assert result is None  # Outside valid decades
+   ```
+
+5. **Run tests:** `pytest tests/test_satellite_director_routing.py -v`
+
+6. **Verify classification:** Run classifier on films by this director and check manifest
+
+### Folder Structure: Category-First
+
+Since Issue #6, Satellite uses **category-first** organization:
+- ✅ New: `Satellite/{category}/{decade}/` (e.g., `Satellite/Giallo/1970s/`)
+- ❌ Old: `{decade}/Satellite/{category}/` (deprecated)
+
+**Rationale:** Category-first enables browsing all Giallo together, all Pinku Eiga together, etc.
+
+**Updating `scaffold.py`:**
+```python
+satellite_path = library_path / 'Satellite' / category / decade
+```
+
+**Updating `classify.py`:**
+```python
+dest = f'Satellite/{category}/{decade}/'
+```
+
+### Priority Order in SATELLITE_ROUTING_RULES
+
+Categories are checked in dictionary order (Python 3.7+ preserves insertion order). **Order matters** when directors might match multiple categories.
+
+**Example:** Ernest Dickerson could match both Blaxploitation (1970s, 1990s) and American Exploitation (1960s-2000s). Blaxploitation is listed FIRST, so a 1992 Dickerson film routes to Blaxploitation (not American Exploitation).
+
+If you add a new category, consider where it should appear in the priority order.
+
+---
+
 ## Testing Guidelines
 
 ### What to Test
@@ -159,3 +256,57 @@ refactor: extract satellite routing into lib/satellite.py
 docs: update DEBUG_RUNBOOK with normalization lookup miss symptom
 test: add parser edge cases for Brazilian year-prefix format
 ```
+
+---
+
+## Parser Priority Order (lib/parser.py)
+
+The parser checks year extraction patterns in strict priority order. Higher priorities are checked first and win on match.
+
+**CRITICAL:** Order matters for defensive parsing. Adding new patterns requires careful placement to avoid breaking existing logic.
+
+### Year Extraction Priority (as of v1.0)
+
+| Priority | Pattern | Example | Line | Added |
+|----------|---------|---------|------|-------|
+| **0** | `(Director, YYYY)` | `A Bay of Blood (Mario Bava, 1971).mkv` | 149 | v0.1 |
+| **0.5** | `(Director YYYY)` no comma | `Ed Wood (Tim Burton 1994).mkv` | 169 | v1.0 (Issue #5) |
+| **1** | `(YYYY)` parenthetical | `Film Title (1985).mkv` | 172 | v0.1 |
+| **2** | `YYYY - Title` Brazilian prefix | `1976 - Amadas e Violentadas.avi` | 242 | v0.1 |
+| **3** | `[YYYY]` brackets | `Film Title [1969].mkv` | 277 | v0.1 |
+| **4** | Fallback patterns (in `_extract_year()`) | Various | 72 | v0.1 |
+
+### Fallback Year Patterns (_extract_year method)
+
+Tried in order when main patterns fail:
+
+| Order | Pattern | Example | Added |
+|-------|---------|---------|-------|
+| **1** | `\s+(\d{4})$` bare year at end | `sermon to the fish 2022.mp4` | v1.0 (Issue #5) |
+| **2** | `\((\d{4})\)` parenthetical | `Film (1999).mkv` | v0.1 |
+| **3** | `\[(\d{4})\]` brackets | `Film [1969].mkv` | v0.1 |
+| **4** | `[\.\s](\d{4})[\.\s]` delimited | `Film.1984.720p.mkv` | v0.1 |
+
+### Adding New Patterns: Checklist
+
+Before adding a new year extraction pattern:
+
+- [ ] **Understand priority:** Where does this fit? Will it break existing patterns?
+- [ ] **Test specificity:** Can it match filenames the wrong way?
+- [ ] **Add regression tests:** Verify existing patterns still work
+- [ ] **Document the change:** Update this table with line number and version
+- [ ] **Consider year range validation:** All patterns must validate `1920 <= year <= 2029`
+
+### Example: Issue #5 Parser Fixes
+
+**Problem:** 284 films had years in filenames but parser failed to extract them.
+
+**Failed patterns:**
+1. `Ed Wood (Tim Burton 1994).mkv` — director + year without comma
+2. `sermon to the fish 2022.mp4` — bare year at end
+
+**Solution:**
+- Added Priority 0.5 pattern `(Director YYYY)` at line 169
+- Added fallback pattern `\s+(\d{4})$` to `_extract_year()` at line 72
+- Order: Insert **after** comma-based director pattern (Priority 0) to avoid breaking it
+- Verified: All 36 parser tests pass (29 existing + 7 new)

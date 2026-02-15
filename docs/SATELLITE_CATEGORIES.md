@@ -15,7 +15,7 @@
 **Definition:**
 - Italian genre cinema (horror, thriller, erotic thriller)
 - 1960s-1980s peak
-- Directors: Bava, Argento, Fulci, Martino, etc.
+- Directors: Mario Bava, Dario Argento, Lucio Fulci, Sergio Martino, Michele Soavi, Umberto Lenzi
 
 **Films in Collection:**
 - Blood and Black Lace (likely Bava)
@@ -44,6 +44,7 @@
 - Japanese softcore/exploitation cinema
 - 1960s-1980s
 - Roman Porno, independent pink films
+- Directors: Kōji Wakamatsu, Tatsumi Kumashiro, Noboru Tanaka, Yasuzō Masumura (Issue #6)
 
 **Films in Collection:**
 - Go Go Second Time Virgin (1969)
@@ -64,7 +65,30 @@
 
 ---
 
-### 3. BRAZILIAN PORNOCHANCHADA / EXPLOITATION
+### 3. JAPANESE EXPLOITATION (NEW - Issue #6)
+
+**Definition:**
+- Japanese yakuza, action, and crime films
+- 1970s-1980s exploitation era
+- Distinct from Pinku Eiga (erotic) - focuses on violence/action
+- Directors: Kinji Fukasaku (Battle Royale, Battles Without Honor and Humanity series)
+
+**Films in Collection:**
+- (To be classified)
+
+**Cap per decade:**
+- 1970s: max 15 films (peak yakuza era)
+- 1980s: max 10 films
+- **Total cap: 25 films**
+
+**Boundary rule:**
+- If director becomes auteur obsession (e.g., full Fukasaku retrospective), promote to Core
+- Otherwise stays Satellite
+- Focused on exploitation/genre works, not late career films
+
+---
+
+### 4. BRAZILIAN PORNOCHANCHADA / EXPLOITATION
 
 **Definition:**
 - Brazilian erotic comedies and exploitation
@@ -104,12 +128,13 @@
 
 ---
 
-### 4. HONG KONG ACTION / MARTIAL ARTS / CATEGORY III
+### 5. HONG KONG ACTION / MARTIAL ARTS / CATEGORY III
 
 **Definition:**
 - HK genre cinema outside of Core auteurs (Wong Kar-wai, Johnnie To, Ann Hui)
 - Martial arts, action, Category III exploitation
 - 1970s-1990s
+- Directors: Tsui Hark, Ringo Lam, John Woo, Lam Nai-Choi (Issue #6)
 
 **Films in Collection:**
 - Drunken Master (1978)
@@ -149,18 +174,19 @@
 
 **Boundary rule:**
 - Wong Kar-wai, Johnnie To, Ann Hui → Core
-- Tsui Hark, Ringo Lam → Satellite (genre masters, not auteurs)
+- Tsui Hark, Ringo Lam, Lam Nai-Choi → Satellite (genre masters, not auteurs)
 - Jackie Chan → Satellite unless it's a Core auteur collaboration
 - Category III exploitation → Satellite
 
 ---
 
-### 5. AMERICAN EXPLOITATION / GRINDHOUSE / VHS CULT
+### 7. AMERICAN EXPLOITATION / GRINDHOUSE / VHS CULT
 
 **Definition:**
 - American exploitation, grindhouse, direct-to-video cult
-- 1960s-1990s
+- 1960s-2000s (extended to include Larry Clark's 1990s-2000s work)
 - Not auteur-driven, not rewatchable American entertainment (that's Popcorn)
+- Directors: Russ Meyer, Abel Ferrara, Larry Cohen, Herschell Gordon Lewis, Larry Clark (Issue #6)
 
 **Films in Collection:**
 - Faster Pussycat! Kill! Kill! (1965) - Russ Meyer
@@ -202,13 +228,14 @@
 **Boundary rule:**
 - Russ Meyer → Satellite (genre specialist, not Core auteur)
 - Abel Ferrara → Core (if collection expands with King of New York, Bad Lieutenant)
+- Larry Clark → Satellite (transgressive exploitation: Kids, Bully, Ken Park)
 - Generic exploitation → Satellite
 - John Waters → Core (if collection expands)
 - Troma → Satellite (always)
 
 ---
 
-### 6. NUNSPLOITATION / RELIGIOUS EXPLOITATION
+### 8. NUNSPLOITATION / RELIGIOUS EXPLOITATION
 
 **Definition:**
 - Exploitation films with religious/convent themes
@@ -224,12 +251,12 @@
 
 ---
 
-### 7. EUROPEAN SEXPLOITATION / ARTHOUSE-ADJACENT EROTICA
+### 9. EUROPEAN SEXPLOITATION / ARTHOUSE-ADJACENT EROTICA
 
 **Definition:**
 - European erotic cinema that's not quite auteur, not quite pure exploitation
 - 1960s-1980s
-- Just Jaeckin, Walerian Borowczyk, etc.
+- Directors: Just Jaeckin, Walerian Borowczyk, Radley Metzger, Tinto Brass, Roger Vadim (Issue #6)
 
 **Films in Collection:**
 - Emanuelle series (likely)
@@ -247,16 +274,17 @@
 
 **Boundary rule:**
 - Walerian Borowczyk → Core auteur
-- Radley Metzger → Satellite (genre specialist)
+- Radley Metzger, Roger Vadim → Satellite (genre specialists)
 - Generic eurotica → Satellite or cut
 
 ---
 
-### 8. BLAXPLOITATION
+### 10. BLAXPLOITATION
 
 **Definition:**
-- 1970s Black action/exploitation cinema
+- 1970s Black action/exploitation cinema (extended to 1990s for Ernest Dickerson - Issue #6)
 - Not auteur-driven (those would be Core)
+- Directors: Gordon Parks, Jack Hill, Ernest R. Dickerson (Juice, Tales from the Hood)
 
 **Films in Collection:**
 - Coffy (1973)
@@ -265,16 +293,19 @@
 - Hell Up in Harlem (1973)
 - (Others?)
 
-**Cap:**
+**Cap per decade:**
+- 1970s: max 15 films (classic blaxploitation era)
+- 1990s: max 5 films (Ernest Dickerson era)
 - **Total cap: 20 blaxploitation films**
 
 **Boundary rule:**
 - Gordon Parks → Core if collection expands
+- Ernest R. Dickerson → Satellite (extends tradition into 1990s)
 - Generic blaxploitation → Satellite
 
 ---
 
-### 9. WOMEN IN PRISON / RAPE-REVENGE / FEMINIST EXPLOITATION
+### 11. WOMEN IN PRISON / RAPE-REVENGE / FEMINIST EXPLOITATION
 
 **Definition:**
 - WIP films, rape-revenge, exploitation with feminist readings
@@ -292,7 +323,7 @@
 
 ---
 
-### 10. MUSIC / CONCERT FILMS (NON-CORE)
+### 12. MUSIC / CONCERT FILMS (NON-CORE)
 
 **Definition:**
 - Concert films, music documentaries not by Core directors
@@ -312,7 +343,7 @@
 
 ---
 
-### 11. MONDO / SHOCKUMENTARY
+### 13. MONDO / SHOCKUMENTARY
 
 **Definition:**
 - Mondo films, shockumentaries, documentary exploitation
@@ -326,7 +357,7 @@
 
 ---
 
-### 12. CULT ODDITIES / UNCATEGORIZABLE
+### 14. CULT ODDITIES / UNCATEGORIZABLE
 
 **Definition:**
 - Films that don't fit other Satellite categories
@@ -359,49 +390,71 @@
 
 1. Giallo: 30 films
 2. Pinku eiga: 35 films
-3. Brazilian exploitation: 45 films
-4. Hong Kong action/Category III: 65 films
-5. American exploitation/grindhouse: 80 films
-6. Nunsploitation: 15 films
-7. European sexploitation: 25 films
-8. Blaxploitation: 20 films
-9. WIP/rape-revenge: 15 films
-10. Music/concert films: 20 films
-11. Mondo: 10 films
-12. Cult oddities: 50 films
+3. Japanese Exploitation: 25 films (NEW - Issue #6)
+4. Brazilian exploitation: 45 films
+5. Hong Kong action/Category III: 65 films
+6. American exploitation/grindhouse: 80 films
+7. Nunsploitation: 15 films
+8. European sexploitation: 25 films
+9. Blaxploitation: 20 films
+10. WIP/rape-revenge: 15 films
+11. Music/concert films: 20 films
+12. Mondo: 10 films
+13. Cult oddities: 50 films
 
-**TOTAL SATELLITE CAP: ~410 films maximum across all categories**
+**TOTAL SATELLITE CAP: ~435 films maximum across all categories** (increased by 25 with Japanese Exploitation)
 
 This is intentionally large because Satellite is the margins/texture tier. But individual category caps keep it from sprawling.
 
 ---
 
-## SATELLITE ORGANIZATION WITHIN DECADES
+## SATELLITE ORGANIZATION (Issue #6 Update)
 
-Inside each decade folder, Satellite can be organized by:
+**New Structure: Category-First (Satellite/{category}/{decade}/)**
 
-**Option A: By subgenre**
+Based on Issue #6 implementation, Satellite is now organized by category first, then decade:
+
 ```
-/1970s/Satellite/Giallo/
-/1970s/Satellite/Brazilian Exploitation/
-/1970s/Satellite/Blaxploitation/
+Satellite/
+├── Giallo/
+│   ├── 1960s/
+│   ├── 1970s/
+│   └── 1980s/
+├── Pinku Eiga/
+│   ├── 1960s/
+│   ├── 1970s/
+│   └── 1980s/
+├── Japanese Exploitation/
+│   ├── 1970s/
+│   └── 1980s/
+├── Brazilian Exploitation/
+│   ├── 1970s/
+│   └── 1980s/
+├── Hong Kong Action/
+│   ├── 1970s/
+│   ├── 1980s/
+│   └── 1990s/
+├── American Exploitation/
+│   ├── 1960s/
+│   ├── 1970s/
+│   ├── 1980s/
+│   ├── 1990s/
+│   └── 2000s/
+├── European Sexploitation/
+│   ├── 1960s/
+│   ├── 1970s/
+│   └── 1980s/
+├── Blaxploitation/
+│   ├── 1970s/
+│   └── 1990s/
+└── Music Films/
+    └── (decade-agnostic)
 ```
 
-**Option B: By director (for prolific exploitation directors)**
-```
-/1970s/Satellite/Russ Meyer/
-/1970s/Satellite/Ozualdo Candeias/
-```
-
-**Option C: Hybrid (subgenre + key directors)**
-```
-/1970s/Satellite/Giallo/
-/1970s/Satellite/Brazilian/Candeias/
-/1970s/Satellite/Brazilian/Generic/
-/1970s/Satellite/Russ Meyer/
-```
-
-**Recommended: Option C (hybrid)**
+**Rationale:**
+- Browse all Giallo together, all Pinku Eiga together, etc.
+- Decades are subdivisions WITHIN each thematic category
+- More intuitive navigation than decade-first structure
 
 ---
 

@@ -1,15 +1,17 @@
 # Automated Film Library Sorting Script
 
-Implements the decade-wave cinema archive system by automatically parsing film metadata from filenames and moving files to the appropriate decade/tier folder structure based on comprehensive curatorial rules.
+Implements the tier-first cinema archive system by automatically parsing film metadata from filenames and moving files to the appropriate tier/decade folder structure based on comprehensive curatorial rules.
+
+**v0.2+ uses tier-first organization**: Films are organized by tier (Core/Reference/Satellite/Popcorn) first, then by decade. This allows each tier to be a separate Plex library.
 
 ## Features
 
-- **Automated Classification**: Sorts ~850 films into Core (auteur spine), Reference (canonical touchstones), Satellite (exploitation margins), and Popcorn (rewatchable entertainment) tiers
-- **Decade Organization**: Files organized by historical "waves" (1960s modernist rupture, 1970s political cinema, etc.)
-- **Intelligent Parsing**: Extracts title, year, director, and format signals from common filename patterns
-- **Metadata Enrichment**: Optional TMDb API integration to fetch missing director information
-- **Format Curation Detection**: Identifies special editions (35mm, Open Matte, Extended Cut) for Popcorn classification
-- **Fuzzy Matching**: Handles variations in director names and film titles
+- **Automated Classification**: Sorts films into Core (auteur spine), Reference (canonical touchstones), Satellite (exploitation margins), and Popcorn (rewatchable entertainment) tiers
+- **Expanded Core Coverage**: 105 directors across 8 decades (Welles, Godard, Chabrol, Bressane, Gallo, and more)
+- **Tier-First Organization**: Primary organization by curatorial tier, secondary by decade
+- **Intelligent Parsing**: Extracts title, year, director, and format signals from complex filename patterns including `(Director YYYY)` and bare years
+- **Metadata Enrichment**: Optional TMDb API integration to fetch missing director and country information
+- **Satellite Category Routing**: Decade-bounded classification for Giallo, Brazilian Exploitation, Pinku Eiga, etc.
 - **Safety Features**: Dry-run mode, duplicate handling, comprehensive logging
 - **Detailed Reporting**: Generates sorting manifest and staging reports
 
@@ -20,122 +22,146 @@ Implements the decade-wave cinema archive system by automatically parsing film m
    ```bash
    pip install -r requirements.txt
    ```
-3. **Configure paths** in `config.yaml`
+3. **Configure paths** in `config_external.yaml`
 4. **Optional**: Get [TMDb API key](https://www.themoviedb.org/settings/api) for metadata enrichment
 
 ## Quick Start
 
 ```bash
-# Test with dry-run (recommended first time)
-python film_sorter.py /path/to/unsorted/films --dry-run
+# Classify films (never moves files, generates manifest)
+python classify.py /path/to/unsorted/films
 
-# Execute actual sorting
-python film_sorter.py /path/to/unsorted/films
+# Preview moves (dry-run, safe)
+python move.py --dry-run
 
-# Custom configuration
-python film_sorter.py /path/to/unsorted/films --config my_config.yaml
+# Execute moves (requires explicit flag)
+python move.py --execute
+
+# Create folder structure on external drive
+python scaffold.py --config config_external.yaml
 ```
-
-## External Drive Setup (Recommended)
-
-Most users store large film collections on external drives. Use the automated setup:
-
-```bash
-./setup_external_drive.sh
-```
-
-This interactive script will:
-- ✅ **Detect your external drive** (USB, Thunderbolt, etc.)
-- ✅ **Auto-configure paths** for your platform (Windows/Mac/Linux) 
-- ✅ **Test write permissions** and available space
-- ✅ **Create folder structure** (Organized, Unsorted, Staging)
-- ✅ **Generate optimized config** with external drive settings
-
-### External Drive Tips
-- **Use USB 3.0+** for faster file operations
-- **Close other apps** accessing the drive during sorting
-- **Ensure stable connection** (avoid extension cords)
-- **Check available space** - need ~2x collection size for reorganization
-
-See `EXTERNAL_DRIVE_GUIDE.md` for detailed troubleshooting.
 
 ## Configuration
 
-Copy `config.yaml` and update these key settings:
+Copy `config_external.yaml` and update these key settings:
 
 ```yaml
-project_path: "/path/to/project/documents"  # Folder with CORE_DIRECTOR_WHITELIST_FINAL.md
-library_path: "/path/to/organized/library"  # Destination for sorted films
-tmdb_api_key: "your_api_key_here"          # Optional: for metadata enrichment
+project_path: "/Users/mahesh/Downloads/film-sorting-database"  # This repo
+library_path: "/Volumes/One Touch/Movies/Organized"            # External drive
+source_path: "/Volumes/One Touch/Movies/unsorted"              # Unsorted films
+tmdb_api_key: "your_api_key_here"                              # Optional
 ```
 
-## Folder Structure Created
+## Folder Structure Created (Tier-First)
 
 ```
 /Library/
-├── 1950s/
-│   ├── Core/
+├── Core/                    # Auteur filmographies
+│   ├── 1950s/
 │   │   ├── Satyajit Ray/
 │   │   └── Robert Bresson/
-│   ├── Reference/
-│   ├── Satellite/
-│   └── Popcorn/
-├── 1960s/
-│   ├── Core/
+│   ├── 1960s/
 │   │   ├── Jean-Luc Godard/
 │   │   ├── Stanley Kubrick/
 │   │   └── [38+ more directors]/
-│   ├── Reference/
-│   ├── Satellite/
-│   │   ├── Giallo/
-│   │   ├── Pinku Eiga/
-│   │   └── [10+ more categories]/
-│   └── Popcorn/
-├── [1970s-2010s with same structure]/
+│   ├── 1970s/
+│   └── [1980s-2020s]/
+├── Reference/               # Canonical films (non-Core directors)
+│   ├── 1950s/
+│   ├── 1960s/
+│   └── [1970s-2020s]/
+├── Satellite/              # Margins & exploitation by category
+│   ├── Giallo/
+│   │   ├── 1960s/
+│   │   ├── 1970s/
+│   │   └── 1980s/
+│   ├── Brazilian Exploitation/
+│   │   ├── 1970s/
+│   │   └── 1980s/
+│   ├── Pinku Eiga/
+│   │   ├── 1960s/
+│   │   ├── 1970s/
+│   │   └── 1980s/
+│   └── [9+ more categories]/
+├── Popcorn/                # Pleasure viewing
+│   ├── 1960s/
+│   ├── 1970s/
+│   ├── 1980s/
+│   │   ├── Back to the Future/
+│   │   └── Batman/
+│   └── [1990s-2020s]/
+├── Unsorted/               # Needs classification
 ├── Staging/
-│   ├── Borderline/     # Needs manual classification
-│   ├── Unknown/        # Missing metadata
-│   ├── Unwatched/      # Need to watch first
-│   └── Evaluate/       # Potential cuts
+│   ├── Borderline/
+│   ├── Unknown/
+│   ├── Unwatched/
+│   └── Evaluate/
 └── Out/
-    └── Cut/            # Files marked for deletion
+    └── Cut/
 ```
 
-## Sorting Logic
+**Why tier-first?** Each tier can be added as a separate Plex library, making it easy to browse by curatorial intent (auteur study, canonical films, exploitation, pleasure).
 
-The script implements this decision tree:
+## Sorting Logic (Priority Order)
 
-1. **Extract metadata** from filename (`Film Title (Year)`, `Director - Title`, etc.)
-2. **Determine decade** from year (1960s, 1970s, etc.)
-3. **Check Core directors** - Any film by Godard, Kubrick, Scorsese, etc. → `Core/[Director]/`
-4. **Check Reference canon** - Citizen Kane, Psycho, The Matrix, etc. → `Reference/`
-5. **Check Satellite categories** - Brazilian exploitation, Giallo, etc. → `Satellite/[Category]/`
-6. **Check Popcorn signals** - 35mm, Open Matte, Extended Cut → `Popcorn/`
-7. **Everything else** → `Staging/` for manual review
+The classifier implements this decision tree (first match wins):
+
+1. **Explicit lookup** (`SORTING_DATABASE.md`) - Human-curated mappings (highest trust)
+2. **Core director check** - Any film by Godard, Kubrick, Scorsese, etc. → `Core/[Decade]/[Director]/`
+3. **Reference canon** - 50-film hardcoded list → `Reference/[Decade]/`
+4. **User tag recovery** - Trust previous human classification from filename tags
+5. **Satellite routing** - Country/language + decade rules → `Satellite/[Category]/[Decade]/`
+6. **TMDb satellite** - Genre + country + decade from TMDb API → `Satellite/[Category]/[Decade]/`
+7. **Default** → `Unsorted/` with reason code
+
+**Important:** Core directors stay in Core even for canonical films. Kubrick's "2001" goes to `Core/1960s/Stanley Kubrick/`, not Reference. Reference is for canonical films by NON-Core directors.
 
 ### Core Directors (Auto-Classification)
 
 Films by these directors automatically go to Core tier:
-- **1960s**: Jean-Luc Godard, Stanley Kubrick, Federico Fellini, Pier Paolo Pasolini
-- **1970s**: John Cassavetes, Martin Scorsese, Francis Ford Coppola, Rainer Werner Fassbinder
-- **1980s**: David Lynch, Coen Brothers, Edward Yang, Jim Jarmusch
-- **1990s**: Wong Kar-wai, Hal Hartley, Hou Hsiao-hsien
-- **[Full list: 38-43 directors across all decades]**
+- **1960s**: Jean-Luc Godard, Stanley Kubrick, Federico Fellini, Pier Paolo Pasolini, Jacques Demy, Seijun Suzuki
+- **1970s**: John Cassavetes, Martin Scorsese, Francis Ford Coppola, Rainer Werner Fassbinder, Terrence Malick
+- **1980s**: David Lynch, Coen Brothers, Edward Yang, Jim Jarmusch, Brian De Palma
+- **1990s**: Wong Kar-wai, Hou Hsiao-hsien, Edward Yang, Tsai Ming-liang
+- **2000s**: Nicolas Winding Refn, Claire Denis, Paul Thomas Anderson
+- **[Full list: 105 directors across 8 decades]**
 
-### Satellite Categories (Pattern Matching)
+### Satellite Categories (Decade-Bounded)
 
-- **Brazilian Exploitation**: Portuguese titles, 1970s-80s production
-- **Giallo**: Italian horror-thrillers (Bava, Argento, Fulci)
-- **Hong Kong Action**: Martial arts, Category III films
-- **Pinku Eiga**: Japanese pink films
-- **American Exploitation**: Grindhouse, Russ Meyer, VHS cult
-- **[7+ more categories with individual caps]**
+- **Giallo**: Italian horror-thrillers (1960s-1980s)
+- **Brazilian Exploitation**: Portuguese titles (1970s-1980s)
+- **Pinku Eiga**: Japanese pink films (1960s-1980s)
+- **Hong Kong Action**: Martial arts, Category III (1970s-1990s)
+- **Blaxploitation**: Black action cinema (1970s-1980s)
+- **American Exploitation**: Grindhouse, cult (1960s-1980s)
+- **European Sexploitation**: Euro softcore (1960s-1980s)
+- **Music Films**: Concert films, rockumentaries (all decades, 20-film cap)
+- **Cult Oddities**: Experimental, outsider (all decades, 20-film cap)
 
-### Popcorn Signals (Format Detection)
+## Example Classifications (Tier-First)
 
-Files with these markers auto-classify as Popcorn:
-- `35mm`, `Open Matte`, `Extended Cut`, `Director's Cut`
-- `4K`, `UHD`, `Remux`, `Commentary`, `Special Edition`
+```bash
+# Core auteur film
+Breathless (1960).mkv → Core/1960s/Jean-Luc Godard/
+
+# Reference canon (non-Core director)
+Psycho (1960).mkv → Reference/1960s/
+
+# Core director's canonical film (stays in Core)
+2001: A Space Odyssey (1968).mkv → Core/1960s/Stanley Kubrick/
+
+# Brazilian exploitation (Portuguese + 1970s)
+Escola Penal de Meninas Violentadas (1977).avi → Satellite/Brazilian Exploitation/1970s/
+
+# Giallo (Italian + 1970s + horror/thriller)
+Deep Red (1975).mkv → Satellite/Giallo/1970s/
+
+# Popcorn franchise
+Spider-Man (2002) 35mm Full Frame.mkv → Popcorn/2000s/Spider-Man/
+
+# Unsorted (no year = cannot route to decade)
+Random Film.mp4 → Unsorted/
+```
 
 ## Filename Patterns Supported
 
@@ -144,131 +170,154 @@ Film Title (1985)
 Film Title 1985
 Director - Film Title (1985)
 Director - Film Title 1985
-Film Title (1985) 35mm Open Matte
-Spider-Man 2.1 Extended Open Matte
-```
-
-## Example Classifications
-
-```bash
-# Core auteur film
-Breathless (1960).mkv → 1960s/Core/Jean-Luc Godard/
-
-# Reference canon
-Psycho (1960).mkv → 1960s/Reference/
-
-# Brazilian exploitation (Portuguese title)
-Escola Penal de Meninas Violentadas (1977).avi → 1970s/Satellite/Brazilian Exploitation/
-
-# Format-curated Popcorn
-Spider-Man (2002) 35mm Full Frame.mkv → 2000s/Popcorn/Spider-Man/
-
-# Staging (unknown director)
-Random Film (1985).mp4 → Staging/Unknown/
+Film Title (1985) [1980s-Core-Director]
+Film Title (1985) [1980s-Satellite-Giallo]
 ```
 
 ## Reports Generated
 
-### Sorting Manifest (`sorting_manifest.csv`)
-Complete log of all file movements:
+### Sorting Manifest (`output/sorting_manifest.csv`)
+Complete log of all classifications:
 ```csv
-filename,title,year,director,tier,decade,subdirectory,confidence,reason,destination,success
-Breathless (1960).mkv,Breathless,1960,Jean-Luc Godard,Core,1960s,Jean-Luc Godard,1.0,Director on Core whitelist,/Library/1960s/Core/Jean-Luc Godard,True
+filename,title,year,director,tier,decade,subdirectory,destination,confidence,reason
+Breathless (1960).mkv,Breathless,1960,Jean-Luc Godard,Core,1960s,Jean-Luc Godard,Core/1960s/Jean-Luc Godard/,1.0,core_director
 ```
 
-### Staging Report (`staging_report.txt`)
+### Staging Report (`output/staging_report.txt`)
 Films requiring manual review:
 ```
 FILMS REQUIRING MANUAL REVIEW
-========================================
+============================================================
 
-File: Unknown Film (1985).mkv
+File: Unknown Film.mkv
 Title: Unknown Film
-Year: 1985
-Director: None
-Reason: No director information available
-Destination: /Library/Staging/Unknown
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
 ```
 
-### Statistics Output
+### Classification Statistics
 ```
-SORTING STATISTICS:
-==============================
-Core           :   125 ( 25.0%)
-Reference      :    35 (  7.0%)
-Satellite      :   242 ( 48.4%)
-Popcorn        :    91 ( 18.2%)
-Staging        :     7 (  1.4%)
-TOTAL          :   500
+CLASSIFICATION STATISTICS (v1.0)
+============================================================
+Total films processed: 1090
 
-Staging rate: 1.4% (target: <10%)
+BY TIER:
+  Core           :   63 (  5.8%)
+  Reference      :   19 (  1.7%)
+  Satellite      :   76 (  7.0%)
+  Popcorn        :   85 (  7.8%)
+  Unsorted       :  847 ( 77.7%)
+
+BY REASON:
+  unsorted_no_match             :  405
+  unsorted_no_year              :  270
+  core_director                 :   49
+  tmdb_satellite                :   39
+
+Classification rate: 22.3% (243/1090)
 ```
 
 ## Command Line Options
 
+### classify.py
 ```bash
-python film_sorter.py SOURCE_DIRECTORY [OPTIONS]
+python classify.py SOURCE_DIRECTORY [OPTIONS]
 
 Arguments:
-  SOURCE_DIRECTORY     Directory containing unsorted films
+  SOURCE_DIRECTORY     Directory containing films to classify
 
 Options:
-  --config CONFIG      Configuration file (default: config.yaml)
-  --dry-run           Preview moves without executing
-  --output OUTPUT     Output directory for reports (default: output/)
-  --help              Show this help message
+  --output, -o        Output CSV path (default: output/sorting_manifest.csv)
+  --config           Configuration file (default: config_external.yaml)
+  --no-tmdb          Disable TMDb API enrichment (offline mode)
+```
+
+### move.py
+```bash
+python move.py [OPTIONS]
+
+Options:
+  --manifest, -m      Manifest CSV path (default: output/sorting_manifest.csv)
+  --source, -s        Source directory (overrides config)
+  --library, -l       Library base directory (overrides config)
+  --config           Configuration file (default: config_external.yaml)
+  --execute          Actually move files (default is dry-run)
+  --dry-run          Preview moves without executing (default)
+```
+
+### scaffold.py
+```bash
+python scaffold.py [OPTIONS]
+
+Options:
+  --config           Configuration file (default: config_external.yaml)
 ```
 
 ## Safety Features
 
-- **Dry-run mode**: Preview all moves before executing
-- **Duplicate handling**: Automatic filename deduplication
+- **Dry-run mode**: Preview all moves before executing (`move.py` defaults to dry-run)
+- **Tier-first migration**: Use `migrate_structure.py` to convert legacy decade-first to tier-first
 - **Error recovery**: Graceful handling of parsing failures
 - **Comprehensive logging**: Track all operations and errors
-- **Backup recommendation**: Always backup your collection first
+- **TMDb caching**: API responses cached locally to avoid repeat queries
+
+## Migration from Decade-First to Tier-First
+
+If you have an existing decade-first library structure:
+
+```bash
+# Preview migration
+python migrate_structure.py "/Volumes/One Touch/Movies/Organized"
+
+# Execute migration
+python migrate_structure.py "/Volumes/One Touch/Movies/Organized" --execute
+```
+
+This will convert:
+- `1960s/Core/Godard/` → `Core/1960s/Godard/`
+- `1970s/Satellite/Giallo/` → `Satellite/Giallo/1970s/`
+- etc.
+
+## Plex Integration
+
+Add each tier as a separate Plex movie library:
+
+1. **Core Library**: `/Volumes/One Touch/Movies/Organized/Core/`
+2. **Reference Library**: `/Volumes/One Touch/Movies/Organized/Reference/`
+3. **Popcorn Library**: `/Volumes/One Touch/Movies/Organized/Popcorn/`
+4. **Satellite Library**: `/Volumes/One Touch/Movies/Organized/Satellite/`
+
+Plex will scan each tier independently, allowing you to browse by curatorial intent.
 
 ## Troubleshooting
 
 ### Common Issues
 
 **Q: Script can't find project documents**
-A: Update `project_path` in config.yaml to point to folder containing `CORE_DIRECTOR_WHITELIST_FINAL.md`
+A: Update `project_path` in config_external.yaml to point to this repository
 
-**Q: Many films go to Staging/Unknown**
-A: Enable TMDb API by adding your API key to config.yaml for automatic director lookup
+**Q: Many films go to Unsorted**
+A: Most common reasons:
+- No year in filename (hard gate - cannot route to decade)
+- No director detected and not in explicit lookup database
+- Enable TMDb API for better director detection
 
-**Q: Foreign films not classified correctly**
-A: Brazilian films auto-detect via Portuguese characters. Other foreign films may need manual classification.
+**Q: Core folders empty in Plex**
+A: Make sure you're using tier-first structure. Run `migrate_structure.py` if needed.
 
-**Q: Format signals not detected**
-A: Ensure format indicators are in filename: `Film (Year) 35mm.mkv` not `Film (Year).mkv` in `35mm/` folder
-
-### Performance Tips
-
-- **Large collections (1000+ films)**: Use TMDb API to reduce staging rate
-- **Network storage**: Run script locally then copy to avoid network timeouts
-- **Progress tracking**: Uncomment `tqdm` in requirements.txt for progress bars
-
-### Customization
-
-**Add new Core director**:
-1. Update `CORE_DIRECTOR_WHITELIST_FINAL.md` 
-2. Restart script (directors are loaded on startup)
-
-**Add new Satellite category**:
-1. Modify `SatelliteCategories` class in `film_sorter.py`
-2. Add pattern matching rules
-
-**Adjust fuzzy matching**:
-1. Change `fuzzy_thresholds` in config.yaml
-2. Higher values = stricter matching
+**Q: Satellite films not classifying**
+A: Satellite routing requires:
+- Year in filename (to determine decade)
+- Country/language match OR TMDb genre match
+- Film within valid decade range for category
 
 ## Success Criteria
 
-- ✅ 95%+ metadata extraction from filenames
-- ✅ 100% accuracy on Core director films  
-- ✅ 85%+ accuracy on Reference/Satellite classification
-- ✅ <10% staging rate for manual review
+- ✅ 90%+ year extraction from filenames
+- ✅ 100% accuracy on Core director films
+- ✅ Decade-bounded Satellite routing (no 2010s Giallo)
+- ✅ Tier-first structure for Plex integration
 - ✅ Zero data loss with complete audit trail
 - ✅ Dry-run mode for safety
 
@@ -276,28 +325,37 @@ A: Ensure format indicators are in filename: `Film (Year) 35mm.mkv` not `Film (Y
 
 - Python 3.9+
 - pyyaml (configuration)
-- requests (TMDb API)
-- pandas (reporting)
-- fuzzywuzzy (string matching)
-- python-levenshtein (performance)
+- requests (TMDb API, optional)
 
 ## Project Structure
 
 ```
-film_sorter.py          # Main script
-config.yaml             # Configuration template  
+classify.py             # Main classifier (never moves files)
+move.py                 # File mover (reads manifest)
+scaffold.py             # Folder structure creator
+migrate_structure.py    # Decade-first → tier-first migration
+config_external.yaml    # Configuration template
 requirements.txt        # Python dependencies
-README.md              # This documentation
+lib/                    # Core libraries
+├── parser.py          # Filename parsing
+├── tmdb.py            # TMDb API client
+├── lookup.py          # SORTING_DATABASE.md lookup
+├── core_directors.py  # Core director database
+├── satellite.py       # Satellite classification
+└── constants.py       # All constants (single source of truth)
+docs/                   # Documentation
+├── SORTING_DATABASE.md # Human-curated film mappings
+└── theory/            # Curatorial philosophy
 output/                # Generated reports
 ├── sorting_manifest.csv
 ├── staging_report.txt
-└── sorting.log
+└── tmdb_cache.json
 ```
 
 ## License
 
-Part of the decade-wave cinema archive project. See project documentation for complete sorting methodology and curatorial philosophy.
+Part of the decade-wave cinema archive project. See `docs/theory/` for complete sorting methodology and curatorial philosophy.
 
 ---
 
-**Important**: Always run with `--dry-run` first to verify classifications before executing actual file moves. The script implements a sophisticated classification system but complex edge cases may require manual review.
+**Important**: Always run `move.py` with default dry-run first to verify classifications before executing actual file moves. Use `classify.py` to generate the manifest, then review it before moving files.
