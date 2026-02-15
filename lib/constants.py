@@ -167,6 +167,87 @@ COUNTRY_TO_WAVE = {
 }
 
 # =============================================================================
+# SATELLITE ROUTING RULES (unified country + director + decade validation)
+# =============================================================================
+
+# Structure: category → {country_codes, decades, genres, directors}
+# All director-based routing MUST respect decade bounds (Issue #6 fix)
+# This replaces the hardcoded director_mappings in satellite.py with decade validation
+SATELLITE_ROUTING_RULES = {
+    'Brazilian Exploitation': {
+        'country_codes': ['BR'],
+        'decades': ['1970s', '1980s'],
+        'genres': ['Drama', 'Crime', 'Thriller', 'Horror', 'Romance'],
+        'directors': [],  # Country-driven, not director-driven
+    },
+    'Giallo': {
+        'country_codes': ['IT'],
+        'decades': ['1960s', '1970s', '1980s'],
+        'genres': ['Horror', 'Thriller', 'Mystery'],
+        'directors': ['bava', 'argento', 'fulci', 'martino', 'soavi', 'lenzi'],
+    },
+    'Pinku Eiga': {
+        'country_codes': ['JP'],
+        'decades': ['1960s', '1970s', '1980s'],
+        'genres': ['Drama', 'Romance'],
+        'directors': [
+            'wakamatsu', 'kumashiro', 'tanaka',
+            'masumura',  # NEW: Yasuzō Masumura (Issue #6)
+        ],
+    },
+    'Japanese Exploitation': {  # NEW CATEGORY (Issue #6)
+        'country_codes': ['JP'],
+        'decades': ['1970s', '1980s'],
+        'genres': ['Action', 'Crime', 'Thriller'],
+        'directors': [
+            'fukasaku',  # NEW: Kinji Fukasaku (Issue #6)
+        ],
+    },
+    'Hong Kong Action': {
+        'country_codes': ['HK', 'CN'],
+        'decades': ['1970s', '1980s', '1990s'],
+        'genres': ['Action', 'Crime', 'Thriller'],
+        'directors': [
+            'tsui hark', 'ringo lam', 'john woo',
+            'lam nai-choi',  # NEW: Lam Nai-Choi (Issue #6)
+        ],
+    },
+    'Blaxploitation': {  # MOVED BEFORE American Exploitation (Issue #6 - priority order)
+        'country_codes': ['US'],
+        'decades': ['1970s', '1990s'],  # Extended to include 1990s for Ernest Dickerson
+        'genres': ['Action', 'Crime'],
+        'directors': [
+            'gordon parks', 'jack hill',
+            'ernest dickerson',  # NEW: Ernest R. Dickerson (Issue #6)
+        ],
+    },
+    'American Exploitation': {
+        'country_codes': ['US'],
+        'decades': ['1960s', '1970s', '1980s', '1990s', '2000s'],
+        'genres': None,  # Director-driven, genre-agnostic
+        'directors': [
+            'russ meyer', 'abel ferrara', 'larry cohen', 'herschell gordon lewis',
+            'larry clark',  # NEW: Larry Clark (Issue #6)
+        ],
+    },
+    'European Sexploitation': {
+        'country_codes': ['FR', 'IT', 'DE', 'BE'],
+        'decades': ['1960s', '1970s', '1980s'],
+        'genres': ['Drama', 'Romance'],
+        'directors': [
+            'borowczyk', 'metzger', 'brass',
+            'vadim',  # NEW: Roger Vadim (Issue #6)
+        ],
+    },
+    'Music Films': {
+        'country_codes': None,  # Any country
+        'decades': None,  # Any decade (no restriction)
+        'genres': ['Music', 'Musical', 'Documentary'],
+        'directors': [],
+    },
+}
+
+# =============================================================================
 # SUBTITLE KEYWORDS (for Parser Bug 2 detection)
 # =============================================================================
 

@@ -119,24 +119,24 @@ class FilmClassifier:
         self.satellite_classifier = SatelliteClassifier()
 
     def _build_destination(self, tier: str, decade: Optional[str], subdirectory: Optional[str]) -> str:
-        """Build destination path string from classification components"""
+        """Build destination path string from classification components (tier-first)"""
         if tier == 'Unsorted':
             return 'Unsorted/'
         elif tier == 'Core' and decade and subdirectory:
-            return f'{decade}/Core/{subdirectory}/'
+            return f'Core/{decade}/{subdirectory}/'
         elif tier == 'Reference' and decade:
-            return f'{decade}/Reference/'
+            return f'Reference/{decade}/'
         elif tier == 'Satellite' and decade and subdirectory:
-            return f'{decade}/Satellite/{subdirectory}/'
+            return f'Satellite/{subdirectory}/{decade}/'  # Category-first structure (Issue #6)
         elif tier == 'Popcorn' and decade:
-            return f'{decade}/Popcorn/'
+            return f'Popcorn/{decade}/'
         elif tier == 'Staging':
             return f'Staging/{subdirectory or "Unknown"}/'
         else:
             return 'Unsorted/'
 
     def _parse_destination_path(self, path: str) -> dict:
-        """Parse a destination path from SORTING_DATABASE.md into components"""
+        """Parse a destination path from SORTING_DATABASE.md into components (supports both formats)"""
         parts = path.strip('/').split('/')
         result = {'tier': 'Unknown', 'decade': None, 'subdirectory': None}
 
@@ -145,15 +145,8 @@ class FilmClassifier:
 
         first = parts[0]
 
-        # Decade-first format: "1960s/Core/Director" or "1970s/Satellite/Category"
-        if re.match(r'\d{4}s$', first):
-            result['decade'] = first
-            if len(parts) > 1:
-                result['tier'] = parts[1]
-            if len(parts) > 2:
-                result['subdirectory'] = '/'.join(parts[2:])
-        # Tier-first format: "Core/1960s/Director" or "Reference/1960s"
-        elif first in ('Core', 'Reference', 'Satellite', 'Popcorn', 'Staging', 'Unsorted'):
+        # Tier-first format (PREFERRED): "Core/1960s/Director", "Reference/1960s", "Satellite/Category/1970s"
+        if first in ('Core', 'Reference', 'Satellite', 'Popcorn', 'Staging', 'Unsorted'):
             result['tier'] = first
             if len(parts) > 1 and re.match(r'\d{4}s$', parts[1]):
                 result['decade'] = parts[1]
@@ -161,6 +154,13 @@ class FilmClassifier:
                     result['subdirectory'] = '/'.join(parts[2:])
             elif len(parts) > 1:
                 result['subdirectory'] = '/'.join(parts[1:])
+        # Legacy decade-first format (for backward compatibility): "1960s/Core/Director"
+        elif re.match(r'\d{4}s$', first):
+            result['decade'] = first
+            if len(parts) > 1:
+                result['tier'] = parts[1]
+            if len(parts) > 2:
+                result['subdirectory'] = '/'.join(parts[2:])
 
         return result
 
@@ -264,7 +264,7 @@ class FilmClassifier:
 
             if canonical and director_decade:
                 self.stats['core_director'] += 1
-                dest = f'{director_decade}/Core/{canonical}/'
+                dest = f'Core/{director_decade}/{canonical}/'
                 return ClassificationResult(
                     filename=metadata.filename, title=metadata.title,
                     year=metadata.year, director=canonical,
@@ -280,7 +280,7 @@ class FilmClassifier:
         ref_key = (normalized_title, metadata.year)
         if ref_key in REFERENCE_CANON:
             self.stats['reference_canon'] += 1
-            dest = f'{decade}/Reference/'
+            dest = f'Reference/{decade}/'
             return ClassificationResult(
                 filename=metadata.filename, title=metadata.title,
                 year=metadata.year, director=metadata.director,
@@ -300,11 +300,11 @@ class FilmClassifier:
                 extra = parsed_tag.get('extra', '')
 
                 if tier == 'Core' and extra:
-                    dest = f'{tag_decade}/Core/{extra}/'
+                    dest = f'Core/{tag_decade}/{extra}/'
                 elif tier == 'Satellite' and extra:
-                    dest = f'{tag_decade}/Satellite/{extra}/'
+                    dest = f'Satellite/{extra}/{tag_decade}/'  # Category-first (Issue #6)
                 elif tier in ('Reference', 'Popcorn'):
-                    dest = f'{tag_decade}/{tier}/'
+                    dest = f'{tier}/{tag_decade}/'
                 else:
                     dest = f'{tier}/'
 
@@ -325,7 +325,7 @@ class FilmClassifier:
             if decade in wave_config['decades']:
                 category = wave_config['category']
                 self.stats['country_satellite'] += 1
-                dest = f'{decade}/Satellite/{category}/'
+                dest = f'Satellite/{category}/{decade}/'  # Category-first (Issue #6)
                 return ClassificationResult(
                     filename=metadata.filename, title=metadata.title,
                     year=metadata.year, director=metadata.director,
@@ -341,7 +341,7 @@ class FilmClassifier:
             satellite_cat = self.satellite_classifier.classify(metadata, tmdb_data)
             if satellite_cat:
                 self.stats['tmdb_satellite'] += 1
-                dest = f'{decade}/Satellite/{satellite_cat}/'
+                dest = f'Satellite/{satellite_cat}/{decade}/'  # Category-first (Issue #6)
                 return ClassificationResult(
                     filename=metadata.filename, title=metadata.title,
                     year=metadata.year, director=metadata.director,
