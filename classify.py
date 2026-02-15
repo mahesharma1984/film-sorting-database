@@ -6,14 +6,16 @@ NEVER moves files. Only reads filenames and writes CSV.
 
 Classification priority order:
 1. [PRECISION] Parse filename → FilmMetadata
-2. [PRECISION] TMDb enrichment → canonical director, country, genre (cached, optional)
-   2b. [PRECISION] OMDb fallback → if TMDb fails (for obscure foreign films)
+2. [PRECISION] API Enrichment → TMDb + OMDb parallel query with smart merge
+   - Director: OMDb > TMDb (OMDb = IMDb = authoritative)
+   - Country: OMDb > TMDb (critical for Satellite routing)
+   - Genres: TMDb > OMDb (TMDb has richer structured data)
 3. [PRECISION] Explicit lookup → SORTING_DATABASE.md (human-curated, highest trust)
 4. [REASONING] Core director check → whitelist exact match
 5. [REASONING] Reference canon check → 50-film hardcoded list in constants.py
 6. [PRECISION] User tag recovery → trust previous human classification
 7. [REASONING] Language/country → Satellite routing (decade-bounded)
-8. [REASONING] Satellite classification → TMDb/OMDb data (country + genre + decade)
+8. [REASONING] Satellite classification → merged API data (country + genre + decade)
 9. [PRECISION] Default → Unsorted with detailed reason code
 """
 
@@ -198,6 +200,160 @@ class FilmClassifier:
 
         return result
 
+    def _clean_title_for_api(self, title: str) -> str:
+        """
+        Clean title for API queries (TMDb and OMDb)
+
+        Removes:
+        - User tag brackets [...]
+        - Format signals (35mm, Criterion, etc.)
+        - Empty parentheses artifacts
+        - Extra whitespace
+
+        Preserves:
+        - Punctuation (for proper title matching)
+        - Capitalization
+        - Special characters (é, ñ, etc.)
+
+        Returns:
+            Cleaned title string ready for API query
+        """
+        from lib.normalization import _strip_format_signals
+
+        clean_title = re.sub(r'\s*\[.+?\]\s*', ' ', title)
+        clean_title = _strip_format_signals(clean_title)
+        clean_title = re.sub(r'\s*\(\s*\)', '', clean_title)
+        clean_title = ' '.join(clean_title.split())
+
+        return clean_title.strip()
+
+    def _query_apis(self, metadata: FilmMetadata) -> Dict[str, Optional[Dict]]:
+        """
+        Query TMDb and OMDb in parallel (both attempted, not fallback)
+
+        Soft gate: API failures return None but don't stop pipeline
+
+        Args:
+            metadata: FilmMetadata with title and year
+
+        Returns:
+            Dict with keys 'tmdb' and 'omdb', values are API result dicts or None
+        """
+        results = {'tmdb': None, 'omdb': None}
+
+        if not metadata.title or not metadata.year:
+            return results
+
+        clean_title = self._clean_title_for_api(metadata.title)
+
+        # Query TMDb (if available)
+        if self.tmdb:
+            tmdb_data = self.tmdb.search_film(clean_title, metadata.year)
+            if tmdb_data:
+                results['tmdb'] = tmdb_data
+                self.stats['tmdb_success'] += 1
+
+        # Query OMDb (if available) — NOT a fallback, always attempt
+        if self.omdb:
+            omdb_data = self.omdb.search_film(clean_title, metadata.year)
+            if omdb_data:
+                results['omdb'] = omdb_data
+                self.stats['omdb_success'] += 1
+
+        # Track when both succeeded
+        if results['tmdb'] and results['omdb']:
+            self.stats['both_apis_success'] += 1
+
+        return results
+
+    def _merge_api_results(self, tmdb_data: Optional[Dict], omdb_data: Optional[Dict],
+                           metadata: FilmMetadata) -> Optional[Dict]:
+        """
+        Merge TMDb and OMDb results with field-specific priority
+
+        Priority rules:
+        - Director: OMDb > TMDb (OMDb = IMDb = most authoritative)
+        - Country: OMDb > TMDb (OMDb country data superior)
+        - Genres: TMDb > OMDb (TMDb has richer genre data)
+        - Year: filename > OMDb > TMDb (trust human-curated filenames)
+        - Title: TMDb > OMDb > filename (canonical names)
+
+        Updates metadata.director and metadata.country as side effect
+
+        Args:
+            tmdb_data: TMDb API result or None
+            omdb_data: OMDb API result or None
+            metadata: FilmMetadata to enrich (mutated)
+
+        Returns:
+            Merged dict for downstream satellite classification, or None if no data
+        """
+        if not tmdb_data and not omdb_data:
+            return None
+
+        merged = {}
+
+        # Director: OMDb > TMDb
+        if omdb_data and omdb_data.get('director'):
+            merged['director'] = omdb_data['director']
+            self.stats['director_from_omdb'] += 1
+            if not metadata.director:
+                metadata.director = omdb_data['director']
+        elif tmdb_data and tmdb_data.get('director'):
+            merged['director'] = tmdb_data['director']
+            self.stats['director_from_tmdb'] += 1
+            if not metadata.director:
+                metadata.director = tmdb_data['director']
+        elif metadata.director:
+            merged['director'] = metadata.director
+
+        # Country: OMDb > TMDb (critical fix for Satellite routing)
+        if omdb_data and omdb_data.get('countries'):
+            merged['countries'] = omdb_data['countries']
+            self.stats['country_from_omdb'] += 1
+            if not metadata.country:
+                metadata.country = omdb_data['countries'][0]
+        elif tmdb_data and tmdb_data.get('countries'):
+            merged['countries'] = tmdb_data['countries']
+            self.stats['country_from_tmdb'] += 1
+            if not metadata.country:
+                metadata.country = tmdb_data['countries'][0]
+        elif metadata.country:
+            merged['countries'] = [metadata.country]
+        else:
+            merged['countries'] = []
+
+        # Genres: TMDb > OMDb (TMDb has richer structured data)
+        if tmdb_data and tmdb_data.get('genres'):
+            merged['genres'] = tmdb_data['genres']
+            self.stats['genres_from_tmdb'] += 1
+        elif omdb_data and omdb_data.get('genres'):
+            merged['genres'] = omdb_data['genres']
+        else:
+            merged['genres'] = []
+
+        # Year: filename > OMDb > TMDb
+        if metadata.year:
+            merged['year'] = metadata.year
+        elif omdb_data and omdb_data.get('year'):
+            merged['year'] = omdb_data['year']
+        elif tmdb_data and tmdb_data.get('year'):
+            merged['year'] = tmdb_data['year']
+
+        # Title: TMDb > OMDb > filename (canonical names)
+        if tmdb_data and tmdb_data.get('title'):
+            merged['title'] = tmdb_data['title']
+        elif omdb_data and omdb_data.get('title'):
+            merged['title'] = omdb_data['title']
+        else:
+            merged['title'] = metadata.title
+
+        # Original language (only TMDb provides this)
+        if tmdb_data and tmdb_data.get('original_language'):
+            merged['original_language'] = tmdb_data['original_language']
+
+        return merged
+
     def classify(self, metadata: FilmMetadata) -> ClassificationResult:
         """
         Main classification pipeline — priority-ordered checks.
@@ -212,49 +368,14 @@ class FilmClassifier:
         - No year: hard gate (cannot route to decade → Unsorted)
         """
 
-        # === Stage 1: TMDb enrichment (optional) ===
-        tmdb_data = None
-        if self.tmdb and metadata.title and metadata.year:
-            # Clean title for TMDb query (remove user tags, format signals, but keep proper title structure)
-            clean_title = metadata.title
-            # Remove user tag brackets [...]
-            clean_title = re.sub(r'\s*\[.+?\]\s*', ' ', clean_title)
-            # Remove format signals using shared normalization (but not full normalization to preserve punctuation)
-            from lib.normalization import _strip_format_signals
-            clean_title = _strip_format_signals(clean_title)
-            # Clean up extra spaces and parentheses artifacts
-            clean_title = re.sub(r'\s*\(\s*\)', '', clean_title)  # Remove empty parens like "Criterion ("
-            clean_title = ' '.join(clean_title.split())
-
-            tmdb_data = self.tmdb.search_film(clean_title.strip(), metadata.year)
-            if tmdb_data:
-                # Enrich metadata with TMDb director if we don't have one
-                if not metadata.director and tmdb_data.get('director'):
-                    metadata.director = tmdb_data['director']
-                # Enrich country if not detected from filename
-                if not metadata.country and tmdb_data.get('countries'):
-                    metadata.country = tmdb_data['countries'][0] if tmdb_data['countries'] else None
-
-        # === Stage 1b: OMDb fallback (for obscure films TMDb missed) ===
-        if not tmdb_data and self.omdb and metadata.title and metadata.year:
-            # Use same clean title as TMDb
-            clean_title = metadata.title
-            clean_title = re.sub(r'\s*\[.+?\]\s*', ' ', clean_title)
-            from lib.normalization import _strip_format_signals
-            clean_title = _strip_format_signals(clean_title)
-            clean_title = re.sub(r'\s*\(\s*\)', '', clean_title)
-            clean_title = ' '.join(clean_title.split())
-
-            omdb_data = self.omdb.search_film(clean_title.strip(), metadata.year)
-            if omdb_data:
-                # Enrich metadata with OMDb director if we don't have one
-                if not metadata.director and omdb_data.get('director'):
-                    metadata.director = omdb_data['director']
-                # Enrich country if not detected from filename
-                if not metadata.country and omdb_data.get('countries'):
-                    metadata.country = omdb_data['countries'][0] if omdb_data['countries'] else None
-                # Store for later use by satellite classifier
-                tmdb_data = omdb_data  # Treat OMDb data as equivalent to TMDb for classification
+        # === Stage 1: API Enrichment (TMDb + OMDb parallel query with smart merge) ===
+        api_results = self._query_apis(metadata)
+        tmdb_data = self._merge_api_results(
+            api_results['tmdb'],
+            api_results['omdb'],
+            metadata
+        )
+        # Note: metadata.director and metadata.country updated as side effect
 
         # === Stage 2: Explicit lookup (highest trust — human-curated) ===
         if metadata.title:
@@ -524,6 +645,21 @@ class FilmClassifier:
             print(f"\nTMDb: {cache_stats['misses']} API queries, "
                   f"{cache_stats['hits']} cache hits "
                   f"({cache_stats['hit_rate']:.0f}% hit rate)")
+
+        # OMDb cache statistics
+        if self.omdb:
+            cache_stats = self.omdb.get_cache_stats()
+            print(f"OMDb: {cache_stats['misses']} API queries, "
+                  f"{cache_stats['hits']} cache hits "
+                  f"({cache_stats['hit_rate']:.0f}% hit rate)")
+
+        # API source attribution statistics
+        api_stats = {k: v for k, v in self.stats.items()
+                     if 'api' in k or 'from_' in k or k in ['tmdb_success', 'omdb_success']}
+        if api_stats:
+            print(f"\nAPI Data Sources:")
+            for stat, count in sorted(api_stats.items()):
+                print(f"  {stat:30s}: {count:4d}")
 
         print("=" * 60)
 
