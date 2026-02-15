@@ -70,6 +70,7 @@ class FilenameParser:
         """Extract year from filename, returns (year, cleaned_name) or None"""
         # Try multiple year patterns in order of specificity
         year_patterns = [
+            r'\s+(\d{4})$',           # Issue #5 fix: Bare year at end (sermon to the fish 2022)
             r'\((\d{4})\)',           # (1999)
             r'\[(\d{4})\]',           # [1969]
             r'[\.\s](\d{4})[\.\s]',   # .1984. or space-delimited
@@ -154,6 +155,30 @@ class FilenameParser:
             if 1920 <= year <= 2029:
                 # Remove (Director, Year) from title
                 title_part = re.sub(r'\s*\([^,]+,\s*\d{4}\)', '', name)
+                title = self._clean_title(title_part)
+
+                return FilmMetadata(
+                    filename=filename,
+                    title=title,
+                    year=year,
+                    director=director_name.strip(),
+                    format_signals=format_signals,
+                    language=language,
+                    country=country,
+                    user_tag=user_tag
+                )
+
+        # === PRIORITY 0.5: Check for (Director YYYY) pattern (no comma) ===
+        # Issue #5 fix: "Ed Wood (Tim Burton 1994)" should extract director and year
+        # This pattern handles cases where director and year are in parentheses without a comma
+        director_year_no_comma_match = re.search(r'\(([A-Z][^\d\)]+?)\s+(\d{4})\)', name)
+        if director_year_no_comma_match:
+            director_name, year_str = director_year_no_comma_match.groups()
+            year = int(year_str)
+
+            if 1920 <= year <= 2029:
+                # Remove (Director Year) from title
+                title_part = re.sub(r'\s*\([^\)]+\s+\d{4}\)', '', name)
                 title = self._clean_title(title_part)
 
                 return FilmMetadata(

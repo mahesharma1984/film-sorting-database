@@ -130,9 +130,7 @@ class TMDbClient:
                     director = crew_member['name']
                     break
 
-            # Extract genres
-            genres = [g['name'] for g in film_data.get('genre_ids', [])]
-            # Get full genre details
+            # Extract genres (genre_ids are integers, not dicts)
             full_genres = []
             if film_data.get('genre_ids'):
                 for genre_id in film_data['genre_ids']:

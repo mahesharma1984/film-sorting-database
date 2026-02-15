@@ -7,6 +7,14 @@
 
 ---
 
+## 1940s CORE
+
+**Orson Welles**
+- Citizen Kane (1941) — Note: In Reference canon, but other Welles films are Core
+- The Magnificent Ambersons (1942)
+
+---
+
 ## 1950s CORE
 
 **Satyajit Ray**
@@ -24,6 +32,9 @@
 **William Wyler**
 - Roman Holiday (1953)
 - Ben-Hur (1959)
+
+**Orson Welles**
+- Touch of Evil (1958)
 
 ---
 
@@ -84,6 +95,19 @@
 **Stanley Kubrick**
 - Dr. Strangelove (1964)
 - 2001: A Space Odyssey (1968)
+
+**Orson Welles**
+- The Trial (1962)
+- Chimes at Midnight (1965)
+
+**Claude Chabrol**
+- Le Beau Serge (1958)
+- Les Cousins (1959)
+- La Femme Infidèle (1969)
+
+**Júlio Bressane**
+- Cara a Cara (1967)
+- Killed the Family and Went to the Movies (1969)
 
 ---
 
@@ -181,6 +205,16 @@
 - Flesh for Frankenstein (1973)
 - Blood for Dracula (1974)
 
+**Orson Welles**
+- F for Fake (1973)
+
+**Claude Chabrol**
+- Le Boucher (1970)
+- Violette Nozière (1978)
+
+**Júlio Bressane**
+- The Secret of the Mummy (1982) - bridges to 1980s
+
 ---
 
 ## 1980s CORE (Postmodern Genre / Cult Auteurs / New Independence)
@@ -238,6 +272,12 @@
 **Brian De Palma**
 - Scarface (1983)
 - Body Double (1984)
+
+**Claude Chabrol**
+- The Cry of the Owl (1987)
+
+**Júlio Bressane**
+- (1980s work)
 
 ---
 
@@ -330,6 +370,15 @@
 **Pedro Almodóvar**
 - All About My Mother (1999)
 
+**Vincent Gallo**
+- Buffalo '66 (1998)
+
+**Claude Chabrol**
+- La Cérémonie (1995)
+
+**Júlio Bressane**
+- (1990s work)
+
 ---
 
 ## 2000s CORE (Late Digital / Festival Cinema)
@@ -373,6 +422,12 @@
 
 **Pedro Almodóvar**
 - Volver (2006)
+
+**Vincent Gallo**
+- The Brown Bunny (2003)
+
+**Júlio Bressane**
+- (2000s work)
 
 ---
 

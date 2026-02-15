@@ -4,11 +4,22 @@
 
 ---
 
+## 1940s FILMS
+
+### Core - Orson Welles
+- The Magnificent Ambersons (1942) → 1940s/Core/Orson Welles/
+
+### Reference
+- Citizen Kane (1941) → 1940s/Reference/
+
+---
+
 ## 1950s FILMS
 
 ### Core
 - The Music Room (1958) → 1950s/Core/Satyajit Ray/
 - Apur Sansar (1959) → 1950s/Core/Satyajit Ray/
+- Touch of Evil (1958) → 1950s/Core/Orson Welles/
 
 ### Reference
 - Rashomon (1950) → 1950s/Reference/
@@ -72,6 +83,17 @@
 
 ### Core - Andy Warhol
 - Flesh (1968) → 1960s/Core/Andy Warhol/
+
+### Core - Orson Welles
+- The Trial (1962) → 1960s/Core/Orson Welles/
+- Chimes at Midnight (1965) → 1960s/Core/Orson Welles/
+
+### Core - Claude Chabrol
+- La Femme Infidèle (1969) → 1960s/Core/Claude Chabrol/
+
+### Core - Júlio Bressane
+- Cara a Cara (1967) → 1960s/Core/Júlio Bressane/
+- Killed the Family and Went to the Movies (1969) → 1960s/Core/Júlio Bressane/
 
 ### Reference
 - The Apartment (1960) → 1960s/Reference/
@@ -175,6 +197,12 @@
 - Trash (1970) → 1970s/Core/Andy Warhol/
 - Heat (1972) → 1970s/Core/Andy Warhol/
 
+### Core - Orson Welles
+- F for Fake (1973) → 1970s/Core/Orson Welles/
+
+### Core - Claude Chabrol
+- Le Boucher (1970) → 1970s/Core/Claude Chabrol/
+
 ### Reference
 - Chinatown (1974) → 1970s/Reference/
 - Network (1976) → 1970s/Reference/
@@ -233,6 +261,8 @@
 - Beneath the Valley of the Ultra Vixens (1979) → 1970s/Satellite/Russ Meyer/
 
 ### Satellite - American Exploitation
+- Pink Flamingos (1972) - John Waters → 1970s/Satellite/American Exploitation/
+- Female Trouble (1974) - John Waters → 1970s/Satellite/American Exploitation/
 - 9 Lives of a Wet Pussy (1976) → 1970s/Satellite/American Exploitation/
 - The Awakening of Annie (1976) → 1970s/Satellite/American Exploitation/
 - A Touch of Genie (1974) → 1970s/Satellite/American Exploitation/
@@ -308,6 +338,9 @@
 
 ### Core - Rainer Werner Fassbinder
 - Lili Marleen (1981) → 1980s/Core/Rainer Werner Fassbinder/
+
+### Core - Claude Chabrol
+- The Cry of the Owl (1987) → 1980s/Core/Claude Chabrol/
 
 ### Reference
 - Blade Runner (1982) → 1980s/Reference/
@@ -393,6 +426,21 @@
 
 ### Popcorn - Horror
 - Re-Animator (1985) → 1980s/Popcorn/ [Moved from Satellite]
+
+---
+
+## 1990s FILMS
+
+### Core - Vincent Gallo
+- Buffalo '66 (1998) → 1990s/Core/Vincent Gallo/
+
+### Core - Claude Chabrol
+- La Cérémonie (1995) → 1990s/Core/Claude Chabrol/
+
+### Popcorn
+- Serial Mom (1994) - John Waters → 1990s/Popcorn/
+- Cry-Baby (1990) - John Waters → 1990s/Popcorn/
+- Pecker (1998) - John Waters → 1990s/Popcorn/
 
 ---
 
