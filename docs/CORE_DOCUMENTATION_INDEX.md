@@ -24,6 +24,8 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | How do I run tests? | pytest tests/ | `docs/DEVELOPER_GUIDE.md` |
 | What is the R/P Split? | Reasoning vs Precision separation | `CLAUDE.md` |
 | How do I commit changes? | Use git commit workflow | `docs/DEVELOPER_GUIDE.md` |
+| How do I discover film threads? | Use thread_query.py CLI | `docs/THREAD_DISCOVERY_GUIDE.md` |
+| What are tentpole films? | Canonical films anchoring categories | `docs/THREAD_DISCOVERY_GUIDE.md` |
 
 ---
 
@@ -45,6 +47,7 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Popcorn theory** | `docs/theory/POPCORN_WAVES.md` | AUTHORITATIVE |
 | **Format curation** | `docs/theory/FORMAT_AS_INTENTION.md` | AUTHORITATIVE |
 | **Collection identity** | `docs/theory/COLLECTION_IDENTITY.md` | AUTHORITATIVE |
+| **Thread discovery** | `docs/THREAD_DISCOVERY_GUIDE.md` | AUTHORITATIVE |
 | **Project summary** | `docs/PROJECT_COMPLETE_SUMMARY.md` | STABLE |
 | **Debug runbook** | `docs/DEBUG_RUNBOOK.md` | AUTHORITATIVE |
 | **Methodology** | `CLAUDE.md` | AUTHORITATIVE |
@@ -60,4 +63,9 @@ python -m lib.rag.query "Films by Lucio Fulci"
 
 # Filtered queries
 python -m lib.rag.query "Satellite decade boundaries" --filter AUTHORITATIVE
+
+# Thread discovery
+python scripts/thread_query.py --discover "Deep Red (1975)"
+python scripts/thread_query.py --thread "Giallo"
+python scripts/thread_query.py --list --verbose
 ```

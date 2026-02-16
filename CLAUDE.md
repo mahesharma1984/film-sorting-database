@@ -186,6 +186,12 @@ python move.py --execute
 
 # Create folder structure
 python scaffold.py
+
+# Thread discovery (Issue #12)
+python scripts/build_thread_index.py --summary      # Build keyword index
+python scripts/thread_query.py --discover "Film"    # Find thread connections
+python scripts/thread_query.py --thread "Category"  # Query category keywords
+python scripts/thread_query.py --list --verbose     # List all tentpoles
 ```
 
 ---
