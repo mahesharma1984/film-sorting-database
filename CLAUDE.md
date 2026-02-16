@@ -117,7 +117,11 @@ Country → satellite routing only applies within historically valid decades:
 - Brazil → Brazilian Exploitation: 1970s–1980s only
 - Italy → Giallo: 1960s–1980s only
 - Japan → Pinku Eiga: 1960s–1980s only
+- France → French New Wave: 1950s-1970s only (NEW - Issue #14)
 - Hong Kong → HK Action: 1970s–1990s only
+- US → American Exploitation: 1960s-1980s only (NARROWED - Issue #14)
+- US → Classic Hollywood: 1930s-1950s only (NEW - Issue #14)
+- International → Indie Cinema: 1980s-2020s (NEW - Issue #14)
 
 A 2010s Italian thriller is NOT Giallo. Decades are structural, not arbitrary.
 
