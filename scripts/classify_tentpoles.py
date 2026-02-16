@@ -13,15 +13,19 @@ Use case: Validate that tentpole films are in correct locations
 
 import sys
 import argparse
+import os
+import shutil
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Optional
 import csv
+import yaml
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from lib.constants import SATELLITE_TENTPOLES
 from lib.parser import FilmMetadata
+from lib.normalization import normalize_for_lookup
 
 # Import FilmClassifier from classify.py
 import classify
@@ -136,9 +140,172 @@ def save_manifest(results: List[Dict], output_path: Path):
     print(f"\n✓ Manifest saved: {output_path}")
 
 
+def find_film_in_directory(title: str, year: int, search_path: Path) -> Optional[Path]:
+    """
+    Find a film file in the search directory by title and year
+
+    Args:
+        title: Film title
+        year: Film year
+        search_path: Directory to search
+
+    Returns:
+        Path to film file if found, None otherwise
+    """
+    if not search_path.exists():
+        return None
+
+    # Normalize title for matching
+    normalized_title = normalize_for_lookup(title).lower()
+
+    # Search for video files
+    video_extensions = ['.mkv', '.mp4', '.avi', '.mov', '.m4v']
+
+    for file_path in search_path.rglob('*'):
+        if file_path.suffix.lower() in video_extensions:
+            # Check if filename contains title and year
+            filename_lower = file_path.stem.lower()
+            if str(year) in filename_lower:
+                # Normalize filename for comparison
+                normalized_filename = normalize_for_lookup(filename_lower)
+                if normalized_title in normalized_filename:
+                    return file_path
+
+    return None
+
+
+def same_filesystem(path_a: Path, path_b: Path) -> bool:
+    """Check if two paths are on the same filesystem"""
+    try:
+        return os.stat(path_a).st_dev == os.stat(path_b).st_dev
+    except OSError:
+        return False
+
+
+def move_file(source: Path, dest: Path, dry_run: bool = False) -> bool:
+    """
+    Move a single file from source to dest
+
+    Args:
+        source: Source file path
+        dest: Destination file path
+        dry_run: If True, don't actually move
+
+    Returns:
+        True if successful (or would be successful in dry-run)
+    """
+    if dry_run:
+        print(f"  [DRY RUN] Would move: {source} → {dest}")
+        return True
+
+    # Create destination directory
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    # Check if same filesystem
+    use_rename = same_filesystem(source, dest.parent)
+
+    if use_rename:
+        os.rename(source, dest)
+        print(f"  ✓ Moved: {source.name} → {dest}")
+        return True
+    else:
+        # Cross-filesystem: copy, verify, delete
+        shutil.copy2(str(source), str(dest))
+
+        # Verify
+        if dest.exists() and dest.stat().st_size == source.stat().st_size:
+            source.unlink()
+            print(f"  ✓ Moved: {source.name} → {dest}")
+            return True
+        else:
+            print(f"  ✗ Failed: {source.name} (verification failed)")
+            if dest.exists():
+                dest.unlink()
+            return False
+
+
+def move_tentpoles(results: List[Dict], source_path: Path, library_path: Path, dry_run: bool = False) -> Dict[str, int]:
+    """
+    Find and move tentpole films from source to library
+
+    Args:
+        results: Classification results
+        source_path: Source directory to search
+        library_path: Library base directory
+        dry_run: If True, don't actually move files
+
+    Returns:
+        Statistics dict
+    """
+    stats = {
+        'found': 0,
+        'moved': 0,
+        'not_found': 0,
+        'errors': 0
+    }
+
+    print("\n" + "="*80)
+    if dry_run:
+        print("DRY RUN - Searching for tentpole films...")
+    else:
+        print("MOVING tentpole films...")
+    print("="*80 + "\n")
+
+    for result in results:
+        title = result['title']
+        year = result['year']
+        destination = result['classified_destination']
+
+        # Find film file
+        film_path = find_film_in_directory(title, year, source_path)
+
+        if not film_path:
+            print(f"✗ Not found: {title} ({year})")
+            stats['not_found'] += 1
+            continue
+
+        stats['found'] += 1
+
+        # Build destination path
+        dest_path = library_path / destination / film_path.name
+
+        # Check if already at destination
+        if film_path.resolve() == dest_path.resolve():
+            print(f"  Already at destination: {title} ({year})")
+            continue
+
+        # Move file
+        try:
+            if move_file(film_path, dest_path, dry_run):
+                stats['moved'] += 1
+            else:
+                stats['errors'] += 1
+        except Exception as e:
+            print(f"  ✗ Error moving {title} ({year}): {e}")
+            stats['errors'] += 1
+
+    # Print summary
+    print("\n" + "="*80)
+    print("MOVE SUMMARY")
+    print("="*80)
+    print(f"  Found: {stats['found']}/{len(results)}")
+    print(f"  Moved: {stats['moved']}")
+    print(f"  Not found: {stats['not_found']}")
+    print(f"  Errors: {stats['errors']}")
+    print("="*80)
+
+    return stats
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Classify Satellite tentpole films"
+        description="Classify and move Satellite tentpole films"
+    )
+    parser.add_argument(
+        'source',
+        nargs='?',
+        type=Path,
+        help='Source directory to search for films (optional for validation-only)'
     )
     parser.add_argument(
         '--config',
@@ -164,6 +331,10 @@ def main():
         print(f"Error: Config file not found: {args.config}")
         sys.exit(1)
 
+    # Load config for library path
+    with open(args.config, 'r') as f:
+        config = yaml.safe_load(f)
+
     # Initialize classifier
     classifier = FilmClassifier(args.config)
 
@@ -183,15 +354,18 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     save_manifest(results, args.output)
 
-    if not args.execute:
-        print("\n" + "="*80)
-        print("DRY RUN - No files moved")
-        print("To actually move files, run with --execute flag")
-        print("="*80)
+    # Move files if source provided
+    if args.source:
+        if not args.source.exists():
+            print(f"\nError: Source directory not found: {args.source}")
+            sys.exit(1)
+
+        library_path = Path(config['library_path'])
+        move_tentpoles(results, args.source, library_path, dry_run=not args.execute)
     else:
         print("\n" + "="*80)
-        print("WARNING: --execute flag not yet implemented")
-        print("This script currently only validates classifications")
+        print("VALIDATION ONLY - No source directory provided")
+        print("To move files, run: python scripts/classify_tentpoles.py <source_dir> --execute")
         print("="*80)
 
 

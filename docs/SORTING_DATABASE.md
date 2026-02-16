@@ -126,6 +126,9 @@
 - Head (1968) → 1960s/Satellite/Cult Oddities/
 - Putney Swope (1969) → 1960s/Satellite/Cult Oddities/
 
+### Satellite - Classic Hollywood
+- How to Steal a Million (1966) → 1960s/Satellite/Classic Hollywood/
+
 ### Popcorn
 - Yellow Submarine (1968) 16mm → 1960s/Popcorn/
 - You Only Live Twice IB Tech 35mm → 1960s/Popcorn/
@@ -295,11 +298,16 @@
 - Tommy (1975) → 1970s/Satellite/Music Films/
 - The Beatles - First U.S. Visit → 1970s/Satellite/Music Films/
 
+### Satellite - Indie Cinema
+- All That Jazz (1979) → 1970s/Satellite/Indie Cinema/
+- Being There (1979) → 1970s/Satellite/Indie Cinema/
+
 ### Popcorn
 - Young Frankenstein (1974) 16mm → 1970s/Popcorn/
 - Up In Smoke (1978) → 1970s/Popcorn/
 - The Wiz (1978) → 1970s/Popcorn/
 - Cooley High (1975) → 1970s/Popcorn/ [NOTE: Also in Blaxploitation - choose one]
+- Bobby Deerfield (1977) → 1970s/Popcorn/
 
 ---
 
@@ -393,12 +401,18 @@
 - Mixed Blood (1984) → 1980s/Satellite/American Exploitation/
 - Turkey Shoot (1982) → 1980s/Satellite/American Exploitation/
 - Troma's War (1988) → 1980s/Satellite/American Exploitation/
-- Crimewave (1985) → 1980s/Satellite/American Exploitation/
 - Dr. Caligari (1989) → 1980s/Satellite/American Exploitation/
+
+### Satellite - Indie Cinema
+- Crimewave (1985) → 1980s/Satellite/Indie Cinema/
+- Cracking Up (1983) → 1980s/Satellite/Indie Cinema/
+- Cold Feet (1989) → 1980s/Satellite/Indie Cinema/
+- Tuff Turf (1985) → 1980s/Satellite/Indie Cinema/
 
 ### Satellite - Music Films
 - Louie Bluie (1985) → 1980s/Satellite/Music Films/
 - Poetry in Motion (1982) → 1980s/Satellite/Music Films/
+- Thelonious Monk Straight No Chaser (1988) → 1980s/Satellite/Music Films/
 
 ### Popcorn - Back to the Future Franchise
 - Back to the Future (1985) 35mm → 1980s/Popcorn/Back to the Future/
@@ -418,6 +432,10 @@
 - Into The Night (1985) → 1980s/Popcorn/
 - A Christmas Story (1983) → 1980s/Popcorn/
 - Blankman (1994) → 1990s/Popcorn/ [Wrong decade]
+
+### Popcorn - Drama
+- Dead Poets Society (1989) → 1980s/Popcorn/
+- Haunted Summer (1988) → 1980s/Popcorn/
 
 ### Popcorn - Sci-Fi/Fantasy
 - Tron (1982) → 1980s/Popcorn/
@@ -442,10 +460,17 @@
 ### Core - Claude Chabrol
 - La Cérémonie (1995) → 1990s/Core/Claude Chabrol/
 
+### Satellite - Indie Cinema
+- House Party (1990) → 1990s/Satellite/Indie Cinema/
+
 ### Popcorn
 - Serial Mom (1994) - John Waters → 1990s/Popcorn/
 - Cry-Baby (1990) - John Waters → 1990s/Popcorn/
 - Pecker (1998) - John Waters → 1990s/Popcorn/
+- Pleasantville (1998) → 1990s/Popcorn/
+- Milk Money (1994) → 1990s/Popcorn/
+- Dick (1999) → 1990s/Popcorn/
+- Jack Frost (1998) → 1990s/Popcorn/
 
 ---
 
@@ -501,6 +526,9 @@
 ### Satellite - Hong Kong Action
 - So Close (2002) → 2000s/Satellite/Hong Kong Action/ [OR Popcorn - decide]
 - DOA - Dead Or Alive (2006) → 2000s/Satellite/Hong Kong Action/
+
+### Satellite - Music Films
+- The Smashing Machine (2002) → 2000s/Satellite/Music Films/
 
 ---
 

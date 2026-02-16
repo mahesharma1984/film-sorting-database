@@ -378,14 +378,17 @@ class FilmClassifier:
         """
         Main classification pipeline — priority-ordered checks.
 
-        Each check is a separate method with declared failure behavior:
-        - Explicit lookup: soft gate (no match → continue)
-        - Core director: soft gate (no match → continue)
-        - Reference canon: soft gate (no match → continue)
-        - User tag: soft gate (no tag → continue)
-        - Country/decade satellite: soft gate (no match → continue)
-        - TMDb satellite: soft gate (no data → continue)
-        - Popcorn: soft gate (no match → continue)
+        Priority order (Issue #14 - Popcorn/Indie before Satellite):
+        1. Explicit lookup (SORTING_DATABASE.md)
+        2. Core director check
+        3. Reference canon check
+        4. User tag recovery
+        5. Popcorn check (MOVED UP - prevents mainstream films from Satellite)
+        6. Country/decade satellite routing
+        7. TMDb satellite classification
+        8. Unsorted (default)
+
+        Each check is a soft gate (no match → continue) except:
         - No year: hard gate (cannot route to decade → Unsorted)
         """
 
@@ -504,7 +507,25 @@ class FilmClassifier:
                     confidence=0.8, reason='user_tag_recovery'
                 )
 
-        # === Stage 6: Language/country → Satellite routing (from filename) ===
+        # === Stage 6: Popcorn check (MOVED UP - Issue #14 priority reorder) ===
+        # Check Popcorn BEFORE Satellite to prevent mainstream films from
+        # being caught by exploitation categories (especially post-1980)
+        popcorn_reason = self.popcorn_classifier.classify_reason(metadata, tmdb_data)
+        if popcorn_reason:
+            self.stats['popcorn_auto'] += 1
+            self.stats[popcorn_reason] += 1
+            dest = f'Popcorn/{decade}/'
+            return ClassificationResult(
+                filename=metadata.filename, title=metadata.title,
+                year=metadata.year, director=metadata.director,
+                language=metadata.language, country=metadata.country,
+                user_tag=metadata.user_tag,
+                tier='Popcorn', decade=decade, subdirectory=None,
+                destination=dest,
+                confidence=0.65, reason=popcorn_reason
+            )
+
+        # === Stage 7: Language/country → Satellite routing (from filename) ===
         if metadata.country and metadata.country in COUNTRY_TO_WAVE:
             wave_config = COUNTRY_TO_WAVE[metadata.country]
             if decade in wave_config['decades']:
@@ -521,7 +542,7 @@ class FilmClassifier:
                     confidence=0.7, reason='country_satellite'
                 )
 
-        # === Stage 7: TMDb-based satellite classification ===
+        # === Stage 8: TMDb-based satellite classification ===
         if tmdb_data:
             satellite_cat = self.satellite_classifier.classify(metadata, tmdb_data)
             if satellite_cat:
@@ -536,22 +557,6 @@ class FilmClassifier:
                     destination=dest,
                     confidence=0.7, reason='tmdb_satellite'
                 )
-
-        # === Stage 8: Popcorn fallback ===
-        popcorn_reason = self.popcorn_classifier.classify_reason(metadata, tmdb_data)
-        if popcorn_reason:
-            self.stats['popcorn_auto'] += 1
-            self.stats[popcorn_reason] += 1
-            dest = f'Popcorn/{decade}/'
-            return ClassificationResult(
-                filename=metadata.filename, title=metadata.title,
-                year=metadata.year, director=metadata.director,
-                language=metadata.language, country=metadata.country,
-                user_tag=metadata.user_tag,
-                tier='Popcorn', decade=decade, subdirectory=None,
-                destination=dest,
-                confidence=0.65, reason=popcorn_reason
-            )
 
         # === Stage 9: Unsorted (default) ===
         reason_parts = []
