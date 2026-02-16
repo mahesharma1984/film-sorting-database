@@ -14,6 +14,9 @@ FORMAT_SIGNALS = [
     '2k',
     '4k',
     'uhd',
+    'scan',  # Film scan metadata (e.g., "35mm Scan")
+    'fullscreen',  # Aspect ratio variant
+    'hybrid',  # Hybrid cut/version
     'open matte',
     'extended',
     'unrated',

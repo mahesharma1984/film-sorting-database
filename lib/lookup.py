@@ -42,13 +42,13 @@ class SortingDatabaseLookup:
 
             # Patterns for different entry formats
             # Standard: "- Title (Year) ... → Destination/"
-            pattern_standard = r'^-\s+(.+?)\s+\((\d{4})\).*?→\s+(.+?)/?$'
+            pattern_standard = r'^-\s+(.+?)\s+\((\d{4})\).*?→\s+(.+)$'
 
             # Year prefix: "- Year - Title → Destination/"
-            pattern_year_prefix = r'^-\s+(\d{4})\s+-\s+(.+?)\s+→\s+(.+?)/?$'
+            pattern_year_prefix = r'^-\s+(\d{4})\s+-\s+(.+?)\s+→\s+(.+)$'
 
             # No year: "- Title → Destination/"
-            pattern_no_year = r'^-\s+([^→]+?)\s+→\s+(.+?)/?$'
+            pattern_no_year = r'^-\s+([^→]+?)\s+→\s+(.+)$'
 
             for line in content.split('\n'):
                 line = line.strip()

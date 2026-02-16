@@ -111,7 +111,7 @@ class TestNormalization:
         """Verify format signals are stripped during normalization"""
         test_cases = [
             ("Dr Strangelove Criterion", "dr strangelove"),
-            ("The Shining 35mm Scan", "the shining scan"),  # "35mm" stripped
+            ("The Shining 35mm Scan", "the shining"),  # "35mm" and "scan" both stripped
             ("2001 A Space Odyssey 4K", "2001 a space odyssey"),  # "4k" stripped
             ("Breathless", "breathless"),  # No format signals
             ("Film Title Open Matte Extended", "film title"),  # Multiple signals

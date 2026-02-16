@@ -101,4 +101,4 @@ class TestLookupValidation:
             db = SortingDatabaseLookup(Path(tmp.name))
 
             assert db.lookup("Se7en", 1995) is None
-            assert db.lookup("Rush Hour", 1998) == "1990s/Popcorn"
+            assert db.lookup("Rush Hour", 1998) == "1990s/Popcorn/"
