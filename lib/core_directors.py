@@ -99,23 +99,28 @@ class CoreDirectorDatabase:
         """
         Get decade folder for director based on film year
 
-        Validates that:
-        1. Director is in whitelist
-        2. Director appears in the decade corresponding to film_year
+        Returns the decade corresponding to the film's year if the director
+        is Core in ANY decade. This makes Core check decade-agnostic while
+        still placing films in correct decade folders.
 
-        Returns decade string (e.g., "1960s") or None if validation fails
+        Issue #14: Fixed to prevent Core directors from being misrouted to Satellite
+        when they have films spanning multiple decades.
+
+        Returns decade string (e.g., "1960s") or None if director not Core
         """
         canonical = self.get_canonical_name(director_name)
         if not canonical:
             return None
 
-        # Calculate decade from film year
+        # Check if director is Core in ANY decade
+        is_core_anywhere = any(
+            canonical in directors
+            for directors in self.directors_by_decade.values()
+        )
+
+        if not is_core_anywhere:
+            return None
+
+        # Director is Core - return decade based on film's year
         decade = f"{(film_year // 10) * 10}s"
-
-        # Verify director appears in this decade's whitelist
-        if decade in self.directors_by_decade and canonical in self.directors_by_decade[decade]:
-            return decade
-
-        # Director exists but not in this decade
-        logger.debug(f"Director '{canonical}' not listed in {decade} (film year: {film_year})")
-        return None
+        return decade

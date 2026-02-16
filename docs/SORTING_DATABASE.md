@@ -126,6 +126,9 @@
 - Head (1968) → 1960s/Satellite/Cult Oddities/
 - Putney Swope (1969) → 1960s/Satellite/Cult Oddities/
 
+### Satellite - Classic Hollywood
+- How to Steal a Million (1966) → 1960s/Satellite/Classic Hollywood/
+
 ### Popcorn
 - Yellow Submarine (1968) 16mm → 1960s/Popcorn/
 - You Only Live Twice IB Tech 35mm → 1960s/Popcorn/
@@ -226,6 +229,11 @@
 - Forbidden Game of Love (1975) → 1970s/Satellite/Pinku Eiga/
 - Grass Labyrinth (1979) → 1970s/Satellite/Pinku Eiga/
 
+### Satellite - Japanese Exploitation
+- Battles Without Honor and Humanity (1973) → 1970s/Satellite/Japanese Exploitation/
+- Street Mobster (1972) → 1970s/Satellite/Japanese Exploitation/
+- Graveyard of Honor (1975) → 1970s/Satellite/Japanese Exploitation/
+
 ### Satellite - Brazilian Exploitation (TRIM TO 25 MAX)
 - Escola Penal de Meninas Violentadas (1977) → 1970s/Satellite/Brazilian Exploitation/
 - A Super Fêmea (1973) → 1970s/Satellite/Brazilian Exploitation/
@@ -290,11 +298,16 @@
 - Tommy (1975) → 1970s/Satellite/Music Films/
 - The Beatles - First U.S. Visit → 1970s/Satellite/Music Films/
 
+### Satellite - Indie Cinema
+- All That Jazz (1979) → 1970s/Satellite/Indie Cinema/
+- Being There (1979) → 1970s/Satellite/Indie Cinema/
+
 ### Popcorn
 - Young Frankenstein (1974) 16mm → 1970s/Popcorn/
 - Up In Smoke (1978) → 1970s/Popcorn/
 - The Wiz (1978) → 1970s/Popcorn/
 - Cooley High (1975) → 1970s/Popcorn/ [NOTE: Also in Blaxploitation - choose one]
+- Bobby Deerfield (1977) → 1970s/Popcorn/
 
 ---
 
@@ -378,7 +391,7 @@
 
 ### Satellite - American Exploitation
 - Hollywood Chainsaw Hookers (1988) → 1980s/Satellite/American Exploitation/
-- Re-Animator (1985) → 1980s/Popcorn/ [BORDERLINE - moved to Popcorn]
+- Re-Animator (1985) → 1980s/Satellite/American Exploitation/
 - From Beyond (1986) → 1980s/Satellite/American Exploitation/
 - Society (1989) → 1980s/Satellite/American Exploitation/
 - Brain Damage (1988) → 1980s/Satellite/American Exploitation/
@@ -388,12 +401,18 @@
 - Mixed Blood (1984) → 1980s/Satellite/American Exploitation/
 - Turkey Shoot (1982) → 1980s/Satellite/American Exploitation/
 - Troma's War (1988) → 1980s/Satellite/American Exploitation/
-- Crimewave (1985) → 1980s/Satellite/American Exploitation/
 - Dr. Caligari (1989) → 1980s/Satellite/American Exploitation/
+
+### Satellite - Indie Cinema
+- Crimewave (1985) → 1980s/Satellite/Indie Cinema/
+- Cracking Up (1983) → 1980s/Satellite/Indie Cinema/
+- Cold Feet (1989) → 1980s/Satellite/Indie Cinema/
+- Tuff Turf (1985) → 1980s/Satellite/Indie Cinema/
 
 ### Satellite - Music Films
 - Louie Bluie (1985) → 1980s/Satellite/Music Films/
 - Poetry in Motion (1982) → 1980s/Satellite/Music Films/
+- Thelonious Monk Straight No Chaser (1988) → 1980s/Satellite/Music Films/
 
 ### Popcorn - Back to the Future Franchise
 - Back to the Future (1985) 35mm → 1980s/Popcorn/Back to the Future/
@@ -414,6 +433,10 @@
 - A Christmas Story (1983) → 1980s/Popcorn/
 - Blankman (1994) → 1990s/Popcorn/ [Wrong decade]
 
+### Popcorn - Drama
+- Dead Poets Society (1989) → 1980s/Popcorn/
+- Haunted Summer (1988) → 1980s/Popcorn/
+
 ### Popcorn - Sci-Fi/Fantasy
 - Tron (1982) → 1980s/Popcorn/
 - Excalibur (1981) → 1980s/Popcorn/
@@ -425,7 +448,7 @@
 - Clue (1985) → 1980s/Popcorn/
 
 ### Popcorn - Horror
-- Re-Animator (1985) → 1980s/Popcorn/ [Moved from Satellite]
+(No entries - Re-Animator moved back to American Exploitation)
 
 ---
 
@@ -437,10 +460,17 @@
 ### Core - Claude Chabrol
 - La Cérémonie (1995) → 1990s/Core/Claude Chabrol/
 
+### Satellite - Indie Cinema
+- House Party (1990) → 1990s/Satellite/Indie Cinema/
+
 ### Popcorn
 - Serial Mom (1994) - John Waters → 1990s/Popcorn/
 - Cry-Baby (1990) - John Waters → 1990s/Popcorn/
 - Pecker (1998) - John Waters → 1990s/Popcorn/
+- Pleasantville (1998) → 1990s/Popcorn/
+- Milk Money (1994) → 1990s/Popcorn/
+- Dick (1999) → 1990s/Popcorn/
+- Jack Frost (1998) → 1990s/Popcorn/
 
 ---
 
@@ -497,6 +527,9 @@
 - So Close (2002) → 2000s/Satellite/Hong Kong Action/ [OR Popcorn - decide]
 - DOA - Dead Or Alive (2006) → 2000s/Satellite/Hong Kong Action/
 
+### Satellite - Music Films
+- The Smashing Machine (2002) → 2000s/Satellite/Music Films/
+
 ---
 
 ## STAGING (Requires Manual Review)
@@ -512,7 +545,7 @@
 ### Borderline Cases Requiring Decision
 - Buffalo '66 (1998) → Core (Gallo) OR Popcorn?
 - Se7en (1995) 35mm → Reference OR Popcorn?
-- Re-Animator (1985) → Satellite OR Popcorn? [DECIDED: Popcorn]
+- Re-Animator (1985) → Satellite/American Exploitation [DECIDED]
 - Ms 45 (1981) → Add Ferrara to Core? Currently Satellite
 - Various Jean Rollin films → Core OR Satellite?
 

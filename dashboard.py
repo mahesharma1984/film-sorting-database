@@ -17,6 +17,7 @@ import plotly.graph_objects as go
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
+import json
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -89,13 +90,16 @@ try:
     from lib.constants import (
         REFERENCE_CANON as _RC,
         COUNTRY_TO_WAVE as _CW,
-        SATELLITE_ROUTING_RULES as _SRR
+        SATELLITE_ROUTING_RULES as _SRR,
+        SATELLITE_TENTPOLES as _ST
     )
     REFERENCE_CANON = _RC
     COUNTRY_TO_WAVE = _CW
     SATELLITE_ROUTING_RULES = _SRR
+    SATELLITE_TENTPOLES = _ST
     LIB_AVAILABLE = True
 except ImportError:
+    SATELLITE_TENTPOLES = {}
     pass
 
 # Import validation helpers
@@ -1054,6 +1058,234 @@ def render_film_browser(df: pd.DataFrame):
 
 
 # ---------------------------------------------------------------------------
+# Section 4 – Thread Discovery
+# ---------------------------------------------------------------------------
+
+def render_thread_discovery(df: pd.DataFrame):
+    st.header("Thread Discovery")
+    st.caption("Discover thematic connections using TMDb keywords and tentpole films")
+
+    # Check if thread index exists
+    thread_index_path = PROJECT_ROOT / 'output' / 'thread_keywords.json'
+
+    if not thread_index_path.exists():
+        st.warning("⚠️ Thread keyword index not found")
+        st.info("Run: `python scripts/build_thread_index.py --summary` to build the index")
+
+        if st.button("📚 View Tentpole Films"):
+            if SATELLITE_TENTPOLES:
+                st.subheader("Tentpole Films by Category")
+                for category, tentpoles in sorted(SATELLITE_TENTPOLES.items()):
+                    with st.expander(f"{category} ({len(tentpoles)} tentpoles)", expanded=False):
+                        for title, year, director in tentpoles:
+                            st.write(f"• **{title}** ({year}) — {director}")
+            else:
+                st.error("SATELLITE_TENTPOLES not available (import failed)")
+        return
+
+    # Load thread index
+    try:
+        with open(thread_index_path, 'r', encoding='utf-8') as f:
+            thread_index = json.load(f)
+    except Exception as e:
+        st.error(f"Error loading thread index: {e}")
+        return
+
+    st.divider()
+
+    # --- Panel 1: Discover Threads for a Film ---
+    st.subheader("🎬 Discover Threads for a Film")
+
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        film_title = st.text_input("Enter film title:", placeholder="e.g., Deep Red, Faster Pussycat Kill Kill")
+    with col2:
+        film_year = st.number_input("Year (optional):", min_value=1900, max_value=2030, value=None, step=1)
+
+    col3, col4 = st.columns([2, 2])
+    with col3:
+        min_overlap = st.slider("Minimum overlap threshold:", 0.0, 0.5, 0.15, 0.05)
+
+    if film_title:
+        try:
+            # Import thread discovery functions
+            from lib.rag.query import discover_threads
+
+            threads = discover_threads(film_title, film_year, min_overlap=min_overlap)
+
+            if threads:
+                st.success(f"✅ Found {len(threads)} thread connection(s)")
+
+                # Radar chart
+                categories = [t['category'] for t in threads]
+                scores = [t['jaccard_score'] for t in threads]
+
+                fig = go.Figure()
+                fig.add_trace(go.Scatterpolar(
+                    r=scores,
+                    theta=categories,
+                    fill='toself',
+                    name=film_title,
+                    line_color='#DD8452',
+                    fillcolor='rgba(221, 132, 82, 0.3)'
+                ))
+                fig.update_layout(
+                    polar=dict(
+                        radialaxis=dict(visible=True, range=[0, max(scores) * 1.1])
+                    ),
+                    showlegend=False,
+                    height=400,
+                    margin=dict(t=40, b=40, l=60, r=60)
+                )
+                st.plotly_chart(fig, use_container_width=True)
+
+                # Details table
+                st.subheader("Thread Connections")
+                for i, thread in enumerate(threads, 1):
+                    with st.expander(f"{i}. {thread['category']} — Jaccard: {thread['jaccard_score']:.3f}", expanded=(i==1)):
+                        st.write(f"**Shared keywords ({thread['overlap_count']}):**")
+                        shared = thread['shared_keywords'][:15]
+                        st.write(", ".join(shared))
+                        if len(thread['shared_keywords']) > 15:
+                            st.caption(f"... and {len(thread['shared_keywords']) - 15} more")
+            else:
+                st.info("No threads found above the threshold. Try lowering the minimum overlap.")
+
+        except FileNotFoundError as e:
+            st.error(f"Error: {e}")
+            st.info("Make sure TMDb API key is configured in config.yaml")
+        except Exception as e:
+            st.error(f"Error discovering threads: {e}")
+
+    st.divider()
+
+    # --- Panel 2: Category Keyword Profiles ---
+    st.subheader("🔍 Category Keyword Profiles")
+
+    col1, col2 = st.columns([2, 2])
+    with col1:
+        if SATELLITE_TENTPOLES:
+            selected_category = st.selectbox("Select category:", sorted(SATELLITE_TENTPOLES.keys()))
+        else:
+            selected_category = st.selectbox("Select category:", sorted(thread_index.keys()))
+
+    with col2:
+        top_k = st.slider("Number of keywords:", 10, 50, 20, 5)
+
+    if selected_category and selected_category in thread_index:
+        category_data = thread_index[selected_category]
+        keywords = category_data['keywords'][:top_k]
+
+        # Bar chart of keyword frequencies
+        kw_df = pd.DataFrame(keywords)
+        fig = px.bar(
+            kw_df,
+            y='keyword',
+            x='count',
+            orientation='h',
+            title=f"Top {len(keywords)} Keywords for {selected_category}",
+            color='count',
+            color_continuous_scale='Tealgrn'
+        )
+        fig.update_layout(
+            height=max(400, len(keywords) * 25),
+            yaxis=dict(autorange='reversed'),
+            yaxis_title='',
+            xaxis_title='Frequency across tentpoles',
+            showlegend=False
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Tentpole films
+        with st.expander("📚 Tentpole Films"):
+            if 'tentpole_films' in category_data:
+                for film in category_data['tentpole_films']:
+                    st.write(f"• **{film['title']}** ({film['year']}) — {film['director']}")
+                    st.caption(f"  {film.get('keyword_count', 0)} keywords")
+
+    st.divider()
+
+    # --- Panel 3: Thread Coverage in Collection ---
+    st.subheader("📊 Thread Coverage in Collection")
+
+    # Count films with keywords in manifest
+    # This would require keywords to be in the manifest, which they're not yet
+    # For now, show index stats
+
+    coverage_data = []
+    for category, data in thread_index.items():
+        coverage_data.append({
+            'category': category,
+            'unique_keywords': len(data['keywords']),
+            'tentpoles': data['tentpole_count'],
+            'query_failures': len(data.get('query_failures', []))
+        })
+
+    coverage_df = pd.DataFrame(coverage_data)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig = px.bar(
+            coverage_df,
+            x='category',
+            y='unique_keywords',
+            title="Unique Keywords per Category",
+            color='unique_keywords',
+            color_continuous_scale='Viridis'
+        )
+        fig.update_layout(
+            xaxis_tickangle=-45,
+            showlegend=False,
+            height=400
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col2:
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            x=coverage_df['category'],
+            y=coverage_df['tentpoles'],
+            name='Tentpoles',
+            marker_color='#55A868'
+        ))
+        fig.add_trace(go.Bar(
+            x=coverage_df['category'],
+            y=coverage_df['query_failures'],
+            name='Query Failures',
+            marker_color='#C44E52'
+        ))
+        fig.update_layout(
+            title="Tentpoles vs Query Failures",
+            xaxis_tickangle=-45,
+            barmode='group',
+            height=400
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    st.divider()
+
+    # --- Panel 4: Index Statistics ---
+    with st.expander("📈 Index Statistics"):
+        total_keywords = sum(len(data['keywords']) for data in thread_index.values())
+        total_tentpoles = sum(data['tentpole_count'] for data in thread_index.values())
+        total_failures = sum(len(data.get('query_failures', [])) for data in thread_index.values())
+
+        cols = st.columns(4)
+        cols[0].metric("Categories", len(thread_index))
+        cols[1].metric("Total Tentpoles", total_tentpoles)
+        cols[2].metric("Unique Keywords", total_keywords)
+        cols[3].metric("Query Failures", total_failures)
+
+        if total_failures > 0:
+            st.warning("Some tentpole films failed to query from TMDb")
+            for category, data in thread_index.items():
+                failures = data.get('query_failures', [])
+                if failures:
+                    st.write(f"**{category}:** {', '.join(failures)}")
+
+
+# ---------------------------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------------------------
 
@@ -1089,7 +1321,7 @@ def render_sidebar():
         # Section navigation
         section = st.radio(
             "Section",
-            ["Collection Overview", "Pipeline Health", "Film Browser"],
+            ["Collection Overview", "Pipeline Health", "Film Browser", "Thread Discovery"],
             label_visibility='collapsed',
         )
 
@@ -1116,6 +1348,8 @@ def main():
         render_pipeline_health(df)
     elif section == "Film Browser":
         render_film_browser(df)
+    elif section == "Thread Discovery":
+        render_thread_discovery(df)
 
 
 if __name__ == '__main__':

@@ -61,6 +61,7 @@ class SatelliteClassifier:
         genres = tmdb_data.get('genres', [])
         director = tmdb_data.get('director', '') or ''
         year = tmdb_data.get('year')
+        title = (tmdb_data.get('title') or getattr(metadata, 'title', '') or '').lower()
         director_lower = director.lower()
 
         # Calculate decade for validation
@@ -69,7 +70,11 @@ class SatelliteClassifier:
             decade = f"{(year // 10) * 10}s"
 
         # Import routing rules (lazy import to avoid circular dependencies)
-        from lib.constants import SATELLITE_ROUTING_RULES
+        from lib.constants import (
+            SATELLITE_ROUTING_RULES,
+            AMERICAN_EXPLOITATION_TITLE_KEYWORDS,
+            BLAXPLOITATION_TITLE_KEYWORDS,
+        )
 
         # Check each category's rules (first match wins)
         for category_name, rules in SATELLITE_ROUTING_RULES.items():
@@ -93,11 +98,27 @@ class SatelliteClassifier:
             if rules['genres'] is not None:
                 genre_match = any(g in genres for g in rules['genres'])
 
-            # Both must match (or be unrestricted via None)
+            # Tighten fallback for categories that were producing mainstream false positives.
+            # Director match above still takes priority and remains permissive.
+            if category_name == 'American Exploitation':
+                if not self._title_matches_keywords(title, AMERICAN_EXPLOITATION_TITLE_KEYWORDS):
+                    continue
+            if category_name == 'Blaxploitation':
+                if not self._title_matches_keywords(title, BLAXPLOITATION_TITLE_KEYWORDS):
+                    continue
+
+            # Both must match
             if country_match and genre_match:
                 return self._check_cap(category_name)
 
         return None
+
+    @staticmethod
+    def _title_matches_keywords(title: str, keywords) -> bool:
+        """Conservative title keyword gate for high-false-positive categories."""
+        if not title:
+            return False
+        return any(keyword in title for keyword in keywords)
 
     def _check_cap(self, category: str) -> Optional[str]:
         """Check if category has reached cap"""

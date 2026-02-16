@@ -8,12 +8,14 @@ project_path: "/Users/mahesh/Downloads/film-sorting-database/docs"  # Path to fo
 # Windows:    "E:/Movies/Organized"  or  "F:/Cinema Library"
 # macOS:      "/Volumes/External Drive/Movies/Organized"
 # Linux:      "/media/username/DriveName/Movies/Organized"
-library_path: "/path/to/organized/library"  # CHANGE THIS - Destination for sorted films on external drive
+library_path: "/Volumes/One Touch/Movies/Organized"  # External drive organized library
 source_path: "/path/to/unsorted/films"      # CHANGE THIS - Source directory with films to sort (can be same drive)
 
 # API Configuration
-tmdb_api_key: ""  # Get free API key from https://www.themoviedb.org/settings/api
+tmdb_api_key: "ab15230b28468dca7eb9ce4754a561b7"  # Get free API key from https://www.themoviedb.org/settings/api
                   # Leave empty to disable API enrichment (will rely on filename parsing only)
+omdb_api_key: "b11d5a88"  # OMDb API key (http://www.omdbapi.com/) - fallback for obscure films
+                           # Leave empty to disable OMDb fallback
 
 # Sorting Behavior
 confidence_threshold: 0.7  # Minimum confidence for automatic sorting (0.0-1.0)

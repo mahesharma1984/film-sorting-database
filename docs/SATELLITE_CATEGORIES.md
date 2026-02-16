@@ -386,6 +386,80 @@
 
 ---
 
+### 15. FRENCH NEW WAVE (NEW - Issue #14)
+
+**Definition:**
+- French art cinema from the Nouvelle Vague movement
+- Non-Core directors who participated in or orbited the movement
+- 1958-1973 (from Breathless to post-May '68 decline)
+
+**Directors:**
+- Chris Marker (La jetée, Sans Soleil)
+- Eric Rohmer (Six Moral Tales)
+- Alain Resnais (Last Year at Marienbad) - if not Core
+- Jacques Rivette (if not Core)
+- Louis Malle (Elevator to the Gallows)
+
+**Cap:** 30 films
+
+**Rationale:**
+- Textural context for Core Godard/Varda
+- Analogous to Giallo providing context for Italian modernism
+- Prevents misrouting to European Sexploitation
+
+**Boundary rules:**
+- Godard, Varda → Core (already on whitelist)
+- Marker, Rohmer, Resnais → Satellite (unless promoted to Core)
+- Reference-level films (Hiroshima Mon Amour) → may override to Reference
+
+---
+
+### 16. INDIE CINEMA (NEW - Issue #14)
+
+**Definition:**
+- Broad international catch-all for post-1980 arthouse cinema
+- Alternative to Popcorn for character-driven, non-spectacle films
+- Combines regions (US, GB, FR, DE, IT, ES, CA, AU, Scandinavia, Latin America, etc.)
+
+**Directors (examples):**
+- US: Jim Jarmusch, Hal Hartley, Kelly Reichardt, Todd Haynes
+- International: Michael Haneke, Lars von Trier, Ken Loach
+
+**Cap:** 40 films
+
+**Rationale:**
+- Fills gap between Core (auteur obsession) and Popcorn (mainstream entertainment)
+- Captures arthouse films that don't fit more specific satellite categories
+- Post-1980 reflects shift from classical exploitation cinema to indie/arthouse
+
+**Boundary rules:**
+- Coen Brothers, Lynch, P.T. Anderson → Core (on whitelist)
+- Unknown indie dramas from major film countries → Indie Cinema
+- Mainstream studio films → Popcorn
+
+---
+
+### 17. CLASSIC HOLLYWOOD (NEW - Issue #14)
+
+**Definition:**
+- American studio cinema from classical era
+- Pre-1960 (before New Hollywood rupture)
+- Genre cinema: Film Noir, Westerns, Musicals, Melodrama
+
+**Cap:** 25 films
+
+**Rationale:**
+- Reference canon only covers ~10 classic Hollywood films (Casablanca, Sunset Blvd)
+- Genre classics that aren't Reference-tier but provide historical context
+- Films like The Searchers, Sweet Smell of Success, Touch of Evil (if not by Core directors)
+
+**Boundary rules:**
+- Orson Welles, Billy Wilder → Core (if on whitelist)
+- Canonical classics → Reference (Casablanca, Citizen Kane)
+- Genre classics → Satellite (The Big Sleep, Out of the Past)
+
+---
+
 ## TOTAL SATELLITE CAPS BY CATEGORY
 
 1. Giallo: 30 films
@@ -393,16 +467,19 @@
 3. Japanese Exploitation: 25 films (NEW - Issue #6)
 4. Brazilian exploitation: 45 films
 5. Hong Kong action/Category III: 65 films
-6. American exploitation/grindhouse: 80 films
+6. American exploitation/grindhouse: 60 films (NARROWED - Issue #14: now 1960s-1980s only)
 7. Nunsploitation: 15 films
-8. European sexploitation: 25 films
+8. European sexploitation: 20 films (NARROWED - Issue #14: excludes FNW directors)
 9. Blaxploitation: 20 films
 10. WIP/rape-revenge: 15 films
 11. Music/concert films: 20 films
 12. Mondo: 10 films
 13. Cult oddities: 50 films
+14. **French New Wave: 30 films** (NEW - Issue #14)
+15. **Indie Cinema: 40 films** (NEW - Issue #14)
+16. **Classic Hollywood: 25 films** (NEW - Issue #14)
 
-**TOTAL SATELLITE CAP: ~435 films maximum across all categories** (increased by 25 with Japanese Exploitation)
+**TOTAL SATELLITE CAP: ~505 films maximum across all categories** (increased by 95 with new categories)
 
 This is intentionally large because Satellite is the margins/texture tier. But individual category caps keep it from sprawling.
 

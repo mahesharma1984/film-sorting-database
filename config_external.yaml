@@ -14,6 +14,7 @@ external_drive:
   
 # API Configuration (optional - get key from https://themoviedb.org)
 tmdb_api_key: "ab15230b28468dca7eb9ce4754a561b7"
+omdb_api_key: "b11d5a88"  # OMDb fallback for obscure films
 
 # Processing settings
 fuzzy_matching:

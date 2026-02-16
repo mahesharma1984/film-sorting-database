@@ -6,14 +6,18 @@ NEVER moves files. Only reads filenames and writes CSV.
 
 Classification priority order:
 1. [PRECISION] Parse filename → FilmMetadata
-2. [PRECISION] TMDb enrichment → canonical director, country, genre (cached, optional)
+2. [PRECISION] API Enrichment → TMDb + OMDb parallel query with smart merge
+   - Director: OMDb > TMDb (OMDb = IMDb = authoritative)
+   - Country: OMDb > TMDb (critical for Satellite routing)
+   - Genres: TMDb > OMDb (TMDb has richer structured data)
 3. [PRECISION] Explicit lookup → SORTING_DATABASE.md (human-curated, highest trust)
 4. [REASONING] Core director check → whitelist exact match
 5. [REASONING] Reference canon check → 50-film hardcoded list in constants.py
 6. [PRECISION] User tag recovery → trust previous human classification
 7. [REASONING] Language/country → Satellite routing (decade-bounded)
-8. [REASONING] Satellite classification → TMDb data (country + genre + decade)
-9. [PRECISION] Default → Unsorted with detailed reason code
+8. [REASONING] Satellite classification → merged API data (country + genre + decade)
+9. [REASONING] Popcorn classification → mainstream/curation signals
+10. [PRECISION] Default → Unsorted with detailed reason code
 """
 
 import sys
@@ -30,9 +34,11 @@ import yaml
 
 from lib.parser import FilenameParser, FilmMetadata
 from lib.tmdb import TMDbClient
+from lib.omdb import OMDbClient
 from lib.lookup import SortingDatabaseLookup
 from lib.core_directors import CoreDirectorDatabase
 from lib.satellite import SatelliteClassifier
+from lib.popcorn import PopcornClassifier
 from lib.normalization import normalize_for_lookup
 from lib.constants import REFERENCE_CANON, COUNTRY_TO_WAVE
 
@@ -103,6 +109,19 @@ class FilmClassifier:
             else:
                 logger.warning("TMDb API enrichment disabled (no API key in config)")
 
+        # OMDb client with caching (fallback for obscure films)
+        omdb_key = self.config.get('omdb_api_key')
+        if omdb_key and not self.no_tmdb:
+            self.omdb = OMDbClient(
+                api_key=omdb_key,
+                cache_path=Path('output/omdb_cache.json')
+            )
+            logger.info("OMDb API fallback enabled (with caching)")
+        else:
+            self.omdb = None
+            if not omdb_key:
+                logger.info("OMDb API fallback disabled (no API key in config)")
+
         # Explicit lookup database — checked BEFORE all heuristics
         self.lookup_db = SortingDatabaseLookup(
             project_path / 'SORTING_DATABASE.md'
@@ -117,6 +136,7 @@ class FilmClassifier:
 
         # Satellite classifier (TMDb-based rules)
         self.satellite_classifier = SatelliteClassifier()
+        self.popcorn_classifier = PopcornClassifier(self.lookup_db)
 
     def _build_destination(self, tier: str, decade: Optional[str], subdirectory: Optional[str]) -> str:
         """Build destination path string from classification components (tier-first)"""
@@ -183,42 +203,203 @@ class FilmClassifier:
 
         return result
 
+    def _clean_title_for_api(self, title: str) -> str:
+        """
+        Clean title for API queries (TMDb and OMDb)
+
+        Removes:
+        - User tag brackets [...]
+        - Format signals (35mm, Criterion, etc.)
+        - Empty parentheses artifacts
+        - Extra whitespace
+
+        Preserves:
+        - Punctuation (for proper title matching)
+        - Capitalization
+        - Special characters (é, ñ, etc.)
+
+        Returns:
+            Cleaned title string ready for API query
+        """
+        from lib.normalization import _strip_format_signals
+
+        clean_title = re.sub(r'\s*\[.+?\]\s*', ' ', title)
+        clean_title = _strip_format_signals(clean_title)
+        clean_title = re.sub(r'\s*\(\s*\)', '', clean_title)
+        clean_title = ' '.join(clean_title.split())
+
+        return clean_title.strip()
+
+    def _query_apis(self, metadata: FilmMetadata) -> Dict[str, Optional[Dict]]:
+        """
+        Query TMDb and OMDb in parallel (both attempted, not fallback)
+
+        Soft gate: API failures return None but don't stop pipeline
+
+        Args:
+            metadata: FilmMetadata with title and year
+
+        Returns:
+            Dict with keys 'tmdb' and 'omdb', values are API result dicts or None
+        """
+        results = {'tmdb': None, 'omdb': None}
+
+        if not metadata.title or not metadata.year:
+            return results
+
+        clean_title = self._clean_title_for_api(metadata.title)
+
+        # Query TMDb (if available)
+        if self.tmdb:
+            tmdb_data = self.tmdb.search_film(clean_title, metadata.year)
+            if tmdb_data:
+                results['tmdb'] = tmdb_data
+                self.stats['tmdb_success'] += 1
+
+        # Query OMDb (if available) — NOT a fallback, always attempt
+        if self.omdb:
+            omdb_data = self.omdb.search_film(clean_title, metadata.year)
+            if omdb_data:
+                results['omdb'] = omdb_data
+                self.stats['omdb_success'] += 1
+
+        # Track when both succeeded
+        if results['tmdb'] and results['omdb']:
+            self.stats['both_apis_success'] += 1
+
+        return results
+
+    def _merge_api_results(self, tmdb_data: Optional[Dict], omdb_data: Optional[Dict],
+                           metadata: FilmMetadata) -> Optional[Dict]:
+        """
+        Merge TMDb and OMDb results with field-specific priority
+
+        Priority rules:
+        - Director: OMDb > TMDb (OMDb = IMDb = most authoritative)
+        - Country: OMDb > TMDb (OMDb country data superior)
+        - Genres: TMDb > OMDb (TMDb has richer genre data)
+        - Cast/popularity: TMDb > OMDb (TMDb has richer popularity metadata)
+        - Year: filename > OMDb > TMDb (trust human-curated filenames)
+        - Title: TMDb > OMDb > filename (canonical names)
+
+        Updates metadata.director and metadata.country as side effect
+
+        Args:
+            tmdb_data: TMDb API result or None
+            omdb_data: OMDb API result or None
+            metadata: FilmMetadata to enrich (mutated)
+
+        Returns:
+            Merged dict for downstream satellite classification, or None if no data
+        """
+        if not tmdb_data and not omdb_data:
+            return None
+
+        merged = {}
+
+        # Director: OMDb > TMDb
+        if omdb_data and omdb_data.get('director'):
+            merged['director'] = omdb_data['director']
+            self.stats['director_from_omdb'] += 1
+            if not metadata.director:
+                metadata.director = omdb_data['director']
+        elif tmdb_data and tmdb_data.get('director'):
+            merged['director'] = tmdb_data['director']
+            self.stats['director_from_tmdb'] += 1
+            if not metadata.director:
+                metadata.director = tmdb_data['director']
+        elif metadata.director:
+            merged['director'] = metadata.director
+
+        # Country: OMDb > TMDb (critical fix for Satellite routing)
+        if omdb_data and omdb_data.get('countries'):
+            merged['countries'] = omdb_data['countries']
+            self.stats['country_from_omdb'] += 1
+            if not metadata.country:
+                metadata.country = omdb_data['countries'][0]
+        elif tmdb_data and tmdb_data.get('countries'):
+            merged['countries'] = tmdb_data['countries']
+            self.stats['country_from_tmdb'] += 1
+            if not metadata.country:
+                metadata.country = tmdb_data['countries'][0]
+        elif metadata.country:
+            merged['countries'] = [metadata.country]
+        else:
+            merged['countries'] = []
+
+        # Genres: TMDb > OMDb (TMDb has richer structured data)
+        if tmdb_data and tmdb_data.get('genres'):
+            merged['genres'] = tmdb_data['genres']
+            self.stats['genres_from_tmdb'] += 1
+        elif omdb_data and omdb_data.get('genres'):
+            merged['genres'] = omdb_data['genres']
+        else:
+            merged['genres'] = []
+
+        # Cast: TMDb > OMDb (used by Popcorn differentiator)
+        if tmdb_data and tmdb_data.get('cast'):
+            merged['cast'] = tmdb_data['cast']
+        elif omdb_data and omdb_data.get('cast'):
+            merged['cast'] = omdb_data['cast']
+        else:
+            merged['cast'] = []
+
+        # Popularity/votes: TMDb preferred, OMDb vote count as fallback
+        if tmdb_data and tmdb_data.get('popularity') is not None:
+            merged['popularity'] = tmdb_data['popularity']
+        if tmdb_data and tmdb_data.get('vote_count') is not None:
+            merged['vote_count'] = tmdb_data['vote_count']
+        elif omdb_data and omdb_data.get('vote_count') is not None:
+            merged['vote_count'] = omdb_data['vote_count']
+
+        # Year: filename > OMDb > TMDb
+        if metadata.year:
+            merged['year'] = metadata.year
+        elif omdb_data and omdb_data.get('year'):
+            merged['year'] = omdb_data['year']
+        elif tmdb_data and tmdb_data.get('year'):
+            merged['year'] = tmdb_data['year']
+
+        # Title: TMDb > OMDb > filename (canonical names)
+        if tmdb_data and tmdb_data.get('title'):
+            merged['title'] = tmdb_data['title']
+        elif omdb_data and omdb_data.get('title'):
+            merged['title'] = omdb_data['title']
+        else:
+            merged['title'] = metadata.title
+
+        # Original language (only TMDb provides this)
+        if tmdb_data and tmdb_data.get('original_language'):
+            merged['original_language'] = tmdb_data['original_language']
+
+        return merged
+
     def classify(self, metadata: FilmMetadata) -> ClassificationResult:
         """
         Main classification pipeline — priority-ordered checks.
 
-        Each check is a separate method with declared failure behavior:
-        - Explicit lookup: soft gate (no match → continue)
-        - Core director: soft gate (no match → continue)
-        - Reference canon: soft gate (no match → continue)
-        - User tag: soft gate (no tag → continue)
-        - Country/decade satellite: soft gate (no match → continue)
-        - TMDb satellite: soft gate (no data → continue)
+        Priority order (Issue #14 - Popcorn/Indie before Satellite):
+        1. Explicit lookup (SORTING_DATABASE.md)
+        2. Core director check
+        3. Reference canon check
+        4. User tag recovery
+        5. Popcorn check (MOVED UP - prevents mainstream films from Satellite)
+        6. Country/decade satellite routing
+        7. TMDb satellite classification
+        8. Unsorted (default)
+
+        Each check is a soft gate (no match → continue) except:
         - No year: hard gate (cannot route to decade → Unsorted)
         """
 
-        # === Stage 1: TMDb enrichment (optional) ===
-        tmdb_data = None
-        if self.tmdb and metadata.title and metadata.year:
-            # Clean title for TMDb query (remove user tags, format signals, but keep proper title structure)
-            clean_title = metadata.title
-            # Remove user tag brackets [...]
-            clean_title = re.sub(r'\s*\[.+?\]\s*', ' ', clean_title)
-            # Remove format signals using shared normalization (but not full normalization to preserve punctuation)
-            from lib.normalization import _strip_format_signals
-            clean_title = _strip_format_signals(clean_title)
-            # Clean up extra spaces and parentheses artifacts
-            clean_title = re.sub(r'\s*\(\s*\)', '', clean_title)  # Remove empty parens like "Criterion ("
-            clean_title = ' '.join(clean_title.split())
-
-            tmdb_data = self.tmdb.search_film(clean_title.strip(), metadata.year)
-            if tmdb_data:
-                # Enrich metadata with TMDb director if we don't have one
-                if not metadata.director and tmdb_data.get('director'):
-                    metadata.director = tmdb_data['director']
-                # Enrich country if not detected from filename
-                if not metadata.country and tmdb_data.get('countries'):
-                    metadata.country = tmdb_data['countries'][0] if tmdb_data['countries'] else None
+        # === Stage 1: API Enrichment (TMDb + OMDb parallel query with smart merge) ===
+        api_results = self._query_apis(metadata)
+        tmdb_data = self._merge_api_results(
+            api_results['tmdb'],
+            api_results['omdb'],
+            metadata
+        )
+        # Note: metadata.director and metadata.country updated as side effect
 
         # === Stage 2: Explicit lookup (highest trust — human-curated) ===
         if metadata.title:
@@ -227,20 +408,27 @@ class FilmClassifier:
                 self.stats['explicit_lookup'] += 1
                 parsed = self._parse_destination_path(dest)
 
-                # Track satellite counts for cap enforcement
-                if parsed['tier'] == 'Satellite' and parsed.get('subdirectory'):
-                    self.satellite_classifier.increment_count(parsed['subdirectory'])
+                if parsed['tier'] == 'Unknown':
+                    self.stats['lookup_invalid_destination'] += 1
+                    logger.warning(
+                        "Skipping invalid explicit lookup destination '%s' for '%s'",
+                        dest, metadata.title
+                    )
+                else:
+                    # Track satellite counts for cap enforcement
+                    if parsed['tier'] == 'Satellite' and parsed.get('subdirectory'):
+                        self.satellite_classifier.increment_count(parsed['subdirectory'])
 
-                return ClassificationResult(
-                    filename=metadata.filename, title=metadata.title,
-                    year=metadata.year, director=metadata.director,
-                    language=metadata.language, country=metadata.country,
-                    user_tag=metadata.user_tag,
-                    tier=parsed['tier'], decade=parsed['decade'],
-                    subdirectory=parsed.get('subdirectory'),
-                    destination=dest,
-                    confidence=1.0, reason='explicit_lookup'
-                )
+                    return ClassificationResult(
+                        filename=metadata.filename, title=metadata.title,
+                        year=metadata.year, director=metadata.director,
+                        language=metadata.language, country=metadata.country,
+                        user_tag=metadata.user_tag,
+                        tier=parsed['tier'], decade=parsed['decade'],
+                        subdirectory=parsed.get('subdirectory'),
+                        destination=dest,
+                        confidence=1.0, reason='explicit_lookup'
+                    )
 
         # === Hard gate: no year = cannot route to decade ===
         if not metadata.year:
@@ -319,7 +507,25 @@ class FilmClassifier:
                     confidence=0.8, reason='user_tag_recovery'
                 )
 
-        # === Stage 6: Language/country → Satellite routing (from filename) ===
+        # === Stage 6: Popcorn check (MOVED UP - Issue #14 priority reorder) ===
+        # Check Popcorn BEFORE Satellite to prevent mainstream films from
+        # being caught by exploitation categories (especially post-1980)
+        popcorn_reason = self.popcorn_classifier.classify_reason(metadata, tmdb_data)
+        if popcorn_reason:
+            self.stats['popcorn_auto'] += 1
+            self.stats[popcorn_reason] += 1
+            dest = f'Popcorn/{decade}/'
+            return ClassificationResult(
+                filename=metadata.filename, title=metadata.title,
+                year=metadata.year, director=metadata.director,
+                language=metadata.language, country=metadata.country,
+                user_tag=metadata.user_tag,
+                tier='Popcorn', decade=decade, subdirectory=None,
+                destination=dest,
+                confidence=0.65, reason=popcorn_reason
+            )
+
+        # === Stage 7: Language/country → Satellite routing (from filename) ===
         if metadata.country and metadata.country in COUNTRY_TO_WAVE:
             wave_config = COUNTRY_TO_WAVE[metadata.country]
             if decade in wave_config['decades']:
@@ -336,7 +542,7 @@ class FilmClassifier:
                     confidence=0.7, reason='country_satellite'
                 )
 
-        # === Stage 7: TMDb-based satellite classification ===
+        # === Stage 8: TMDb-based satellite classification ===
         if tmdb_data:
             satellite_cat = self.satellite_classifier.classify(metadata, tmdb_data)
             if satellite_cat:
@@ -352,7 +558,7 @@ class FilmClassifier:
                     confidence=0.7, reason='tmdb_satellite'
                 )
 
-        # === Stage 8: Unsorted (default) ===
+        # === Stage 9: Unsorted (default) ===
         reason_parts = []
         if not metadata.director:
             reason_parts.append('no_director')
@@ -488,6 +694,21 @@ class FilmClassifier:
             print(f"\nTMDb: {cache_stats['misses']} API queries, "
                   f"{cache_stats['hits']} cache hits "
                   f"({cache_stats['hit_rate']:.0f}% hit rate)")
+
+        # OMDb cache statistics
+        if self.omdb:
+            cache_stats = self.omdb.get_cache_stats()
+            print(f"OMDb: {cache_stats['misses']} API queries, "
+                  f"{cache_stats['hits']} cache hits "
+                  f"({cache_stats['hit_rate']:.0f}% hit rate)")
+
+        # API source attribution statistics
+        api_stats = {k: v for k, v in self.stats.items()
+                     if 'api' in k or 'from_' in k or k in ['tmdb_success', 'omdb_success']}
+        if api_stats:
+            print(f"\nAPI Data Sources:")
+            for stat, count in sorted(api_stats.items()):
+                print(f"  {stat:30s}: {count:4d}")
 
         print("=" * 60)
 

@@ -1,0 +1,1993 @@
+{
+  "Giallo": {
+    "keywords": [
+      {
+        "keyword": "murder",
+        "count": 3,
+        "films": [
+          "Blood and Black Lace",
+          "Deep Red",
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "whodunit",
+        "count": 3,
+        "films": [
+          "Blood and Black Lace",
+          "Deep Red",
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "proto-slasher",
+        "count": 2,
+        "films": [
+          "Deep Red",
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "giallo",
+        "count": 2,
+        "films": [
+          "Deep Red",
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "serial killer",
+        "count": 2,
+        "films": [
+          "Tenebrae",
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "axe murder",
+        "count": 2,
+        "films": [
+          "Tenebrae",
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "video nasty",
+        "count": 2,
+        "films": [
+          "Tenebrae",
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "blackmail",
+        "count": 1,
+        "films": [
+          "Blood and Black Lace"
+        ]
+      },
+      {
+        "keyword": "model",
+        "count": 1,
+        "films": [
+          "Blood and Black Lace"
+        ]
+      },
+      {
+        "keyword": "killer",
+        "count": 1,
+        "films": [
+          "Blood and Black Lace"
+        ]
+      },
+      {
+        "keyword": "reporter",
+        "count": 1,
+        "films": [
+          "Deep Red"
+        ]
+      },
+      {
+        "keyword": "psychic",
+        "count": 1,
+        "films": [
+          "Deep Red"
+        ]
+      },
+      {
+        "keyword": "pianist",
+        "count": 1,
+        "films": [
+          "Deep Red"
+        ]
+      },
+      {
+        "keyword": "hitman",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "clone",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "space battle",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "mercenary",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "space",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "space western",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "robot",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "explosion",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "space opera",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "space adventure",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "spaceship",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "good versus evil",
+        "count": 1,
+        "films": [
+          "The Beyond"
+        ]
+      },
+      {
+        "keyword": "rome, italy",
+        "count": 1,
+        "films": [
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "anonymous letter",
+        "count": 1,
+        "films": [
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "series of murders",
+        "count": 1,
+        "films": [
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "american abroad",
+        "count": 1,
+        "films": [
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "novelist",
+        "count": 1,
+        "films": [
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "police investigation",
+        "count": 1,
+        "films": [
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "haunted by the past",
+        "count": 1,
+        "films": [
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "razor blade",
+        "count": 1,
+        "films": [
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "bloody death",
+        "count": 1,
+        "films": [
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "woman murder",
+        "count": 1,
+        "films": [
+          "Tenebrae"
+        ]
+      },
+      {
+        "keyword": "suicide",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "octopus",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "psychopath",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "mass murder",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "wheelchair",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "gore",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "slasher",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "skinny dipping",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "maniac",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "macabre",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      },
+      {
+        "keyword": "ax",
+        "count": 1,
+        "films": [
+          "A Bay of Blood"
+        ]
+      }
+    ],
+    "tentpole_count": 5,
+    "tentpole_films": [
+      {
+        "title": "Blood and Black Lace",
+        "year": 1964,
+        "director": "Mario Bava",
+        "keyword_count": 5
+      },
+      {
+        "title": "Deep Red",
+        "year": 1975,
+        "director": "Dario Argento",
+        "keyword_count": 7
+      },
+      {
+        "title": "Battle Beyond the Stars",
+        "year": 1981,
+        "director": "Lucio Fulci",
+        "keyword_count": 12
+      },
+      {
+        "title": "Tenebre",
+        "year": 1982,
+        "director": "Dario Argento",
+        "keyword_count": 15
+      },
+      {
+        "title": "A Bay of Blood",
+        "year": 1971,
+        "director": "Mario Bava",
+        "keyword_count": 16
+      }
+    ],
+    "query_failures": []
+  },
+  "Pinku Eiga": {
+    "keywords": [
+      {
+        "keyword": "pink film",
+        "count": 4,
+        "films": [
+          "Go Go Second Time Virgin",
+          "Inflatable Sex Doll of the Wastelands",
+          "Wife to Be Sacrificed",
+          "Violated Angels"
+        ]
+      },
+      {
+        "keyword": "film noir",
+        "count": 1,
+        "films": [
+          "Inflatable Sex Doll of the Wastelands"
+        ]
+      },
+      {
+        "keyword": "kidnapping",
+        "count": 1,
+        "films": [
+          "Wife to Be Sacrificed"
+        ]
+      },
+      {
+        "keyword": "sexual torture",
+        "count": 1,
+        "films": [
+          "Wife to Be Sacrificed"
+        ]
+      },
+      {
+        "keyword": "confinement",
+        "count": 1,
+        "films": [
+          "Wife to Be Sacrificed"
+        ]
+      },
+      {
+        "keyword": "nurse",
+        "count": 1,
+        "films": [
+          "Violated Angels"
+        ]
+      }
+    ],
+    "tentpole_count": 4,
+    "tentpole_films": [
+      {
+        "title": "Go, Go Second Time Virgin",
+        "year": 1969,
+        "director": "Kōji Wakamatsu",
+        "keyword_count": 1
+      },
+      {
+        "title": "Inflatable Sex Doll of the Wastelands",
+        "year": 1967,
+        "director": "Kōji Wakamatsu",
+        "keyword_count": 2
+      },
+      {
+        "title": "Wife to Be Sacrificed",
+        "year": 1974,
+        "director": "Masaru Konuma",
+        "keyword_count": 4
+      },
+      {
+        "title": "Violated Angels",
+        "year": 1967,
+        "director": "Kōji Wakamatsu",
+        "keyword_count": 2
+      }
+    ],
+    "query_failures": []
+  },
+  "Japanese Exploitation": {
+    "keywords": [
+      {
+        "keyword": "yakuza",
+        "count": 3,
+        "films": [
+          "Battles Without Honor and Humanity",
+          "Street Mobster",
+          "Graveyard of Honor"
+        ]
+      },
+      {
+        "keyword": "gangster",
+        "count": 2,
+        "films": [
+          "Battles Without Honor and Humanity",
+          "Graveyard of Honor"
+        ]
+      },
+      {
+        "keyword": "prison",
+        "count": 2,
+        "films": [
+          "Street Mobster",
+          "Graveyard of Honor"
+        ]
+      },
+      {
+        "keyword": "assassination",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "hitman",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "gang war",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "blackout",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "hiroshima, japan",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "betrayal",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "power outage",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "criminal underworld",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "strategy",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "diplomacy",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "1960s",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "cold war era",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "shōwa era (1926-89)",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "scrap metal trade",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "alliance",
+        "count": 1,
+        "films": [
+          "Battles Without Honor and Humanity"
+        ]
+      },
+      {
+        "keyword": "rape",
+        "count": 1,
+        "films": [
+          "Street Mobster"
+        ]
+      },
+      {
+        "keyword": "murder",
+        "count": 1,
+        "films": [
+          "Street Mobster"
+        ]
+      },
+      {
+        "keyword": "gang",
+        "count": 1,
+        "films": [
+          "Street Mobster"
+        ]
+      },
+      {
+        "keyword": "street life",
+        "count": 1,
+        "films": [
+          "Street Mobster"
+        ]
+      },
+      {
+        "keyword": "japan",
+        "count": 1,
+        "films": [
+          "Graveyard of Honor"
+        ]
+      },
+      {
+        "keyword": "based on novel or book",
+        "count": 1,
+        "films": [
+          "Graveyard of Honor"
+        ]
+      },
+      {
+        "keyword": "self-destruction",
+        "count": 1,
+        "films": [
+          "Graveyard of Honor"
+        ]
+      },
+      {
+        "keyword": "based on true story",
+        "count": 1,
+        "films": [
+          "Graveyard of Honor"
+        ]
+      },
+      {
+        "keyword": "honor",
+        "count": 1,
+        "films": [
+          "Graveyard of Honor"
+        ]
+      },
+      {
+        "keyword": "organized crime",
+        "count": 1,
+        "films": [
+          "Graveyard of Honor"
+        ]
+      },
+      {
+        "keyword": "graveyard",
+        "count": 1,
+        "films": [
+          "Graveyard of Honor"
+        ]
+      },
+      {
+        "keyword": "1940s",
+        "count": 1,
+        "films": [
+          "Graveyard of Honor"
+        ]
+      }
+    ],
+    "tentpole_count": 3,
+    "tentpole_films": [
+      {
+        "title": "Battles Without Honor and Humanity: Proxy War",
+        "year": 1973,
+        "director": "Kinji Fukasaku",
+        "keyword_count": 17
+      },
+      {
+        "title": "Street Mobster",
+        "year": 1972,
+        "director": "Kinji Fukasaku",
+        "keyword_count": 6
+      },
+      {
+        "title": "Graveyard of Honor",
+        "year": 1975,
+        "director": "Kinji Fukasaku",
+        "keyword_count": 11
+      }
+    ],
+    "query_failures": []
+  },
+  "Brazilian Exploitation": {
+    "keywords": [
+      {
+        "keyword": "nun",
+        "count": 1,
+        "films": [
+          "Escola Penal de Meninas Violentadas"
+        ]
+      },
+      {
+        "keyword": "women's prison",
+        "count": 1,
+        "films": [
+          "Escola Penal de Meninas Violentadas"
+        ]
+      },
+      {
+        "keyword": "model",
+        "count": 1,
+        "films": [
+          "A Super Fêmea"
+        ]
+      },
+      {
+        "keyword": "beach",
+        "count": 1,
+        "films": [
+          "O Império do Desejo"
+        ]
+      },
+      {
+        "keyword": "desire",
+        "count": 1,
+        "films": [
+          "O Império do Desejo"
+        ]
+      }
+    ],
+    "tentpole_count": 4,
+    "tentpole_films": [
+      {
+        "title": "Penal School for Raped Girls",
+        "year": 1977,
+        "director": "Antonio Polo Galante",
+        "keyword_count": 2
+      },
+      {
+        "title": "A Super Fêmea",
+        "year": 1973,
+        "director": "Aníbal Massaini Neto",
+        "keyword_count": 1
+      },
+      {
+        "title": "The Empire of Desire",
+        "year": 1981,
+        "director": "Carlos Reichenbach",
+        "keyword_count": 2
+      }
+    ],
+    "query_failures": [
+      "Amadas e Violentadas (1976)"
+    ]
+  },
+  "Hong Kong Action": {
+    "keywords": [
+      {
+        "keyword": "martial arts",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "kung fu",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "trainer",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "sake",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "uncle",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "dojo",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "master",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "drunken master",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "drunken boxing",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "absurd",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "amused",
+        "count": 1,
+        "films": [
+          "Drunken Master"
+        ]
+      },
+      {
+        "keyword": "blindness and impaired vision",
+        "count": 1,
+        "films": [
+          "The Killer"
+        ]
+      },
+      {
+        "keyword": "police",
+        "count": 1,
+        "films": [
+          "The Killer"
+        ]
+      },
+      {
+        "keyword": "hitman",
+        "count": 1,
+        "films": [
+          "The Killer"
+        ]
+      },
+      {
+        "keyword": "hong kong",
+        "count": 1,
+        "films": [
+          "The Killer"
+        ]
+      },
+      {
+        "keyword": "dramatic",
+        "count": 1,
+        "films": [
+          "The Killer"
+        ]
+      },
+      {
+        "keyword": "cultural revolution",
+        "count": 1,
+        "films": [
+          "Peking Opera Blues"
+        ]
+      },
+      {
+        "keyword": "peking opera",
+        "count": 1,
+        "films": [
+          "Peking Opera Blues"
+        ]
+      },
+      {
+        "keyword": "undercover cop",
+        "count": 1,
+        "films": [
+          "City on Fire"
+        ]
+      }
+    ],
+    "tentpole_count": 4,
+    "tentpole_films": [
+      {
+        "title": "Drunken Master",
+        "year": 1978,
+        "director": "Yuen Woo-ping",
+        "keyword_count": 11
+      },
+      {
+        "title": "The Killer",
+        "year": 1989,
+        "director": "John Woo",
+        "keyword_count": 5
+      },
+      {
+        "title": "Peking Opera Blues",
+        "year": 1986,
+        "director": "Tsui Hark",
+        "keyword_count": 2
+      },
+      {
+        "title": "City on Fire",
+        "year": 1987,
+        "director": "Ringo Lam",
+        "keyword_count": 1
+      }
+    ],
+    "query_failures": []
+  },
+  "American Exploitation": {
+    "keywords": [
+      {
+        "keyword": "sports car",
+        "count": 1,
+        "films": [
+          "Faster, Pussycat! Kill! Kill!"
+        ]
+      },
+      {
+        "keyword": "kidnapping",
+        "count": 1,
+        "films": [
+          "Faster, Pussycat! Kill! Kill!"
+        ]
+      },
+      {
+        "keyword": "go-go dancer",
+        "count": 1,
+        "films": [
+          "Faster, Pussycat! Kill! Kill!"
+        ]
+      },
+      {
+        "keyword": "killing",
+        "count": 1,
+        "films": [
+          "Faster, Pussycat! Kill! Kill!"
+        ]
+      },
+      {
+        "keyword": "eroticism",
+        "count": 1,
+        "films": [
+          "Faster, Pussycat! Kill! Kill!"
+        ]
+      },
+      {
+        "keyword": "ritual",
+        "count": 1,
+        "films": [
+          "Hollywood Chainsaw Hookers"
+        ]
+      },
+      {
+        "keyword": "detective",
+        "count": 1,
+        "films": [
+          "Hollywood Chainsaw Hookers"
+        ]
+      },
+      {
+        "keyword": "cult",
+        "count": 1,
+        "films": [
+          "Hollywood Chainsaw Hookers"
+        ]
+      },
+      {
+        "keyword": "human sacrifice",
+        "count": 1,
+        "films": [
+          "Hollywood Chainsaw Hookers"
+        ]
+      },
+      {
+        "keyword": "chainsaw",
+        "count": 1,
+        "films": [
+          "Hollywood Chainsaw Hookers"
+        ]
+      },
+      {
+        "keyword": "prostitution",
+        "count": 1,
+        "films": [
+          "Hollywood Chainsaw Hookers"
+        ]
+      },
+      {
+        "keyword": "private detective",
+        "count": 1,
+        "films": [
+          "Hollywood Chainsaw Hookers"
+        ]
+      },
+      {
+        "keyword": "dismemberment",
+        "count": 1,
+        "films": [
+          "Hollywood Chainsaw Hookers"
+        ]
+      },
+      {
+        "keyword": "egyptian mythology",
+        "count": 1,
+        "films": [
+          "Hollywood Chainsaw Hookers"
+        ]
+      },
+      {
+        "keyword": "new york city",
+        "count": 1,
+        "films": [
+          "Ms. 45"
+        ]
+      },
+      {
+        "keyword": "rape",
+        "count": 1,
+        "films": [
+          "Ms. 45"
+        ]
+      },
+      {
+        "keyword": "revenge",
+        "count": 1,
+        "films": [
+          "Ms. 45"
+        ]
+      },
+      {
+        "keyword": "mute",
+        "count": 1,
+        "films": [
+          "Ms. 45"
+        ]
+      },
+      {
+        "keyword": "killing spree",
+        "count": 1,
+        "films": [
+          "Ms. 45"
+        ]
+      },
+      {
+        "keyword": "rape and revenge",
+        "count": 1,
+        "films": [
+          "Ms. 45"
+        ]
+      },
+      {
+        "keyword": "revenge killing",
+        "count": 1,
+        "films": [
+          "Ms. 45"
+        ]
+      },
+      {
+        "keyword": "meltdown",
+        "count": 1,
+        "films": [
+          "Ms. 45"
+        ]
+      },
+      {
+        "keyword": "experiment",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "insanity",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "overdose",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "black humor",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "mad scientist",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "decapitation",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "reanimation",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "laboratory",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "severed head",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "hospital",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "zombie",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "intestines",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "death",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "black cat",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "based on short story",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "dead cat",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "surgical operation",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "reanimated corpse",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "medical student",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "medical school",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "lovecraftian",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      },
+      {
+        "keyword": "amused",
+        "count": 1,
+        "films": [
+          "Re-Animator"
+        ]
+      }
+    ],
+    "tentpole_count": 4,
+    "tentpole_films": [
+      {
+        "title": "Faster, Pussycat! Kill! Kill!",
+        "year": 1965,
+        "director": "Russ Meyer",
+        "keyword_count": 5
+      },
+      {
+        "title": "Hollywood Chainsaw Hookers",
+        "year": 1988,
+        "director": "Fred Olen Ray",
+        "keyword_count": 9
+      },
+      {
+        "title": "Ms .45",
+        "year": 1981,
+        "director": "Abel Ferrara",
+        "keyword_count": 8
+      },
+      {
+        "title": "Re-Animator",
+        "year": 1985,
+        "director": "Stuart Gordon",
+        "keyword_count": 22
+      }
+    ],
+    "query_failures": []
+  },
+  "European Sexploitation": {
+    "keywords": [
+      {
+        "keyword": "erotic movie",
+        "count": 3,
+        "films": [
+          "Emmanuelle",
+          "The Story of O",
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "eroticism",
+        "count": 2,
+        "films": [
+          "Emmanuelle",
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "infidelity",
+        "count": 1,
+        "films": [
+          "Emmanuelle"
+        ]
+      },
+      {
+        "keyword": "airplane",
+        "count": 1,
+        "films": [
+          "Emmanuelle"
+        ]
+      },
+      {
+        "keyword": "bangkok, thailand",
+        "count": 1,
+        "films": [
+          "Emmanuelle"
+        ]
+      },
+      {
+        "keyword": "sexual fantasy",
+        "count": 1,
+        "films": [
+          "Emmanuelle"
+        ]
+      },
+      {
+        "keyword": "sexual arousal",
+        "count": 1,
+        "films": [
+          "Emmanuelle"
+        ]
+      },
+      {
+        "keyword": "promiscuity",
+        "count": 1,
+        "films": [
+          "Emmanuelle"
+        ]
+      },
+      {
+        "keyword": "softcore",
+        "count": 1,
+        "films": [
+          "Emmanuelle"
+        ]
+      },
+      {
+        "keyword": "bondage",
+        "count": 1,
+        "films": [
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "based on novel or book",
+        "count": 1,
+        "films": [
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "sadomasochism",
+        "count": 1,
+        "films": [
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "fashion photographer",
+        "count": 1,
+        "films": [
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "subjection",
+        "count": 1,
+        "films": [
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "bdsm",
+        "count": 1,
+        "films": [
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "kinky sex",
+        "count": 1,
+        "films": [
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "age-gap relationship",
+        "count": 1,
+        "films": [
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "swingers",
+        "count": 1,
+        "films": [
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "freeuse (free use)",
+        "count": 1,
+        "films": [
+          "The Story of O"
+        ]
+      },
+      {
+        "keyword": "virgin",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "beach",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "mass murder",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "pope",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "orgy",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "riding a bicycle",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "castle",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "cousin",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "anthology",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "incest",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "middle ages (476-1453)",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "brother sister sex",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "brother sister incest",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "father daughter incest",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      },
+      {
+        "keyword": "father daughter sex",
+        "count": 1,
+        "films": [
+          "Immoral Tales"
+        ]
+      }
+    ],
+    "tentpole_count": 3,
+    "tentpole_films": [
+      {
+        "title": "Emmanuelle",
+        "year": 1974,
+        "director": "Just Jaeckin",
+        "keyword_count": 9
+      },
+      {
+        "title": "The Story of O",
+        "year": 1975,
+        "director": "Just Jaeckin",
+        "keyword_count": 12
+      },
+      {
+        "title": "Immoral Tales",
+        "year": 1973,
+        "director": "Walerian Borowczyk",
+        "keyword_count": 16
+      }
+    ],
+    "query_failures": []
+  },
+  "Blaxploitation": {
+    "keywords": [
+      {
+        "keyword": "blaxploitation cinema",
+        "count": 3,
+        "films": [
+          "Shaft",
+          "Coffy",
+          "Foxy Brown"
+        ]
+      },
+      {
+        "keyword": "daughter",
+        "count": 1,
+        "films": [
+          "Shaft"
+        ]
+      },
+      {
+        "keyword": "new york city",
+        "count": 1,
+        "films": [
+          "Shaft"
+        ]
+      },
+      {
+        "keyword": "police",
+        "count": 1,
+        "films": [
+          "Shaft"
+        ]
+      },
+      {
+        "keyword": "ghetto",
+        "count": 1,
+        "films": [
+          "Shaft"
+        ]
+      },
+      {
+        "keyword": "biting",
+        "count": 1,
+        "films": [
+          "Shaft"
+        ]
+      },
+      {
+        "keyword": "aggressive",
+        "count": 1,
+        "films": [
+          "Shaft"
+        ]
+      },
+      {
+        "keyword": "suspenseful",
+        "count": 1,
+        "films": [
+          "Shaft"
+        ]
+      },
+      {
+        "keyword": "tense",
+        "count": 1,
+        "films": [
+          "Shaft"
+        ]
+      },
+      {
+        "keyword": "assertive",
+        "count": 1,
+        "films": [
+          "Shaft"
+        ]
+      },
+      {
+        "keyword": "right and justice",
+        "count": 1,
+        "films": [
+          "Coffy"
+        ]
+      },
+      {
+        "keyword": "orderly",
+        "count": 1,
+        "films": [
+          "Coffy"
+        ]
+      },
+      {
+        "keyword": "vigilante",
+        "count": 1,
+        "films": [
+          "Coffy"
+        ]
+      },
+      {
+        "keyword": "illegal drugs",
+        "count": 1,
+        "films": [
+          "Coffy"
+        ]
+      },
+      {
+        "keyword": "callous",
+        "count": 1,
+        "films": [
+          "Coffy"
+        ]
+      },
+      {
+        "keyword": "ridiculous",
+        "count": 1,
+        "films": [
+          "Coffy"
+        ]
+      },
+      {
+        "keyword": "drug use",
+        "count": 1,
+        "films": [
+          "Foxy Brown"
+        ]
+      },
+      {
+        "keyword": "revenge",
+        "count": 1,
+        "films": [
+          "Foxy Brown"
+        ]
+      },
+      {
+        "keyword": "prostitution",
+        "count": 1,
+        "films": [
+          "Foxy Brown"
+        ]
+      },
+      {
+        "keyword": "farcical",
+        "count": 1,
+        "films": [
+          "Foxy Brown"
+        ]
+      }
+    ],
+    "tentpole_count": 3,
+    "tentpole_films": [
+      {
+        "title": "Shaft",
+        "year": 1971,
+        "director": "Gordon Parks",
+        "keyword_count": 10
+      },
+      {
+        "title": "Coffy",
+        "year": 1973,
+        "director": "Jack Hill",
+        "keyword_count": 7
+      },
+      {
+        "title": "Foxy Brown",
+        "year": 1974,
+        "director": "Jack Hill",
+        "keyword_count": 5
+      }
+    ],
+    "query_failures": []
+  },
+  "Music Films": {
+    "keywords": [
+      {
+        "keyword": "surreal",
+        "count": 1,
+        "films": [
+          "200 Motels"
+        ]
+      },
+      {
+        "keyword": "groupie",
+        "count": 1,
+        "films": [
+          "200 Motels"
+        ]
+      },
+      {
+        "keyword": "american musician",
+        "count": 1,
+        "films": [
+          "200 Motels"
+        ]
+      },
+      {
+        "keyword": "adultery",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "child abuse",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "1970s",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "christmas party",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "deaf-mute",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "world war ii",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "musical",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "satire",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "christmas tree",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "death of father",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "mute",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "pinball",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "rock opera",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "rock musical",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "post war",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "cult leader",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "psychosomatic illness",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "blindness",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "pinball machine",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "holiday camp",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "visually impaired person",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "christmas lights",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "evil child",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "messiah",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "cult of celebrity",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "1940s",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "1950s",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "1960s",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "witch doctor",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "1930s",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "abusive stepfather",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "acid trip",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "psychotronic film",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "child sexual abuse",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "independent film",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "surrealistic",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      },
+      {
+        "keyword": "celebridade",
+        "count": 1,
+        "films": [
+          "Tommy"
+        ]
+      }
+    ],
+    "tentpole_count": 3,
+    "tentpole_films": [
+      {
+        "title": "200 Motels",
+        "year": 1971,
+        "director": "Frank Zappa",
+        "keyword_count": 3
+      },
+      {
+        "title": "Tommy",
+        "year": 1975,
+        "director": "Ken Russell",
+        "keyword_count": 37
+      }
+    ],
+    "query_failures": [
+      "Louie Bluie (1985)"
+    ]
+  }
+}

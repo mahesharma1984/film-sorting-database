@@ -1,0 +1,35 @@
+2026-02-16 10:17:34,318 - INFO - Loaded TMDb cache with 937 entries
+2026-02-16 10:17:34,318 - INFO - TMDb API enrichment enabled (with caching)
+2026-02-16 10:17:34,319 - INFO - Loaded OMDb cache with 7 entries
+2026-02-16 10:17:34,319 - INFO - OMDb API fallback enabled (with caching)
+2026-02-16 10:17:34,332 - WARNING - Conflict: 'buffalo 66' (1998) → 1990s/Core/Vincent Gallo vs Core (Gallo) OR Popcorn?
+2026-02-16 10:17:34,332 - WARNING - Conflict: 'reanimator' (1985) → 1980s/Popcorn/ [Moved from Satellite] vs Satellite OR Popcorn? [DECIDED: Popcorn]
+2026-02-16 10:17:34,332 - WARNING - Conflict: 'ms 45' (1981) → 1980s/Satellite/American Exploitation/ [Abel Ferrara - consider Core] vs Add Ferrara to Core? Currently Satellite
+2026-02-16 10:17:34,333 - INFO - Loaded 294 explicit film mappings from SORTING_DATABASE.md
+2026-02-16 10:17:34,333 - WARNING - Found 3 films with conflicting destinations
+2026-02-16 10:17:34,333 - INFO - Loaded explicit lookup table: 294 films
+2026-02-16 10:17:34,333 - INFO - Loaded 105 core directors across 8 decades (exact match only)
+2026-02-16 10:17:34,333 - INFO - Scanning: /Volumes/One Touch/movies/unsorted
+2026-02-16 10:18:03,364 - INFO - Found 0 video files
+2026-02-16 10:18:03,365 - INFO - Wrote manifest to output/sorting_manifest.csv
+2026-02-16 10:18:03,366 - INFO - Wrote staging report to output/staging_report.txt
+
+============================================================
+CLASSIFICATION STATISTICS (v1.0)
+============================================================
+Total films processed: 0
+
+BY TIER:
+  Core           :    0 (  0.0%)
+  Reference      :    0 (  0.0%)
+  Satellite      :    0 (  0.0%)
+  Popcorn        :    0 (  0.0%)
+  Unsorted       :    0 (  0.0%)
+
+BY REASON:
+
+Classification rate: 0.0% (0/0)
+
+TMDb: 0 API queries, 0 cache hits (0% hit rate)
+OMDb: 0 API queries, 0 cache hits (0% hit rate)
+============================================================

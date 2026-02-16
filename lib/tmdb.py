@@ -58,7 +58,8 @@ class TMDbClient:
         """
         Search for film and return metadata (with caching)
 
-        Returns dict with keys: title, year, director, genres, countries
+        Returns dict with keys: title, year, director, genres, countries,
+        cast, popularity, vote_count, keywords
         or None if not found
         """
         if not self.api_key:
@@ -114,49 +115,80 @@ class TMDbClient:
             film_data = data['results'][0]
             film_id = film_data['id']
 
-            # Get credits (for director)
-            credits_response = requests.get(
-                f"{self.base_url}/movie/{film_id}/credits",
-                params={'api_key': self.api_key},
+            # Get detailed movie payload + credits + keywords in one call
+            details_response = requests.get(
+                f"{self.base_url}/movie/{film_id}",
+                params={'api_key': self.api_key, 'append_to_response': 'credits,keywords'},
                 timeout=10
             )
-            credits_response.raise_for_status()
-            credits_data = credits_response.json()
+            details_response.raise_for_status()
+            details_data = details_response.json()
 
             # Extract director
             director = None
+            credits_data = details_data.get('credits', {})
             for crew_member in credits_data.get('crew', []):
                 if crew_member['job'] == 'Director':
                     director = crew_member['name']
                     break
 
-            # Extract genres (genre_ids are integers, not dicts)
-            full_genres = []
-            if film_data.get('genre_ids'):
+            # Extract genres from detail payload
+            full_genres = [
+                genre.get('name') for genre in details_data.get('genres', [])
+                if genre.get('name')
+            ]
+
+            # Fallback for legacy cached/partial responses
+            if not full_genres and film_data.get('genre_ids'):
                 for genre_id in film_data['genre_ids']:
                     genre_name = self._get_genre_name(genre_id)
                     if genre_name:
                         full_genres.append(genre_name)
 
-            # Extract countries (from production countries)
+            # Extract countries (production + origin fallback)
             countries = []
-            if 'production_countries' in film_data:
-                countries = [c['iso_3166_1'] for c in film_data['production_countries']]
+            for country in details_data.get('production_countries', []):
+                code = country.get('iso_3166_1')
+                if code and code not in countries:
+                    countries.append(code)
 
-            # Also get origin_country if available
-            if 'origin_country' in film_data:
-                for country in film_data['origin_country']:
+            for country in details_data.get('origin_country', []):
+                if country not in countries:
+                    countries.append(country)
+
+            if not countries:
+                for country in film_data.get('origin_country', []):
                     if country not in countries:
                         countries.append(country)
 
+            # Top-billed cast names for Popcorn signal
+            cast = [
+                person.get('name') for person in credits_data.get('cast', [])[:8]
+                if person.get('name')
+            ]
+
+            # Extract keywords from nested TMDb structure (Issue #12)
+            keywords = []
+            keywords_data = details_data.get('keywords', {})
+            if keywords_data:
+                # TMDb returns: {'keywords': [{'id': 123, 'name': 'murder'}, ...]}
+                keyword_list = keywords_data.get('keywords', [])
+                keywords = [kw.get('name') for kw in keyword_list if kw.get('name')]
+
+            release_date = details_data.get('release_date') or film_data.get('release_date')
+
             # Build result
             result = {
-                'title': film_data.get('title', title),
-                'year': int(film_data['release_date'][:4]) if film_data.get('release_date') else year,
+                'title': details_data.get('title') or film_data.get('title', title),
+                'year': int(release_date[:4]) if release_date else year,
                 'director': director,
                 'genres': full_genres,
                 'countries': countries,
-                'original_language': film_data.get('original_language')
+                'cast': cast,
+                'popularity': details_data.get('popularity'),
+                'vote_count': details_data.get('vote_count'),
+                'original_language': details_data.get('original_language') or film_data.get('original_language'),
+                'keywords': keywords
             }
 
             logger.info(f"TMDb: '{title}' ({year}) → '{result['title']}' dir:{director} countries:{countries}")

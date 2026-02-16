@@ -42,13 +42,13 @@ class SortingDatabaseLookup:
 
             # Patterns for different entry formats
             # Standard: "- Title (Year) ... → Destination/"
-            pattern_standard = r'^-\s+(.+?)\s+\((\d{4})\).*?→\s+(.+?)/?$'
+            pattern_standard = r'^-\s+(.+?)\s+\((\d{4})\).*?→\s+(.+)$'
 
             # Year prefix: "- Year - Title → Destination/"
-            pattern_year_prefix = r'^-\s+(\d{4})\s+-\s+(.+?)\s+→\s+(.+?)/?$'
+            pattern_year_prefix = r'^-\s+(\d{4})\s+-\s+(.+?)\s+→\s+(.+)$'
 
             # No year: "- Title → Destination/"
-            pattern_no_year = r'^-\s+([^→]+?)\s+→\s+(.+?)/?$'
+            pattern_no_year = r'^-\s+([^→]+?)\s+→\s+(.+)$'
 
             for line in content.split('\n'):
                 line = line.strip()
@@ -70,6 +70,10 @@ class SortingDatabaseLookup:
                     year = int(year_str)
                     dest = dest.strip()
 
+                    if not self._is_valid_destination(dest):
+                        logger.debug(f"Skipping invalid/ambiguous destination: {dest}")
+                        continue
+
                     self._add_entry(title, year, dest, line)
                     continue
 
@@ -82,6 +86,10 @@ class SortingDatabaseLookup:
                     year = int(year_str)
                     dest = dest.strip()
 
+                    if not self._is_valid_destination(dest):
+                        logger.debug(f"Skipping invalid/ambiguous destination: {dest}")
+                        continue
+
                     self._add_entry(title, year, dest, line)
                     continue
 
@@ -92,6 +100,10 @@ class SortingDatabaseLookup:
                     # Use shared normalization with format signal stripping
                     title = normalize_for_lookup(title_raw, strip_format_signals=True)
                     dest = dest.strip()
+
+                    if not self._is_valid_destination(dest):
+                        logger.debug(f"Skipping invalid/ambiguous destination: {dest}")
+                        continue
 
                     # Skip if destination contains year (likely parsing error)
                     if '(' in title_raw and ')' in title_raw:
@@ -107,6 +119,31 @@ class SortingDatabaseLookup:
 
         except Exception as e:
             logger.error(f"Error parsing SORTING_DATABASE.md: {e}")
+
+    def _is_valid_destination(self, destination: str) -> bool:
+        """
+        Validate destination path from SORTING_DATABASE.md.
+
+        Rejects unresolved alternatives like "Reference OR Popcorn?".
+        """
+        if not destination:
+            return False
+
+        normalized = destination.strip().strip('/')
+        lowered = normalized.lower()
+
+        if '?' in normalized or ' or ' in lowered:
+            return False
+
+        tier_first = re.match(
+            r'^(Core|Reference|Satellite|Popcorn|Staging|Unsorted)(/[^/].*)?$',
+            normalized
+        )
+        decade_first = re.match(
+            r'^(19|20)\d{2}s/(Core|Reference|Satellite|Popcorn)(/[^/].*)?$',
+            normalized
+        )
+        return bool(tier_first or decade_first)
 
     def _add_entry(self, title: str, year: Optional[int], destination: str, source_line: str):
         """Add entry to lookup table, track conflicts"""

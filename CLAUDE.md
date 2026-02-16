@@ -77,7 +77,7 @@ Every check declares what happens on failure:
 | Parser: no year extracted | Cannot route to decade → Unsorted | — |
 | Parser: no director | — | Continue without director (still classifiable via lookup/reference) |
 | Filesystem: dest drive not mounted | Cannot move files → abort | — |
-| TMDb: no API key or no match | — | Fall back to filename-only classification |
+| TMDb/OMDb: no API keys or both fail | — | Continue with filename-only classification |
 | Lookup: no match in SORTING_DATABASE | — | Continue to heuristic checks |
 | Core director: no whitelist match | — | Continue to Reference check |
 
@@ -117,12 +117,59 @@ Country → satellite routing only applies within historically valid decades:
 - Brazil → Brazilian Exploitation: 1970s–1980s only
 - Italy → Giallo: 1960s–1980s only
 - Japan → Pinku Eiga: 1960s–1980s only
+- France → French New Wave: 1950s-1970s only (NEW - Issue #14)
 - Hong Kong → HK Action: 1970s–1990s only
+- US → American Exploitation: 1960s-1980s only (NARROWED - Issue #14)
+- US → Classic Hollywood: 1930s-1950s only (NEW - Issue #14)
+- International → Indie Cinema: 1980s-2020s (NEW - Issue #14)
 
 A 2010s Italian thriller is NOT Giallo. Decades are structural, not arbitrary.
 
 ### Never Modify SORTING_DATABASE.md Programmatically
 `docs/SORTING_DATABASE.md` is human-curated. Code reads it; humans edit it. Never write to it from scripts.
+
+### Dual-Source API Enrichment (v0.2+)
+The classifier uses **parallel query with smart merge**, not fallback:
+
+**Why parallel not fallback:**
+- TMDb often returns empty `countries: []` for foreign films
+- OMDb (= IMDb data) has superior country coverage
+- Country data is critical for Satellite routing (Italy→Giallo, Brazil→Brazilian Exploitation)
+- Querying both maximizes data quality
+
+**Field-specific merge priority:**
+- **Director:** OMDb > TMDb > filename (OMDb = IMDb = authoritative)
+- **Country:** OMDb > TMDb > filename (OMDb fixes TMDb's weakness)
+- **Genres:** TMDb > OMDb (TMDb has richer structured data)
+- **Year:** filename > OMDb > TMDb (filename is curated, highest trust)
+
+**Implementation:** `classify.py` methods `_query_apis()` and `_merge_api_results()` handle parallel querying and intelligent merging. Both APIs use persistent JSON caching to minimize costs.
+
+### Tier-First Folder Structure (v0.2+)
+The library uses **tier-first** organization, not decade-first:
+
+```
+✅ CORRECT (tier-first):
+Core/1960s/Jean-Luc Godard/
+Reference/1960s/
+Satellite/Giallo/1970s/
+Popcorn/1980s/
+
+❌ WRONG (decade-first, legacy):
+1960s/Core/Jean-Luc Godard/
+1960s/Reference/
+1970s/Satellite/Giallo/
+1980s/Popcorn/
+```
+
+**Why tier-first?** The 4-tier hierarchy is the PRIMARY organizational pattern. Decades are secondary metadata. This allows:
+- Each tier to be a separate Plex library
+- Core = complete auteur filmographies
+- Reference = canonical films from non-Core directors
+- Satellite = margins/exploitation by category
+- Popcorn = pleasure viewing
+
+**Curatorial rule:** Core directors stay in Core even for canonical films. A Kubrick masterpiece goes in Core/1960s/Stanley Kubrick/, not Reference. Reference is for canonical films by NON-Core directors.
 
 ---
 
@@ -143,6 +190,12 @@ python move.py --execute
 
 # Create folder structure
 python scaffold.py
+
+# Thread discovery (Issue #12)
+python scripts/build_thread_index.py --summary      # Build keyword index
+python scripts/thread_query.py --discover "Film"    # Find thread connections
+python scripts/thread_query.py --thread "Category"  # Query category keywords
+python scripts/thread_query.py --list --verbose     # List all tentpoles
 ```
 
 ---

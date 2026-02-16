@@ -14,6 +14,9 @@ FORMAT_SIGNALS = [
     '2k',
     '4k',
     'uhd',
+    'scan',  # Film scan metadata (e.g., "35mm Scan")
+    'fullscreen',  # Aspect ratio variant
+    'hybrid',  # Hybrid cut/version
     'open matte',
     'extended',
     'unrated',
@@ -170,10 +173,87 @@ COUNTRY_TO_WAVE = {
 # SATELLITE ROUTING RULES (unified country + director + decade validation)
 # =============================================================================
 
+# Title keyword gates for categories prone to false positives
+# These are conservative and only used as fallback when director match is absent.
+BLAXPLOITATION_TITLE_KEYWORDS = [
+    'shaft', 'coffy', 'foxy brown', 'blacula', 'blackenstein',
+    'hell up in harlem', 'super fly', 'superfly', 'black caesar',
+    'truck turner', 'friday foster', 'cooley high', 'drop squad',
+    'tales from the hood', 'dolemite', 'sweet sweetback'
+]
+
+AMERICAN_EXPLOITATION_TITLE_KEYWORDS = [
+    'grindhouse', 'exploitation', 'troma', 'nudie', 'sleaze',
+    'chainsaw', 'hookers', 'massacre', 'cannibal', 'nunsploitation',
+    'rape revenge', 'rape-revenge', 'blood', 'gore', 'splatter'
+]
+
+# Shared exploitation keywords used to avoid misrouting obvious exploitation films
+# into Popcorn in late-stage fallback.
+EXPLOITATION_TITLE_KEYWORDS = sorted(
+    set(BLAXPLOITATION_TITLE_KEYWORDS + AMERICAN_EXPLOITATION_TITLE_KEYWORDS)
+)
+
+# Popcorn heuristics
+POPCORN_MAINSTREAM_GENRES = [
+    'Action', 'Adventure', 'Animation', 'Comedy', 'Crime',
+    'Family', 'Fantasy', 'Science Fiction', 'Thriller'
+]
+
+POPCORN_MAINSTREAM_COUNTRIES = ['US', 'GB', 'CA', 'AU']
+
+POPCORN_STRONG_FORMAT_SIGNALS = [
+    '35mm', 'open matte', 'criterion', 'remux', 'ib tech',
+    '4k', 'uhd', 'commentary', 'special edition'
+]
+
+POPCORN_STAR_ACTORS = [
+    'jackie chan', 'chris tucker', 'eddie murphy', 'robin williams',
+    'jim carrey', 'tom cruise', 'bruce willis', 'arnold schwarzenegger',
+    'sylvester stallone', 'harrison ford', 'keanu reeves', 'nicolas cage',
+    'mel gibson', 'will smith', 'samuel l jackson', 'denzel washington',
+    'tom hanks', 'michael j. fox', 'christopher lloyd', 'matt damon',
+    'ben affleck', 'julia roberts', 'cameron diaz', 'meryl streep',
+    'nicole kidman'
+]
+
 # Structure: category → {country_codes, decades, genres, directors}
 # All director-based routing MUST respect decade bounds (Issue #6 fix)
 # This replaces the hardcoded director_mappings in satellite.py with decade validation
 SATELLITE_ROUTING_RULES = {
+    # NEW CATEGORIES (Issue #14: Satellite Restructure v0.3)
+    # French New Wave MUST come before European Sexploitation for proper priority
+    # DIRECTOR-ONLY routing (empty lists = no country/genre fallback)
+    'French New Wave': {
+        'country_codes': [],  # Director-only (no country fallback)
+        'decades': ['1950s', '1960s', '1970s'],  # 1958-1973 movement
+        'genres': [],  # Director-only (no genre fallback)
+        'directors': [
+            'marker', 'rohmer', 'resnais',
+            'rivette', 'malle', 'eustache'
+        ],
+    },
+    # Broad international indie cinema - alternative to Popcorn for post-1980 arthouse
+    # Catches both known indie directors AND drama/character-driven films from any country
+    'Indie Cinema': {
+        'country_codes': ['US', 'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL'],  # International
+        'decades': ['1980s', '1990s', '2000s', '2010s', '2020s'],
+        'genres': ['Drama', 'Romance'],  # Core indie genres (character-driven, not spectacle)
+        'directors': [
+            # US indie
+            'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',
+            # International indie (add more as needed)
+            'denis', 'assayas', 'desplechin', 'haneke', 'trier', 'winterbottom', 'loach'
+        ],
+    },
+    'Classic Hollywood': {
+        'country_codes': ['US'],
+        'decades': ['1930s', '1940s', '1950s'],
+        'genres': ['Film-Noir', 'Western', 'Musical', 'Drama', 'Crime'],
+        'directors': [],  # Country + decade driven, not director-specific
+    },
+
+    # EXISTING CATEGORIES
     'Brazilian Exploitation': {
         'country_codes': ['BR'],
         'decades': ['1970s', '1980s'],
@@ -215,16 +295,16 @@ SATELLITE_ROUTING_RULES = {
     'Blaxploitation': {  # MOVED BEFORE American Exploitation (Issue #6 - priority order)
         'country_codes': ['US'],
         'decades': ['1970s', '1990s'],  # Extended to include 1990s for Ernest Dickerson
-        'genres': ['Action', 'Crime'],
+        'genres': ['Action', 'Crime', 'Drama'],
         'directors': [
             'gordon parks', 'jack hill',
-            'ernest dickerson',  # NEW: Ernest R. Dickerson (Issue #6)
+            'ernest dickerson', 'ernest r. dickerson',
         ],
     },
     'American Exploitation': {
         'country_codes': ['US'],
-        'decades': ['1960s', '1970s', '1980s', '1990s', '2000s'],
-        'genres': None,  # Director-driven, genre-agnostic
+        'decades': ['1960s', '1970s', '1980s'],  # NARROWED (Issue #14): was 1960s-2000s
+        'genres': ['Horror', 'Thriller', 'Crime'],
         'directors': [
             'russ meyer', 'abel ferrara', 'larry cohen', 'herschell gordon lewis',
             'larry clark',  # NEW: Larry Clark (Issue #6)
@@ -233,10 +313,10 @@ SATELLITE_ROUTING_RULES = {
     'European Sexploitation': {
         'country_codes': ['FR', 'IT', 'DE', 'BE'],
         'decades': ['1960s', '1970s', '1980s'],
-        'genres': ['Drama', 'Romance'],
+        'genres': ['Romance', 'Drama'],  # Reordered to match Romance first
         'directors': [
-            'borowczyk', 'metzger', 'brass',
-            'vadim',  # NEW: Roger Vadim (Issue #6)
+            'borowczyk', 'metzger', 'brass', 'vadim',
+            'jaeckin',  # NEW: Just Jaeckin (Emmanuelle) (Issue #14)
         ],
     },
     'Music Films': {
@@ -245,6 +325,88 @@ SATELLITE_ROUTING_RULES = {
         'genres': ['Music', 'Musical', 'Documentary'],
         'directors': [],
     },
+}
+
+# =============================================================================
+# SATELLITE TENTPOLES (Thread Discovery Anchors - Issue #12)
+# =============================================================================
+
+# Tentpole films are canonical examples that define each Satellite category.
+# Used for keyword-based thread discovery (read-only, never affects routing).
+# Format: (title, year, director) - matches FilmMetadata structure
+# IMPORTANT: All tentpoles must respect decade bounds from SATELLITE_ROUTING_RULES
+
+SATELLITE_TENTPOLES = {
+    'Giallo': [
+        ('Blood and Black Lace', 1964, 'Mario Bava'),
+        ('Deep Red', 1975, 'Dario Argento'),
+        ('The Beyond', 1981, 'Lucio Fulci'),
+        ('Tenebrae', 1982, 'Dario Argento'),
+        ('A Bay of Blood', 1971, 'Mario Bava'),
+    ],
+    'Pinku Eiga': [
+        ('Go Go Second Time Virgin', 1969, 'Kōji Wakamatsu'),
+        ('Inflatable Sex Doll of the Wastelands', 1967, 'Kōji Wakamatsu'),
+        ('Wife to Be Sacrificed', 1974, 'Masaru Konuma'),
+        ('Violated Angels', 1967, 'Kōji Wakamatsu'),
+    ],
+    'Japanese Exploitation': [
+        ('Battles Without Honor and Humanity', 1973, 'Kinji Fukasaku'),
+        ('Street Mobster', 1972, 'Kinji Fukasaku'),
+        ('Graveyard of Honor', 1975, 'Kinji Fukasaku'),
+    ],
+    'Brazilian Exploitation': [
+        ('Escola Penal de Meninas Violentadas', 1977, 'Antonio Polo Galante'),
+        ('A Super Fêmea', 1973, 'Aníbal Massaini Neto'),
+        ('O Império do Desejo', 1981, 'Carlos Reichenbach'),
+        ('Amadas e Violentadas', 1976, 'Jean Garrett'),
+    ],
+    'Hong Kong Action': [
+        ('Drunken Master', 1978, 'Yuen Woo-ping'),
+        ('The Killer', 1989, 'John Woo'),
+        ('Peking Opera Blues', 1986, 'Tsui Hark'),
+        ('City on Fire', 1987, 'Ringo Lam'),
+    ],
+    'American Exploitation': [
+        ('Faster, Pussycat! Kill! Kill!', 1965, 'Russ Meyer'),
+        ('Hollywood Chainsaw Hookers', 1988, 'Fred Olen Ray'),
+        ('Ms. 45', 1981, 'Abel Ferrara'),
+        ('Re-Animator', 1985, 'Stuart Gordon'),
+    ],
+    'European Sexploitation': [
+        ('Emmanuelle', 1974, 'Just Jaeckin'),
+        ('The Story of O', 1975, 'Just Jaeckin'),
+        ('Immoral Tales', 1973, 'Walerian Borowczyk'),
+    ],
+    'Blaxploitation': [
+        ('Shaft', 1971, 'Gordon Parks'),
+        ('Coffy', 1973, 'Jack Hill'),
+        ('Foxy Brown', 1974, 'Jack Hill'),
+    ],
+    'Music Films': [
+        ('200 Motels', 1971, 'Frank Zappa'),
+        ('Tommy', 1975, 'Ken Russell'),
+        ('Louie Bluie', 1985, 'Terry Zwigoff'),
+    ],
+    # NEW CATEGORIES (Issue #14: Satellite Restructure v0.3)
+    'French New Wave': [
+        ('La jetée', 1962, 'Chris Marker'),
+        ("My Night at Maud's", 1969, 'Eric Rohmer'),
+        ('Last Year at Marienbad', 1961, 'Alain Resnais'),
+        ('The 400 Blows', 1959, 'François Truffaut'),
+    ],
+    'Indie Cinema': [
+        ('Stranger Than Paradise', 1984, 'Jim Jarmusch'),
+        ('Slacker', 1990, 'Richard Linklater'),
+        ('Trust', 1990, 'Hal Hartley'),
+        ('Safe', 1995, 'Todd Haynes'),
+    ],
+    'Classic Hollywood': [
+        ('Out of the Past', 1947, 'Jacques Tourneur'),
+        ('The Big Sleep', 1946, 'Howard Hawks'),
+        ('Gun Crazy', 1950, 'Joseph H. Lewis'),
+        ('Kiss Me Deadly', 1955, 'Robert Aldrich'),
+    ],
 }
 
 # =============================================================================

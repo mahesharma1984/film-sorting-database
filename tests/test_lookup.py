@@ -6,6 +6,7 @@ Test suite for lib/lookup.py — SORTING_DATABASE.md parsing and querying
 import pytest
 import sys
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -84,3 +85,20 @@ class TestLookupSymmetry:
 
         # The key used for lookup should strip "Criterion"
         assert "criterion" not in normalized
+
+
+class TestLookupValidation:
+    """Reject ambiguous destinations from SORTING_DATABASE entries."""
+
+    def test_ambiguous_or_destination_is_ignored(self):
+        content = (
+            "- Se7en (1995) 35mm → Reference OR Popcorn?\n"
+            "- Rush Hour (1998) → 1990s/Popcorn/\n"
+        )
+        with NamedTemporaryFile('w+', suffix='.md', encoding='utf-8') as tmp:
+            tmp.write(content)
+            tmp.flush()
+            db = SortingDatabaseLookup(Path(tmp.name))
+
+            assert db.lookup("Se7en", 1995) is None
+            assert db.lookup("Rush Hour", 1998) == "1990s/Popcorn/"

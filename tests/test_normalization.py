@@ -20,7 +20,7 @@ class TestFormatSignalStripping:
         assert normalize_for_lookup("Dr Strangelove Criterion") == "dr strangelove"
 
     def test_35mm_stripped(self):
-        assert normalize_for_lookup("The Shining 35mm Scan") == "the shining scan"
+        assert normalize_for_lookup("The Shining 35mm Scan") == "the shining"
 
     def test_4k_stripped(self):
         assert normalize_for_lookup("2001 A Space Odyssey 4K") == "2001 a space odyssey"
