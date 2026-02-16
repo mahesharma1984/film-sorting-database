@@ -170,6 +170,50 @@ COUNTRY_TO_WAVE = {
 # SATELLITE ROUTING RULES (unified country + director + decade validation)
 # =============================================================================
 
+# Title keyword gates for categories prone to false positives
+# These are conservative and only used as fallback when director match is absent.
+BLAXPLOITATION_TITLE_KEYWORDS = [
+    'shaft', 'coffy', 'foxy brown', 'blacula', 'blackenstein',
+    'hell up in harlem', 'super fly', 'superfly', 'black caesar',
+    'truck turner', 'friday foster', 'cooley high', 'drop squad',
+    'tales from the hood', 'dolemite', 'sweet sweetback'
+]
+
+AMERICAN_EXPLOITATION_TITLE_KEYWORDS = [
+    'grindhouse', 'exploitation', 'troma', 'nudie', 'sleaze',
+    'chainsaw', 'hookers', 'massacre', 'cannibal', 'nunsploitation',
+    'rape revenge', 'rape-revenge', 'blood', 'gore', 'splatter'
+]
+
+# Shared exploitation keywords used to avoid misrouting obvious exploitation films
+# into Popcorn in late-stage fallback.
+EXPLOITATION_TITLE_KEYWORDS = sorted(
+    set(BLAXPLOITATION_TITLE_KEYWORDS + AMERICAN_EXPLOITATION_TITLE_KEYWORDS)
+)
+
+# Popcorn heuristics
+POPCORN_MAINSTREAM_GENRES = [
+    'Action', 'Adventure', 'Animation', 'Comedy', 'Crime',
+    'Family', 'Fantasy', 'Science Fiction', 'Thriller'
+]
+
+POPCORN_MAINSTREAM_COUNTRIES = ['US', 'GB', 'CA', 'AU']
+
+POPCORN_STRONG_FORMAT_SIGNALS = [
+    '35mm', 'open matte', 'criterion', 'remux', 'ib tech',
+    '4k', 'uhd', 'commentary', 'special edition'
+]
+
+POPCORN_STAR_ACTORS = [
+    'jackie chan', 'chris tucker', 'eddie murphy', 'robin williams',
+    'jim carrey', 'tom cruise', 'bruce willis', 'arnold schwarzenegger',
+    'sylvester stallone', 'harrison ford', 'keanu reeves', 'nicolas cage',
+    'mel gibson', 'will smith', 'samuel l jackson', 'denzel washington',
+    'tom hanks', 'michael j. fox', 'christopher lloyd', 'matt damon',
+    'ben affleck', 'julia roberts', 'cameron diaz', 'meryl streep',
+    'nicole kidman'
+]
+
 # Structure: category → {country_codes, decades, genres, directors}
 # All director-based routing MUST respect decade bounds (Issue #6 fix)
 # This replaces the hardcoded director_mappings in satellite.py with decade validation
@@ -215,16 +259,16 @@ SATELLITE_ROUTING_RULES = {
     'Blaxploitation': {  # MOVED BEFORE American Exploitation (Issue #6 - priority order)
         'country_codes': ['US'],
         'decades': ['1970s', '1990s'],  # Extended to include 1990s for Ernest Dickerson
-        'genres': ['Action', 'Crime'],
+        'genres': ['Action', 'Crime', 'Drama'],
         'directors': [
             'gordon parks', 'jack hill',
-            'ernest dickerson',  # NEW: Ernest R. Dickerson (Issue #6)
+            'ernest dickerson', 'ernest r. dickerson',
         ],
     },
     'American Exploitation': {
         'country_codes': ['US'],
         'decades': ['1960s', '1970s', '1980s', '1990s', '2000s'],
-        'genres': None,  # Director-driven, genre-agnostic
+        'genres': ['Horror', 'Thriller', 'Crime'],
         'directors': [
             'russ meyer', 'abel ferrara', 'larry cohen', 'herschell gordon lewis',
             'larry clark',  # NEW: Larry Clark (Issue #6)

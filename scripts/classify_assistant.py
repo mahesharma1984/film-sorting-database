@@ -22,8 +22,8 @@ import json
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 
-# Add lib/ to path for RAG imports
-sys.path.insert(0, str(Path(__file__).parent))
+# Add project root to path for lib/ imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from lib.rag.query import query_docs
 

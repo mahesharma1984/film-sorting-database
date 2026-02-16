@@ -58,7 +58,8 @@ class OMDbClient:
         """
         Search for film and return metadata (with caching)
 
-        Returns dict with keys: title, year, director, genres, countries
+        Returns dict with keys: title, year, director, genres, countries,
+        cast, vote_count
         or None if not found
         """
         if not self.api_key:
@@ -132,6 +133,19 @@ class OMDbClient:
                 # OMDb returns comma-separated genres
                 genres = [g.strip() for g in data['Genre'].split(',')]
 
+            # Extract cast
+            cast = []
+            if data.get('Actors') and data['Actors'] != 'N/A':
+                cast = [a.strip() for a in data['Actors'].split(',') if a.strip()]
+
+            # Extract vote count (fallback popularity proxy)
+            vote_count = None
+            if data.get('imdbVotes') and data['imdbVotes'] != 'N/A':
+                try:
+                    vote_count = int(data['imdbVotes'].replace(',', '').strip())
+                except ValueError:
+                    vote_count = None
+
             # Extract year from response
             film_year = year
             if data.get('Year') and data['Year'] != 'N/A':
@@ -149,6 +163,8 @@ class OMDbClient:
                 'director': director,
                 'genres': genres,
                 'countries': countries,
+                'cast': cast,
+                'vote_count': vote_count,
                 'original_language': None  # OMDb doesn't provide original language
             }
 

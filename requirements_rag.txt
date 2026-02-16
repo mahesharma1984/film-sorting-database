@@ -1,0 +1,7 @@
+# RAG Verification Layer dependencies
+sentence-transformers>=2.2.0
+rank-bm25>=0.2.2
+numpy>=1.24.0
+
+# Optional: progress bars during indexing
+# tqdm>=4.60.0

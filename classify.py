@@ -16,7 +16,8 @@ Classification priority order:
 6. [PRECISION] User tag recovery → trust previous human classification
 7. [REASONING] Language/country → Satellite routing (decade-bounded)
 8. [REASONING] Satellite classification → merged API data (country + genre + decade)
-9. [PRECISION] Default → Unsorted with detailed reason code
+9. [REASONING] Popcorn classification → mainstream/curation signals
+10. [PRECISION] Default → Unsorted with detailed reason code
 """
 
 import sys
@@ -37,6 +38,7 @@ from lib.omdb import OMDbClient
 from lib.lookup import SortingDatabaseLookup
 from lib.core_directors import CoreDirectorDatabase
 from lib.satellite import SatelliteClassifier
+from lib.popcorn import PopcornClassifier
 from lib.normalization import normalize_for_lookup
 from lib.constants import REFERENCE_CANON, COUNTRY_TO_WAVE
 
@@ -134,6 +136,7 @@ class FilmClassifier:
 
         # Satellite classifier (TMDb-based rules)
         self.satellite_classifier = SatelliteClassifier()
+        self.popcorn_classifier = PopcornClassifier(self.lookup_db)
 
     def _build_destination(self, tier: str, decade: Optional[str], subdirectory: Optional[str]) -> str:
         """Build destination path string from classification components (tier-first)"""
@@ -275,6 +278,7 @@ class FilmClassifier:
         - Director: OMDb > TMDb (OMDb = IMDb = most authoritative)
         - Country: OMDb > TMDb (OMDb country data superior)
         - Genres: TMDb > OMDb (TMDb has richer genre data)
+        - Cast/popularity: TMDb > OMDb (TMDb has richer popularity metadata)
         - Year: filename > OMDb > TMDb (trust human-curated filenames)
         - Title: TMDb > OMDb > filename (canonical names)
 
@@ -332,6 +336,22 @@ class FilmClassifier:
         else:
             merged['genres'] = []
 
+        # Cast: TMDb > OMDb (used by Popcorn differentiator)
+        if tmdb_data and tmdb_data.get('cast'):
+            merged['cast'] = tmdb_data['cast']
+        elif omdb_data and omdb_data.get('cast'):
+            merged['cast'] = omdb_data['cast']
+        else:
+            merged['cast'] = []
+
+        # Popularity/votes: TMDb preferred, OMDb vote count as fallback
+        if tmdb_data and tmdb_data.get('popularity') is not None:
+            merged['popularity'] = tmdb_data['popularity']
+        if tmdb_data and tmdb_data.get('vote_count') is not None:
+            merged['vote_count'] = tmdb_data['vote_count']
+        elif omdb_data and omdb_data.get('vote_count') is not None:
+            merged['vote_count'] = omdb_data['vote_count']
+
         # Year: filename > OMDb > TMDb
         if metadata.year:
             merged['year'] = metadata.year
@@ -365,6 +385,7 @@ class FilmClassifier:
         - User tag: soft gate (no tag → continue)
         - Country/decade satellite: soft gate (no match → continue)
         - TMDb satellite: soft gate (no data → continue)
+        - Popcorn: soft gate (no match → continue)
         - No year: hard gate (cannot route to decade → Unsorted)
         """
 
@@ -384,20 +405,27 @@ class FilmClassifier:
                 self.stats['explicit_lookup'] += 1
                 parsed = self._parse_destination_path(dest)
 
-                # Track satellite counts for cap enforcement
-                if parsed['tier'] == 'Satellite' and parsed.get('subdirectory'):
-                    self.satellite_classifier.increment_count(parsed['subdirectory'])
+                if parsed['tier'] == 'Unknown':
+                    self.stats['lookup_invalid_destination'] += 1
+                    logger.warning(
+                        "Skipping invalid explicit lookup destination '%s' for '%s'",
+                        dest, metadata.title
+                    )
+                else:
+                    # Track satellite counts for cap enforcement
+                    if parsed['tier'] == 'Satellite' and parsed.get('subdirectory'):
+                        self.satellite_classifier.increment_count(parsed['subdirectory'])
 
-                return ClassificationResult(
-                    filename=metadata.filename, title=metadata.title,
-                    year=metadata.year, director=metadata.director,
-                    language=metadata.language, country=metadata.country,
-                    user_tag=metadata.user_tag,
-                    tier=parsed['tier'], decade=parsed['decade'],
-                    subdirectory=parsed.get('subdirectory'),
-                    destination=dest,
-                    confidence=1.0, reason='explicit_lookup'
-                )
+                    return ClassificationResult(
+                        filename=metadata.filename, title=metadata.title,
+                        year=metadata.year, director=metadata.director,
+                        language=metadata.language, country=metadata.country,
+                        user_tag=metadata.user_tag,
+                        tier=parsed['tier'], decade=parsed['decade'],
+                        subdirectory=parsed.get('subdirectory'),
+                        destination=dest,
+                        confidence=1.0, reason='explicit_lookup'
+                    )
 
         # === Hard gate: no year = cannot route to decade ===
         if not metadata.year:
@@ -509,7 +537,23 @@ class FilmClassifier:
                     confidence=0.7, reason='tmdb_satellite'
                 )
 
-        # === Stage 8: Unsorted (default) ===
+        # === Stage 8: Popcorn fallback ===
+        popcorn_reason = self.popcorn_classifier.classify_reason(metadata, tmdb_data)
+        if popcorn_reason:
+            self.stats['popcorn_auto'] += 1
+            self.stats[popcorn_reason] += 1
+            dest = f'Popcorn/{decade}/'
+            return ClassificationResult(
+                filename=metadata.filename, title=metadata.title,
+                year=metadata.year, director=metadata.director,
+                language=metadata.language, country=metadata.country,
+                user_tag=metadata.user_tag,
+                tier='Popcorn', decade=decade, subdirectory=None,
+                destination=dest,
+                confidence=0.65, reason=popcorn_reason
+            )
+
+        # === Stage 9: Unsorted (default) ===
         reason_parts = []
         if not metadata.director:
             reason_parts.append('no_director')

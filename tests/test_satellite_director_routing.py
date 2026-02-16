@@ -251,7 +251,7 @@ def test_ernest_dickerson_1992_routes_to_blaxploitation(mock_metadata):
 
 
 def test_ernest_dickerson_1980s_not_routed(mock_metadata):
-    """Ernest Dickerson 1980s → American Exploitation (falls through from Blaxploitation)"""
+    """Ernest Dickerson 1980s with no keyword fallback should not route."""
     tmdb_data = {
         'director': 'Ernest Dickerson',
         'year': 1985,
@@ -260,9 +260,7 @@ def test_ernest_dickerson_1980s_not_routed(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    # 1980s not in Blaxploitation decades (1970s, 1990s), so falls through to American Exploitation
-    # which has US + 1980s + genre-agnostic
-    assert result == 'American Exploitation'
+    assert result is None
 
 
 def test_lam_nai_choi_1978_routes_to_hk_action(mock_metadata):
@@ -329,6 +327,75 @@ def test_country_genre_match_still_works(mock_metadata):
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
     assert result == 'Brazilian Exploitation'
+
+
+def test_rush_hour_not_blaxploitation_false_positive():
+    """US action-comedy should not be auto-routed to blaxploitation."""
+    metadata = FilmMetadata(
+        filename='Rush Hour (1998).mkv',
+        title='Rush Hour',
+        year=1998,
+        director='Brett Ratner',
+        language=None,
+        country='US',
+        user_tag=None
+    )
+    tmdb_data = {
+        'title': 'Rush Hour',
+        'director': 'Brett Ratner',
+        'year': 1998,
+        'countries': ['US'],
+        'genres': ['Action', 'Comedy', 'Crime']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(metadata, tmdb_data)
+    assert result is None
+
+
+def test_house_party_not_american_exploitation_false_positive():
+    """US studio comedy should not be auto-routed to american exploitation."""
+    metadata = FilmMetadata(
+        filename='House Party (1990).mkv',
+        title='House Party',
+        year=1990,
+        director='Reginald Hudlin',
+        language=None,
+        country='US',
+        user_tag=None
+    )
+    tmdb_data = {
+        'title': 'House Party',
+        'director': 'Reginald Hudlin',
+        'year': 1990,
+        'countries': ['US'],
+        'genres': ['Comedy']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(metadata, tmdb_data)
+    assert result is None
+
+
+def test_chainsaw_hookers_keyword_routes_to_american_exploitation():
+    """Keyword-gated exploitation fallback should still route obvious cases."""
+    metadata = FilmMetadata(
+        filename='Hollywood Chainsaw Hookers (1988).mkv',
+        title='Hollywood Chainsaw Hookers',
+        year=1988,
+        director='Unknown',
+        language=None,
+        country='US',
+        user_tag=None
+    )
+    tmdb_data = {
+        'title': 'Hollywood Chainsaw Hookers',
+        'director': 'Unknown',
+        'year': 1988,
+        'countries': ['US'],
+        'genres': ['Horror']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(metadata, tmdb_data)
+    assert result == 'American Exploitation'
 
 
 def test_no_tmdb_data_returns_none(mock_metadata):
