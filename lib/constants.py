@@ -221,6 +221,39 @@ POPCORN_STAR_ACTORS = [
 # All director-based routing MUST respect decade bounds (Issue #6 fix)
 # This replaces the hardcoded director_mappings in satellite.py with decade validation
 SATELLITE_ROUTING_RULES = {
+    # NEW CATEGORIES (Issue #14: Satellite Restructure v0.3)
+    # French New Wave MUST come before European Sexploitation for proper priority
+    # DIRECTOR-ONLY routing (empty lists = no country/genre fallback)
+    'French New Wave': {
+        'country_codes': [],  # Director-only (no country fallback)
+        'decades': ['1950s', '1960s', '1970s'],  # 1958-1973 movement
+        'genres': [],  # Director-only (no genre fallback)
+        'directors': [
+            'marker', 'rohmer', 'resnais',
+            'rivette', 'malle', 'eustache'
+        ],
+    },
+    # Broad international indie cinema - alternative to Popcorn for post-1980 arthouse
+    # Catches both known indie directors AND drama/character-driven films from any country
+    'Indie Cinema': {
+        'country_codes': ['US', 'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL'],  # International
+        'decades': ['1980s', '1990s', '2000s', '2010s', '2020s'],
+        'genres': ['Drama', 'Romance'],  # Core indie genres (character-driven, not spectacle)
+        'directors': [
+            # US indie
+            'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',
+            # International indie (add more as needed)
+            'denis', 'assayas', 'desplechin', 'haneke', 'trier', 'winterbottom', 'loach'
+        ],
+    },
+    'Classic Hollywood': {
+        'country_codes': ['US'],
+        'decades': ['1930s', '1940s', '1950s'],
+        'genres': ['Film-Noir', 'Western', 'Musical', 'Drama', 'Crime'],
+        'directors': [],  # Country + decade driven, not director-specific
+    },
+
+    # EXISTING CATEGORIES
     'Brazilian Exploitation': {
         'country_codes': ['BR'],
         'decades': ['1970s', '1980s'],
@@ -270,7 +303,7 @@ SATELLITE_ROUTING_RULES = {
     },
     'American Exploitation': {
         'country_codes': ['US'],
-        'decades': ['1960s', '1970s', '1980s', '1990s', '2000s'],
+        'decades': ['1960s', '1970s', '1980s'],  # NARROWED (Issue #14): was 1960s-2000s
         'genres': ['Horror', 'Thriller', 'Crime'],
         'directors': [
             'russ meyer', 'abel ferrara', 'larry cohen', 'herschell gordon lewis',
@@ -280,10 +313,10 @@ SATELLITE_ROUTING_RULES = {
     'European Sexploitation': {
         'country_codes': ['FR', 'IT', 'DE', 'BE'],
         'decades': ['1960s', '1970s', '1980s'],
-        'genres': ['Drama', 'Romance'],
+        'genres': ['Romance', 'Drama'],  # Reordered to match Romance first
         'directors': [
-            'borowczyk', 'metzger', 'brass',
-            'vadim',  # NEW: Roger Vadim (Issue #6)
+            'borowczyk', 'metzger', 'brass', 'vadim',
+            'jaeckin',  # NEW: Just Jaeckin (Emmanuelle) (Issue #14)
         ],
     },
     'Music Films': {
@@ -354,6 +387,25 @@ SATELLITE_TENTPOLES = {
         ('200 Motels', 1971, 'Frank Zappa'),
         ('Tommy', 1975, 'Ken Russell'),
         ('Louie Bluie', 1985, 'Terry Zwigoff'),
+    ],
+    # NEW CATEGORIES (Issue #14: Satellite Restructure v0.3)
+    'French New Wave': [
+        ('La jetée', 1962, 'Chris Marker'),
+        ("My Night at Maud's", 1969, 'Eric Rohmer'),
+        ('Last Year at Marienbad', 1961, 'Alain Resnais'),
+        ('The 400 Blows', 1959, 'François Truffaut'),
+    ],
+    'Indie Cinema': [
+        ('Stranger Than Paradise', 1984, 'Jim Jarmusch'),
+        ('Slacker', 1990, 'Richard Linklater'),
+        ('Trust', 1990, 'Hal Hartley'),
+        ('Safe', 1995, 'Todd Haynes'),
+    ],
+    'Classic Hollywood': [
+        ('Out of the Past', 1947, 'Jacques Tourneur'),
+        ('The Big Sleep', 1946, 'Howard Hawks'),
+        ('Gun Crazy', 1950, 'Joseph H. Lewis'),
+        ('Kiss Me Deadly', 1955, 'Robert Aldrich'),
     ],
 }
 
