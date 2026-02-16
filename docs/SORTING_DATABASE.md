@@ -226,6 +226,11 @@
 - Forbidden Game of Love (1975) → 1970s/Satellite/Pinku Eiga/
 - Grass Labyrinth (1979) → 1970s/Satellite/Pinku Eiga/
 
+### Satellite - Japanese Exploitation
+- Battles Without Honor and Humanity (1973) → 1970s/Satellite/Japanese Exploitation/
+- Street Mobster (1972) → 1970s/Satellite/Japanese Exploitation/
+- Graveyard of Honor (1975) → 1970s/Satellite/Japanese Exploitation/
+
 ### Satellite - Brazilian Exploitation (TRIM TO 25 MAX)
 - Escola Penal de Meninas Violentadas (1977) → 1970s/Satellite/Brazilian Exploitation/
 - A Super Fêmea (1973) → 1970s/Satellite/Brazilian Exploitation/
@@ -378,7 +383,7 @@
 
 ### Satellite - American Exploitation
 - Hollywood Chainsaw Hookers (1988) → 1980s/Satellite/American Exploitation/
-- Re-Animator (1985) → 1980s/Popcorn/ [BORDERLINE - moved to Popcorn]
+- Re-Animator (1985) → 1980s/Satellite/American Exploitation/
 - From Beyond (1986) → 1980s/Satellite/American Exploitation/
 - Society (1989) → 1980s/Satellite/American Exploitation/
 - Brain Damage (1988) → 1980s/Satellite/American Exploitation/
@@ -425,7 +430,7 @@
 - Clue (1985) → 1980s/Popcorn/
 
 ### Popcorn - Horror
-- Re-Animator (1985) → 1980s/Popcorn/ [Moved from Satellite]
+(No entries - Re-Animator moved back to American Exploitation)
 
 ---
 
@@ -512,7 +517,7 @@
 ### Borderline Cases Requiring Decision
 - Buffalo '66 (1998) → Core (Gallo) OR Popcorn?
 - Se7en (1995) 35mm → Reference OR Popcorn?
-- Re-Animator (1985) → Satellite OR Popcorn? [DECIDED: Popcorn]
+- Re-Animator (1985) → Satellite/American Exploitation [DECIDED]
 - Ms 45 (1981) → Add Ferrara to Core? Currently Satellite
 - Various Jean Rollin films → Core OR Satellite?
 

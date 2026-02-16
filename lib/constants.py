@@ -315,7 +315,7 @@ SATELLITE_TENTPOLES = {
         ('Go Go Second Time Virgin', 1969, 'Kōji Wakamatsu'),
         ('Inflatable Sex Doll of the Wastelands', 1967, 'Kōji Wakamatsu'),
         ('Wife to Be Sacrificed', 1974, 'Masaru Konuma'),
-        ('In the Realm of the Senses', 1976, 'Nagisa Ōshima'),
+        ('Violated Angels', 1967, 'Kōji Wakamatsu'),
     ],
     'Japanese Exploitation': [
         ('Battles Without Honor and Humanity', 1973, 'Kinji Fukasaku'),
@@ -330,7 +330,7 @@ SATELLITE_TENTPOLES = {
     ],
     'Hong Kong Action': [
         ('Drunken Master', 1978, 'Yuen Woo-ping'),
-        ('The Heroic Trio', 1993, 'Johnnie To'),
+        ('The Killer', 1989, 'John Woo'),
         ('Peking Opera Blues', 1986, 'Tsui Hark'),
         ('City on Fire', 1987, 'Ringo Lam'),
     ],

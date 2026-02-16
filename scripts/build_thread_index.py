@@ -39,16 +39,18 @@ class ThreadIndexBuilder:
     def __init__(self, config_path: Path):
         self.config = self._load_config(config_path)
 
+        # Calculate project root from script location
+        project_root = Path(__file__).parent.parent
+
         # Initialize TMDb client with cache
-        project_path = Path(self.config['project_path'])
         tmdb_key = self.config.get('tmdb_api_key')
         if not tmdb_key:
             raise ValueError("TMDb API key required for thread indexing")
 
-        cache_path = project_path / self.config.get('tmdb_cache', 'output/tmdb_cache.json')
+        cache_path = project_root / 'output' / 'tmdb_cache.json'
         self.tmdb = TMDbClient(tmdb_key, cache_path)
 
-        self.output_path = project_path / 'output' / 'thread_keywords.json'
+        self.output_path = project_root / 'output' / 'thread_keywords.json'
 
     def _load_config(self, config_path: Path) -> dict:
         """Load configuration from YAML file"""
