@@ -295,6 +295,69 @@ SATELLITE_ROUTING_RULES = {
 }
 
 # =============================================================================
+# SATELLITE TENTPOLES (Thread Discovery Anchors - Issue #12)
+# =============================================================================
+
+# Tentpole films are canonical examples that define each Satellite category.
+# Used for keyword-based thread discovery (read-only, never affects routing).
+# Format: (title, year, director) - matches FilmMetadata structure
+# IMPORTANT: All tentpoles must respect decade bounds from SATELLITE_ROUTING_RULES
+
+SATELLITE_TENTPOLES = {
+    'Giallo': [
+        ('Blood and Black Lace', 1964, 'Mario Bava'),
+        ('Deep Red', 1975, 'Dario Argento'),
+        ('The Beyond', 1981, 'Lucio Fulci'),
+        ('Tenebrae', 1982, 'Dario Argento'),
+        ('A Bay of Blood', 1971, 'Mario Bava'),
+    ],
+    'Pinku Eiga': [
+        ('Go Go Second Time Virgin', 1969, 'Kōji Wakamatsu'),
+        ('Inflatable Sex Doll of the Wastelands', 1967, 'Kōji Wakamatsu'),
+        ('Wife to Be Sacrificed', 1974, 'Masaru Konuma'),
+        ('In the Realm of the Senses', 1976, 'Nagisa Ōshima'),
+    ],
+    'Japanese Exploitation': [
+        ('Battles Without Honor and Humanity', 1973, 'Kinji Fukasaku'),
+        ('Street Mobster', 1972, 'Kinji Fukasaku'),
+        ('Graveyard of Honor', 1975, 'Kinji Fukasaku'),
+    ],
+    'Brazilian Exploitation': [
+        ('Escola Penal de Meninas Violentadas', 1977, 'Antonio Polo Galante'),
+        ('A Super Fêmea', 1973, 'Aníbal Massaini Neto'),
+        ('O Império do Desejo', 1981, 'Carlos Reichenbach'),
+        ('Amadas e Violentadas', 1976, 'Jean Garrett'),
+    ],
+    'Hong Kong Action': [
+        ('Drunken Master', 1978, 'Yuen Woo-ping'),
+        ('The Heroic Trio', 1993, 'Johnnie To'),
+        ('Peking Opera Blues', 1986, 'Tsui Hark'),
+        ('City on Fire', 1987, 'Ringo Lam'),
+    ],
+    'American Exploitation': [
+        ('Faster, Pussycat! Kill! Kill!', 1965, 'Russ Meyer'),
+        ('Hollywood Chainsaw Hookers', 1988, 'Fred Olen Ray'),
+        ('Ms. 45', 1981, 'Abel Ferrara'),
+        ('Re-Animator', 1985, 'Stuart Gordon'),
+    ],
+    'European Sexploitation': [
+        ('Emmanuelle', 1974, 'Just Jaeckin'),
+        ('The Story of O', 1975, 'Just Jaeckin'),
+        ('Immoral Tales', 1973, 'Walerian Borowczyk'),
+    ],
+    'Blaxploitation': [
+        ('Shaft', 1971, 'Gordon Parks'),
+        ('Coffy', 1973, 'Jack Hill'),
+        ('Foxy Brown', 1974, 'Jack Hill'),
+    ],
+    'Music Films': [
+        ('200 Motels', 1971, 'Frank Zappa'),
+        ('Tommy', 1975, 'Ken Russell'),
+        ('Louie Bluie', 1985, 'Terry Zwigoff'),
+    ],
+}
+
+# =============================================================================
 # SUBTITLE KEYWORDS (for Parser Bug 2 detection)
 # =============================================================================
 

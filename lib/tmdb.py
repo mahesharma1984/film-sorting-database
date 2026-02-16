@@ -59,7 +59,7 @@ class TMDbClient:
         Search for film and return metadata (with caching)
 
         Returns dict with keys: title, year, director, genres, countries,
-        cast, popularity, vote_count
+        cast, popularity, vote_count, keywords
         or None if not found
         """
         if not self.api_key:
@@ -115,10 +115,10 @@ class TMDbClient:
             film_data = data['results'][0]
             film_id = film_data['id']
 
-            # Get detailed movie payload + credits in one call
+            # Get detailed movie payload + credits + keywords in one call
             details_response = requests.get(
                 f"{self.base_url}/movie/{film_id}",
-                params={'api_key': self.api_key, 'append_to_response': 'credits'},
+                params={'api_key': self.api_key, 'append_to_response': 'credits,keywords'},
                 timeout=10
             )
             details_response.raise_for_status()
@@ -167,6 +167,14 @@ class TMDbClient:
                 if person.get('name')
             ]
 
+            # Extract keywords from nested TMDb structure (Issue #12)
+            keywords = []
+            keywords_data = details_data.get('keywords', {})
+            if keywords_data:
+                # TMDb returns: {'keywords': [{'id': 123, 'name': 'murder'}, ...]}
+                keyword_list = keywords_data.get('keywords', [])
+                keywords = [kw.get('name') for kw in keyword_list if kw.get('name')]
+
             release_date = details_data.get('release_date') or film_data.get('release_date')
 
             # Build result
@@ -179,7 +187,8 @@ class TMDbClient:
                 'cast': cast,
                 'popularity': details_data.get('popularity'),
                 'vote_count': details_data.get('vote_count'),
-                'original_language': details_data.get('original_language') or film_data.get('original_language')
+                'original_language': details_data.get('original_language') or film_data.get('original_language'),
+                'keywords': keywords
             }
 
             logger.info(f"TMDb: '{title}' ({year}) → '{result['title']}' dir:{director} countries:{countries}")

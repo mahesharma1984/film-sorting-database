@@ -2,6 +2,7 @@
 import argparse
 import json
 import sys
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 from . import config
@@ -57,6 +58,102 @@ def print_results_table(results: List[Dict[str, Any]]):
         kw_score = result["keyword_score"]
         auth_score = result["authority_score"]
         print(f"   semantic={sem_score:.2f}, keyword={kw_score:.2f}, authority={auth_score:.2f}")
+
+
+def discover_threads(
+    film_title: str,
+    film_year: Optional[int] = None,
+    min_overlap: float = 0.15
+) -> List[Dict[str, Any]]:
+    """
+    Discover Satellite threads for a film using TMDb keywords
+
+    Usage:
+        from lib.rag.query import discover_threads
+        threads = discover_threads("Deep Red", 1975)
+        for thread in threads:
+            print(f"{thread['category']}: {thread['jaccard_score']:.2f}")
+
+    Args:
+        film_title: Film title
+        film_year: Optional year for TMDb lookup
+        min_overlap: Minimum Jaccard overlap threshold
+
+    Returns:
+        List of thread connections with Jaccard scores
+    """
+    import yaml
+
+    from lib.tmdb import TMDbClient
+    from lib.normalization import normalize_for_lookup
+    from lib.rag.threads import ThreadDiscovery
+
+    # Load config for TMDb
+    config_path = Path('config.yaml')
+    with open(config_path, 'r') as f:
+        config_data = yaml.safe_load(f)
+
+    project_path = Path(config_data['project_path'])
+
+    # Query TMDb for keywords
+    tmdb_key = config_data.get('tmdb_api_key')
+    if not tmdb_key:
+        raise ValueError("TMDb API key required for thread discovery")
+
+    cache_path = project_path / config_data.get('tmdb_cache', 'output/tmdb_cache.json')
+    tmdb = TMDbClient(tmdb_key, cache_path)
+
+    clean_title = normalize_for_lookup(film_title)
+    tmdb_data = tmdb.search_film(clean_title, film_year)
+
+    if not tmdb_data or not tmdb_data.get('keywords'):
+        return []
+
+    # Discover threads
+    index_path = project_path / 'output' / 'thread_keywords.json'
+    discovery = ThreadDiscovery(index_path)
+
+    return discovery.discover_threads_for_film(
+        tmdb_data['keywords'],
+        min_overlap=min_overlap
+    )
+
+
+def query_thread_category(category: str, top_k: int = 20) -> Dict[str, Any]:
+    """
+    Get keyword profile for a Satellite category
+
+    Usage:
+        from lib.rag.query import query_thread_category
+        data = query_thread_category("Giallo")
+        print(f"Top keywords: {[kw['keyword'] for kw in data['keywords'][:5]]}")
+
+    Args:
+        category: Satellite category name
+        top_k: Number of top keywords to return
+
+    Returns:
+        Category data with top keywords
+    """
+    import yaml
+
+    from lib.rag.threads import ThreadDiscovery
+
+    config_path = Path('config.yaml')
+    with open(config_path, 'r') as f:
+        config_data = yaml.safe_load(f)
+
+    project_path = Path(config_data['project_path'])
+    index_path = project_path / 'output' / 'thread_keywords.json'
+
+    discovery = ThreadDiscovery(index_path)
+    keywords = discovery.get_category_keywords(category, top_k)
+
+    return {
+        'category': category,
+        'keywords': keywords,
+        'keyword_count': len(keywords)
+    }
 
 
 def main():
