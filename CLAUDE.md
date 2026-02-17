@@ -196,6 +196,13 @@ python scripts/build_thread_index.py --summary      # Build keyword index
 python scripts/thread_query.py --discover "Film"    # Find thread connections
 python scripts/thread_query.py --thread "Category"  # Query category keywords
 python scripts/thread_query.py --list --verbose     # List all tentpoles
+
+# Cache invalidation (Issue #16) — run after title cleaning changes
+python scripts/invalidate_null_cache.py conservative  # Remove entries missing both director AND country
+python scripts/invalidate_null_cache.py aggressive    # Remove all null entries
+
+# Handoff validation (Issue #16) — quality gates for pipeline handoffs
+python scripts/validate_handoffs.py                   # Self-test demonstration
 ```
 
 ---

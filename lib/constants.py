@@ -221,9 +221,12 @@ POPCORN_STAR_ACTORS = [
 # All director-based routing MUST respect decade bounds (Issue #6 fix)
 # This replaces the hardcoded director_mappings in satellite.py with decade validation
 SATELLITE_ROUTING_RULES = {
-    # NEW CATEGORIES (Issue #14: Satellite Restructure v0.3)
-    # French New Wave MUST come before European Sexploitation for proper priority
-    # DIRECTOR-ONLY routing (empty lists = no country/genre fallback)
+    # PRIORITY ORDER: specific/director-driven categories first, catch-alls last
+    # Rationale: first-match-wins; catch-alls (Indie Cinema, Classic Hollywood)
+    # must come AFTER exploitation categories so director matches aren't overridden.
+
+    # French New Wave: DIRECTOR-ONLY routing (Issue #14)
+    # Must come first as decade-bounded director override (no country/genre fallback)
     'French New Wave': {
         'country_codes': [],  # Director-only (no country fallback)
         'decades': ['1950s', '1960s', '1970s'],  # 1958-1973 movement
@@ -233,27 +236,9 @@ SATELLITE_ROUTING_RULES = {
             'rivette', 'malle', 'eustache'
         ],
     },
-    # Broad international indie cinema - alternative to Popcorn for post-1980 arthouse
-    # Catches both known indie directors AND drama/character-driven films from any country
-    'Indie Cinema': {
-        'country_codes': ['US', 'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL'],  # International
-        'decades': ['1980s', '1990s', '2000s', '2010s', '2020s'],
-        'genres': ['Drama', 'Romance'],  # Core indie genres (character-driven, not spectacle)
-        'directors': [
-            # US indie
-            'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',
-            # International indie (add more as needed)
-            'denis', 'assayas', 'desplechin', 'haneke', 'trier', 'winterbottom', 'loach'
-        ],
-    },
-    'Classic Hollywood': {
-        'country_codes': ['US'],
-        'decades': ['1930s', '1940s', '1950s'],
-        'genres': ['Film-Noir', 'Western', 'Musical', 'Drama', 'Crime'],
-        'directors': [],  # Country + decade driven, not director-specific
-    },
 
-    # EXISTING CATEGORIES
+    # EXPLOITATION CATEGORIES (Issue #6, Issue #14)
+    # These must come before catch-alls (Indie Cinema, Classic Hollywood)
     'Brazilian Exploitation': {
         'country_codes': ['BR'],
         'decades': ['1970s', '1980s'],
@@ -324,6 +309,30 @@ SATELLITE_ROUTING_RULES = {
         'decades': None,  # Any decade (no restriction)
         'genres': ['Music', 'Musical', 'Documentary'],
         'directors': [],
+    },
+
+    # CATCH-ALL CATEGORIES (Issue #14, Issue #16)
+    # These MUST come LAST — they are broad and will match many films.
+    # Exploitation categories above must have priority.
+    'Classic Hollywood': {
+        'country_codes': ['US'],
+        'decades': ['1930s', '1940s', '1950s'],
+        'genres': [],  # Issue #16: genre gate removed - decade (1930s-1950s) + US is sufficient gate
+        'directors': [],  # Country + decade driven, not director-specific
+    },
+    # Broad international indie cinema - alternative to Popcorn for post-1980 arthouse
+    # Catches both known indie directors AND drama/character-driven films from any country
+    # Issue #16: moved to END so exploitation director films are caught first
+    'Indie Cinema': {
+        'country_codes': ['US', 'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL'],  # International
+        'decades': ['1980s', '1990s', '2000s', '2010s', '2020s'],
+        'genres': ['Drama', 'Romance', 'Thriller'],  # Issue #16: added Thriller (Comedy removed - too broad)
+        'directors': [
+            # US indie
+            'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',
+            # International indie (add more as needed)
+            'denis', 'assayas', 'desplechin', 'haneke', 'trier', 'winterbottom', 'loach'
+        ],
     },
 }
 

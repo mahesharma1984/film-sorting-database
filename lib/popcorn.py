@@ -24,7 +24,7 @@ class PopcornClassifier:
         self.mainstream_countries = set(POPCORN_MAINSTREAM_COUNTRIES)
         self.strong_format_signals = set(POPCORN_STRONG_FORMAT_SIGNALS)
         self.star_actors = set(POPCORN_STAR_ACTORS)
-        self.min_popularity = 10.0
+        self.min_popularity = 7.0  # Issue #16: lowered from 10.0 (collection skews niche, median popularity ~5-8)
         self.min_vote_count = 2000
 
     @staticmethod

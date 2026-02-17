@@ -135,7 +135,8 @@ class FilmClassifier:
         )
 
         # Satellite classifier (TMDb-based rules)
-        self.satellite_classifier = SatelliteClassifier()
+        # Issue #16: pass core_db for defensive Core director check
+        self.satellite_classifier = SatelliteClassifier(core_db=self.core_db)
         self.popcorn_classifier = PopcornClassifier(self.lookup_db)
 
     def _build_destination(self, tier: str, decade: Optional[str], subdirectory: Optional[str]) -> str:
@@ -205,11 +206,17 @@ class FilmClassifier:
 
     def _clean_title_for_api(self, title: str) -> str:
         """
-        Clean title for API queries (TMDb and OMDb)
+        ENHANCED (Issue #16): Aggressive cleaning for API queries
+
+        Removes RELEASE_TAGS tokens that survive parser._clean_title()
+        This fixes Layer 1 of the classification regression where tokens like
+        "Metro", "576p", "PC" survive into API queries and cause null results.
 
         Removes:
         - User tag brackets [...]
         - Format signals (35mm, Criterion, etc.)
+        - RELEASE_TAGS that survived parser (second-pass truncation)
+        - Residual tokens not in RELEASE_TAGS (Metro, PC, SR, language tags)
         - Empty parentheses artifacts
         - Extra whitespace
 
@@ -222,10 +229,40 @@ class FilmClassifier:
             Cleaned title string ready for API query
         """
         from lib.normalization import _strip_format_signals
+        from lib.constants import RELEASE_TAGS
 
+        # Remove user tag brackets
         clean_title = re.sub(r'\s*\[.+?\]\s*', ' ', title)
+
+        # Strip format signals (35mm, Criterion, etc.)
         clean_title = _strip_format_signals(clean_title)
+
+        # NEW (Issue #16): Second-pass RELEASE_TAGS truncation
+        # Parser's _clean_title() stops at FIRST tag, this catches survivors
+        # Example: "A Man and a Woman Metro 1080p" → "A Man and a Woman"
+        title_lower = clean_title.lower()
+        for tag in RELEASE_TAGS:
+            idx = title_lower.find(tag)
+            if idx != -1:
+                clean_title = clean_title[:idx]
+                title_lower = title_lower[:idx]
+
+        # NEW (Issue #16): Strip common residual tokens not in RELEASE_TAGS
+        # These are tokens that appear mid-title after incomplete parser truncation
+        residual_patterns = [
+            r'\b(metro|pc|sr|moc|kl|doc|vo)\b',  # Source tags
+            r'\b\d{3,4}p\b',  # Resolution: 576p, 1080p
+            r'\b(spanish|french|italian|german|japanese|chinese|vostfr)\b',  # Language tags
+            r'\b(itunes|upscale|uncensored|satrip|vhsrip|xvid|mp3|2audio)\b',  # Format/codec
+        ]
+
+        for pattern in residual_patterns:
+            clean_title = re.sub(pattern, '', clean_title, flags=re.IGNORECASE)
+
+        # Remove empty parentheses artifacts
         clean_title = re.sub(r'\s*\(\s*\)', '', clean_title)
+
+        # Collapse multiple spaces
         clean_title = ' '.join(clean_title.split())
 
         return clean_title.strip()
