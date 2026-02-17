@@ -152,7 +152,7 @@ LANGUAGE_TO_COUNTRY = {
 # Conservative routing: only films in specified decades will route to Satellite
 COUNTRY_TO_WAVE = {
     'BR': {
-        'decades': ['1970s', '1980s'],
+        'decades': ['1960s', '1970s', '1980s', '1990s'],  # widened (Issue #20)
         'category': 'Brazilian Exploitation',
     },
     'IT': {
@@ -241,7 +241,7 @@ SATELLITE_ROUTING_RULES = {
     # These must come before catch-alls (Indie Cinema, Classic Hollywood)
     'Brazilian Exploitation': {
         'country_codes': ['BR'],
-        'decades': ['1970s', '1980s'],
+        'decades': ['1960s', '1970s', '1980s', '1990s'],  # widened (Issue #20): pornochanchada peak 1970-1989, broader tradition 1960s-1990s
         'genres': ['Drama', 'Crime', 'Thriller', 'Horror', 'Romance'],
         'directors': [],  # Country-driven, not director-driven
     },
@@ -320,12 +320,22 @@ SATELLITE_ROUTING_RULES = {
         'genres': [],  # Issue #16: genre gate removed - decade (1930s-1950s) + US is sufficient gate
         'directors': [],  # Country + decade driven, not director-specific
     },
-    # Broad international indie cinema - alternative to Popcorn for post-1980 arthouse
-    # Catches both known indie directors AND drama/character-driven films from any country
-    # Issue #16: moved to END so exploitation director films are caught first
+    # Functional arthouse catch-all — NOT a historical wave category.
+    # Catches non-exploitation, non-Popcorn, non-Core films from any major film nation.
+    # Issue #16: moved to END so exploitation director films are caught first.
+    # Issue #20: extended to 1960s-1970s + added CN, TW, KR, IR, JP, HU, IN, RO.
+    # Note: unlike Giallo or Brazilian Exploitation (historical events with start/end
+    # dates), Indie Cinema is defined negatively — by what it is NOT. JP in 1970s-1980s
+    # still hits Pinku Eiga/Japanese Exploitation first; JP here only catches post-1980s
+    # Japanese films that fall through those categories.
     'Indie Cinema': {
-        'country_codes': ['US', 'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL'],  # International
-        'decades': ['1980s', '1990s', '2000s', '2010s', '2020s'],
+        'country_codes': [
+            'US', 'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE',
+            'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL',
+            # Added (Issue #20): East/South Asian and underrepresented film nations
+            'CN', 'TW', 'KR', 'IR', 'JP', 'HU', 'IN', 'RO',
+        ],
+        'decades': ['1960s', '1970s', '1980s', '1990s', '2000s', '2010s', '2020s'],  # extended back (Issue #20)
         'genres': ['Drama', 'Romance', 'Thriller'],  # Issue #16: added Thriller (Comedy removed - too broad)
         'directors': [
             # US indie
@@ -447,6 +457,25 @@ SUBTITLE_KEYWORDS = [
     'widescreen',
     'fullscreen',
     'anniversary edition',
+]
+
+# =============================================================================
+# NON-FILM CONTENT PREFIXES (for Parser inversion fix - Issue #20)
+# =============================================================================
+
+# Filenames starting with these tokens are supplementary content (interviews,
+# trailers, shorts), not feature films. The parser checks potential_director
+# against this list to avoid inverting "Interview - Director (Year)" into
+# director="Interview", title="Director".
+NON_FILM_PREFIXES = [
+    'interview', 'interviews',
+    'trailer', 'featurette',
+    'short',
+    'radio play',
+    'video essay',
+    'english version', 'french version', 'german version', 'italian version',
+    'documentary',
+    'behind the scenes',
 ]
 
 # =============================================================================

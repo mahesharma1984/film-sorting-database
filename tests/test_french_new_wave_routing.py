@@ -147,13 +147,12 @@ class TestFrenchNewWaveRouting:
     # TEST GROUP 3: Decade bounds validation
     # =========================================================================
 
-    def test_rohmer_1990s_routes_to_fnw(self, classifier, mock_metadata):
-        """Eric Rohmer 1996 → French New Wave (extended decades)
+    def test_rohmer_1990s_routes_to_indie_cinema(self, classifier, mock_metadata):
+        """Eric Rohmer 1996 → Indie Cinema (outside FNW 1950s-1970s decade bounds)
 
-        Note: FNW decades are 1950s-1970s. Late Rohmer (1990s) may or may not
-        route depending on whether we extend the category.
-
-        Current expectation: Should route because Rohmer is in FNW directors list
+        Issue #20: FNW decade bounds are 1950s-1970s. Director routing respects
+        decade bounds (Issue #6 design). Late Rohmer (1990s) falls through FNW
+        to Indie Cinema catch-all (FR + 1990s + Romance).
         """
         tmdb_data = {
             'director': 'Éric Rohmer',
@@ -162,9 +161,7 @@ class TestFrenchNewWaveRouting:
             'genres': ['Romance']
         }
         result = classifier.classify(mock_metadata, tmdb_data)
-        # Rohmer 1990s is outside 1950s-1970s bounds, might not route
-        # But director match might override decade bounds
-        assert result in ['French New Wave', None]
+        assert result == 'Indie Cinema'  # Decade check prevents FNW; Indie Cinema catch-all applies
 
     def test_french_1980s_non_fnw_director_no_match(self, classifier, mock_metadata):
         """French 1980s film by unknown director → NOT French New Wave
