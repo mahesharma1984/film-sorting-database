@@ -117,6 +117,23 @@ Start here when you have a problem, question, or task. Find your symptom, follow
 
 → See: `REFACTOR_PLAN.md`, `docs/DEVELOPER_GUIDE.md`
 
+### "See the full library classification state / dashboard shows wrong percentage"
+
+The dashboard's "Classified" percentage depends on which manifest you load:
+- `sorting_manifest.csv` = Unsorted work queue only (shows ~0% when queue is all dirty filenames)
+- `library_audit.csv` = full library including all tier folders (shows true collection-wide rate)
+
+To generate / refresh the full library inventory:
+```bash
+python audit.py
+# → output/library_audit.csv
+```
+Then load `library_audit.csv` in the dashboard manifest picker.
+
+Run `audit.py` after each batch of `move.py --execute` to keep the picture current.
+
+→ See: `audit.py`, `docs/CHANGELOG.md` v1.2
+
 ---
 
 ## Operations: Running the System

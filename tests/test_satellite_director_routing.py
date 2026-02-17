@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Test decade-validated director-based Satellite routing (Issue #6)"""
+"""Test decade-validated director-based Satellite routing (Issue #6, Issue #20)"""
 
 import pytest
 from lib.satellite import SatelliteClassifier
-from lib.parser import FilmMetadata
+from lib.parser import FilmMetadata, FilenameParser
 
 
 # Mock metadata for testing
@@ -47,11 +47,11 @@ def test_fukasaku_2000s_not_routed(mock_metadata):
 
 
 def test_all_six_new_directors_issue_6(mock_metadata):
-    """All 6 new directors from Issue #6 route correctly"""
+    """All 6 new directors from Issue #6 route correctly within decade bounds"""
     test_cases = [
         ('Kinji Fukasaku', 1973, ['JP'], ['Crime'], 'Japanese Exploitation'),
         ('Yasuzō Masumura', 1964, ['JP'], ['Drama'], 'Pinku Eiga'),
-        ('Larry Clark', 1995, ['US'], ['Drama'], 'American Exploitation'),
+        ('Larry Clark', 1978, ['US'], ['Drama'], 'American Exploitation'),  # Issue #20: 1978 within AE 1960s-1980s bounds; 1995 would route to Indie Cinema
         ('Lam Nai-Choi', 1978, ['HK'], ['Action'], 'Hong Kong Action'),
         ('Ernest R. Dickerson', 1992, ['US'], ['Crime'], 'Blaxploitation'),
         ('Roger Vadim', 1968, ['FR'], ['Drama'], 'European Sexploitation'),
@@ -198,8 +198,12 @@ def test_vadim_1960s_routes_to_european_sexploitation(mock_metadata):
     assert result == 'European Sexploitation'
 
 
-def test_vadim_1990s_not_routed(mock_metadata):
-    """Roger Vadim 1990s → None (outside European Sexploitation decades)"""
+def test_vadim_1990s_routes_to_indie_cinema(mock_metadata):
+    """Roger Vadim 1990s → Indie Cinema (outside European Sexploitation 1960s-1980s bounds)
+
+    Issue #20: FR + 1990s + Drama routes to Indie Cinema catch-all.
+    Decade check correctly prevents European Sexploitation routing.
+    """
     tmdb_data = {
         'director': 'Roger Vadim',
         'year': 1995,
@@ -208,14 +212,14 @@ def test_vadim_1990s_not_routed(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result is None  # Outside 1960s-1980s
+    assert result == 'Indie Cinema'  # Not European Sexploitation (outside 1960s-1980s); Indie Cinema catch-all applies
 
 
-def test_larry_clark_1995_routes_to_american_exploitation(mock_metadata):
-    """Larry Clark 1995 (Kids) → American Exploitation"""
+def test_larry_clark_1980s_routes_to_american_exploitation(mock_metadata):
+    """Larry Clark 1980s → American Exploitation (within AE decade bounds)"""
     tmdb_data = {
         'director': 'Larry Clark',
-        'year': 1995,
+        'year': 1983,
         'countries': ['US'],
         'genres': ['Drama']
     }
@@ -224,8 +228,29 @@ def test_larry_clark_1995_routes_to_american_exploitation(mock_metadata):
     assert result == 'American Exploitation'
 
 
-def test_larry_clark_2000s_routes_to_american_exploitation(mock_metadata):
-    """Larry Clark 2000s (Bully, Ken Park) → American Exploitation"""
+def test_larry_clark_1995_routes_to_indie_cinema(mock_metadata):
+    """Larry Clark 1995 (Kids) → Indie Cinema (outside AE 1960s-1980s bounds)
+
+    Issue #20: American Exploitation narrowed to 1960s-1980s (Issue #14).
+    1995 US Drama falls to Indie Cinema catch-all. Director match only fires
+    within decade bounds.
+    """
+    tmdb_data = {
+        'director': 'Larry Clark',
+        'year': 1995,
+        'countries': ['US'],
+        'genres': ['Drama']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Indie Cinema'
+
+
+def test_larry_clark_2000s_routes_to_indie_cinema(mock_metadata):
+    """Larry Clark 2000s (Bully, Ken Park) → Indie Cinema (outside AE decade bounds)
+
+    Issue #20: AE decades are 1960s-1980s only (Issue #14 narrowing).
+    """
     tmdb_data = {
         'director': 'Larry Clark',
         'year': 2001,
@@ -234,7 +259,7 @@ def test_larry_clark_2000s_routes_to_american_exploitation(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result == 'American Exploitation'
+    assert result == 'Indie Cinema'
 
 
 def test_ernest_dickerson_1992_routes_to_blaxploitation(mock_metadata):
@@ -289,8 +314,13 @@ def test_masumura_1964_routes_to_pinku_eiga(mock_metadata):
     assert result == 'Pinku Eiga'
 
 
-def test_masumura_1990s_not_routed(mock_metadata):
-    """Yasuzō Masumura 1990s → None (outside Pinku Eiga decades)"""
+def test_masumura_1990s_routes_to_indie_cinema(mock_metadata):
+    """Yasuzō Masumura 1990s → Indie Cinema (outside Pinku Eiga 1960s-1980s bounds)
+
+    Issue #20: JP added to Indie Cinema country_codes. A 1990s Japanese drama by
+    any director (including known Pinku Eiga directors) routes to Indie Cinema.
+    Decade check correctly prevents Pinku Eiga routing.
+    """
     tmdb_data = {
         'director': 'Yasuzō Masumura',
         'year': 1995,
@@ -299,7 +329,7 @@ def test_masumura_1990s_not_routed(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result is None  # Outside 1960s-1980s
+    assert result == 'Indie Cinema'  # Not Pinku Eiga (outside 1960s-1980s); Indie Cinema catch-all applies
 
 
 def test_music_film_no_decade_restriction(mock_metadata):
@@ -403,3 +433,117 @@ def test_no_tmdb_data_returns_none(mock_metadata):
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, None)
     assert result is None
+
+
+# =============================================================================
+# Issue #20: Parser NON_FILM_PREFIXES fix (Stage 1)
+# =============================================================================
+
+def test_interview_prefix_not_director():
+    """'Interview - Rodney Hill (2014)' → director=None, not 'Interview'"""
+    parser = FilenameParser()
+    result = parser.parse('Interview - Rodney Hill (2014).mkv')
+    assert result.director is None, \
+        f"Expected director=None, got director={result.director!r}"
+    # Title should be the right-side token, not the prefix
+    assert result.title != 'Interview'
+
+
+def test_english_version_prefix_not_director():
+    """'English version - El Topo (1970)' → director=None, not 'English version'"""
+    parser = FilenameParser()
+    result = parser.parse('English version - El Topo (1970).mkv')
+    assert result.director is None, \
+        f"Expected director=None, got director={result.director!r}"
+
+
+# =============================================================================
+# Issue #20: Indie Cinema expansion (Stage 2)
+# =============================================================================
+
+def test_cn_1990s_routes_to_indie_cinema(mock_metadata):
+    """Farewell My Concubine (CN, 1993, Drama) → Indie Cinema"""
+    tmdb_data = {
+        'director': 'Kaige Chen',
+        'year': 1993,
+        'countries': ['CN'],
+        'genres': ['Drama']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Indie Cinema', \
+        f"Expected 'Indie Cinema', got {result!r}"
+
+
+def test_jp_2000s_routes_to_indie_cinema(mock_metadata):
+    """Kamikaze Girls (JP, 2004, Drama) → Indie Cinema (outside Pinku Eiga 1960s-1980s)"""
+    tmdb_data = {
+        'director': 'Tetsuya Nakashima',
+        'year': 2004,
+        'countries': ['JP'],
+        'genres': ['Drama', 'Comedy']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Indie Cinema', \
+        f"Expected 'Indie Cinema', got {result!r}"
+
+
+def test_au_1970s_routes_to_indie_cinema(mock_metadata):
+    """Wake in Fright (AU, 1971, Drama) → Indie Cinema"""
+    tmdb_data = {
+        'director': 'Ted Kotcheff',
+        'year': 1971,
+        'countries': ['AU'],
+        'genres': ['Drama', 'Thriller']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Indie Cinema', \
+        f"Expected 'Indie Cinema', got {result!r}"
+
+
+def test_jp_1975_still_routes_to_pinku_eiga_not_indie_cinema(mock_metadata):
+    """Regression: JP Drama 1970s still hits Pinku Eiga before Indie Cinema"""
+    tmdb_data = {
+        'director': 'Kōji Wakamatsu',
+        'year': 1975,
+        'countries': ['JP'],
+        'genres': ['Drama', 'Romance']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Pinku Eiga', \
+        f"Regression: expected 'Pinku Eiga', got {result!r}"
+
+
+# =============================================================================
+# Issue #20: Brazilian Exploitation decade bounds widened (Stage 3)
+# =============================================================================
+
+def test_br_1966_routes_to_brazilian_exploitation(mock_metadata):
+    """O Padre e a Moça (BR, 1966, Drama) → Brazilian Exploitation (newly in bounds)"""
+    tmdb_data = {
+        'director': 'Joaquim Pedro de Andrade',
+        'year': 1966,
+        'countries': ['BR'],
+        'genres': ['Drama', 'Romance']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Brazilian Exploitation', \
+        f"Expected 'Brazilian Exploitation', got {result!r}"
+
+
+def test_br_1991_routes_to_brazilian_exploitation(mock_metadata):
+    """Vai Trabalhar Vagabundo II (BR, 1991, Drama) → Brazilian Exploitation (newly in bounds)"""
+    tmdb_data = {
+        'director': 'Hugo Carvana',
+        'year': 1991,
+        'countries': ['BR'],
+        'genres': ['Drama', 'Crime']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Brazilian Exploitation', \
+        f"Expected 'Brazilian Exploitation', got {result!r}"

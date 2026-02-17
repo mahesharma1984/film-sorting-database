@@ -5,8 +5,8 @@
 project_path: "/Users/mahesh/Downloads/film-sorting-database/docs"
 
 # External drive paths
-library_path: "/Volumes/One Touch/movies/Organized"    # Where sorted films will go
-source_path: "/Volumes/One Touch/movies/unsorted"      # Where unsorted films are now
+library_path: "/Volumes/One Touch/Movies/Organized"    # Where sorted films will go
+source_path: "/Volumes/One Touch/Movies/Organized/Unsorted"      # Where unsorted films are now
 
 # External drive settings
 external_drive:

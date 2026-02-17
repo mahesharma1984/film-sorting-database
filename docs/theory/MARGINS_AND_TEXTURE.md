@@ -20,27 +20,34 @@ To remove the margins would be to pretend that art cinema exists independently o
 
 **Issue #6 Update:** As of the v0.2 implementation, satellite routing applies **decade validation** to both country-based AND director-based classification. This prevents anachronistic classifications (e.g., a 2010s Argento film routing to Giallo, which historically ended in the 1980s).
 
-Each satellite category corresponds to a specific historical phenomenon — not an eternal genre, but a cultural event with a beginning and an end:
+**Most** satellite categories correspond to a specific historical phenomenon — not an eternal genre, but a cultural event with a beginning and an end. Two categories (Music Films, Indie Cinema) are functional exceptions, defined by what they serve rather than what historical moment they name.
 
 | Category | Active Period | What It Was | Directors (Issue #6) |
 |----------|--------------|-------------|---------------------|
-| Brazilian Exploitation | 1970s-1980s | The pornochanchada boom in Boca do Lixo | (Country-driven) |
+| Brazilian Exploitation | 1960s-1990s¹ | The pornochanchada tradition in Boca do Lixo | (Country-driven) |
 | Giallo | 1960s-1980s | Italian genre cinema's golden age | Bava, Argento, Fulci, Martino, Soavi, Lenzi |
 | Pinku Eiga | 1960s-1980s | Japanese pink film / Roman Porno era | Wakamatsu, Kumashiro, Tanaka, Masumura |
 | **Japanese Exploitation** | **1970s-1980s** | **Yakuza/action exploitation (NEW)** | **Kinji Fukasaku** |
 | Hong Kong Action | 1970s-1990s | Pre-handover martial arts / Category III boom | Tsui Hark, Ringo Lam, John Woo, Lam Nai-Choi |
 | Blaxploitation | 1970s, 1990s | Civil rights-era Black action cinema (extended to 1990s) | Gordon Parks, Jack Hill, Ernest Dickerson |
-| American Exploitation | 1960s-2000s | Grindhouse, VHS cult, direct-to-video | Russ Meyer, Abel Ferrara, Larry Cohen, Larry Clark |
+| American Exploitation | 1960s-1980s | Grindhouse, VHS cult, direct-to-video | Russ Meyer, Abel Ferrara, Larry Cohen, Larry Clark |
 | European Sexploitation | 1960s-1980s | Arthouse-adjacent European erotica | Borowczyk, Metzger, Brass, Vadim |
 | Nunsploitation | 1970s | Religious exploitation (niche, peaked briefly) | (Genre-driven) |
 | WIP / Rape-Revenge | 1970s-1980s | Women-in-prison and feminist exploitation | (Thematic) |
 | Music Films | All decades | Concert films, music docs (non-Core directors) | (Genre, no decade bounds) |
 | Mondo | 1960s-1980s | Shockumentary / documentary exploitation | (Genre-driven) |
 | Cult Oddities | All decades | Uncategorizable weirdness | (Catch-all) |
+| **Indie Cinema** | **1960s-2020s²** | **Functional arthouse catch-all (NEW)** | **Jarmusch, Hartley, Haneke, Loach** |
+| Classic Hollywood | 1930s-1950s | Pre-New Hollywood studio genre cinema | (Country + decade driven) |
+| French New Wave | 1950s-1970s | Nouvelle Vague movement | Marker, Rohmer, Resnais, Rivette, Malle |
 
-The date ranges are not arbitrary. Brazilian exploitation peaked during the pornochanchada cycle of 1970-1989. Giallo peaked with the Italian genre industry of 1960-1989. Hong Kong action peaked in the pre-handover era of 1970-1999. These are historical facts, encoded in the classification system.
+¹ **Brazilian Exploitation (Issue #20):** The pornochanchada boom proper was 1970–1989, but the broader Brazilian genre tradition that gave rise to it began in the mid-1960s (Cinema Novo's commercial shadows) and extends to the early 1990s. The 1960s–1990s bounds reflect the wider tradition, not just the peak.
 
-A Brazilian film from 1995 would not automatically route to "Brazilian Exploitation." The category is not about nationality — it is about a specific historical tradition. This prevents Satellite from becoming a catch-all for foreign-language genre cinema.
+² **Indie Cinema as functional category (Issue #20):** Unlike Giallo or Brazilian Exploitation (historical events with a specific cultural moment), Indie Cinema is a *functional* routing label — defined by what it is NOT (not exploitation, not Popcorn mainstream, not Core auteur). It is analogous to Music Films, which also has no decade restriction. This design choice is deliberate: the archive needs a clean destination for arthouse films from any era that don't fit more specific categories. A 1971 Australian drama (Wake in Fright) and a 2004 Japanese drama (Kamikaze Girls) share the same archival function — both are non-exploitation, non-commercial, non-Core — regardless of decade. The period-specific categories (Giallo, Pinku Eiga, etc.) take priority and are checked first; Indie Cinema only catches what falls through.
+
+The date ranges for historical categories are not arbitrary. Brazilian exploitation peaked during the pornochanchada cycle of 1970-1989. Giallo peaked with the Italian genre industry of 1960-1989. Hong Kong action peaked in the pre-handover era of 1970-1999. These are historical facts, encoded in the classification system.
+
+A 2010s Italian thriller is NOT Giallo. A 2004 Japanese drama is NOT Pinku Eiga — but it IS Indie Cinema.
 
 (See also: [DECADE_WAVE_THEORY.md](DECADE_WAVE_THEORY.md) — satellite categories as wave-specific phenomena)
 

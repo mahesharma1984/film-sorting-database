@@ -114,14 +114,15 @@ If a film is in the 50-film Reference canon, it's Reference — even if a user p
 
 ### Satellite Categories Are Decade-Bounded
 Country → satellite routing only applies within historically valid decades:
-- Brazil → Brazilian Exploitation: 1970s–1980s only
+- Brazil → Brazilian Exploitation: 1960s–1990s (pornochanchada peak 1970–1989; wider tradition extends to mid-1960s and early 1990s — WIDENED Issue #20)
 - Italy → Giallo: 1960s–1980s only
 - Japan → Pinku Eiga: 1960s–1980s only
 - France → French New Wave: 1950s-1970s only (NEW - Issue #14)
 - Hong Kong → HK Action: 1970s–1990s only
 - US → American Exploitation: 1960s-1980s only (NARROWED - Issue #14)
 - US → Classic Hollywood: 1930s-1950s only (NEW - Issue #14)
-- International → Indie Cinema: 1980s-2020s (NEW - Issue #14)
+- International → Indie Cinema: 1960s-2020s, 30+ countries (WIDENED Issue #20 — functional catch-all, not a historical wave; see MARGINS_AND_TEXTURE.md §2)
+  - NOTE: US intentionally excluded from country_codes. US has Classic Hollywood (1930s-1950s), American Exploitation (1960s-1980s), Blaxploitation. Non-matching US films → Unsorted. US indie directors (Jarmusch, Hartley, Larry Clark etc.) still route via directors list.
 
 A 2010s Italian thriller is NOT Giallo. Decades are structural, not arbitrary.
 
@@ -179,6 +180,11 @@ Popcorn/1980s/
 # Run tests
 pytest tests/
 
+# Normalize filenames — Stage 0 pre-stage (Issue #18)
+python normalize.py <source_directory>              # dry-run, writes rename_manifest.csv
+python normalize.py <source_directory> --execute   # apply renames
+python normalize.py <source_directory> --nonfim-only  # show only TV/supplementary flags
+
 # Classify films (never moves files)
 python classify.py <source_directory>
 
@@ -196,6 +202,18 @@ python scripts/build_thread_index.py --summary      # Build keyword index
 python scripts/thread_query.py --discover "Film"    # Find thread connections
 python scripts/thread_query.py --thread "Category"  # Query category keywords
 python scripts/thread_query.py --list --verbose     # List all tentpoles
+
+# Cache invalidation (Issue #16) — run after title cleaning changes
+python scripts/invalidate_null_cache.py conservative  # Remove entries missing both director AND country
+python scripts/invalidate_null_cache.py aggressive    # Remove all null entries
+
+# Handoff validation (Issue #16) — quality gates for pipeline handoffs
+python scripts/validate_handoffs.py                   # Self-test demonstration
+
+# Full library inventory — run after each batch of moves (Issue #17)
+python audit.py                                       # Walk all tier folders → output/library_audit.csv
+# Load library_audit.csv in dashboard for collection-wide classification rate
+# (sorting_manifest.csv = Unsorted work queue only; library_audit.csv = full library)
 ```
 
 ---
@@ -203,7 +221,7 @@ python scripts/thread_query.py --list --verbose     # List all tentpoles
 ## §6 Files to Never Commit
 
 - `config.yaml` / `config_external.yaml` — contain paths and API keys
-- `output/*.csv` — generated manifests
+- `output/*.csv` — generated manifests (sorting_manifest.csv, rename_manifest.csv)
 - `output/tmdb_cache.json` — API response cache
 - `.DS_Store`
 - `__pycache__/`, `*.pyc`

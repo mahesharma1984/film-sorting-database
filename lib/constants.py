@@ -152,7 +152,7 @@ LANGUAGE_TO_COUNTRY = {
 # Conservative routing: only films in specified decades will route to Satellite
 COUNTRY_TO_WAVE = {
     'BR': {
-        'decades': ['1970s', '1980s'],
+        'decades': ['1960s', '1970s', '1980s', '1990s'],  # widened (Issue #20)
         'category': 'Brazilian Exploitation',
     },
     'IT': {
@@ -221,9 +221,12 @@ POPCORN_STAR_ACTORS = [
 # All director-based routing MUST respect decade bounds (Issue #6 fix)
 # This replaces the hardcoded director_mappings in satellite.py with decade validation
 SATELLITE_ROUTING_RULES = {
-    # NEW CATEGORIES (Issue #14: Satellite Restructure v0.3)
-    # French New Wave MUST come before European Sexploitation for proper priority
-    # DIRECTOR-ONLY routing (empty lists = no country/genre fallback)
+    # PRIORITY ORDER: specific/director-driven categories first, catch-alls last
+    # Rationale: first-match-wins; catch-alls (Indie Cinema, Classic Hollywood)
+    # must come AFTER exploitation categories so director matches aren't overridden.
+
+    # French New Wave: DIRECTOR-ONLY routing (Issue #14)
+    # Must come first as decade-bounded director override (no country/genre fallback)
     'French New Wave': {
         'country_codes': [],  # Director-only (no country fallback)
         'decades': ['1950s', '1960s', '1970s'],  # 1958-1973 movement
@@ -233,30 +236,12 @@ SATELLITE_ROUTING_RULES = {
             'rivette', 'malle', 'eustache'
         ],
     },
-    # Broad international indie cinema - alternative to Popcorn for post-1980 arthouse
-    # Catches both known indie directors AND drama/character-driven films from any country
-    'Indie Cinema': {
-        'country_codes': ['US', 'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL'],  # International
-        'decades': ['1980s', '1990s', '2000s', '2010s', '2020s'],
-        'genres': ['Drama', 'Romance'],  # Core indie genres (character-driven, not spectacle)
-        'directors': [
-            # US indie
-            'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',
-            # International indie (add more as needed)
-            'denis', 'assayas', 'desplechin', 'haneke', 'trier', 'winterbottom', 'loach'
-        ],
-    },
-    'Classic Hollywood': {
-        'country_codes': ['US'],
-        'decades': ['1930s', '1940s', '1950s'],
-        'genres': ['Film-Noir', 'Western', 'Musical', 'Drama', 'Crime'],
-        'directors': [],  # Country + decade driven, not director-specific
-    },
 
-    # EXISTING CATEGORIES
+    # EXPLOITATION CATEGORIES (Issue #6, Issue #14)
+    # These must come before catch-alls (Indie Cinema, Classic Hollywood)
     'Brazilian Exploitation': {
         'country_codes': ['BR'],
-        'decades': ['1970s', '1980s'],
+        'decades': ['1960s', '1970s', '1980s', '1990s'],  # widened (Issue #20): pornochanchada peak 1970-1989, broader tradition 1960s-1990s
         'genres': ['Drama', 'Crime', 'Thriller', 'Horror', 'Romance'],
         'directors': [],  # Country-driven, not director-driven
     },
@@ -317,6 +302,7 @@ SATELLITE_ROUTING_RULES = {
         'directors': [
             'borowczyk', 'metzger', 'brass', 'vadim',
             'jaeckin',  # NEW: Just Jaeckin (Emmanuelle) (Issue #14)
+            'p\u00e9cas',  # Max Pécas (FR) — TMDb genres Crime/Thriller, director match needed
         ],
     },
     'Music Films': {
@@ -324,6 +310,49 @@ SATELLITE_ROUTING_RULES = {
         'decades': None,  # Any decade (no restriction)
         'genres': ['Music', 'Musical', 'Documentary'],
         'directors': [],
+    },
+
+    # CATCH-ALL CATEGORIES (Issue #14, Issue #16)
+    # These MUST come LAST — they are broad and will match many films.
+    # Exploitation categories above must have priority.
+    'Classic Hollywood': {
+        'country_codes': ['US'],
+        'decades': ['1930s', '1940s', '1950s'],
+        'genres': [],  # Issue #16: genre gate removed - decade (1930s-1950s) + US is sufficient gate
+        'directors': [],  # Country + decade driven, not director-specific
+    },
+    # Functional arthouse catch-all — NOT a historical wave category.
+    # Catches non-exploitation, non-Popcorn, non-Core films from any major film nation.
+    # Issue #16: moved to END so exploitation director films are caught first.
+    # Issue #20: extended to 1960s-1970s + added CN, TW, KR, IR, JP, HU, IN, RO.
+    # Note: unlike Giallo or Brazilian Exploitation (historical events with start/end
+    # dates), Indie Cinema is defined negatively — by what it is NOT. JP in 1970s-1980s
+    # still hits Pinku Eiga/Japanese Exploitation first; JP here only catches post-1980s
+    # Japanese films that fall through those categories.
+    #
+    # US is intentionally NOT in country_codes. US already has Classic Hollywood
+    # (1930s-1950s), American Exploitation (1960s-1980s), and Blaxploitation. US films
+    # that don't match those categories should fall to Unsorted — not Indie Cinema.
+    # US indie directors (Jarmusch, Hartley etc.) are covered by the directors list
+    # below, which fires before the country+genre check.
+    'Indie Cinema': {
+        'country_codes': [
+            # US intentionally excluded — US indie directors covered by directors list
+            'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE',
+            'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL',
+            # Added (Issue #20): East/South Asian and underrepresented film nations
+            'CN', 'TW', 'KR', 'IR', 'JP', 'HU', 'IN', 'RO',
+        ],
+        'decades': ['1960s', '1970s', '1980s', '1990s', '2000s', '2010s', '2020s'],  # extended back (Issue #20)
+        'genres': ['Drama', 'Romance', 'Thriller'],  # Issue #16: added Thriller (Comedy removed - too broad)
+        'directors': [
+            # US indie (director match fires regardless of country_codes exclusion)
+            'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',
+            # Larry Clark: 1980s work is American Exploitation; 1990s+ (Kids, Bully, Ken Park) is indie
+            'larry clark',
+            # International indie (add more as needed)
+            'denis', 'assayas', 'desplechin', 'haneke', 'trier', 'winterbottom', 'loach'
+        ],
     },
 }
 
@@ -438,6 +467,25 @@ SUBTITLE_KEYWORDS = [
     'widescreen',
     'fullscreen',
     'anniversary edition',
+]
+
+# =============================================================================
+# NON-FILM CONTENT PREFIXES (for Parser inversion fix - Issue #20)
+# =============================================================================
+
+# Filenames starting with these tokens are supplementary content (interviews,
+# trailers, shorts), not feature films. The parser checks potential_director
+# against this list to avoid inverting "Interview - Director (Year)" into
+# director="Interview", title="Director".
+NON_FILM_PREFIXES = [
+    'interview', 'interviews',
+    'trailer', 'featurette',
+    'short',
+    'radio play',
+    'video essay',
+    'english version', 'french version', 'german version', 'italian version',
+    'documentary',
+    'behind the scenes',
 ]
 
 # =============================================================================

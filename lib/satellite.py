@@ -18,12 +18,13 @@ logger = logging.getLogger(__name__)
 class SatelliteClassifier:
     """Classify films into Satellite categories using TMDb structured data"""
 
-    def __init__(self, categories_file=None):
+    def __init__(self, categories_file=None, core_db=None):
         """
         Initialize classifier with category definitions and caps
 
         Note: categories_file parameter kept for compatibility but not used
         Issue #6: Added Japanese Exploitation category
+        Issue #16: Added core_db for defensive Core director check
         """
         self.caps = {
             'Giallo': 30,
@@ -38,12 +39,14 @@ class SatelliteClassifier:
             'Cult Oddities': 50,
         }
         self.counts = defaultdict(int)  # Track category counts
+        self.core_db = core_db  # Issue #16: optional CoreDirectorDatabase for defensive check
 
     def classify(self, metadata, tmdb_data: Optional[Dict]) -> Optional[str]:
         """
         Classify using TMDb structured data + decade-bounded director rules
 
         CRITICAL FIX (Issue #6): Director routing now respects decade bounds
+        NEW (Issue #16): Core director defensive check prevents Satellite misrouting
         Uses unified SATELLITE_ROUTING_RULES from constants.py
 
         Args:
@@ -55,6 +58,18 @@ class SatelliteClassifier:
         """
         if not tmdb_data:
             return None
+
+        # NEW (Issue #16): Defensive gate - check if director is Core before Satellite routing
+        # Prevents Core auteurs from being caught by Satellite director-based routing
+        # Example: Dario Argento (if Core) shouldn't route to Giallo before Core check
+        # core_db is passed in at init time from FilmClassifier (avoid circular import)
+        director = tmdb_data.get('director', '') or ''
+        if director and self.core_db:
+            if self.core_db.is_core_director(director):
+                # This is a Core auteur - must NOT route to Satellite
+                # Return None so main classifier handles Core routing
+                logger.debug(f"Skipping Satellite routing for Core director: {director}")
+                return None
 
         # Extract structured data
         countries = tmdb_data.get('countries', [])

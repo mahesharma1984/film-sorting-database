@@ -25,13 +25,18 @@ Before editing any module, trace:
 
 Key dependency chains:
 ```
+normalizer.py → normalize.py (FilenameNormalizer — pure PRECISION, Issue #18)
+normalize.py → classify.py (cleaned filenames via rename_manifest.csv)
 parser.py → classify.py (FilmMetadata)
 constants.py → parser.py, normalization.py, classify.py (FORMAT_SIGNALS, RELEASE_TAGS, etc.)
-normalization.py → lookup.py, classify.py (normalize_for_lookup)
+normalization.py → lookup.py, classify.py (normalize_for_lookup — for LOOKUP symmetry)
 lookup.py → classify.py (SORTING_DATABASE lookups)
 core_directors.py → classify.py (whitelist checks)
 classify.py → move.py (sorting_manifest.csv)
 ```
+
+Note: `lib/normalizer.py` (filename cleaning) is separate from `lib/normalization.py`
+(lookup normalization). They have different purposes — do not merge.
 
 ### 2. Apply the R/P Split
 
@@ -49,7 +54,7 @@ Before writing new classification logic:
 Use the Pattern-First audit:
 - Does this change make a downstream stage depend on an upstream stage's output that isn't guaranteed yet?
 - Should this be a new pipeline step or a modification to an existing one?
-- Are stage boundaries still clean? (classify never moves; move never classifies)
+- Are stage boundaries still clean? (normalize never classifies; classify never moves; move never classifies)
 
 ---
 
@@ -175,9 +180,26 @@ dest = f'Satellite/{category}/{decade}/'
 
 Categories are checked in dictionary order (Python 3.7+ preserves insertion order). **Order matters** when directors might match multiple categories.
 
-**Example:** Ernest Dickerson could match both Blaxploitation (1970s, 1990s) and American Exploitation (1960s-2000s). Blaxploitation is listed FIRST, so a 1992 Dickerson film routes to Blaxploitation (not American Exploitation).
+**Current order (as of Issue #16):**
 
-If you add a new category, consider where it should appear in the priority order.
+1. French New Wave (director-only, no country/genre fallback)
+2. Brazilian Exploitation
+3. Giallo
+4. Pinku Eiga
+5. Japanese Exploitation
+6. Hong Kong Action
+7. Blaxploitation
+8. American Exploitation
+9. European Sexploitation
+10. Music Films
+11. **Classic Hollywood** ← catch-all for pre-1960 US (MUST be near end)
+12. **Indie Cinema** ← catch-all for post-1980 international (MUST be last)
+
+**Critical rule (Issue #16):** Indie Cinema and Classic Hollywood are broad catch-alls. They MUST come AFTER all exploitation categories. If they appear earlier, they intercept films that should reach exploitation director checks.
+
+**Example:** Ernest Dickerson could match both Blaxploitation (1970s, 1990s) and Indie Cinema (US, Drama, 1990s). Blaxploitation is listed BEFORE Indie Cinema, so a 1992 Dickerson film routes to Blaxploitation (correct). If Indie Cinema were listed first, it would intercept the film before Blaxploitation was checked.
+
+If you add a new category, consider where it should appear. Specific/director-driven categories belong near the top. Broad country+decade catch-alls belong at the bottom.
 
 ---
 

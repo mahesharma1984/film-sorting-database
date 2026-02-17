@@ -92,8 +92,9 @@
 
 **Definition:**
 - Brazilian erotic comedies and exploitation
-- 1970s-1980s boom
-- Boca do Lixo cinema
+- Boca do Lixo cinema tradition
+- Pornochanchada peak: 1970–1989; broader tradition: 1960s–1990s (WIDENED - Issue #20)
+- Pre-pornochanchada roots visible in mid-1960s genre films (e.g., O Padre e a Moça, 1966); tradition extends to early 1990s (e.g., Vai Trabalhar Vagabundo II, 1991)
 
 **Films in Collection:**
 - Escola Penal de Meninas Violentadas (1977)
@@ -117,9 +118,11 @@
 - (Many more in collection)
 
 **Cap per decade:**
+- 1960s: max 5 films (pre-pornochanchada roots)
 - 1970s: max 25 films (boom era)
 - 1980s: max 20 films
-- **Total cap: 45 Brazilian exploitation films**
+- 1990s: max 5 films (late tradition)
+- **Total cap: 45 Brazilian exploitation films** (caps redistributed, total unchanged)
 
 **Boundary rule:**
 - Carlos Reichenbach, Rogério Sganzerla, Júlio Bressane → Core auteurs
@@ -414,28 +417,33 @@
 
 ---
 
-### 16. INDIE CINEMA (NEW - Issue #14)
+### 16. INDIE CINEMA (NEW - Issue #14, WIDENED - Issue #20)
 
 **Definition:**
-- Broad international catch-all for post-1980 arthouse cinema
-- Alternative to Popcorn for character-driven, non-spectacle films
-- Combines regions (US, GB, FR, DE, IT, ES, CA, AU, Scandinavia, Latin America, etc.)
+- Functional arthouse catch-all for non-exploitation, non-Popcorn, non-Core films
+- NOT a historical wave category — defined negatively by what it is NOT
+- Covers international art/character-driven films from 30+ countries, 1960s–2020s
+- Issue #20: expanded from post-1980 to 1960s–2020s; added CN, TW, KR, IR, JP, HU, IN, RO
 
 **Directors (examples):**
 - US: Jim Jarmusch, Hal Hartley, Kelly Reichardt, Todd Haynes
 - International: Michael Haneke, Lars von Trier, Ken Loach
 
-**Cap:** 40 films
+**Cap:** 40 films (review after Issue #20 expansion — scope has broadened)
 
 **Rationale:**
 - Fills gap between Core (auteur obsession) and Popcorn (mainstream entertainment)
-- Captures arthouse films that don't fit more specific satellite categories
-- Post-1980 reflects shift from classical exploitation cinema to indie/arthouse
+- Unlike Giallo or Brazilian Exploitation (historical events with specific start/end dates),
+  Indie Cinema is a functional routing label. It is analogous to Music Films (no decade
+  restriction) — organized by what it serves, not what historical moment it names.
+- JP in 1970s–1980s still routes to Pinku Eiga/Japanese Exploitation first; JP here only
+  catches post-1980s Japanese films that fall through those categories.
 
 **Boundary rules:**
 - Coen Brothers, Lynch, P.T. Anderson → Core (on whitelist)
-- Unknown indie dramas from major film countries → Indie Cinema
+- Unknown indie dramas from covered film countries → Indie Cinema
 - Mainstream studio films → Popcorn
+- Exploitation directors' post-category films → Indie Cinema (decade bounds respected)
 
 ---
 
@@ -505,8 +513,10 @@ Satellite/
 │   ├── 1970s/
 │   └── 1980s/
 ├── Brazilian Exploitation/
+│   ├── 1960s/
 │   ├── 1970s/
-│   └── 1980s/
+│   ├── 1980s/
+│   └── 1990s/
 ├── Hong Kong Action/
 │   ├── 1970s/
 │   ├── 1980s/

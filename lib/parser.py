@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 
 from lib.constants import (
     FORMAT_SIGNALS, RELEASE_TAGS, LANGUAGE_PATTERNS,
-    LANGUAGE_TO_COUNTRY, SUBTITLE_KEYWORDS
+    LANGUAGE_TO_COUNTRY, SUBTITLE_KEYWORDS, NON_FILM_PREFIXES
 )
 
 
@@ -236,6 +236,12 @@ class FilenameParser:
                             # This is "Title - Subtitle (Year)", not "Director - Title (Year)"
                             # Skip director extraction
                             pass
+                        # Issue #20: Non-film content prefix gate
+                        # "Interview - Rodney Hill (2014)" → prefix is content type, not director
+                        elif potential_director.strip().lower() in NON_FILM_PREFIXES:
+                            # Supplementary content — no director, title from right side
+                            title = potential_title.strip()
+                            # fall through to return without director
                         # Only treat as director if it's short and clean
                         elif len(potential_director.split()) <= 3 and not any(
                             tag in potential_director.lower() for tag in ['1080p', '720p', 'bluray', 'x264', 'x265']

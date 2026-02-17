@@ -2,8 +2,8 @@
 
 **Purpose:** Central metadata registry for the RAG (Retrieval-Augmented Generation) query system. This file defines document authority levels, provides quick reference lookups, and maps concepts to their canonical sources.
 
-**Version:** 1.0
-**Last Updated:** 2026-02-16
+**Version:** 1.2
+**Last Updated:** 2026-02-17
 **Status:** AUTHORITATIVE
 
 ---
@@ -15,6 +15,8 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | Question | Answer | Source |
 |---|---|---|
 | How do I classify a film? | Run classify.py on source directory | `docs/DEVELOPER_GUIDE.md` |
+| How do I see the full library state? | Run audit.py → load library_audit.csv in dashboard | `audit.py`, `docs/WORK_ROUTER.md` |
+| Why does the dashboard show 0% classified? | sorting_manifest.csv = Unsorted queue only; use library_audit.csv | `docs/WORK_ROUTER.md` |
 | What are the satellite categories? | 12 categories with decade boundaries | `docs/SATELLITE_CATEGORIES.md` |
 | How do I find a film's classification? | Search SORTING_DATABASE.md | `docs/SORTING_DATABASE.md` |
 | What directors are in Core? | 38-43 directors by decade | `docs/CORE_DIRECTOR_WHITELIST_FINAL.md` |
