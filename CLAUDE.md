@@ -208,6 +208,11 @@ python scripts/invalidate_null_cache.py aggressive    # Remove all null entries
 
 # Handoff validation (Issue #16) — quality gates for pipeline handoffs
 python scripts/validate_handoffs.py                   # Self-test demonstration
+
+# Full library inventory — run after each batch of moves (Issue #17)
+python audit.py                                       # Walk all tier folders → output/library_audit.csv
+# Load library_audit.csv in dashboard for collection-wide classification rate
+# (sorting_manifest.csv = Unsorted work queue only; library_audit.csv = full library)
 ```
 
 ---

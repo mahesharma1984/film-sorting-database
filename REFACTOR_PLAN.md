@@ -28,9 +28,13 @@ Every operation in this system is either REASONING or PRECISION. The current cod
 
 ```
 scaffold.py   →  normalize.py  →  classify.py  →  move.py
-                      ↓                  ↓
-               rename_manifest.csv  sorting_manifest.csv
-               (human review)       (human review)
+                      ↓                  ↓                ↓
+               rename_manifest.csv  sorting_manifest.csv  [files moved]
+               (human review)       (human review)              ↓
+                                                           audit.py
+                                                                ↓
+                                                        library_audit.csv
+                                                        (dashboard overview)
 ```
 
 ### 0. `normalize.py` — Filename Normalization Pre-Stage
@@ -210,6 +214,7 @@ film-sorting-database/
 ├── normalize.py             # Op 2: Filename normalization pre-stage (Issue #18)
 ├── classify.py              # Op 3: Classify → manifest CSV
 ├── move.py                  # Op 4: Read manifest → move files
+├── audit.py                 # Op 5: Walk organized library → library_audit.csv (Issue #17)
 ├── lib/
 │   ├── normalizer.py        # FilenameNormalizer rules engine (Issue #18)
 │   ├── parser.py            # FilenameParser (cleaned up)
@@ -267,6 +272,11 @@ python move.py output/sorting_manifest.csv /Volumes/One\ Touch/movies/unsorted -
 
 # 6. Execute
 python move.py output/sorting_manifest.csv /Volumes/One\ Touch/movies/unsorted
+
+# 7. Update full library inventory (run after each batch of moves)
+python audit.py
+# → output/library_audit.csv
+# Load library_audit.csv in dashboard for collection-wide classification rate
 ```
 
 Step 2 (normalize) and Step 4 (review) are key human checkpoints. Normalize is pure PRECISION — review `rename_manifest.csv` before `--execute`. The manifest is the contract. Classification never touches files. Moving never classifies. Normalizing never classifies.
