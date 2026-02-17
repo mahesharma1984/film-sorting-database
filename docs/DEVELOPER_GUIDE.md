@@ -25,13 +25,18 @@ Before editing any module, trace:
 
 Key dependency chains:
 ```
+normalizer.py → normalize.py (FilenameNormalizer — pure PRECISION, Issue #18)
+normalize.py → classify.py (cleaned filenames via rename_manifest.csv)
 parser.py → classify.py (FilmMetadata)
 constants.py → parser.py, normalization.py, classify.py (FORMAT_SIGNALS, RELEASE_TAGS, etc.)
-normalization.py → lookup.py, classify.py (normalize_for_lookup)
+normalization.py → lookup.py, classify.py (normalize_for_lookup — for LOOKUP symmetry)
 lookup.py → classify.py (SORTING_DATABASE lookups)
 core_directors.py → classify.py (whitelist checks)
 classify.py → move.py (sorting_manifest.csv)
 ```
+
+Note: `lib/normalizer.py` (filename cleaning) is separate from `lib/normalization.py`
+(lookup normalization). They have different purposes — do not merge.
 
 ### 2. Apply the R/P Split
 
@@ -49,7 +54,7 @@ Before writing new classification logic:
 Use the Pattern-First audit:
 - Does this change make a downstream stage depend on an upstream stage's output that isn't guaranteed yet?
 - Should this be a new pipeline step or a modification to an existing one?
-- Are stage boundaries still clean? (classify never moves; move never classifies)
+- Are stage boundaries still clean? (normalize never classifies; classify never moves; move never classifies)
 
 ---
 

@@ -179,6 +179,11 @@ Popcorn/1980s/
 # Run tests
 pytest tests/
 
+# Normalize filenames — Stage 0 pre-stage (Issue #18)
+python normalize.py <source_directory>              # dry-run, writes rename_manifest.csv
+python normalize.py <source_directory> --execute   # apply renames
+python normalize.py <source_directory> --nonfim-only  # show only TV/supplementary flags
+
 # Classify films (never moves files)
 python classify.py <source_directory>
 
@@ -210,7 +215,7 @@ python scripts/validate_handoffs.py                   # Self-test demonstration
 ## §6 Files to Never Commit
 
 - `config.yaml` / `config_external.yaml` — contain paths and API keys
-- `output/*.csv` — generated manifests
+- `output/*.csv` — generated manifests (sorting_manifest.csv, rename_manifest.csv)
 - `output/tmdb_cache.json` — API response cache
 - `.DS_Store`
 - `__pycache__/`, `*.pyc`
