@@ -355,6 +355,9 @@
 ### Core - Claude Chabrol
 - The Cry of the Owl (1987) → 1980s/Core/Claude Chabrol/
 
+### Core - Pedro Almodóvar
+- Laberinto de pasiones Pedro Almodovar (1982) → Core/1980s/Pedro Almodóvar/
+
 ### Reference
 - Blade Runner (1982) → 1980s/Reference/
 - The Terminator (1984) → 1980s/Reference/

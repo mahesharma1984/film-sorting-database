@@ -1,7 +1,7 @@
 FILMS REQUIRING MANUAL REVIEW
 ============================================================
 
-Total: 515 films
+Total: 491 films
 
 File: Carmen Jones (1954).mkv
 Title: Carmen Jones
@@ -282,8 +282,8 @@ Reason: unsorted_no_year
 File: Die endlose Nacht (1963) WEB-DL 1080p.mkv
 Title: Die endlose Nacht
 Year: 1963
-Director: Will Tremper
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: La classe americaine (1993) [2010.Special.Edition.99c][cyclim.se].mkv
 Title: La classe americaine [2010 Special Edition 99c][cyclim se]
@@ -294,8 +294,8 @@ Reason: unsorted_no_match
 File: Las.Islas.Marias.1951.1080p.WEB-DL.AAC2.0.H.264.mkv
 Title: Las Islas Marias
 Year: 1951
-Director: Emilio Fernández
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: mountains.may.depart.2015.limited.bdrip.x264-bipolar.mkv
 Title: mountains may depart limited
@@ -339,23 +339,11 @@ Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Gentlemen.Prefer.Blondes.1953.1080p.BluRay.x264-CiNEFiLE.mkv
-Title: Gentlemen Prefer Blondes
-Year: 1953
-Director: Howard Hawks
-Reason: unsorted_no_match
-------------------------------------------------------------
 File: La.Cicatrice.Interieure.AKA.The.Inner.Scar.1972.720p.BluRay.x264-SPiRiT.mkv
 Title: La Cicatrice Interieure AKA The Inner Scar
 Year: 1972
 Director: UNKNOWN
 Reason: unsorted_no_director
-------------------------------------------------------------
-File: The.Return.Of.The.Pink.Panther.1975.1080p.BluRay.x264-[YTS.AG].mp4
-Title: The Return Of The Pink Panther
-Year: 1975
-Director: Blake Edwards
-Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Ivan Andonov - (1988) Yesterday.mkv
 Title: Yesterday
@@ -398,12 +386,6 @@ Title: ESTRANHO DESEJO
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
-------------------------------------------------------------
-File: 2003 - Save the Green Planet!.1080p.WEB-DL.mkv
-Title: Save the Green Planet!
-Year: 2003
-Director: Jang Joon-hwan
-Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Avidacomoelae(1).mkv
 Title: Avidacomoelae(1)
@@ -534,20 +516,14 @@ Reason: unsorted_no_director
 File: Bitter Stems, The (1956) - 1080p.mp4
 Title: Bitter Stems, The
 Year: 1956
-Director: Fernando Ayala
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Black.Girl.1972.mkv
 Title: Black Girl 1972
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
-------------------------------------------------------------
-File: Black.Orpheus.1959.1080p.BluRay.x264.AAC-YTS.mp4
-Title: Black Orpheus
-Year: 1959
-Director: Marcel Camus
-Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Blue Magic.mkv
 Title: Blue Magic
@@ -564,8 +540,8 @@ Reason: unsorted_no_match
 File: But.the.Flesh.is.Weak.1957.1080p.AMZN.WEB-DL.DDP2.0.H.264-ASO.mkv
 Title: But the Flesh is Weak
 Year: 1957
-Director: Kō Nakahira
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: The Making Of Captain EO.mp4
 Title: The Making Of Captain EO
@@ -606,8 +582,8 @@ Reason: unsorted_no_year
 File: Christmas Story, A (1983).mp4
 Title: Christmas Story, A
 Year: 1983
-Director: Bob Clark
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: La.ville.des.pirates.AKA.City.of.Pirates.1983.DVDRip.x264-HANDJOB.mkv
 Title: La ville des pirates AKA City of Pirates
@@ -630,7 +606,7 @@ Reason: unsorted_no_director
 File: Daisies.1966.SR.1080p.BluRay.x265.HEVC.AAC-SARTRE.mkv
 Title: Daisies SR
 Year: 1966
-Director: Věra Chytilová
+Director: Vera Chytilová
 Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Das Tripas Coração (1982).mp4
@@ -650,12 +626,6 @@ Title: Depravação Orgia das Taras
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
-------------------------------------------------------------
-File: Desire.1936.1080p.BluRay.x264.AAC-[YTS.MX].mp4
-Title: Desire
-Year: 1936
-Director: Frank Borzage
-Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Sale comme un ange DVD Remux.mkv
 Title: Sale comme un ange DVD Remux
@@ -741,12 +711,6 @@ Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Freaks.of.Nature.2015.1080p.BluRay.x264.DTS-ETRG.mkv
-Title: Freaks of Nature
-Year: 2015
-Director: Robbie Pickering
-Reason: unsorted_no_match
-------------------------------------------------------------
 File: Godard par Godard.mkv
 Title: Godard par Godard
 Year: UNKNOWN
@@ -758,12 +722,6 @@ Title: Passion (Jean Luc Godard-Isabelle Huppert-Drama)
 Year: 1982
 Director: UNKNOWN
 Reason: unsorted_no_director
-------------------------------------------------------------
-File: Gold Diggers of 1935 (1935) - [imdb=tt0026521] [WEBRip-1080p][AAC 1.0][x265].mkv
-Title: Gold Diggers of 1935
-Year: 1935
-Director: Busby Berkeley
-Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Buongiorno, notte_( Good Morning, Night)_2003_DVDRip-AVC_ (1).mkv
 Title: Buongiorno, notte ( Good Morning, Night) 2003
@@ -783,12 +741,6 @@ Year: 1957
 Director: Abner Biberman
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Hable con ella (Pedro Almodóvar, 2002).mp4
-Title: Hable con ella
-Year: 2002
-Director: Pedro Almodóvar
-Reason: unsorted_no_match
-------------------------------------------------------------
 File: Haruyoshi Noguchi - Gambling Kitten.mkv
 Title: Haruyoshi Noguchi - Gambling Kitten
 Year: UNKNOWN
@@ -798,8 +750,8 @@ Reason: unsorted_no_year
 File: Hot Rock, The (1972).mp4
 Title: Hot Rock, The
 Year: 1972
-Director: Peter Yates
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Human.Desire.1954.MOC.1080p.BluRay.x265.HEVC.FLAC-SARTRE.mkv
 Title: Human Desire MOC
@@ -816,8 +768,8 @@ Reason: unsorted_no_year
 File: Hustler, The (1961).mp4
 Title: Hustler, The
 Year: 1961
-Director: Robert Rossen
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Idol of the Crowds (1937).mkv
 Title: Idol of the Crowds
@@ -828,14 +780,14 @@ Reason: unsorted_no_match
 File: Ikarie XB 1 (1963).mkv
 Title: Ikarie XB 1
 Year: 1963
-Director: Jindřich Polák
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: In Harms Way 1965 1080p BluRay x264-OFT.mkv
 Title: In Harms Way
 Year: 1965
-Director: Otto Preminger
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Intrepidos.Punks.1980.1080p.BluRay.FLAC.x264-HANDJOB.mkv
 Title: Intrepidos Punks
@@ -927,12 +879,6 @@ Year: 1968
 Director: UNKNOWN
 Reason: unsorted_no_director
 ------------------------------------------------------------
-File: La piel que habito (Pedro Almodóvar, 2011).mp4
-Title: La piel que habito
-Year: 2011
-Director: Pedro Almodóvar
-Reason: unsorted_no_match
-------------------------------------------------------------
 File: La soldadera (1967) Blu-ray 1080p.mkv
 Title: La soldadera Blu-ray
 Year: 1967
@@ -972,8 +918,8 @@ Reason: unsorted_no_director
 File: Le Plein De Super 1976 1080p FR X264 AAC-mHDgz.mkv
 Title: Le Plein De Super
 Year: 1976
-Director: Alain Cavalier
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Le.Protecteur.1974.mkv
 Title: Le Protecteur 1974
@@ -1008,8 +954,8 @@ Reason: unsorted_no_match
 File: Limonadovy Joe aneb Konska opera (1964).BDRip.CZ.EN.1080p.mkv
 Title: Limonadovy Joe aneb Konska opera
 Year: 1964
-Director: Oldřich Lipský
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: 1972.Lo.scopone.scientifico.1080p.BluRay.x264.ITA.mkv
 Title: 1972 Lo scopone scientifico
@@ -1026,7 +972,7 @@ Reason: unsorted_no_director
 File: Looking.for.Mister.Perfect.2003.1080p.MyTVS.WEB-DL.H265.AAC-YingWEB.mkv
 Title: Looking for Mister Perfect
 Year: 2003
-Director: Ringo Lam Ling-Tung
+Director: Ringo Lam
 Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Looking for Mr. Goodbar.mkv
@@ -1038,7 +984,7 @@ Reason: unsorted_no_year
 File: Lorna.2014.1080p.HC.WEB-DL.AAC2.0.x264-RSG.mkv
 Title: Lorna
 Year: 2014
-Director: Sigrid Andrea P. Bernardo
+Director: Sigrid Andrea Bernardo
 Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Los.Olvidados.1950.JP.1080p.BluRay.x265.HEVC.FLAC-SARTRE.mkv
@@ -1046,12 +992,6 @@ Title: Los Olvidados JP
 Year: 1950
 Director: UNKNOWN
 Reason: unsorted_no_director
-------------------------------------------------------------
-File: Love.Affair.1939.1080p.BluRay.x264-OFT.mkv
-Title: Love Affair
-Year: 1939
-Director: Leo McCarey
-Reason: unsorted_no_match
 ------------------------------------------------------------
 File: sample.avi
 Title: sample
@@ -1068,8 +1008,8 @@ Reason: unsorted_no_director
 File: Lumiere.D.Ete.1943.1080p.UniversCine.WebDL.mkv
 Title: Lumiere D Ete
 Year: 1943
-Director: Jean Grémillon
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: I vampiri AKA Lust of the Vampire 1957 1080p Bluray FLAC x264-Manji.mkv
 Title: I vampiri AKA Lust of the Vampire
@@ -1167,12 +1107,6 @@ Year: 1996
 Director: UNKNOWN
 Reason: unsorted_no_director
 ------------------------------------------------------------
-File: Ninja.III.The.Domination.1984.1080p.BluRay.x264.AAC-[YTS.MX].mp4
-Title: Ninja III The Domination
-Year: 1984
-Director: Sam Firstenberg
-Reason: unsorted_no_match
-------------------------------------------------------------
 File: No me digas adiós (1950).mp4
 Title: No me digas adiós
 Year: 1950
@@ -1212,14 +1146,14 @@ Reason: unsorted_no_year
 File: Ocean's 11 (1960).mp4
 Title: Ocean's 11
 Year: 1960
-Director: Lewis Milestone
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Omega Man, The (1971).mkv
 Title: Omega Man, The
 Year: 1971
-Director: Boris Sagal
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Palm Springs Weekend [1963 - Taurog, Norman].mkv
 Title: Palm Springs Weekend [1963 - Taurog, Norman]
@@ -1231,12 +1165,6 @@ File: Pandora and the Flying Dutchman (Albert Lewin 1951).mkv
 Title: Pandora and the Flying Dutchman
 Year: 1951
 Director: Albert Lewin
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Party.Girl.1958.1080p.BluRay.x264.AAC-[YTS.MX].mp4
-Title: Party Girl
-Year: 1958
-Director: Nicholas Ray
 Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Picnic.On.The.Grass.1959.1080p.BluRay.x264-[YTS.LT].mp4
@@ -1260,14 +1188,14 @@ Reason: unsorted_no_year
 File: Quiet Family, The (1998) - 1080p.mp4
 Title: Quiet Family, The
 Year: 1998
-Director: Kim Jee-woon
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Quiet Man, The (1952).mp4
 Title: Quiet Man, The
 Year: 1952
-Director: John Ford
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Ran.mkv
 Title: Ran
@@ -1278,8 +1206,8 @@ Reason: unsorted_no_year
 File: Rekopis Znaleziony w Saragossie (1965).mkv
 Title: Rekopis Znaleziony w Saragossie
 Year: 1965
-Director: Wojciech Has
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Requiem for a Vampire.mkv
 Title: Requiem for a Vampire
@@ -1476,8 +1404,8 @@ Reason: unsorted_no_match
 File: Zirneklis.1992.1080p.BluRay.x264.AAC-[YTS.MX].mp4
 Title: Zirneklis
 Year: 1992
-Director: Vasili Mass
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Stephen Sayadian - 1982 - Café Flesh [dual inglés+comments].mkv
 Title: Stephen Sayadian - - Café Flesh [dual inglés+comments]
@@ -1713,18 +1641,6 @@ Year: 1983
 Director: UNKNOWN
 Reason: unsorted_no_director
 ------------------------------------------------------------
-File: The.Legend.of.Kaspar.Hauser.2012.1080p.BluRay.x264.mkv
-Title: The Legend of Kaspar Hauser
-Year: 2012
-Director: Davide Manuli
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The.Outlaw.1943.1080p.BluRay.x264-[YTS.AM].mp4
-Title: The Outlaw
-Year: 1943
-Director: Howard Hughes
-Reason: unsorted_no_match
-------------------------------------------------------------
 File: The.Rolling.Stones.Rock.And.Roll.Circus.1996.WS.1080p.MBluRay.x264-TREBLE.mkv
 Title: The Rolling Stones Rock And Roll Circus WS
 Year: 1996
@@ -1773,12 +1689,6 @@ Year: 1973
 Director: UNKNOWN
 Reason: unsorted_no_director
 ------------------------------------------------------------
-File: Too.Late.for.Tears.1949.1080p.BluRay.x264-PSYCHD.mkv
-Title: Too Late for Tears
-Year: 1949
-Director: Byron Haskin
-Reason: unsorted_no_match
-------------------------------------------------------------
 File: Trapeze.1956.1080p.BluRay.x264-[YTS.LT].mp4
 Title: Trapeze
 Year: 1956
@@ -1800,14 +1710,14 @@ Reason: unsorted_no_year
 File: Twilights.Last.Gleaming.1977.1080p.BluRay.x265-RARBG.mp4
 Title: Twilights Last Gleaming
 Year: 1977
-Director: Robert Aldrich
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Ulzanas.Raid.1972.1080p.BluRay.x265-RARBG.mp4
 Title: Ulzanas Raid
 Year: 1972
-Director: Robert Aldrich
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Une.femme.mariee.AKA.A.Married.Woman.1964.720p.BluRay.x264.FLAC.2.0-dps.mkv
 Title: Une femme mariee AKA A Married Woman
@@ -1826,12 +1736,6 @@ Title: Va Savoir DC
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
-------------------------------------------------------------
-File: Vampyros.Lesbos.1971.1080p.BluRay.x265.hevc.10bit.AAC.2.0-HeVK.mkv
-Title: Vampyros Lesbos
-Year: 1971
-Director: Jesús Franco
-Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Vendredi.Soir.2002.PAL.DVDRip.AC3.x264-trand.mkv
 Title: Vendredi Soir PAL
@@ -1944,7 +1848,7 @@ Reason: unsorted_no_director
 File: When.The.Cat.Comes.1963.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
 Title: When The Cat Comes
 Year: 1963
-Director: Vojtěch Jasný
+Director: Vojtech Jasný
 Reason: unsorted_no_match
 ------------------------------------------------------------
 File: War.and.Peace.Part.2.Natasha.Rostova WEB-DL 1080p.mkv
@@ -2022,8 +1926,8 @@ Reason: unsorted_no_year
 File: Turtles.Swim.Faster.Than.Expected.2005.1080p.NF.WEB-DL.DDP2.0.x264-ker4mat.mkv
 Title: Turtles Swim Faster Than Expected
 Year: 2005
-Director: Satoshi Miki
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Cidade.Oculta.MemoriadaTV.720p.mkv
 Title: Cidade Oculta MemoriadaTV
@@ -2034,8 +1938,8 @@ Reason: unsorted_no_year
 File: Vampire Lovers, The (1970) 1080p h265 with 4 optional audio commentaries {imdb-tt0066518}.mkv
 Title: Vampire Lovers, The
 Year: 1970
-Director: Roy Ward Baker
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Trailer - The Vampire Lovers.mkv
 Title: Trailer - The Vampire Lovers
@@ -2163,12 +2067,6 @@ Year: 1963
 Director: UNKNOWN
 Reason: unsorted_no_director
 ------------------------------------------------------------
-File: The.Masters.Of.Time.1982.1080p.BluRay.x264.AAC-[YTS.MX].mp4
-Title: The Masters Of Time
-Year: 1982
-Director: René Laloux
-Reason: unsorted_no_match
-------------------------------------------------------------
 File: Fantastic.Planet.1973.1080p.BluRay.x264-[YTS.AM].mp4
 Title: Fantastic Planet
 Year: 1973
@@ -2238,8 +2136,8 @@ Reason: unsorted_no_year
 File: Cours du soir (1967).mkv
 Title: Cours du soir
 Year: 1967
-Director: Nicolas Ribowski
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: Selected Scene Commentary by Jerome Deschamps.mkv
 Title: Selected Scene Commentary by Jerome Deschamps
@@ -2589,30 +2487,6 @@ Year: 1959
 Director: UNKNOWN
 Reason: unsorted_no_director
 ------------------------------------------------------------
-File: Laberinto.de.pasiones.1982.Pedro.Almodovar.1080p.WEBRip.AAC.x264.RIYE.mkv
-Title: Laberinto de pasiones Pedro Almodovar
-Year: 1982
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Labyrinth.Of.Cinema.2019.1080p.BluRay.x264.AAC5.1-YTS.mp4
-Title: Labyrinth Of Cinema
-Year: 2019
-Director: Nobuhiko Obayashi
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Inauguration.of.the.Pleasure.Dome.1954.BDRip.1080p.x264.AC3.mkv
-Title: Inauguration of the Pleasure Dome
-Year: 1954
-Director: Kenneth Anger
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Lucifer.Rising.1972.BDRip.1080p.x264.AC3.mkv
-Title: Lucifer Rising
-Year: 1972
-Director: Kenneth Anger
-Reason: unsorted_no_match
-------------------------------------------------------------
 File: Trailer - Jade.mkv
 Title: Trailer - Jade
 Year: UNKNOWN
@@ -2811,24 +2685,6 @@ Year: 1949
 Director: Tex Avery
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Greener.Grass.2019.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
-Title: Greener Grass
-Year: 2019
-Director: Dawn Luebbe
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Strawberry.Mansion.2021.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
-Title: Strawberry Mansion
-Year: 2021
-Director: Kentucker Audley
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Problemista.2023.1080p.WEBRip.x264.AAC5.1-[YTS.MX].mp4
-Title: Problemista
-Year: 2023
-Director: Julio Torres
-Reason: unsorted_no_match
-------------------------------------------------------------
 File: No Fighting in the War Room.mkv
 Title: No Fighting in the War Room
 Year: UNKNOWN
@@ -2916,8 +2772,8 @@ Reason: unsorted_no_year
 File: Dead.Men.Dont.Wear.Plaid.1982.1080p.BluRay.DDP2.0.x265.10bit-GalaxyRG265.mkv
 Title: Dead Men Dont Wear Plaid
 Year: 1982
-Director: Carl Reiner
-Reason: unsorted_no_match
+Director: UNKNOWN
+Reason: unsorted_no_director
 ------------------------------------------------------------
 File: TV Spots.mkv
 Title: TV Spots
@@ -2946,7 +2802,7 @@ Reason: unsorted_no_year
 File: Daisies (1966).mp4
 Title: Daisies
 Year: 1966
-Director: Věra Chytilová
+Director: Vera Chytilová
 Reason: unsorted_no_match
 ------------------------------------------------------------
 File: Trailer_4.mkv
