@@ -420,17 +420,16 @@ def render_collection_overview(df: pd.DataFrame):
             if (display, year) not in seen_years:
                 seen_years[(display, year)] = (title, year)
 
-        # Build set of films in collection (normalised title + year)
+        # Build set of films in collection (normalised title + year).
+        # Titles are already populated by load_manifest() via filename parsing.
         try:
             from lib.normalization import normalize_for_lookup
             collection_keys = set()
             for _, row in df.iterrows():
                 if row['title'] and pd.notna(row['year']) and row['year'] > 0:
-                    norm = normalize_for_lookup(str(row['title']),
-                                                strip_format_signals=True)
+                    norm = normalize_for_lookup(str(row['title']), strip_format_signals=True)
                     collection_keys.add((norm, int(row['year'])))
         except ImportError:
-            # Fallback: simple lowercase matching
             collection_keys = set()
             for _, row in df.iterrows():
                 if row['title'] and pd.notna(row['year']) and row['year'] > 0:
@@ -1008,12 +1007,16 @@ def render_film_browser(df: pd.DataFrame):
 
     if mode == "View":
         # --- Results table ---
+        # Use filename as display label when title is unpopulated (e.g. library_audit.csv)
+        view_df = filtered.copy()
+        if view_df['title'].astype(str).str.strip().eq('').all():
+            view_df['title'] = view_df['filename']
         display_cols = ['title', 'year', 'director', 'tier', 'decade',
                         'subdirectory', 'confidence', 'reason']
-        display_cols = [c for c in display_cols if c in filtered.columns]
+        display_cols = [c for c in display_cols if c in view_df.columns]
 
         st.dataframe(
-            filtered[display_cols].sort_values(['tier', 'title']).reset_index(drop=True),
+            view_df[display_cols].sort_values(['tier', 'title']).reset_index(drop=True),
             use_container_width=True,
             height=500,
             column_config={
