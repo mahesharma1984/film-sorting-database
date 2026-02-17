@@ -302,6 +302,7 @@ SATELLITE_ROUTING_RULES = {
         'directors': [
             'borowczyk', 'metzger', 'brass', 'vadim',
             'jaeckin',  # NEW: Just Jaeckin (Emmanuelle) (Issue #14)
+            'p\u00e9cas',  # Max Pécas (FR) — TMDb genres Crime/Thriller, director match needed
         ],
     },
     'Music Films': {
@@ -328,9 +329,16 @@ SATELLITE_ROUTING_RULES = {
     # dates), Indie Cinema is defined negatively — by what it is NOT. JP in 1970s-1980s
     # still hits Pinku Eiga/Japanese Exploitation first; JP here only catches post-1980s
     # Japanese films that fall through those categories.
+    #
+    # US is intentionally NOT in country_codes. US already has Classic Hollywood
+    # (1930s-1950s), American Exploitation (1960s-1980s), and Blaxploitation. US films
+    # that don't match those categories should fall to Unsorted — not Indie Cinema.
+    # US indie directors (Jarmusch, Hartley etc.) are covered by the directors list
+    # below, which fires before the country+genre check.
     'Indie Cinema': {
         'country_codes': [
-            'US', 'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE',
+            # US intentionally excluded — US indie directors covered by directors list
+            'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE',
             'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL',
             # Added (Issue #20): East/South Asian and underrepresented film nations
             'CN', 'TW', 'KR', 'IR', 'JP', 'HU', 'IN', 'RO',
@@ -338,8 +346,10 @@ SATELLITE_ROUTING_RULES = {
         'decades': ['1960s', '1970s', '1980s', '1990s', '2000s', '2010s', '2020s'],  # extended back (Issue #20)
         'genres': ['Drama', 'Romance', 'Thriller'],  # Issue #16: added Thriller (Comedy removed - too broad)
         'directors': [
-            # US indie
+            # US indie (director match fires regardless of country_codes exclusion)
             'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',
+            # Larry Clark: 1980s work is American Exploitation; 1990s+ (Kids, Bully, Ken Park) is indie
+            'larry clark',
             # International indie (add more as needed)
             'denis', 'assayas', 'desplechin', 'haneke', 'trier', 'winterbottom', 'loach'
         ],

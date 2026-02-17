@@ -122,6 +122,7 @@ Country → satellite routing only applies within historically valid decades:
 - US → American Exploitation: 1960s-1980s only (NARROWED - Issue #14)
 - US → Classic Hollywood: 1930s-1950s only (NEW - Issue #14)
 - International → Indie Cinema: 1960s-2020s, 30+ countries (WIDENED Issue #20 — functional catch-all, not a historical wave; see MARGINS_AND_TEXTURE.md §2)
+  - NOTE: US intentionally excluded from country_codes. US has Classic Hollywood (1930s-1950s), American Exploitation (1960s-1980s), Blaxploitation. Non-matching US films → Unsorted. US indie directors (Jarmusch, Hartley, Larry Clark etc.) still route via directors list.
 
 A 2010s Italian thriller is NOT Giallo. Decades are structural, not arbitrary.
 
