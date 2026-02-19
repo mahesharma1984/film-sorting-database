@@ -124,13 +124,17 @@ def test_director_match_overrides_country_genre(mock_metadata):
     assert result == 'Japanese Exploitation'  # Director alone sufficient
 
 
-def test_substring_matching_case_insensitive(mock_metadata):
-    """Director matching is case-insensitive substring"""
+def test_director_matching_case_insensitive(mock_metadata):
+    """Director matching is case-insensitive whole-word matching (Issue #25 D1)
+
+    Single-word entries (e.g. 'fukasaku') require a whole whitespace-delimited
+    token match. These cases all work because 'fukasaku' is a token in every variant.
+    """
     test_cases = [
         'kinji fukasaku',  # lowercase
         'KINJI FUKASAKU',  # uppercase
         'Kinji Fukasaku',  # mixed case
-        'Fukasaku',  # substring (last name only)
+        'Fukasaku',        # last name only — still a whole token
     ]
 
     for director_name in test_cases:
@@ -144,6 +148,26 @@ def test_substring_matching_case_insensitive(mock_metadata):
         result = classifier.classify(mock_metadata, tmdb_data)
         assert result == 'Japanese Exploitation', \
             f"Failed to match director: {director_name}"
+
+
+def test_director_whole_word_prevents_false_positive(mock_metadata):
+    """Issue #25 D1: single-word entries require whole-word token match
+
+    A director whose name *contains* a listed entry as a substring (not a whole
+    token) must NOT match. 'Mallette' contains 'malle' as a substring but not
+    as a whitespace-delimited token, so it should not route to French New Wave.
+    """
+    tmdb_data = {
+        'director': 'Pierre Mallette',  # contains 'malle' but 'mallette' ≠ 'malle'
+        'year': 1965,
+        'countries': ['FR'],
+        'genres': ['Drama']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result != 'French New Wave', (
+        f"'Pierre Mallette' should not match 'malle' (whole-word guard failed)"
+    )
 
 
 def test_bava_1960s_routes_to_giallo(mock_metadata):

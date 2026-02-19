@@ -100,7 +100,9 @@ class SatelliteClassifier:
 
             # Check director match (highest confidence signal)
             if rules['directors'] and director:
-                if any(d in director_lower for d in rules['directors']):
+                director_tokens = set(director_lower.split())
+                if any(self._director_matches(director_lower, director_tokens, d)
+                       for d in rules['directors']):
                     return self._check_cap(category_name)
 
             # Check country + genre match (fallback)
@@ -127,6 +129,26 @@ class SatelliteClassifier:
                 return self._check_cap(category_name)
 
         return None
+
+    @staticmethod
+    def _director_matches(director_lower: str, director_tokens: set, entry: str) -> bool:
+        """Whole-word match for single-word entries; substring for multi-word entries.
+
+        Single-word entries (e.g. 'bava', 'malle', 'lenzi') require the entry to be a
+        complete whitespace-delimited token in the director name. This prevents
+        'malle' from matching a director called 'Pierre Mallette', for example.
+
+        Multi-word entries (e.g. 'tsui hark', 'john woo', 'gordon parks') use substring
+        matching, which is safe because an exact phrase won't produce false positives.
+        Hyphenated surnames (e.g. 'robbe-grillet') are treated as single tokens by
+        str.split() and therefore use whole-word matching.
+
+        Issue #25 D1: replaces the previous `any(d in director_lower ...)` substring
+        check, which violated the R/P split by allowing ambiguous partial matches.
+        """
+        if ' ' not in entry:
+            return entry in director_tokens
+        return entry in director_lower
 
     @staticmethod
     def _title_matches_keywords(title: str, keywords) -> bool:

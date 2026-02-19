@@ -150,6 +150,13 @@ LANGUAGE_TO_COUNTRY = {
 
 # Structure: country_code → {decades: [list], category: str}
 # Conservative routing: only films in specified decades will route to Satellite
+#
+# NOTE: France ('FR') is intentionally absent.
+# French New Wave is director-only (see SATELLITE_ROUTING_RULES['French New Wave']).
+# A French film with no matching director falls to European Sexploitation (FR + genre)
+# or Unsorted — this is designed behaviour, not an omission.
+# Adding 'FR' here would route every French film in the 1950s-1970s to French New Wave
+# regardless of whether it has any connection to the Nouvelle Vague movement.
 COUNTRY_TO_WAVE = {
     'BR': {
         'decades': ['1960s', '1970s', '1980s', '1990s'],  # widened (Issue #20)
@@ -225,15 +232,31 @@ SATELLITE_ROUTING_RULES = {
     # Rationale: first-match-wins; catch-alls (Indie Cinema, Classic Hollywood)
     # must come AFTER exploitation categories so director matches aren't overridden.
 
-    # French New Wave: DIRECTOR-ONLY routing (Issue #14)
-    # Must come first as decade-bounded director override (no country/genre fallback)
+    # French New Wave: DIRECTOR-ONLY routing (Issue #14, audited Issue #22)
+    # Must come first as decade-bounded director override (no country/genre fallback).
+    #
+    # Core directors (Godard, Varda, Chabrol, Demy, Duras) are caught at Stage 3
+    # (Core check) and never reach this entry. Resnais, Rivette, and Rohmer are also
+    # Core but appear here as a safety net — Core check fires first when core_db is
+    # provided; these entries only activate when core_db=None.
+    #
+    # IMPORTANT: is_core_director() is decade-agnostic. If a director is Core in ANY
+    # decade, ALL their films are intercepted by the Core guard in SatelliteClassifier.
+    # Rohmer (Core 1990s) will have his 1960s FNW films routed to Core when core_db
+    # is active. This is a known architectural quirk, not a bug to fix here.
+    #
+    # Non-Core Nouvelle Vague directors in this list (confirmed against whitelist, #22):
+    #   Marker ✅  Malle ✅  Eustache ✅  Truffaut ✅ (added #22)  Robbe-Grillet ✅ (added #22)
+    # Confirmed Core (NOT in this list): Godard, Varda, Chabrol, Demy, Duras
+    # If adding a director, first verify they are NOT in CORE_DIRECTOR_WHITELIST_FINAL.md.
     'French New Wave': {
         'country_codes': [],  # Director-only (no country fallback)
         'decades': ['1950s', '1960s', '1970s'],  # 1958-1973 movement
         'genres': [],  # Director-only (no genre fallback)
         'directors': [
-            'marker', 'rohmer', 'resnais',
-            'rivette', 'malle', 'eustache'
+            'marker', 'rohmer', 'resnais', 'rivette', 'malle', 'eustache',
+            'truffaut',       # Issue #22: François Truffaut — confirmed not in Core whitelist
+            'robbe-grillet',  # Issue #22: Alain Robbe-Grillet — confirmed not in Core whitelist
         ],
     },
 

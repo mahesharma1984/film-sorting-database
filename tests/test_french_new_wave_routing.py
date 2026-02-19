@@ -248,3 +248,117 @@ class TestFrenchNewWaveRouting:
             }
             result = classifier.classify(mock_metadata, tmdb_data)
             assert result == 'French New Wave', f"Failed for director name: {director_name}"
+
+    # =========================================================================
+    # TEST GROUP 6: Issue #22 — Core audit additions (Truffaut, Robbe-Grillet)
+    #               and Core/FNW boundary documentation
+    # =========================================================================
+
+    def test_truffaut_routes_to_french_new_wave(self, classifier, mock_metadata):
+        """François Truffaut → French New Wave (Issue #22: confirmed not in Core whitelist)
+
+        Truffaut was not in the Core director whitelist (only Godard, Varda etc. are Core).
+        Added 'truffaut' to FNW directors list in Issue #22.
+        """
+        tmdb_data = {
+            'director': 'François Truffaut',
+            'year': 1962,
+            'countries': ['FR'],
+            'genres': ['Drama']
+        }
+        result = classifier.classify(mock_metadata, tmdb_data)
+        assert result == 'French New Wave', (
+            f"Truffaut (non-Core) should route to French New Wave, got {result!r}"
+        )
+
+    def test_robbe_grillet_routes_to_french_new_wave(self, classifier, mock_metadata):
+        """Alain Robbe-Grillet → French New Wave (Issue #22: confirmed not in Core whitelist)
+
+        Robbe-Grillet's hyphenated surname is a single token under str.split(), so
+        whole-word matching (Issue #25 D1) correctly matches 'robbe-grillet'.
+        """
+        tmdb_data = {
+            'director': 'Alain Robbe-Grillet',
+            'year': 1963,
+            'countries': ['FR'],
+            'genres': ['Drama', 'Mystery']
+        }
+        result = classifier.classify(mock_metadata, tmdb_data)
+        assert result == 'French New Wave', (
+            f"Robbe-Grillet (non-Core) should route to French New Wave, got {result!r}"
+        )
+
+    def test_eustache_routes_to_french_new_wave(self, classifier, mock_metadata):
+        """Jean Eustache 1973 → French New Wave"""
+        tmdb_data = {
+            'director': 'Jean Eustache',
+            'year': 1973,
+            'countries': ['FR'],
+            'genres': ['Drama', 'Romance']
+        }
+        result = classifier.classify(mock_metadata, tmdb_data)
+        assert result == 'French New Wave', (
+            f"Eustache should route to French New Wave, got {result!r}"
+        )
+
+    def test_godard_core_guard_prevents_satellite_routing(self, mock_metadata):
+        """Godard with active core_db → None (Core guard fires before FNW routing)
+
+        The SatelliteClassifier Core guard intercepts Core directors and returns None,
+        leaving routing to the main classifier's Core stage. This test asserts that
+        Godard never reaches any Satellite category when core_db is active.
+        """
+        class _MockCoreDB:
+            def is_core_director(self, name: str) -> bool:
+                return 'godard' in name.lower()
+
+        tmdb_data = {
+            'director': 'Jean-Luc Godard',
+            'year': 1960,
+            'countries': ['FR'],
+            'genres': ['Drama']
+        }
+        classifier = SatelliteClassifier(core_db=_MockCoreDB())
+        result = classifier.classify(mock_metadata, tmdb_data)
+        assert result is None, (
+            f"Godard should be intercepted by Core guard (return None), got {result!r}"
+        )
+
+    def test_unknown_french_1965_drama_falls_to_european_sexploitation(self, classifier, mock_metadata):
+        """Unknown French director + 1965 + Drama → European Sexploitation
+
+        Issue #22 Scenario B: France is NOT in COUNTRY_TO_WAVE (intentional).
+        FNW is director-only — no director match fires. The film falls through to
+        European Sexploitation (FR + Drama + 1960s). This is the documented fallback.
+        """
+        tmdb_data = {
+            'director': 'Unknown French Director',
+            'year': 1965,
+            'countries': ['FR'],
+            'genres': ['Drama', 'Romance']
+        }
+        result = classifier.classify(mock_metadata, tmdb_data)
+        assert result == 'European Sexploitation', (
+            f"Unknown French 1965 Drama: expected 'European Sexploitation' fallback, "
+            f"got {result!r}. "
+            f"FR is not in COUNTRY_TO_WAVE (design decision), so country-wave stage skips. "
+            f"FNW has no director match. Film falls to EurSex (FR + Drama + 1960s)."
+        )
+
+    def test_fnw_director_takes_priority_over_european_sexploitation(self, classifier, mock_metadata):
+        """FR + FNW director + 1965 + Romance → French New Wave (not European Sexploitation)
+
+        FNW is first in SATELLITE_ROUTING_RULES priority order. A director match fires
+        before European Sexploitation is evaluated, even when country/genre also match EurSex.
+        """
+        tmdb_data = {
+            'director': 'Louis Malle',
+            'year': 1965,
+            'countries': ['FR'],
+            'genres': ['Drama', 'Romance']
+        }
+        result = classifier.classify(mock_metadata, tmdb_data)
+        assert result == 'French New Wave', (
+            f"Malle (FNW director) should take priority over European Sexploitation, "
+            f"got {result!r}"
+        )
