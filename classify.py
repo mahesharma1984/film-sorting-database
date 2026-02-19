@@ -66,6 +66,9 @@ class ClassificationResult:
     destination: str
     confidence: float
     reason: str
+    # Audit trail: which TMDb film was used for enrichment (Issue #21)
+    tmdb_id: Optional[int] = None
+    tmdb_title: Optional[str] = None
 
 
 def get_decade(year: int) -> str:
@@ -409,6 +412,11 @@ class FilmClassifier:
         if tmdb_data and tmdb_data.get('original_language'):
             merged['original_language'] = tmdb_data['original_language']
 
+        # TMDb audit trail: pass through film ID and canonical title (Issue #21)
+        if tmdb_data and tmdb_data.get('tmdb_id'):
+            merged['tmdb_id'] = tmdb_data['tmdb_id']
+            merged['tmdb_title'] = tmdb_data.get('tmdb_title')
+
         return merged
 
     def classify(self, metadata: FilmMetadata) -> ClassificationResult:
@@ -438,6 +446,10 @@ class FilmClassifier:
         )
         # Note: metadata.director and metadata.country updated as side effect
 
+        # Audit trail: capture which TMDb film was used (Issue #21)
+        _tmdb_id = tmdb_data.get('tmdb_id') if tmdb_data else None
+        _tmdb_title = tmdb_data.get('tmdb_title') if tmdb_data else None
+
         # === Stage 2: Explicit lookup (highest trust — human-curated) ===
         if metadata.title:
             dest = self.lookup_db.lookup(metadata.title, metadata.year)
@@ -464,7 +476,8 @@ class FilmClassifier:
                         tier=parsed['tier'], decade=parsed['decade'],
                         subdirectory=parsed.get('subdirectory'),
                         destination=dest,
-                        confidence=1.0, reason='explicit_lookup'
+                        confidence=1.0, reason='explicit_lookup',
+                        tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                     )
 
         # === Hard gate: no year = cannot route to decade ===
@@ -477,7 +490,8 @@ class FilmClassifier:
                 user_tag=metadata.user_tag,
                 tier='Unsorted', decade=None, subdirectory=None,
                 destination='Unsorted/',
-                confidence=0.0, reason='unsorted_no_year'
+                confidence=0.0, reason='unsorted_no_year',
+                tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
             )
 
         decade = get_decade(metadata.year)
@@ -497,7 +511,8 @@ class FilmClassifier:
                     user_tag=metadata.user_tag,
                     tier='Core', decade=director_decade, subdirectory=canonical,
                     destination=dest,
-                    confidence=1.0, reason='core_director'
+                    confidence=1.0, reason='core_director',
+                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                 )
 
         # === Stage 4: Reference canon check (constants.py hardcoded list) ===
@@ -513,7 +528,8 @@ class FilmClassifier:
                 user_tag=metadata.user_tag,
                 tier='Reference', decade=decade, subdirectory=None,
                 destination=dest,
-                confidence=1.0, reason='reference_canon'
+                confidence=1.0, reason='reference_canon',
+                tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
             )
 
         # === Stage 5: User tag recovery ===
@@ -523,26 +539,46 @@ class FilmClassifier:
                 tier = parsed_tag['tier']
                 tag_decade = parsed_tag['decade']
                 extra = parsed_tag.get('extra', '')
+                dest = None  # Only set for valid, complete tags (Issue #23)
 
                 if tier == 'Core' and extra:
-                    dest = f'Core/{tag_decade}/{extra}/'
-                elif tier == 'Satellite' and extra:
-                    dest = f'Satellite/{extra}/{tag_decade}/'  # Category-first (Issue #6)
+                    # Cross-check against Core whitelist before trusting the tag (Issue #23 Bug 2)
+                    if self.core_db.is_core_director(extra):
+                        dest = f'Core/{tag_decade}/{extra}/'
+                    else:
+                        logger.warning(
+                            "User tag '[Core-%s-%s]' — '%s' not in Core whitelist. "
+                            "Falling through to heuristics. File: %s",
+                            tag_decade, extra, extra, metadata.filename
+                        )
+                elif tier == 'Satellite':
+                    if extra:
+                        dest = f'Satellite/{extra}/{tag_decade}/'  # Category-first (Issue #6)
+                    else:
+                        # Bare [Satellite-1970s] tag has no category — cannot build valid path (Issue #23 Bug 1)
+                        logger.warning(
+                            "User tag '[Satellite-%s]' has no category subdirectory — "
+                            "falling through to heuristics. File: %s",
+                            tag_decade, metadata.filename
+                        )
                 elif tier in ('Reference', 'Popcorn'):
                     dest = f'{tier}/{tag_decade}/'
                 else:
                     dest = f'{tier}/'
 
-                self.stats['user_tag_recovery'] += 1
-                return ClassificationResult(
-                    filename=metadata.filename, title=metadata.title,
-                    year=metadata.year, director=metadata.director,
-                    language=metadata.language, country=metadata.country,
-                    user_tag=metadata.user_tag,
-                    tier=tier, decade=tag_decade, subdirectory=extra or None,
-                    destination=dest,
-                    confidence=0.8, reason='user_tag_recovery'
-                )
+                if dest is not None:
+                    self.stats['user_tag_recovery'] += 1
+                    return ClassificationResult(
+                        filename=metadata.filename, title=metadata.title,
+                        year=metadata.year, director=metadata.director,
+                        language=metadata.language, country=metadata.country,
+                        user_tag=metadata.user_tag,
+                        tier=tier, decade=tag_decade, subdirectory=extra or None,
+                        destination=dest,
+                        confidence=0.8, reason='user_tag_recovery',
+                        tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                    )
+                # dest is None — fall through to Stage 6 (Popcorn check)
 
         # === Stage 6: Popcorn check (MOVED UP - Issue #14 priority reorder) ===
         # Check Popcorn BEFORE Satellite to prevent mainstream films from
@@ -559,7 +595,8 @@ class FilmClassifier:
                 user_tag=metadata.user_tag,
                 tier='Popcorn', decade=decade, subdirectory=None,
                 destination=dest,
-                confidence=0.65, reason=popcorn_reason
+                confidence=0.65, reason=popcorn_reason,
+                tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
             )
 
         # === Stage 7: Language/country → Satellite routing (from filename) ===
@@ -576,7 +613,8 @@ class FilmClassifier:
                     user_tag=metadata.user_tag,
                     tier='Satellite', decade=decade, subdirectory=category,
                     destination=dest,
-                    confidence=0.7, reason='country_satellite'
+                    confidence=0.7, reason='country_satellite',
+                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                 )
 
         # === Stage 8: TMDb-based satellite classification ===
@@ -592,7 +630,8 @@ class FilmClassifier:
                     user_tag=metadata.user_tag,
                     tier='Satellite', decade=decade, subdirectory=satellite_cat,
                     destination=dest,
-                    confidence=0.7, reason='tmdb_satellite'
+                    confidence=0.7, reason='tmdb_satellite',
+                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                 )
 
         # === Stage 9: Unsorted (default) ===
@@ -611,7 +650,8 @@ class FilmClassifier:
             user_tag=metadata.user_tag,
             tier='Unsorted', decade=decade, subdirectory=None,
             destination='Unsorted/',
-            confidence=0.0, reason=reason
+            confidence=0.0, reason=reason,
+            tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
         )
 
     def process_directory(self, source_dir: Path) -> List[ClassificationResult]:
@@ -651,7 +691,8 @@ class FilmClassifier:
                 'filename', 'title', 'year', 'director',
                 'language', 'country', 'user_tag',
                 'tier', 'decade', 'subdirectory',
-                'destination', 'confidence', 'reason'
+                'destination', 'confidence', 'reason',
+                'tmdb_id', 'tmdb_title',
             ]
             writer = csv.DictWriter(f, fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
             writer.writeheader()
@@ -671,6 +712,8 @@ class FilmClassifier:
                     'destination': result.destination,
                     'confidence': result.confidence,
                     'reason': result.reason,
+                    'tmdb_id': result.tmdb_id or '',
+                    'tmdb_title': result.tmdb_title or '',
                 })
 
         logger.info(f"Wrote manifest to {output_path}")
