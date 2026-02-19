@@ -65,8 +65,9 @@ The classification pipeline checks in this priority:
 2. Core director check — whitelist match
 3. Reference canon check — 50-film hardcoded list
 4. User tag recovery — trust previous human classification
-5. Language/country → Satellite routing (decade-bounded)
-6. Default → Unsorted with reason code
+5. Popcorn check — popularity + format signals (Issue #14: checked BEFORE Satellite)
+6. Satellite routing — country + decade + director rules (decade-bounded)
+7. Default → Unsorted with reason code
 
 ### Rule 3: Failure Gates
 

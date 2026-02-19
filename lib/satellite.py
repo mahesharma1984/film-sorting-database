@@ -26,6 +26,10 @@ class SatelliteClassifier:
         Issue #6: Added Japanese Exploitation category
         Issue #16: Added core_db for defensive Core director check
         """
+        # These caps bound auto-classification only. Human-curated (explicit lookup)
+        # results are never blocked — increment_count() logs a warning if exceeded.
+        # Cult Oddities: no SATELLITE_ROUTING_RULES entry → no auto-classification path.
+        # Human-curated only; cap removed to avoid dead code confusion.
         self.caps = {
             'Giallo': 30,
             'Pinku Eiga': 35,
@@ -36,7 +40,6 @@ class SatelliteClassifier:
             'European Sexploitation': 25,
             'Blaxploitation': 20,
             'Music Films': 20,
-            'Cult Oddities': 50,
         }
         self.counts = defaultdict(int)  # Track category counts
         self.core_db = core_db  # Issue #16: optional CoreDirectorDatabase for defensive check

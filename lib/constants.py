@@ -130,13 +130,21 @@ LANGUAGE_PATTERNS = [
 # =============================================================================
 
 LANGUAGE_TO_COUNTRY = {
-    'pt': 'BR',  # Portuguese → Brazil (for this collection's context)
+    # NOTE: This mapping is a fallback used when OMDb/TMDb country data is unavailable.
+    # Three entries have known failure modes — they are intentional defaults for THIS
+    # collection's profile, but will misroute edge cases. OMDb country data (higher
+    # priority in the merge) should correct these before this lookup is reached.
+    'pt': 'BR',  # Portuguese → Brazil. FAILURE MODE: also catches Portuguese European
+                 # films (country=PT). OMDb country data should override before this fires.
     'it': 'IT',  # Italian → Italy
     'fr': 'FR',  # French → France
-    'es': 'ES',  # Spanish → Spain
+    'es': 'ES',  # Spanish → Spain. FAILURE MODE: also catches Latin American films
+                 # (MX, AR, CL, etc.) — but those countries lack COUNTRY_TO_WAVE entries
+                 # so they fall to Unsorted, which is the correct behaviour.
     'de': 'DE',  # German → Germany
     'ja': 'JP',  # Japanese → Japan
-    'zh': 'HK',  # Chinese → Hong Kong (for this collection's context)
+    'zh': 'HK',  # Chinese → Hong Kong. FAILURE MODE: also catches mainland Chinese films
+                 # (country=CN). OMDb country data should override before this fires.
     'ko': 'KR',  # Korean → South Korea
     'hi': 'IN',  # Hindi → India
     'ru': 'RU',  # Russian → Russia
@@ -302,7 +310,10 @@ SATELLITE_ROUTING_RULES = {
     },
     'Blaxploitation': {  # MOVED BEFORE American Exploitation (Issue #6 - priority order)
         'country_codes': ['US'],
-        'decades': ['1970s', '1990s'],  # Extended to include 1990s for Ernest Dickerson
+        'decades': ['1970s', '1990s'],  # 1980s deliberately excluded: genre largely
+                                         # collapsed after its commercial peak (1971-1975).
+                                         # 1990s added for the resurgence (Boyz n the Hood,
+                                         # Menace II Society, Ernest Dickerson, etc.).
         'genres': ['Action', 'Crime', 'Drama'],
         'directors': [
             'gordon parks', 'jack hill',

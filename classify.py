@@ -14,9 +14,9 @@ Classification priority order:
 4. [REASONING] Core director check → whitelist exact match
 5. [REASONING] Reference canon check → 50-film hardcoded list in constants.py
 6. [PRECISION] User tag recovery → trust previous human classification
-7. [REASONING] Language/country → Satellite routing (decade-bounded)
-8. [REASONING] Satellite classification → merged API data (country + genre + decade)
-9. [REASONING] Popcorn classification → mainstream/curation signals
+7. [REASONING] Popcorn classification → mainstream/curation signals (Issue #14: moved before Satellite)
+8. [REASONING] Language/country → Satellite routing (decade-bounded)
+9. [REASONING] Satellite classification → merged API data (country + genre + decade)
 10. [PRECISION] Default → Unsorted with detailed reason code
 """
 
@@ -108,7 +108,7 @@ class FilmClassifier:
         else:
             self.tmdb = None
             if self.no_tmdb:
-                logger.info("TMDb API enrichment disabled (--no-tmdb flag)")
+                logger.info("API enrichment disabled (--no-api/--no-tmdb): TMDb and OMDb both offline")
             else:
                 logger.warning("TMDb API enrichment disabled (no API key in config)")
 
@@ -154,8 +154,6 @@ class FilmClassifier:
             return f'Satellite/{subdirectory}/{decade}/'  # Category-first structure (Issue #6)
         elif tier == 'Popcorn' and decade:
             return f'Popcorn/{decade}/'
-        elif tier == 'Staging':
-            return f'Staging/{subdirectory or "Unknown"}/'
         else:
             return 'Unsorted/'
 
@@ -801,7 +799,8 @@ NEVER moves files. Only reads filenames and writes CSV.
 
 Examples:
   python classify.py /path/to/films
-  python classify.py /path/to/films --no-tmdb
+  python classify.py /path/to/films --no-api
+  python classify.py /path/to/films --no-tmdb   (legacy alias for --no-api)
   python classify.py /path/to/films --output output/my_manifest.csv
         """
     )
@@ -812,8 +811,9 @@ Examples:
                        help='Output CSV manifest path (default: output/sorting_manifest.csv)')
     parser.add_argument('--config', type=Path, default=Path('config_external.yaml'),
                        help='Configuration file (default: config_external.yaml)')
-    parser.add_argument('--no-tmdb', action='store_true',
-                       help='Disable TMDb API enrichment (offline classification)')
+    parser.add_argument('--no-tmdb', '--no-api', action='store_true',
+                       dest='no_tmdb',
+                       help='Disable TMDb and OMDb API enrichment (offline classification)')
 
     args = parser.parse_args()
 
