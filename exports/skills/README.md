@@ -16,6 +16,7 @@ Skills are self-contained methodology modules that you can adopt independently o
 | [Failure Gates](failure-gates.md) | Pipeline reliability and failure semantics | "Should this failure stop everything or just warn?" |
 | [Constraint Gates](constraint-gates.md) | Bottleneck identification and pull-based quality | "Am I fixing the right stage, or just patching symptoms?" |
 | [Prototype Building](prototype-building.md) | Exploration → execution methodology | "Am I building the right thing before building it right?" |
+| [Creative & Discovery](creative-discovery.md) | Unstructured problem types | "How do I scope a Discovery task without going down a rabbit hole?" |
 
 ## Composition Guide
 
@@ -28,6 +29,7 @@ Skills are self-contained methodology modules that you can adopt independently o
 - **Measurement-Driven** — Catches regressions across versions
 
 ### Domain-Specific Classification Systems
+- **Creative & Discovery** — Defines new categories, scopes boundary decisions, runs director audits
 - **Domain Grounding** — Anchors categories in published theory; prevents taxonomy drift
 - **Pattern-First** — Ensures taxonomy (schema) is stable before classifying entities (instances)
 - **Measurement-Driven** — Measures classification consistency and coverage
@@ -40,11 +42,13 @@ Skills are self-contained methodology modules that you can adopt independently o
 - **Measurement-Driven** — Tracks quality across depth (single case) and breadth (all cases)
 
 ### Full Stack (Complex Systems)
-All eight skills compose into a complete methodology:
+All nine skills compose into a complete methodology:
 
 ```
+Creative & Discovery (define the schema when it isn't known yet)
+    ↓ produces schemas, taxonomies, category decisions
 Prototype Building (exploration discipline)
-    ↓ confirms approach
+    ↓ confirms approach on a real case
 Pattern-First (dependency ordering)
     ↓ structures pipeline
 Domain Grounding (taxonomy design)

@@ -246,6 +246,64 @@ Each stage extends the canonical taxonomy; none replaces it.
 
 ---
 
+## Managed Taxonomy Evolution
+
+The canonical taxonomy prevents drift within a stable system. But real systems discover that their taxonomy is incomplete or wrong *after* it has been deployed. A new film nation emerges as significant; a category turns out to be two distinct things; a decade boundary proves too narrow. These are not failures of the grounding strategy — they are points where the taxonomy must evolve deliberately rather than drift accidentally.
+
+Three types of taxonomy change occur in practice. Each has a different risk profile:
+
+### Change Type 1: Add Category
+
+**What it is:** A new routing destination or classification label is added. Films that previously fell to a catch-all (Unsorted, a broader category) now have a specific route.
+
+**What is at risk:** Minimal — no existing classifications change. Films that were correctly classified elsewhere stay where they are. The risk is false positives: films that should stay in their current category might incorrectly match the new one if routing rules are too broad.
+
+**Validation:** After adding the rule, run classify.py and compare against the pre-change manifest:
+- Films that changed to the new category: are these exactly the ones expected?
+- Films that stayed the same: did any unexpectedly move?
+
+**Film classification example — Issue #14, French New Wave addition:**
+Before: French films with FNW-era directors fell to European Sexploitation or Unsorted. After: director-list routing sends Truffaut, Marker, Malle, Eustache, Robbe-Grillet, Rohmer to French New Wave (1950s-1970s). Expected delta: those specific directors' films changed category. All other French films remained unchanged.
+
+### Change Type 2: Split Category
+
+**What it is:** An existing category is divided into two or more distinct categories. The old category is retired; every film that was in it must route to exactly one of the new categories.
+
+**What is at risk:** High. Every film in the old category is affected. Some may route correctly to a new category; some may fall through to Unsorted if the new routing rules don't cover them. A split that loses films is a regression.
+
+**Validation:** Before the split, count all films in the old category. After the split, verify that the total count across the new categories equals the pre-split count. Every film must be accounted for. Any film that was in the old category and now routes to Unsorted needs explicit investigation.
+
+**Film classification example — Issue #6, Pinku Eiga split from Japanese Exploitation:**
+Before: a single Japan category covered both art-house erotic films (Pinku Eiga) and genre exploitation. After: two categories with distinct director lists and decade constraints. Expected delta: all films in old Japan category; validated by verifying each routed to exactly one of the two new categories.
+
+### Change Type 3: Retire Category
+
+**What it is:** An existing category is removed. Films that were routing to it need a new destination.
+
+**What is at risk:** Medium to high, depending on whether the category had any films classified into it. If the category was undefined (routing rules existed but no films matched them), retirement is low-risk — it's removing dead code. If films were classified into it, each needs a new explicit destination: either reroute via updated rules, or add to the lookup database with the correct manual assignment.
+
+**Validation:** Before retiring, identify all films currently routed to the category. For each, determine the correct post-retirement destination. After retiring, run classify.py and verify those films route to their expected new destinations. No film should silently disappear from the manifest.
+
+**Rollback safety note:** Because classify.py produces a manifest but never moves files, all three change types are fully reversible by reverting the code change. The manifest changes; the library doesn't until `move.py --execute` runs. Always take a manifest snapshot before executing a taxonomy change so the pre-change state is recoverable.
+
+### The Universal Consistency Check
+
+Applies after any taxonomy change, regardless of type:
+
+```
+1. Before the change: run classify.py, save manifest as pre-change baseline
+2. Make the rule change
+3. Run classify.py, save as post-change manifest
+4. Diff the two: list every film whose classification changed
+5. Verify: are the changed films exactly the ones expected to change?
+   → Any unexpected delta is a regression. Investigate before proceeding.
+6. Document the delta in the issue: which films moved, from where, to where
+```
+
+The diff is the audit trail. It confirms the change was surgical and didn't introduce side effects. A clean diff — only expected films changed, all others stayed put — is the completion criterion for any taxonomy evolution event.
+
+---
+
 ## Connection to Other Knowledge Base Concepts
 
 | Concept | Connection to Domain Grounding |

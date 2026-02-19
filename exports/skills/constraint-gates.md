@@ -276,6 +276,18 @@ Gate: Schema Compliance
 - Two tiers let you alert on concerning signals without stopping the pipeline
 - Over time, WARNING-level signals accumulate into patterns that reveal systemic issues
 
+**These are illustrative defaults, not universal constants.**
+
+The correct thresholds depend on your pipeline's cost function. A pipeline with cheap, reversible downstream stages might tolerate 40% survival; one with expensive, irreversible stages (API calls, file moves, external publishes) may require 80% as the ERROR threshold.
+
+Calibration procedure:
+1. Run the pipeline at several survival rates (vary upstream quality by injecting test defects or using historical checkpoints at known quality levels)
+2. Measure downstream output quality at each rate
+3. Find the knee of the curve — the survival rate where output quality drops sharply
+4. Set ERROR at that knee; set WARNING 15-20 percentage points above it
+
+The thresholds are named constants (see code example above) specifically to make this calibration easy: change one number in one place, no hunting through inline logic. If you're building a new pipeline, start with 50%/70% as a placeholder and calibrate once you have measurement data.
+
 ### Standalone Audit Mode
 
 Gates should work in two modes — integrated and standalone:

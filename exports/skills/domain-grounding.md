@@ -167,6 +167,43 @@ Rule: All stages REFERENCE the canonical taxonomy.
       No stage REPLACES it with a parallel system.
 ```
 
+### Taxonomy Evolution Protocol
+
+A canonical taxonomy must sometimes change. The protocol below ensures changes are surgical and don't silently corrupt existing classifications. For the theory behind each change type, see [domain-grounding-theory.md](../knowledge-base/domain-grounding-theory.md#managed-taxonomy-evolution).
+
+**Before any rule change:**
+
+```
+1. Scope the impact
+   Which existing classifications will this change affect?
+   For a new routing rule: which films currently fall to Unsorted
+   or a broader category that the new rule will now catch?
+   For a split: which films are in the old category?
+   For a retire: which films are currently routed to this category?
+
+2. Baseline
+   Run classify.py and save the manifest as a pre-change snapshot.
+
+3. Make the change.
+
+4. Diff
+   Run classify.py, compare post-change manifest against baseline.
+   List every film whose classification changed.
+
+5. Verify the delta
+   Changed films should be exactly the ones you expected.
+   → Any film that changed unexpectedly: investigate before proceeding.
+   → For splits: verify every film from the old category is in
+     exactly one of the new categories (no film disappears to Unsorted
+     unless that is explicitly the correct destination).
+
+6. Document
+   Record the delta in the issue: which films moved, from where,
+   to where. This is the audit trail for the change.
+```
+
+**Rollback:** classify.py never moves files. A taxonomy rule change can always be reverted by reverting the code; the library on disk is unaffected until `move.py --execute` runs. Take a manifest snapshot before executing a change so the pre-change state is recoverable without re-running.
+
 ---
 
 ## Decision Rules
