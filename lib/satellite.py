@@ -26,6 +26,10 @@ class SatelliteClassifier:
         Issue #6: Added Japanese Exploitation category
         Issue #16: Added core_db for defensive Core director check
         """
+        # These caps bound auto-classification only. Human-curated (explicit lookup)
+        # results are never blocked — increment_count() logs a warning if exceeded.
+        # Cult Oddities: no SATELLITE_ROUTING_RULES entry → no auto-classification path.
+        # Human-curated only; cap removed to avoid dead code confusion.
         self.caps = {
             'Giallo': 30,
             'Pinku Eiga': 35,
@@ -36,7 +40,6 @@ class SatelliteClassifier:
             'European Sexploitation': 25,
             'Blaxploitation': 20,
             'Music Films': 20,
-            'Cult Oddities': 50,
         }
         self.counts = defaultdict(int)  # Track category counts
         self.core_db = core_db  # Issue #16: optional CoreDirectorDatabase for defensive check
@@ -100,7 +103,9 @@ class SatelliteClassifier:
 
             # Check director match (highest confidence signal)
             if rules['directors'] and director:
-                if any(d in director_lower for d in rules['directors']):
+                director_tokens = set(director_lower.split())
+                if any(self._director_matches(director_lower, director_tokens, d)
+                       for d in rules['directors']):
                     return self._check_cap(category_name)
 
             # Check country + genre match (fallback)
@@ -129,6 +134,26 @@ class SatelliteClassifier:
         return None
 
     @staticmethod
+    def _director_matches(director_lower: str, director_tokens: set, entry: str) -> bool:
+        """Whole-word match for single-word entries; substring for multi-word entries.
+
+        Single-word entries (e.g. 'bava', 'malle', 'lenzi') require the entry to be a
+        complete whitespace-delimited token in the director name. This prevents
+        'malle' from matching a director called 'Pierre Mallette', for example.
+
+        Multi-word entries (e.g. 'tsui hark', 'john woo', 'gordon parks') use substring
+        matching, which is safe because an exact phrase won't produce false positives.
+        Hyphenated surnames (e.g. 'robbe-grillet') are treated as single tokens by
+        str.split() and therefore use whole-word matching.
+
+        Issue #25 D1: replaces the previous `any(d in director_lower ...)` substring
+        check, which violated the R/P split by allowing ambiguous partial matches.
+        """
+        if ' ' not in entry:
+            return entry in director_tokens
+        return entry in director_lower
+
+    @staticmethod
     def _title_matches_keywords(title: str, keywords) -> bool:
         """Conservative title keyword gate for high-false-positive categories."""
         if not title:
@@ -148,8 +173,19 @@ class SatelliteClassifier:
         return category
 
     def increment_count(self, category: str):
-        """Manually increment category count (for explicit lookups)"""
+        """Increment count for explicit lookup results (Issue #25 D7).
+
+        Explicit lookup entries are NOT blocked by the cap — human curation
+        overrides auto-classification limits. A warning is logged when the cap
+        is exceeded so the collection can be audited.
+        """
         self.counts[category] += 1
+        if category in self.caps and self.counts[category] > self.caps[category]:
+            logger.warning(
+                "Satellite category '%s' has %d entries, exceeding auto-classification "
+                "cap of %d. These are explicit lookup entries — not blocked, but worth auditing.",
+                category, self.counts[category], self.caps[category]
+            )
 
     def get_stats(self) -> Dict:
         """Get category classification statistics"""

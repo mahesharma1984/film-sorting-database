@@ -124,13 +124,17 @@ def test_director_match_overrides_country_genre(mock_metadata):
     assert result == 'Japanese Exploitation'  # Director alone sufficient
 
 
-def test_substring_matching_case_insensitive(mock_metadata):
-    """Director matching is case-insensitive substring"""
+def test_director_matching_case_insensitive(mock_metadata):
+    """Director matching is case-insensitive whole-word matching (Issue #25 D1)
+
+    Single-word entries (e.g. 'fukasaku') require a whole whitespace-delimited
+    token match. These cases all work because 'fukasaku' is a token in every variant.
+    """
     test_cases = [
         'kinji fukasaku',  # lowercase
         'KINJI FUKASAKU',  # uppercase
         'Kinji Fukasaku',  # mixed case
-        'Fukasaku',  # substring (last name only)
+        'Fukasaku',        # last name only — still a whole token
     ]
 
     for director_name in test_cases:
@@ -144,6 +148,26 @@ def test_substring_matching_case_insensitive(mock_metadata):
         result = classifier.classify(mock_metadata, tmdb_data)
         assert result == 'Japanese Exploitation', \
             f"Failed to match director: {director_name}"
+
+
+def test_director_whole_word_prevents_false_positive(mock_metadata):
+    """Issue #25 D1: single-word entries require whole-word token match
+
+    A director whose name *contains* a listed entry as a substring (not a whole
+    token) must NOT match. 'Mallette' contains 'malle' as a substring but not
+    as a whitespace-delimited token, so it should not route to French New Wave.
+    """
+    tmdb_data = {
+        'director': 'Pierre Mallette',  # contains 'malle' but 'mallette' ≠ 'malle'
+        'year': 1965,
+        'countries': ['FR'],
+        'genres': ['Drama']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result != 'French New Wave', (
+        f"'Pierre Mallette' should not match 'malle' (whole-word guard failed)"
+    )
 
 
 def test_bava_1960s_routes_to_giallo(mock_metadata):
@@ -547,3 +571,42 @@ def test_br_1991_routes_to_brazilian_exploitation(mock_metadata):
     result = classifier.classify(mock_metadata, tmdb_data)
     assert result == 'Brazilian Exploitation', \
         f"Expected 'Brazilian Exploitation', got {result!r}"
+
+
+# =============================================================================
+# Issue #25 D7: increment_count() cap warning
+# =============================================================================
+
+def test_increment_count_logs_warning_at_cap(caplog):
+    """increment_count() should log a WARNING when count exceeds the category cap"""
+    import logging
+    classifier = SatelliteClassifier()
+    cap = classifier.caps['Giallo']
+    # Fill to the cap (no warning yet)
+    for _ in range(cap):
+        classifier.increment_count('Giallo')
+    # One more — should trigger the warning
+    with caplog.at_level(logging.WARNING, logger='lib.satellite'):
+        classifier.increment_count('Giallo')
+    assert 'Giallo' in caplog.text
+    assert str(cap) in caplog.text
+
+
+def test_increment_count_does_not_block_over_cap():
+    """increment_count() must still increment even over cap — lookup entries are never blocked"""
+    classifier = SatelliteClassifier()
+    cap = classifier.caps['Giallo']
+    for _ in range(cap + 5):
+        classifier.increment_count('Giallo')
+    assert classifier.counts['Giallo'] == cap + 5
+
+
+def test_increment_count_no_warning_under_cap(caplog):
+    """increment_count() must not warn when count is at or below cap"""
+    import logging
+    classifier = SatelliteClassifier()
+    cap = classifier.caps['Giallo']
+    with caplog.at_level(logging.WARNING, logger='lib.satellite'):
+        for _ in range(cap):
+            classifier.increment_count('Giallo')
+    assert 'Giallo' not in caplog.text

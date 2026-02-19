@@ -8,11 +8,22 @@ Core director whitelist database with EXACT matching only
 """
 
 import re
+import unicodedata
 import logging
 from pathlib import Path
 from typing import Optional, Dict, Set
 
 logger = logging.getLogger(__name__)
+
+
+def _normalize(s: str) -> str:
+    """Normalize to NFC + lowercase for consistent comparison.
+
+    macOS HFS+ stores filenames in NFD (decomposed), so 'ó' on disk is
+    o + U+0301 (combining accent). Whitelist files are typically NFC.
+    Normalizing both sides to NFC before comparison prevents false misses.
+    """
+    return unicodedata.normalize('NFC', s).lower().strip()
 
 
 class CoreDirectorDatabase:
@@ -61,7 +72,7 @@ class CoreDirectorDatabase:
                     self.directors_by_decade[current_decade].add(director)
 
                     # Build lowercase lookup (for exact case-insensitive matching)
-                    director_key = director.lower().strip()
+                    director_key = _normalize(director)
                     self.director_lookup[director_key] = director
 
             total = sum(len(d) for d in self.directors_by_decade.values())
@@ -80,7 +91,7 @@ class CoreDirectorDatabase:
         if not director_name:
             return False
 
-        director_key = director_name.lower().strip()
+        director_key = _normalize(director_name)
         return director_key in self.director_lookup
 
     def get_canonical_name(self, director_name: str) -> Optional[str]:
@@ -92,7 +103,7 @@ class CoreDirectorDatabase:
         if not director_name:
             return None
 
-        director_key = director_name.lower().strip()
+        director_key = _normalize(director_name)
         return self.director_lookup.get(director_key)
 
     def get_director_decade(self, director_name: str, film_year: int) -> Optional[str]:

@@ -3,6 +3,7 @@
 TMDb API client with persistent JSON caching
 """
 
+import difflib
 import json
 import logging
 from pathlib import Path
@@ -53,6 +54,44 @@ class TMDbClient:
     def _make_cache_key(self, title: str, year: Optional[int]) -> str:
         """Generate cache key from title and year"""
         return f"{title}|{year if year else 'None'}"
+
+    def _validate_result(self, candidate: Dict, query_title: str, query_year: Optional[int]) -> bool:
+        """
+        Validate a TMDb search result against the query parameters.
+
+        Checks title similarity (>= 0.6) and year delta (<= 2 years).
+        Both checks must pass if data is available.
+        Year check is skipped when query_year is None or release_date is absent.
+
+        Returns True if the candidate is a plausible match, False otherwise.
+        """
+        result_title = (
+            candidate.get('title', '') or
+            candidate.get('original_title', '') or
+            ''
+        )
+
+        # Title similarity check
+        q = query_title.lower().strip()
+        r = result_title.lower().strip()
+        if not r:
+            return False
+        similarity = difflib.SequenceMatcher(None, q, r).ratio()
+        if similarity < 0.6:
+            return False
+
+        # Year delta check — only when both sides are available
+        if query_year:
+            release_date = candidate.get('release_date', '')
+            if release_date:
+                try:
+                    result_year = int(release_date[:4])
+                    if abs(result_year - query_year) > 2:
+                        return False
+                except (ValueError, IndexError):
+                    pass  # Cannot parse year — skip year check
+
+        return True
 
     def search_film(self, title: str, year: Optional[int] = None) -> Optional[Dict]:
         """
@@ -111,8 +150,27 @@ class TMDbClient:
                 logger.debug(f"No TMDb results for '{title}' ({year})")
                 return None
 
-            # Get first result
-            film_data = data['results'][0]
+            # Validate top-3 results — accept first that matches title + year
+            # Issue #21: results[0] accepted blindly caused wrong-film cache poisoning
+            film_data = None
+            for candidate in data['results'][:3]:
+                if self._validate_result(candidate, title, year):
+                    film_data = candidate
+                    break
+                else:
+                    cand_title = candidate.get('title', '') or candidate.get('original_title', '')
+                    cand_year = candidate.get('release_date', '')[:4]
+                    logger.debug(
+                        f"TMDb result mismatch: query='{title}' ({year}), "
+                        f"got='{cand_title}' ({cand_year}) — trying next"
+                    )
+
+            if film_data is None:
+                logger.warning(
+                    f"TMDb: no valid match for '{title}' ({year}) in top 3 results — skipping"
+                )
+                return None
+
             film_id = film_data['id']
 
             # Get detailed movie payload + credits + keywords in one call
@@ -188,7 +246,9 @@ class TMDbClient:
                 'popularity': details_data.get('popularity'),
                 'vote_count': details_data.get('vote_count'),
                 'original_language': details_data.get('original_language') or film_data.get('original_language'),
-                'keywords': keywords
+                'keywords': keywords,
+                'tmdb_id': film_id,
+                'tmdb_title': details_data.get('title') or film_data.get('title'),
             }
 
             logger.info(f"TMDb: '{title}' ({year}) → '{result['title']}' dir:{director} countries:{countries}")

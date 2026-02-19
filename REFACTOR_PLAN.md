@@ -86,11 +86,7 @@ Reads the decade/tier/subdirectory structure from SORTING_DATABASE.md and CORE_D
 ├── 1960s/ ...
 ├── 1970s/ ...
 ├── ... (through 2020s)
-├── Staging/
-│   ├── Borderline/
-│   ├── Unknown/
-│   ├── Unwatched/
-│   └── Evaluate/
+├── Unsorted/          # Staging tier retired — unclassified films go here
 └── Out/
     └── Cut/
 ```
@@ -138,6 +134,12 @@ FILENAME
   │
   ▼ (only if not Reference)
   │
+[REASONING via rules] Popcorn check                    ← Issue #14: moved BEFORE Satellite
+  │         Popularity + mainstream genre/country signals.
+  │         Format signals in filename (35mm, open matte, criterion, etc.)
+  │
+  ▼ (only if not Popcorn)
+  │
 [REASONING via rules] Satellite classification
   │         NO keyword matching against titles.
   │         Uses TMDb structured data:
@@ -148,17 +150,9 @@ FILENAME
   │           - Known satellite directors (Bava→Giallo, Wakamatsu→Pinku, etc.)
   │         Cap enforcement per category.
   │
-  ▼ (only if not Satellite)
-  │
-[REASONING via rules] Popcorn check
-  │         Format signals in filename (35mm, open matte, criterion, etc.)
-  │         Plus: known Popcorn films from lookup table.
-  │
   ▼ (only if nothing matched)
   │
-[PRECISION] Staging assignment
-            Has director but no tier match → Staging/Borderline
-            Missing metadata even after TMDb → Staging/Unknown
+[PRECISION] Unsorted (Staging tier retired — no longer produced by pipeline)
 ```
 
 #### What the explicit lookup table changes:

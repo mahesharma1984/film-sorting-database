@@ -148,6 +148,104 @@ class TestUserTagRecovery:
         assert parsed['decade'] == "1960s"
         assert "Jacques" in parsed.get('extra', '')
 
+    # Issue #23 Bug 1: bare [Satellite-DECADE] tag produces malformed 'Satellite/' destination
+    def test_bare_satellite_tag_falls_through(self, classifier):
+        """[Satellite-1970s] without a category should NOT route to 'Satellite/' (malformed path)"""
+        meta = FilmMetadata(
+            filename="Unknown Obscure Film (1975) [Satellite-1970s].mkv",
+            title="Unknown Obscure Film",
+            year=1975,
+            user_tag="Satellite-1970s",
+        )
+        result = classifier.classify(meta)
+        assert result.destination != 'Satellite/'
+        assert result.reason != 'user_tag_recovery'
+
+    def test_satellite_tag_with_category_routes_correctly(self, classifier):
+        """[Satellite-1970s-Giallo] should route to Satellite/Giallo/1970s/"""
+        meta = FilmMetadata(
+            filename="Unknown Italian Film (1975) [Satellite-1970s-Giallo].mkv",
+            title="Unknown Italian Film",
+            year=1975,
+            user_tag="Satellite-1970s-Giallo",
+        )
+        result = classifier.classify(meta)
+        assert result.destination == 'Satellite/Giallo/1970s/'
+        assert result.reason == 'user_tag_recovery'
+        assert result.tier == 'Satellite'
+
+    # Issue #23 Bug 2: [Core-DECADE-DIRECTOR] bypasses Core whitelist check
+    def test_core_tag_valid_director_routes_to_core(self, classifier):
+        """[Core-1960s-Director] with director in whitelist should route to Core/"""
+        meta = FilmMetadata(
+            filename="Unknown Film A (1968) [Core-1960s-Akira Kurosawa].mkv",
+            title="Unknown Film A",
+            year=1968,
+            director=None,
+            user_tag="Core-1960s-Akira Kurosawa",
+        )
+        # Mock the Core whitelist check — director present in whitelist
+        classifier.core_db.is_core_director = MagicMock(return_value=True)
+        result = classifier.classify(meta)
+        assert result.tier == 'Core'
+        assert 'Akira Kurosawa' in result.destination
+        assert result.reason == 'user_tag_recovery'
+
+    def test_core_tag_unknown_director_falls_through(self, classifier):
+        """[Core-1960s-Unknown Person] with director NOT in whitelist should fall through"""
+        meta = FilmMetadata(
+            filename="Unknown Film B (1968) [Core-1960s-Unknown Person].mkv",
+            title="Unknown Film B",
+            year=1968,
+            director=None,
+            user_tag="Core-1960s-Unknown Person",
+        )
+        # Mock the Core whitelist check — director NOT in whitelist
+        classifier.core_db.is_core_director = MagicMock(return_value=False)
+        result = classifier.classify(meta)
+        assert result.tier != 'Core'
+        assert result.reason != 'user_tag_recovery'
+
+    def test_core_tag_typo_director_falls_through(self, classifier):
+        """[Core-1960s-Godart] (typo for Godard) should fall through since not in whitelist"""
+        meta = FilmMetadata(
+            filename="Unknown Film C (1965) [Core-1960s-Godart].mkv",
+            title="Unknown Film C",
+            year=1965,
+            director=None,
+            user_tag="Core-1960s-Godart",
+        )
+        result = classifier.classify(meta)
+        # 'Godart' is not a real Core director — should fall through
+        assert result.tier != 'Core'
+
+    # Regression: Reference and Popcorn tags should continue working unchanged
+    def test_reference_tag_routes_to_reference(self, classifier):
+        """[Reference-1960s] tag should route to Reference/1960s/"""
+        meta = FilmMetadata(
+            filename="Unknown Film D (1965) [Reference-1960s].mkv",
+            title="Unknown Film D",
+            year=1965,
+            user_tag="Reference-1960s",
+        )
+        result = classifier.classify(meta)
+        assert result.tier == 'Reference'
+        assert result.decade == '1960s'
+        assert result.reason == 'user_tag_recovery'
+
+    def test_popcorn_tag_routes_to_popcorn(self, classifier):
+        """[Popcorn-1980s] tag should route to Popcorn/1980s/"""
+        meta = FilmMetadata(
+            filename="Unknown Film E (1985) [Popcorn-1980s].mkv",
+            title="Unknown Film E",
+            year=1985,
+            user_tag="Popcorn-1980s",
+        )
+        result = classifier.classify(meta)
+        assert result.tier == 'Popcorn'
+        assert result.decade == '1980s'
+        assert result.reason == 'user_tag_recovery'
+
 
 class TestDestinationPathParsing:
     """Destination path parsing from SORTING_DATABASE"""

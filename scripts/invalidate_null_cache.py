@@ -4,9 +4,11 @@ Invalidate null/empty cache entries to force re-query with cleaned titles.
 Run this AFTER deploying Phase 1 title cleaning changes.
 
 Usage:
-    python scripts/invalidate_null_cache.py conservative  # Recommended
-    python scripts/invalidate_null_cache.py aggressive    # If conservative doesn't improve enough
+    python scripts/invalidate_null_cache.py conservative      # Recommended
+    python scripts/invalidate_null_cache.py aggressive        # If conservative doesn't improve enough
+    python scripts/invalidate_null_cache.py --validate-matches  # Report suspect title mismatches (Issue #21)
 """
+import difflib
 import json
 import shutil
 from pathlib import Path
@@ -70,15 +72,91 @@ def invalidate_null_entries(cache_path, aggressive=False):
     return removed
 
 
+def _title_similarity(a: str, b: str) -> float:
+    """Normalised title similarity using difflib SequenceMatcher."""
+    return difflib.SequenceMatcher(None, a.lower().strip(), b.lower().strip()).ratio()
+
+
+def validate_matches(cache_path: str, threshold: float = 0.6):
+    """
+    Scan TMDb cache for entries where the cached film title doesn't match
+    the query title in the cache key. Reports suspect entries — does not delete.
+
+    Cache key format: "query_title|year"
+    Cached value contains 'title' (TMDb canonical title).
+
+    Issue #21: wrong-match entries from the old results[0]-no-validation code.
+    """
+    with open(cache_path) as f:
+        cache = json.load(f)
+
+    suspect = []
+    skipped_null = 0
+
+    for key, value in cache.items():
+        if value is None:
+            skipped_null += 1
+            continue
+
+        # Parse cache key: "title|year"
+        parts = key.split('|', 1)
+        query_title = parts[0]
+        cached_title = value.get('title', '') or value.get('tmdb_title', '')
+
+        if not cached_title:
+            continue
+
+        sim = _title_similarity(query_title, cached_title)
+        if sim < threshold:
+            suspect.append({
+                'cache_key': key,
+                'query_title': query_title,
+                'cached_title': cached_title,
+                'similarity': round(sim, 3),
+                'tmdb_id': value.get('tmdb_id'),
+            })
+
+    print(f"\nValidate-Matches Report: {cache_path}")
+    print(f"  Total entries scanned: {len(cache)}")
+    print(f"  Null entries skipped:  {skipped_null}")
+    print(f"  Suspect entries (similarity < {threshold}): {len(suspect)}\n")
+
+    if suspect:
+        suspect.sort(key=lambda x: x['similarity'])
+        for entry in suspect:
+            print(
+                f"  [{entry['similarity']:.2f}] query='{entry['query_title']}' "
+                f"→ cached='{entry['cached_title']}' "
+                f"(tmdb_id={entry['tmdb_id']}, key='{entry['cache_key']}')"
+            )
+        print(
+            f"\nTo remove these entries and force re-query:\n"
+            f"  Run conservative or aggressive mode, or manually delete the keys listed above."
+        )
+    else:
+        print("  No suspect entries found — all cached titles match their query keys.")
+
+    return suspect
+
+
 if __name__ == '__main__':
     import sys
 
     mode = sys.argv[1] if len(sys.argv) > 1 else 'conservative'
 
+    if mode == '--validate-matches':
+        tmdb_cache = Path('output/tmdb_cache.json')
+        if not tmdb_cache.exists():
+            print(f"TMDb cache not found at {tmdb_cache}. Run classify.py first.")
+            sys.exit(1)
+        validate_matches(str(tmdb_cache))
+        sys.exit(0)
+
     if mode not in ['conservative', 'aggressive']:
-        print("Usage: python scripts/invalidate_null_cache.py [conservative|aggressive]")
-        print("\nconservative: Remove entries missing both director AND country (recommended)")
-        print("aggressive:   Remove entries missing director OR country")
+        print("Usage: python scripts/invalidate_null_cache.py [conservative|aggressive|--validate-matches]")
+        print("\nconservative:       Remove entries missing both director AND country (recommended)")
+        print("aggressive:         Remove entries missing director OR country")
+        print("--validate-matches: Report cached entries where title doesn't match the query (Issue #21)")
         sys.exit(1)
 
     print(f"Cache Invalidation Mode: {mode}\n")

@@ -7,13 +7,34 @@
   This file goes in your project root as CLAUDE.md
 -->
 
-## 1) Startup Read
+## Environment Policy
+
+<!--
+  Define required environment constraints for your project.
+  Examples: local storage requirements, OS constraints, cloud sync restrictions.
+  Remove this section if no constraints apply.
+-->
+
+[DESCRIBE ANY ENVIRONMENT CONSTRAINTS]
+
+<!--
+  Example (from reference project):
+  **This repository MUST be stored in a local directory, NOT in cloud-synced storage.**
+  Forbidden: Google Drive, Dropbox, iCloud Drive, OneDrive.
+  Reason: Cloud sync creates filesystem locks that corrupt git operations.
+  Required: Local non-synced directory (e.g., ~/local-repos/)
+-->
+
+---
+
+## 1) Non-Negotiable Startup Read
 
 Before any code change, read:
 
 1. `docs/CORE_DOCUMENTATION_INDEX.md`
-2. `docs/DEVELOPER_GUIDE.md`
-<!-- Add other essential docs for your project -->
+2. `docs/CI_RULES.md`
+3. `docs/DEVELOPER_GUIDE.md`
+<!-- Add other essential docs: architecture, pipeline guides, etc. -->
 
 ## Documentation Navigation
 
@@ -21,76 +42,141 @@ Before any code change, read:
 
 **For comprehensive index:** See [`docs/CORE_DOCUMENTATION_INDEX.md`](docs/CORE_DOCUMENTATION_INDEX.md) for Q&A-style quick reference.
 
+<!--
+  Optional: Add RAG semantic search if your docs exceed ~15 files.
+  Example:
+  ### Fast Discovery: RAG Semantic Search (Optional Step 0)
+  python -m rag.query "your question"
+  Returns: Top-5 ranked sections with file paths and line ranges
+  When RAG helps: Cross-concept questions, issue archaeology, quick verification
+  When RAG doesn't help: Learning architecture from scratch (use structured modes below)
+-->
+
+## Documentation Change Protocol
+
+<!--
+  Define how documentation should be updated when code changes.
+  Remove this section for simple projects.
+-->
+
+When code changes require documentation updates:
+
+1. **Determine documentation type:**
+   - Architecture change? → Update `[YOUR_ARCHITECTURE_DOC]`
+   - Stage/component behavior change? → Update component contract section
+   - New methodology/framework? → Check if fits in existing `docs/methodology/*`
+   - Workflow change? → Update `[YOUR_WORKFLOW_DOC]` or `docs/SCRIPTS.md`
+
+2. **Update CHANGELOG.md (concise entry only):**
+   - 5-10 lines maximum per version entry
+   - Link to detailed docs with "Details: See [file § section]"
+   - Never duplicate detailed specs in CHANGELOG — always link
+
+3. **Run checklist:**
+   - [ ] Architecture docs updated for any component changes
+   - [ ] CHANGELOG entry ≤15 lines
+   - [ ] Version sync across docs (if version bumped)
+
 ## Git Commit Policy
 
 <!-- Define what should and shouldn't be committed -->
 
+When generating outputs, **commit them** unless they're explicitly in `.gitignore`. Check `.gitignore` if unsure — don't assume outputs are ignored.
+
 Key outputs to commit:
 - [LIST YOUR COMMITTED OUTPUTS]
+<!-- Examples: generated configs, build artifacts, measurement reports -->
 
 Key outputs to ignore:
 - [LIST YOUR GITIGNORED OUTPUTS]
+<!-- Examples: node_modules, .env, temp files, caches -->
+
+**Documentation policy:**
+- When committing doc changes, update architecture docs in same commit as code changes
+- Keep CHANGELOG entries concise; detailed specs go in architecture docs
 
 ---
 
-## 2) Work Modes
+## 2) Work-Mode Doc Router
+
+<!-- Optional: Add a link to WORK_ROUTER.md for fast symptom-based routing -->
 
 ### A) Build / Feature Work
 
-Use when adding/changing features, stages, or outputs.
+Use when adding/changing features, stages, components, or outputs.
 
 Read in order:
-1. [YOUR ARCHITECTURE DOC]
-2. [YOUR PIPELINE/WORKFLOW DOC]
+1. `[YOUR_ARCHITECTURE_DOC]`
+2. `[YOUR_PIPELINE_OR_WORKFLOW_DOC]`
 3. `docs/DEVELOPER_GUIDE.md`
+4. Relevant `docs/issues/*.md`
 
 ### B) Debugging / Regression Work
 
 Use when quality drops, output breaks, or behavior regresses.
 
 Read in order:
-1. [YOUR MEASUREMENT/METRICS DOC]
+1. `[YOUR_MEASUREMENT_OR_METRICS_DOC]`
 2. `docs/DEBUG_RUNBOOK.md`
-3. [YOUR STAGE/CONTRACT DOC]
+3. `[YOUR_STAGE_OR_CONTRACT_DOC]`
+4. Relevant `docs/issues/*.md`
 
 ### C) Understanding Architecture
 
 Use when learning the system or aligning to intent.
 
 Read in order:
-1. [YOUR ARCHITECTURE DOC]
-2. [YOUR METHODOLOGY DOCS]
+1. `[YOUR_METHODOLOGY_DOCS]`
+2. `[YOUR_ARCHITECTURE_DOC]`
 
 ---
 
 ## 3) Decision Rules While Working
 
 1. **Apply R/P Split:**
-   - REASONING tasks → Claude/LLM
-   - PRECISION tasks → code
+   - REASONING tasks (interpretation, judgment, synthesis) → Claude/LLM
+   - PRECISION tasks (extraction, counting, formatting, verification) → code
    - If mixed, split into separate steps
 
 2. **Explicit failure gates:**
    - Every pipeline or script must declare hard vs soft failure gates
    - Hard gates stop execution; soft gates warn and continue
+   - Use gates to localize failures and prevent downstream patching
 
-3. **Enforce Pattern-First:**
+3. **Observation data is authoritative:**
+   - Upstream observations may be filtered, prioritized, or reordered downstream
+   - Upstream observations must NOT be silently discarded by downstream stages
+   - If upstream detects something with HIGH confidence, it must survive or have a documented exclusion reason
+
+4. **Enforce Pattern-First:**
    - Define pattern/schema first
    - Populate instances second
 
-4. **Trace causality before edits:**
+5. **Pull-based thinking — fix the constraint, not the symptoms:**
+   - Identify the binding constraint before optimizing downstream
+   - Never push defective output downstream; validate handoffs before proceeding
+   - When a metric fails downstream, trace back to the stage that introduced the defect
+
+6. **Trace causality before edits:**
    - What does this component consume?
    - What does it produce?
    - Which downstream components depend on it?
 
-5. **Keep boundaries stable** unless explicitly redesigning architecture.
+7. **Keep boundaries stable** unless explicitly redesigning architecture.
 
-6. **Run verification** before finishing (smallest valid test set).
+8. **Run verification** before finishing (smallest valid test set).
+
+9. **After pipeline changes, follow measurement-driven development cycle:**
+   - Validate handoffs ($0)
+   - Measure depth (target case before/after)
+   - Rebalance if needed
+   - Measure breadth (check for regressions)
 
 <!--
    ADD PROJECT-SPECIFIC RULES HERE
+   Example: "Domain grounding: every taxonomy cites a published framework"
+   Example: "Boundary-aware measurement: scope metrics to analysis vs delivery"
    Example: "Always run linter before committing"
-   Example: "Update API docs when endpoints change"
 -->
 
 ---
@@ -99,14 +185,19 @@ Read in order:
 
 When docs conflict:
 1. Prefer docs marked **AUTHORITATIVE** in `docs/CORE_DOCUMENTATION_INDEX.md`
-2. Prefer the file with the newest date
-3. If behavior changed in code, update docs in the same change set
+2. Prefer the file with the newest "Verified" date
+3. Treat `[HISTORICAL_DIR]` as historical unless explicitly referenced
+
+If behavior changed in code, update docs in the same change set:
+- Architecture changes → `[YOUR_ARCHITECTURE_DIR]`
+- Workflow changes → `[YOUR_WORKFLOW_DOC]`
+- Change summary → `docs/CHANGELOG.md` (short entry + link to details)
 
 ---
 
-## 5) Key Commands (Quick Reference)
+## 5) High-Value Commands (Quick Reference)
 
-<!-- Replace with your project's key commands -->
+<!-- Replace with your project's key commands. Structure by category. -->
 
 ```bash
 # Build / Run
@@ -118,6 +209,25 @@ When docs conflict:
 # Measure quality
 [YOUR MEASUREMENT COMMAND]
 
+# Validate handoffs (if applicable)
+[YOUR HANDOFF VALIDATION COMMAND]
+
 # Lint / Format
 [YOUR LINT COMMAND]
 ```
+
+<!--
+  Advanced commands (add as your project grows):
+
+  # Pipeline execution
+  [YOUR PIPELINE COMMAND]
+
+  # Handoff validation (standalone audit)
+  [YOUR VALIDATION COMMAND --standalone]
+
+  # Measurement history query
+  [YOUR HISTORY QUERY COMMAND]
+
+  # RAG doc search (when docs > 15 files)
+  python -m rag.query "your question"
+-->

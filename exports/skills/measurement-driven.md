@@ -50,6 +50,12 @@
    │  - Architecture change for structural issues
    │
    ▼
+3.5 VALIDATE HANDOFFS (Constraint Gates)
+   │  Run handoff validation on modified stages ($0, code-only)
+   │  Verify upstream data survives to downstream consumers
+   │  If handoff fails → return to step 3 (fix the constraint, not downstream)
+   │
+   ▼
 4. MEASURE DEPTH
    │  Re-measure the target case(s)
    │  Compare: did the targeted metric improve?
@@ -75,6 +81,23 @@
    ▼
    (back to 1 for next issue)
 ```
+
+---
+
+## Boundary-Aware Extension
+
+When your pipeline has an explicit boundary (see System Boundary Theory, Boundary-Aware Measurement skill), scope your measurement to the affected subsystem:
+
+| What Changed | Measure Depth On | Measure Breadth On |
+|---|---|---|
+| Analysis stage | Analysis metrics only | Analysis cases only |
+| Delivery stage | Delivery metrics only | Delivery cases only |
+| Boundary contract | Both sides | Full corpus |
+| Infrastructure | Both sides | Full corpus |
+
+**Why scope matters:** If only analysis changed, running expensive delivery measurement ($$ API calls) provides no information — the delivery code hasn't changed. Validate the handoff ($0), measure analysis ($), and skip delivery entirely.
+
+For the full boundary-aware measurement protocol, see [Boundary-Aware Measurement](boundary-aware-measurement.md).
 
 ---
 
@@ -187,6 +210,7 @@ SELECT case, score WHERE latest.score < previous.score
 | **Property-Based Testing** (QuickCheck) | Define invariants that must hold across all valid inputs |
 | **Strangler-Fig Refactoring** (Fowler) | Insert validation layers incrementally |
 | **Observability First** (distributed systems) | Instrument the process, not just the output |
+| **TOC / Kanban Gates** (manufacturing) | Find the binding constraint; validate handoffs before expensive stages |
 
 ### Cost-Ordering Principle
 
@@ -240,10 +264,11 @@ When a depth cycle fails, check:
 3. Measure baseline before touching anything
 
 ### After Making a Change
-1. Measure depth (did target improve?)
-2. Rebalance if needed
-3. Measure breadth (did anything else regress?)
-4. Stabilize when both axes aligned
+1. Validate handoffs ($0 — did data survive stage boundaries?)
+2. Measure depth (did target improve? Scope to affected subsystem if boundary exists)
+3. Rebalance if needed
+4. Measure breadth (did anything else regress?)
+5. Stabilize when both axes aligned
 
 ### Declaring Stability
 - Composite score stable or improving for 80%+ of cases

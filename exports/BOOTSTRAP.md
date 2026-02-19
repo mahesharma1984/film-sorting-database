@@ -2,6 +2,37 @@
 
 This guide walks you through applying the Development Methodology Kit to a new project.
 
+**Important:** Start with theory, not templates. The documentation structure is only useful if you understand the principles behind it.
+
+---
+
+## Step 0: Read the Knowledge Base (1-2 hours)
+
+Before setting up anything, read the theoretical foundations. These are the mental models that make the skills and templates make sense.
+
+### Minimum Reading (30 minutes)
+
+If you're short on time, read these two — they cover the most critical concepts:
+
+1. **[LLM Capability Model](knowledge-base/llm-capability-model.md)** — Understand what AI can and cannot do. This prevents the #1 failure mode in AI-assisted systems.
+2. **[Task Design Theory](knowledge-base/task-design-theory.md)** — Understand how to decompose work correctly. This prevents building the wrong thing.
+
+### Recommended Reading (1 hour)
+
+Add these based on what you're building:
+
+3. **[Causality & Systems](knowledge-base/causality-and-systems.md)** — If your project has multiple stages or components that depend on each other.
+4. **[Domain Grounding Theory](knowledge-base/domain-grounding-theory.md)** — If your pipeline classifies entities into categories or types.
+5. **[System Boundary Theory](knowledge-base/system-boundary-theory.md)** — If your pipeline has cheap analysis stages and expensive delivery stages.
+6. **[Measurement Theory](knowledge-base/measurement-theory.md)** — If you need to track quality over time or across cases.
+7. **[Failure Theory](knowledge-base/failure-theory.md)** — If your system processes data through a pipeline where errors can compound.
+
+### Full Reading (2-3 hours)
+
+Read all eight in order. Each builds on the previous.
+
+**Why this matters:** The skills (Step 1) are procedures that implement these theories. Without the theory, you'll follow the procedures mechanically and won't recognize when to adapt them to your specific situation. With the theory, the procedures become obvious consequences of the mental models.
+
 ---
 
 ## Step 1: Choose Your Skills (5 minutes)
@@ -12,9 +43,11 @@ Not every project needs every skill. Choose based on your project type:
 |---|---|
 | Uses AI/LLMs for any task | **R/P Split** (critical) |
 | Has multiple processing stages | **Pattern-First** + **Failure Gates** |
+| Classifies entities into types/categories | **Domain Grounding** |
+| Has cheap + expensive stages | **Boundary-Aware Measurement** + **Constraint Gates** |
 | Needs quality tracking over time | **Measurement-Driven** |
 | Is new/unfamiliar territory | **Prototype Building** |
-| Is a complex system | All five |
+| Is a complex system | All eight |
 
 **Recommendation:** Start with **R/P Split** and **Prototype Building** — they provide the highest value with the lowest setup cost.
 
@@ -114,11 +147,31 @@ Add to CLAUDE.md § 3:
    - Stabilize when both axes aligned
 ```
 
+### If adopting Domain Grounding:
+
+Add to CLAUDE.md § 3:
+```markdown
+5. **Ground classifications in published theory:**
+   - Every taxonomy must cite a published framework
+   - Entity processing priority follows abstraction level, not frequency
+   - One canonical taxonomy; all stages reference it (no parallel systems)
+```
+
+### If adopting Boundary-Aware Measurement:
+
+Add to CLAUDE.md § 3:
+```markdown
+6. **Scope measurement to subsystems:**
+   - Identify the boundary between analysis and delivery stages
+   - Validate handoffs ($0) before running expensive measurement ($$)
+   - Measure the affected subsystem, not the whole pipeline
+```
+
 ### If adopting Prototype Building:
 
 Add to CLAUDE.md § 3:
 ```markdown
-5. **Explore before executing:**
+7. **Explore before executing:**
    - State the problem in one sentence before building
    - Have a real case to test against
    - Don't build until the pattern is confirmed
@@ -127,20 +180,35 @@ Add to CLAUDE.md § 3:
 
 ---
 
-## Step 4: Copy Skills Reference (Optional, 5 minutes)
+## Step 4: Copy Knowledge Base and Skills Reference (Optional, 5 minutes)
 
-If you want the full skill documents in your repo for reference:
+If you want the theory and skill documents in your repo for reference:
 
 ```bash
-mkdir -p docs/methodology
+mkdir -p docs/knowledge-base docs/methodology
+
+# Layer 0: Theory (recommended — these are the foundation)
+cp exports/knowledge-base/llm-capability-model.md ./docs/knowledge-base/
+cp exports/knowledge-base/task-design-theory.md ./docs/knowledge-base/
+cp exports/knowledge-base/causality-and-systems.md ./docs/knowledge-base/
+cp exports/knowledge-base/domain-grounding-theory.md ./docs/knowledge-base/
+cp exports/knowledge-base/system-boundary-theory.md ./docs/knowledge-base/
+cp exports/knowledge-base/measurement-theory.md ./docs/knowledge-base/
+cp exports/knowledge-base/failure-theory.md ./docs/knowledge-base/
+cp exports/knowledge-base/constraint-theory.md ./docs/knowledge-base/
+
+# Layer 1: Skills
 cp exports/skills/rp-split.md ./docs/methodology/
 cp exports/skills/pattern-first.md ./docs/methodology/
+cp exports/skills/domain-grounding.md ./docs/methodology/
+cp exports/skills/boundary-aware-measurement.md ./docs/methodology/
 cp exports/skills/measurement-driven.md ./docs/methodology/
 cp exports/skills/failure-gates.md ./docs/methodology/
+cp exports/skills/constraint-gates.md ./docs/methodology/
 cp exports/skills/prototype-building.md ./docs/methodology/
 ```
 
-Then reference them from your CLAUDE.md work modes section.
+Then reference them from your CLAUDE.md work modes section. The knowledge base documents are especially valuable for onboarding new team members — they explain *why* the practices exist, not just *what* to do.
 
 ---
 
@@ -171,7 +239,35 @@ Document your system's:
 
 ---
 
-## Step 6: Evolve (Ongoing)
+## Step 6: Add RAG Verification (When Ready)
+
+When your `docs/` directory grows past ~15 files, add the RAG verification layer to turn your docs from passive reference into a queryable oracle.
+
+**Signals you need it:**
+- You catch yourself searching docs manually for "that section about X"
+- Team members apply principles inconsistently
+- WORK_ROUTER.md keeps growing and feels unmaintainable
+
+**Setup:**
+```bash
+# Copy the RAG package
+cp -r exports/rag/rag/ ./rag/
+
+# Install dependencies
+pip install sentence-transformers rank-bm25 numpy
+
+# Build the index
+python -m rag.indexer
+
+# Query your docs
+python -m rag.query "Does my error handling follow the gate pattern?"
+```
+
+See [`rag/INTEGRATION_GUIDE.md`](rag/INTEGRATION_GUIDE.md) for detailed setup instructions and customization.
+
+---
+
+## Step 7: Evolve (Ongoing)
 
 The documentation structure will grow with your project:
 
@@ -179,6 +275,7 @@ The documentation structure will grow with your project:
 2. **When you add a feature** → Update architecture docs and changelog
 3. **When you establish a workflow** → Add it to the workflow registry
 4. **When you learn something** → Add it to methodology docs
+5. **When docs grow past ~15 files** → Add RAG verification (Step 6)
 
 The goal is that **every lesson learned is captured** so it doesn't have to be re-learned.
 
@@ -202,7 +299,14 @@ The goal is that **every lesson learned is captured** so it doesn't have to be r
 - [ ] `docs/WORKFLOW_REGISTRY.md` — Named procedures
 - [ ] `docs/architecture/SYSTEM_ARCHITECTURE.md` — System design
 - [ ] `docs/CHANGELOG.md` — Change history
-- [ ] `docs/methodology/*.md` — Adopted skills (optional)
+- [ ] `docs/knowledge-base/*.md` — Theoretical foundations (8 docs recommended)
+- [ ] `docs/methodology/*.md` — Adopted skills (up to 8, optional)
+
+### With RAG (15+ doc files)
+- [ ] Everything in Full, plus:
+- [ ] `rag/` — RAG verification package (from exports/rag/rag/)
+- [ ] RAG index built: `python -m rag.indexer`
+- [ ] CLAUDE.md updated with RAG query command
 
 ---
 

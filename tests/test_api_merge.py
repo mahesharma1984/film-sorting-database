@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from classify import FilmClassifier
 from lib.parser import FilmMetadata
+from lib.tmdb import TMDbClient
 
 
 @pytest.fixture
@@ -337,3 +338,160 @@ class TestIntegration:
         assert classifier.stats['both_apis_success'] == 1
         assert classifier.stats['country_from_omdb'] == 1
         assert classifier.stats['genres_from_tmdb'] == 1
+
+
+@pytest.fixture
+def tmdb_client(tmp_path):
+    """TMDbClient with a dummy API key and temp cache"""
+    return TMDbClient(api_key='test_key', cache_path=tmp_path / 'tmdb_cache.json')
+
+
+class TestTMDbValidation:
+    """Tests for TMDbClient._validate_result() — Issue #21"""
+
+    def test_exact_match_accepted(self, tmdb_client):
+        candidate = {'title': 'Suspiria', 'release_date': '1977-02-01'}
+        assert tmdb_client._validate_result(candidate, 'Suspiria', 1977) is True
+
+    def test_year_adjacent_accepted(self, tmdb_client):
+        """Year delta of 1 should pass (e.g. different release regions)"""
+        candidate = {'title': 'Suspiria', 'release_date': '1978-01-01'}
+        assert tmdb_client._validate_result(candidate, 'Suspiria', 1977) is True
+
+    def test_year_delta_two_accepted(self, tmdb_client):
+        """Year delta of exactly 2 should pass"""
+        candidate = {'title': 'Suspiria', 'release_date': '1979-01-01'}
+        assert tmdb_client._validate_result(candidate, 'Suspiria', 1977) is True
+
+    def test_year_too_far_rejected(self, tmdb_client):
+        """A remake 41 years later must not match the original"""
+        candidate = {'title': 'Suspiria', 'release_date': '2018-10-26'}
+        assert tmdb_client._validate_result(candidate, 'Suspiria', 1977) is False
+
+    def test_title_mismatch_rejected(self, tmdb_client):
+        """Completely different title should be rejected regardless of year"""
+        candidate = {'title': 'Alien', 'release_date': '1977-01-01'}
+        assert tmdb_client._validate_result(candidate, 'Suspiria', 1977) is False
+
+    def test_no_query_year_skips_year_check(self, tmdb_client):
+        """When query year is None, year check is skipped — title match alone passes"""
+        candidate = {'title': 'Suspiria', 'release_date': '2018-10-26'}
+        assert tmdb_client._validate_result(candidate, 'Suspiria', None) is True
+
+    def test_no_release_date_skips_year_check(self, tmdb_client):
+        """When candidate has no release_date, year check is skipped"""
+        candidate = {'title': 'Suspiria'}
+        assert tmdb_client._validate_result(candidate, 'Suspiria', 1977) is True
+
+    def test_original_title_fallback(self, tmdb_client):
+        """Should use original_title when title is absent"""
+        candidate = {'original_title': 'Profondo Rosso', 'release_date': '1975-03-07'}
+        assert tmdb_client._validate_result(candidate, 'Profondo Rosso', 1975) is True
+
+    def test_empty_candidate_title_rejected(self, tmdb_client):
+        """Candidate with no title fields should be rejected"""
+        candidate = {'release_date': '1977-01-01'}
+        assert tmdb_client._validate_result(candidate, 'Suspiria', 1977) is False
+
+    def test_similar_title_above_threshold_accepted(self, tmdb_client):
+        """A title with minor punctuation difference should pass (similarity > 0.6)"""
+        # 'The Apartment' vs 'Apartment, The' — both refer to same film
+        candidate = {'title': 'The Apartment', 'release_date': '1960-06-15'}
+        assert tmdb_client._validate_result(candidate, 'Apartment The', 1960) is True
+
+    def test_first_result_mismatch_second_match(self, tmdb_client):
+        """_query_api should skip mismatched results and return the first valid one"""
+        search_response = {
+            'results': [
+                {'id': 1, 'title': 'Suspiria', 'release_date': '2018-10-26'},  # Wrong year
+                {'id': 2, 'title': 'Suspiria', 'release_date': '1977-02-01'},  # Correct
+                {'id': 3, 'title': 'Suspiria Uncut', 'release_date': '1977-05-01'},
+            ]
+        }
+        details_response = {
+            'title': 'Suspiria',
+            'release_date': '1977-02-01',
+            'credits': {'crew': [{'job': 'Director', 'name': 'Dario Argento'}], 'cast': []},
+            'genres': [{'name': 'Horror'}],
+            'production_countries': [{'iso_3166_1': 'IT'}],
+            'origin_country': [],
+            'keywords': {'keywords': []},
+        }
+
+        with patch('requests.get') as mock_get:
+            # First call: search; second call: details
+            search_mock = MagicMock()
+            search_mock.json.return_value = search_response
+            search_mock.raise_for_status = MagicMock()
+
+            details_mock = MagicMock()
+            details_mock.json.return_value = details_response
+            details_mock.raise_for_status = MagicMock()
+
+            mock_get.side_effect = [search_mock, details_mock]
+
+            result = tmdb_client._query_api('Suspiria', 1977)
+
+        assert result is not None
+        assert result['director'] == 'Dario Argento'
+        assert result['tmdb_id'] == 2  # Second result (first valid one)
+
+    def test_all_top3_mismatch_returns_none(self, tmdb_client):
+        """If all top 3 results fail validation, return None"""
+        search_response = {
+            'results': [
+                {'id': 1, 'title': 'Suspiria', 'release_date': '2018-10-26'},
+                {'id': 2, 'title': 'Suspiria 2', 'release_date': '2019-01-01'},
+                {'id': 3, 'title': 'Completely Different Film', 'release_date': '1977-01-01'},
+            ]
+        }
+
+        with patch('requests.get') as mock_get:
+            search_mock = MagicMock()
+            search_mock.json.return_value = search_response
+            search_mock.raise_for_status = MagicMock()
+            mock_get.return_value = search_mock
+
+            result = tmdb_client._query_api('Suspiria', 1977)
+
+        assert result is None
+
+
+class TestOMDbCountryMapping:
+    """Tests for OMDbClient._map_countries_to_codes() — Issue #25 D2"""
+
+    @pytest.fixture
+    def omdb_client(self, tmp_path):
+        from lib.omdb import OMDbClient
+        return OMDbClient('dummy_key', tmp_path / 'omdb_cache.json')
+
+    def test_known_country_maps_correctly(self, omdb_client):
+        assert omdb_client._map_countries_to_codes(['West Germany']) == ['DE']
+
+    def test_east_germany_maps_to_de(self, omdb_client):
+        assert omdb_client._map_countries_to_codes(['East Germany']) == ['DE']
+
+    def test_federal_republic_maps_to_de(self, omdb_client):
+        assert omdb_client._map_countries_to_codes(['Federal Republic of Germany']) == ['DE']
+
+    def test_soviet_union_maps_to_su(self, omdb_client):
+        assert omdb_client._map_countries_to_codes(['Soviet Union']) == ['SU']
+
+    def test_unknown_country_returns_empty(self, omdb_client):
+        """Unknown country must NOT produce a corrupt 2-letter truncation"""
+        result = omdb_client._map_countries_to_codes(['Ruritania'])
+        assert result == []
+
+    def test_unknown_country_does_not_append_truncation(self, omdb_client):
+        """Confirm no 'RU' (truncation of 'Ruritania') is added"""
+        result = omdb_client._map_countries_to_codes(['Ruritania'])
+        assert 'RU' not in result
+
+    def test_mixed_known_unknown_preserves_known(self, omdb_client):
+        """Known country kept, unknown dropped — not corrupted"""
+        result = omdb_client._map_countries_to_codes(['Italy', 'Ruritania'])
+        assert result == ['IT']
+
+    def test_multiple_known_countries(self, omdb_client):
+        result = omdb_client._map_countries_to_codes(['France', 'Italy'])
+        assert result == ['FR', 'IT']

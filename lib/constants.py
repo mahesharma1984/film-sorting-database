@@ -130,13 +130,21 @@ LANGUAGE_PATTERNS = [
 # =============================================================================
 
 LANGUAGE_TO_COUNTRY = {
-    'pt': 'BR',  # Portuguese → Brazil (for this collection's context)
+    # NOTE: This mapping is a fallback used when OMDb/TMDb country data is unavailable.
+    # Three entries have known failure modes — they are intentional defaults for THIS
+    # collection's profile, but will misroute edge cases. OMDb country data (higher
+    # priority in the merge) should correct these before this lookup is reached.
+    'pt': 'BR',  # Portuguese → Brazil. FAILURE MODE: also catches Portuguese European
+                 # films (country=PT). OMDb country data should override before this fires.
     'it': 'IT',  # Italian → Italy
     'fr': 'FR',  # French → France
-    'es': 'ES',  # Spanish → Spain
+    'es': 'ES',  # Spanish → Spain. FAILURE MODE: also catches Latin American films
+                 # (MX, AR, CL, etc.) — but those countries lack COUNTRY_TO_WAVE entries
+                 # so they fall to Unsorted, which is the correct behaviour.
     'de': 'DE',  # German → Germany
     'ja': 'JP',  # Japanese → Japan
-    'zh': 'HK',  # Chinese → Hong Kong (for this collection's context)
+    'zh': 'HK',  # Chinese → Hong Kong. FAILURE MODE: also catches mainland Chinese films
+                 # (country=CN). OMDb country data should override before this fires.
     'ko': 'KR',  # Korean → South Korea
     'hi': 'IN',  # Hindi → India
     'ru': 'RU',  # Russian → Russia
@@ -150,6 +158,13 @@ LANGUAGE_TO_COUNTRY = {
 
 # Structure: country_code → {decades: [list], category: str}
 # Conservative routing: only films in specified decades will route to Satellite
+#
+# NOTE: France ('FR') is intentionally absent.
+# French New Wave is director-only (see SATELLITE_ROUTING_RULES['French New Wave']).
+# A French film with no matching director falls to European Sexploitation (FR + genre)
+# or Unsorted — this is designed behaviour, not an omission.
+# Adding 'FR' here would route every French film in the 1950s-1970s to French New Wave
+# regardless of whether it has any connection to the Nouvelle Vague movement.
 COUNTRY_TO_WAVE = {
     'BR': {
         'decades': ['1960s', '1970s', '1980s', '1990s'],  # widened (Issue #20)
@@ -225,15 +240,31 @@ SATELLITE_ROUTING_RULES = {
     # Rationale: first-match-wins; catch-alls (Indie Cinema, Classic Hollywood)
     # must come AFTER exploitation categories so director matches aren't overridden.
 
-    # French New Wave: DIRECTOR-ONLY routing (Issue #14)
-    # Must come first as decade-bounded director override (no country/genre fallback)
+    # French New Wave: DIRECTOR-ONLY routing (Issue #14, audited Issue #22)
+    # Must come first as decade-bounded director override (no country/genre fallback).
+    #
+    # Core directors (Godard, Varda, Chabrol, Demy, Duras) are caught at Stage 3
+    # (Core check) and never reach this entry. Resnais, Rivette, and Rohmer are also
+    # Core but appear here as a safety net — Core check fires first when core_db is
+    # provided; these entries only activate when core_db=None.
+    #
+    # IMPORTANT: is_core_director() is decade-agnostic. If a director is Core in ANY
+    # decade, ALL their films are intercepted by the Core guard in SatelliteClassifier.
+    # Rohmer (Core 1990s) will have his 1960s FNW films routed to Core when core_db
+    # is active. This is a known architectural quirk, not a bug to fix here.
+    #
+    # Non-Core Nouvelle Vague directors in this list (confirmed against whitelist, #22):
+    #   Marker ✅  Malle ✅  Eustache ✅  Truffaut ✅ (added #22)  Robbe-Grillet ✅ (added #22)
+    # Confirmed Core (NOT in this list): Godard, Varda, Chabrol, Demy, Duras
+    # If adding a director, first verify they are NOT in CORE_DIRECTOR_WHITELIST_FINAL.md.
     'French New Wave': {
         'country_codes': [],  # Director-only (no country fallback)
         'decades': ['1950s', '1960s', '1970s'],  # 1958-1973 movement
         'genres': [],  # Director-only (no genre fallback)
         'directors': [
-            'marker', 'rohmer', 'resnais',
-            'rivette', 'malle', 'eustache'
+            'marker', 'rohmer', 'resnais', 'rivette', 'malle', 'eustache',
+            'truffaut',       # Issue #22: François Truffaut — confirmed not in Core whitelist
+            'robbe-grillet',  # Issue #22: Alain Robbe-Grillet — confirmed not in Core whitelist
         ],
     },
 
@@ -279,7 +310,10 @@ SATELLITE_ROUTING_RULES = {
     },
     'Blaxploitation': {  # MOVED BEFORE American Exploitation (Issue #6 - priority order)
         'country_codes': ['US'],
-        'decades': ['1970s', '1990s'],  # Extended to include 1990s for Ernest Dickerson
+        'decades': ['1970s', '1990s'],  # 1980s deliberately excluded: genre largely
+                                         # collapsed after its commercial peak (1971-1975).
+                                         # 1990s added for the resurgence (Boyz n the Hood,
+                                         # Menace II Society, Ernest Dickerson, etc.).
         'genres': ['Action', 'Crime', 'Drama'],
         'directors': [
             'gordon parks', 'jack hill',
@@ -557,3 +591,12 @@ REFERENCE_CANON = {
     ('unforgiven', 1992): 'Reference',
     ('the piano', 1993): 'Reference',
 }
+
+# Enforce Reference canon cap — fires at import time (Issue #25 D6).
+# ~50 films by design; cap is 55 to allow up to 5 alternate-normalization
+# entries (e.g. the dual E.T. entry) without requiring cap adjustment.
+# To add a film: remove a lower-priority entry first.
+assert len(REFERENCE_CANON) <= 55, (
+    f"REFERENCE_CANON has {len(REFERENCE_CANON)} entries (cap is 55). "
+    "Remove entries before adding new ones."
+)

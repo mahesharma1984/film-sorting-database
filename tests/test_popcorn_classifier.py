@@ -62,3 +62,24 @@ def test_popcorn_requires_year():
         'vote_count': 2500,
     }
     assert classifier.classify_reason(metadata, api_data) is None
+
+
+def test_classify_reason_never_returns_popcorn_lookup():
+    """popcorn_lookup is dead code: Stage 2 catches SORTING_DATABASE entries first.
+    By the time classify_reason() is called (Stage 6), Stage 2 has already
+    handled any lookup match — so 'popcorn_lookup' can never be returned."""
+    classifier = PopcornClassifier()
+    metadata = FilmMetadata(
+        filename="Some Mainstream Film (2000).mkv",
+        title="Some Mainstream Film",
+        year=2000,
+    )
+    api_data = {
+        'countries': ['US'],
+        'genres': ['Action'],
+        'cast': [],
+        'popularity': 1.0,
+        'vote_count': 100,
+    }
+    result = classifier.classify_reason(metadata, api_data)
+    assert result != 'popcorn_lookup'

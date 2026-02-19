@@ -18,8 +18,7 @@ logger = logging.getLogger(__name__)
 class PopcornClassifier:
     """Classify Popcorn films after Core/Reference/Satellite stages."""
 
-    def __init__(self, lookup_db=None):
-        self.lookup_db = lookup_db
+    def __init__(self):
         self.mainstream_genres = set(POPCORN_MAINSTREAM_GENRES)
         self.mainstream_countries = set(POPCORN_MAINSTREAM_COUNTRIES)
         self.strong_format_signals = set(POPCORN_STRONG_FORMAT_SIGNALS)
@@ -44,12 +43,6 @@ class PopcornClassifier:
         title_lower = (getattr(metadata, 'title', '') or '').lower()
         if any(keyword in title_lower for keyword in EXPLOITATION_TITLE_KEYWORDS):
             return None
-
-        # Respect explicit lookup if it points to Popcorn.
-        if self.lookup_db and getattr(metadata, 'title', None):
-            dest = self.lookup_db.lookup(metadata.title, film_year)
-            if dest and 'Popcorn' in dest:
-                return 'popcorn_lookup'
 
         api_data = api_data or {}
         countries = set(self._normalize_list(api_data.get('countries')))

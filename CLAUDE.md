@@ -65,8 +65,9 @@ The classification pipeline checks in this priority:
 2. Core director check — whitelist match
 3. Reference canon check — 50-film hardcoded list
 4. User tag recovery — trust previous human classification
-5. Language/country → Satellite routing (decade-bounded)
-6. Default → Unsorted with reason code
+5. Popcorn check — popularity + format signals (Issue #14: checked BEFORE Satellite)
+6. Satellite routing — country + decade + director rules (decade-bounded)
+7. Default → Unsorted with reason code
 
 ### Rule 3: Failure Gates
 
@@ -117,7 +118,11 @@ Country → satellite routing only applies within historically valid decades:
 - Brazil → Brazilian Exploitation: 1960s–1990s (pornochanchada peak 1970–1989; wider tradition extends to mid-1960s and early 1990s — WIDENED Issue #20)
 - Italy → Giallo: 1960s–1980s only
 - Japan → Pinku Eiga: 1960s–1980s only
-- France → French New Wave: 1950s-1970s only (NEW - Issue #14)
+- France → French New Wave: 1950s-1970s only (Issue #14, audited Issue #22)
+  - Director-only routing. France ('FR') is intentionally excluded from COUNTRY_TO_WAVE — adding it would auto-route all French films in those decades to FNW regardless of movement membership.
+  - Core directors (Godard, Varda, Chabrol, Demy, Duras, Resnais, Rivette) exit at Stage 3 and never reach this Satellite entry.
+  - Non-Core FNW directors: Truffaut, Marker, Malle, Eustache, Robbe-Grillet, Rohmer (1960s-1970s), Resnais/Rivette (safety net; Core check fires first when core_db active).
+  - Unknown French film with no director match falls to European Sexploitation (FR + Drama/Romance + 1960s) then Unsorted — documented expected behaviour (Issue #22 Scenario B).
 - Hong Kong → HK Action: 1970s–1990s only
 - US → American Exploitation: 1960s-1980s only (NARROWED - Issue #14)
 - US → Classic Hollywood: 1930s-1950s only (NEW - Issue #14)
