@@ -148,8 +148,19 @@ class SatelliteClassifier:
         return category
 
     def increment_count(self, category: str):
-        """Manually increment category count (for explicit lookups)"""
+        """Increment count for explicit lookup results (Issue #25 D7).
+
+        Explicit lookup entries are NOT blocked by the cap — human curation
+        overrides auto-classification limits. A warning is logged when the cap
+        is exceeded so the collection can be audited.
+        """
         self.counts[category] += 1
+        if category in self.caps and self.counts[category] > self.caps[category]:
+            logger.warning(
+                "Satellite category '%s' has %d entries, exceeding auto-classification "
+                "cap of %d. These are explicit lookup entries — not blocked, but worth auditing.",
+                category, self.counts[category], self.caps[category]
+            )
 
     def get_stats(self) -> Dict:
         """Get category classification statistics"""

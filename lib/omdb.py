@@ -195,6 +195,8 @@ class OMDbClient:
             'United Kingdom': 'GB',
             'Germany': 'DE',
             'West Germany': 'DE',
+            'East Germany': 'DE',
+            'Federal Republic of Germany': 'DE',
             'Spain': 'ES',
             'Hong Kong': 'HK',
             'South Korea': 'KR',
@@ -243,8 +245,11 @@ class OMDbClient:
             if name in country_map:
                 codes.append(country_map[name])
             else:
-                # Unknown country - just use first 2 letters uppercase as fallback
-                codes.append(name[:2].upper() if len(name) >= 2 else name.upper())
+                logger.warning(
+                    "OMDb: unknown country name '%s' — skipping (add to country_map in "
+                    "lib/omdb.py if this appears frequently)", name
+                )
+                # Do not append — a missing code is auditable; a corrupt code is not
 
         return codes
 

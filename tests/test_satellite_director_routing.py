@@ -547,3 +547,42 @@ def test_br_1991_routes_to_brazilian_exploitation(mock_metadata):
     result = classifier.classify(mock_metadata, tmdb_data)
     assert result == 'Brazilian Exploitation', \
         f"Expected 'Brazilian Exploitation', got {result!r}"
+
+
+# =============================================================================
+# Issue #25 D7: increment_count() cap warning
+# =============================================================================
+
+def test_increment_count_logs_warning_at_cap(caplog):
+    """increment_count() should log a WARNING when count exceeds the category cap"""
+    import logging
+    classifier = SatelliteClassifier()
+    cap = classifier.caps['Giallo']
+    # Fill to the cap (no warning yet)
+    for _ in range(cap):
+        classifier.increment_count('Giallo')
+    # One more — should trigger the warning
+    with caplog.at_level(logging.WARNING, logger='lib.satellite'):
+        classifier.increment_count('Giallo')
+    assert 'Giallo' in caplog.text
+    assert str(cap) in caplog.text
+
+
+def test_increment_count_does_not_block_over_cap():
+    """increment_count() must still increment even over cap — lookup entries are never blocked"""
+    classifier = SatelliteClassifier()
+    cap = classifier.caps['Giallo']
+    for _ in range(cap + 5):
+        classifier.increment_count('Giallo')
+    assert classifier.counts['Giallo'] == cap + 5
+
+
+def test_increment_count_no_warning_under_cap(caplog):
+    """increment_count() must not warn when count is at or below cap"""
+    import logging
+    classifier = SatelliteClassifier()
+    cap = classifier.caps['Giallo']
+    with caplog.at_level(logging.WARNING, logger='lib.satellite'):
+        for _ in range(cap):
+            classifier.increment_count('Giallo')
+    assert 'Giallo' not in caplog.text

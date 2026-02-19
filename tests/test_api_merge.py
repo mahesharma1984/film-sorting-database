@@ -455,3 +455,43 @@ class TestTMDbValidation:
             result = tmdb_client._query_api('Suspiria', 1977)
 
         assert result is None
+
+
+class TestOMDbCountryMapping:
+    """Tests for OMDbClient._map_countries_to_codes() — Issue #25 D2"""
+
+    @pytest.fixture
+    def omdb_client(self, tmp_path):
+        from lib.omdb import OMDbClient
+        return OMDbClient('dummy_key', tmp_path / 'omdb_cache.json')
+
+    def test_known_country_maps_correctly(self, omdb_client):
+        assert omdb_client._map_countries_to_codes(['West Germany']) == ['DE']
+
+    def test_east_germany_maps_to_de(self, omdb_client):
+        assert omdb_client._map_countries_to_codes(['East Germany']) == ['DE']
+
+    def test_federal_republic_maps_to_de(self, omdb_client):
+        assert omdb_client._map_countries_to_codes(['Federal Republic of Germany']) == ['DE']
+
+    def test_soviet_union_maps_to_su(self, omdb_client):
+        assert omdb_client._map_countries_to_codes(['Soviet Union']) == ['SU']
+
+    def test_unknown_country_returns_empty(self, omdb_client):
+        """Unknown country must NOT produce a corrupt 2-letter truncation"""
+        result = omdb_client._map_countries_to_codes(['Ruritania'])
+        assert result == []
+
+    def test_unknown_country_does_not_append_truncation(self, omdb_client):
+        """Confirm no 'RU' (truncation of 'Ruritania') is added"""
+        result = omdb_client._map_countries_to_codes(['Ruritania'])
+        assert 'RU' not in result
+
+    def test_mixed_known_unknown_preserves_known(self, omdb_client):
+        """Known country kept, unknown dropped — not corrupted"""
+        result = omdb_client._map_countries_to_codes(['Italy', 'Ruritania'])
+        assert result == ['IT']
+
+    def test_multiple_known_countries(self, omdb_client):
+        result = omdb_client._map_countries_to_codes(['France', 'Italy'])
+        assert result == ['FR', 'IT']

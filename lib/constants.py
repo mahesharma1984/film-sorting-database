@@ -557,3 +557,12 @@ REFERENCE_CANON = {
     ('unforgiven', 1992): 'Reference',
     ('the piano', 1993): 'Reference',
 }
+
+# Enforce Reference canon cap — fires at import time (Issue #25 D6).
+# ~50 films by design; cap is 55 to allow up to 5 alternate-normalization
+# entries (e.g. the dual E.T. entry) without requiring cap adjustment.
+# To add a film: remove a lower-priority entry first.
+assert len(REFERENCE_CANON) <= 55, (
+    f"REFERENCE_CANON has {len(REFERENCE_CANON)} entries (cap is 55). "
+    "Remove entries before adding new ones."
+)

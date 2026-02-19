@@ -140,7 +140,7 @@ class FilmClassifier:
         # Satellite classifier (TMDb-based rules)
         # Issue #16: pass core_db for defensive Core director check
         self.satellite_classifier = SatelliteClassifier(core_db=self.core_db)
-        self.popcorn_classifier = PopcornClassifier(self.lookup_db)
+        self.popcorn_classifier = PopcornClassifier()  # Issue #25 D8: lookup_db removed (dead code)
 
     def _build_destination(self, tier: str, decade: Optional[str], subdirectory: Optional[str]) -> str:
         """Build destination path string from classification components (tier-first)"""
