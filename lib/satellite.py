@@ -59,8 +59,20 @@ class SatelliteClassifier:
         Returns:
             Category name if classified, None otherwise
         """
+        # When tmdb_data is absent but metadata has a director (parsed from filename),
+        # construct a minimal dict for director-only routing rules (FNW, Indie Cinema
+        # directors list, etc.).  Country/genre-based rules still won't fire because
+        # countries=[] and genres=[] give no match — only director-match paths run.
         if not tmdb_data:
-            return None
+            if not (hasattr(metadata, 'director') and metadata.director):
+                return None
+            tmdb_data = {
+                'director': metadata.director,
+                'year': metadata.year,
+                'countries': [],
+                'genres': [],
+                'cast': [],
+            }
 
         # NEW (Issue #16): Defensive gate - check if director is Core before Satellite routing
         # Prevents Core auteurs from being caught by Satellite director-based routing

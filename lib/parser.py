@@ -46,6 +46,9 @@ class FilenameParser:
 
     def _clean_title(self, title: str) -> str:
         """Clean and normalize title from various filename formats"""
+        # Remove Plex/Emby edition tags like {edition-Uncut} or {tmdb-12345}
+        title = re.sub(r'\s*\{[^}]+\}', '', title)
+
         # Replace dots/underscores with spaces (scene release format)
         title = title.replace('.', ' ').replace('_', ' ')
 
@@ -71,6 +74,7 @@ class FilenameParser:
         # Try multiple year patterns in order of specificity
         year_patterns = [
             r'\s+(\d{4})$',           # Issue #5 fix: Bare year at end (sermon to the fish 2022)
+            r'\.(\d{4})$',            # .1972 at end of dotted filename (Black.Girl.1972)
             r'\((\d{4})\)',           # (1999)
             r'\[(\d{4})\]',           # [1969]
             r'[\.\s](\d{4})[\.\s]',   # .1984. or space-delimited
@@ -147,14 +151,14 @@ class FilenameParser:
         # === PRIORITY 0: Check for (Director, Year) pattern FIRST ===
         # Bug 3 fix: "A Bay of Blood (Mario Bava, 1971).mkv"
         # This must come before standard parenthetical year to extract both director and year
-        director_year_match = re.search(r'\(([A-Z][^,]+),\s*(\d{4})\)', name)
+        director_year_match = re.search(r'\(([A-Z][^,)]+),\s*(\d{4})\)', name)
         if director_year_match:
             director_name, year_str = director_year_match.groups()
             year = int(year_str)
 
             if 1920 <= year <= 2029:
-                # Remove (Director, Year) from title
-                title_part = re.sub(r'\s*\([^,]+,\s*\d{4}\)', '', name)
+                # Remove (Director, Year) from title — [^,)] prevents crossing paren boundaries
+                title_part = re.sub(r'\s*\([^,)]+,\s*\d{4}\)', '', name)
                 title = self._clean_title(title_part)
 
                 return FilmMetadata(
@@ -194,18 +198,27 @@ class FilenameParser:
 
         # === PRIORITY 1: Check for parenthetical year FIRST ===
         # This must come before Brazilian year-prefix to avoid "2001 - Film (1968)" bug
-        paren_year_match = re.search(r'\((\d{4})\)', name)
+        #
+        # Two sub-cases:
+        #   Clean:  (YYYY)               — year alone, proceed with director extraction
+        #   Messy:  (YYYY - extra text)  — year with quality/lang info, skip director extraction
+        #
+        paren_year_match = re.search(r'\((\d{4})[^)]*\)', name)
         if paren_year_match:
             year = int(paren_year_match.group(1))
             if 1920 <= year <= 2029:
-                # Remove (YEAR) from title for cleaner extraction
-                # This prevents the year from appearing in the cleaned title
-                title_without_year = re.sub(r'\s*\(\d{4}\)\s*', ' ', name)
+                # Remove the whole parenthetical containing the year from title
+                title_without_year = re.sub(r'\s*\(\d{4}[^)]*\)\s*', ' ', name)
                 title = self._clean_title(title_without_year)
+
+                # Only attempt director extraction for "clean" paren years — (YYYY) alone.
+                # Messy parens like (1975 - 360p - Português) contain " - " inside the paren;
+                # matching on the full name would mis-extract the quality tag as a title part.
+                is_clean_paren = bool(re.search(r'\((\d{4})\)', name))
 
                 # Check if this also matches director pattern
                 # Pattern: "Director - Title (Year)"
-                director_match = re.match(r'^(.+?)\s+-\s+(.+)', name)
+                director_match = re.match(r'^(.+?)\s+-\s+(.+)', name) if is_clean_paren else None
                 if director_match:
                     potential_director, potential_title = director_match.groups()
 
@@ -214,17 +227,17 @@ class FilenameParser:
                     if re.match(r'^\d{4}$', potential_director.strip()):
                         # This is a year, not a director - skip director extraction
                         pass
-                    # Bug 1 fix: Don't treat as director if it contains (YYYY)
+                    # Bug 1 fix: Don't treat as director if it contains (YYYY...)
                     # Fixes: "Casablanca (1942) - 4K" where "Casablanca (1942)" should be title
-                    elif re.search(r'\(\d{4}\)', potential_director):
+                    elif re.search(r'\(\d{4}[^)]*\)', potential_director):
                         # This contains a year in parens, it's the title not director
                         # Extract just the title part (potential_director without year)
-                        title_only = re.sub(r'\s*\(\d{4}\)\s*', '', potential_director)
+                        title_only = re.sub(r'\s*\(\d{4}[^)]*\)\s*', '', potential_director)
                         title = self._clean_title(title_only)
                         pass
                     else:
                         # Clean the potential title (remove year from it)
-                        potential_title = re.sub(r'\s*\(\d{4}\)\s*', ' ', potential_title)
+                        potential_title = re.sub(r'\s*\(\d{4}[^)]*\)\s*', ' ', potential_title)
                         potential_title = self._clean_title(potential_title)
 
                         # Bug 2 fix: Check if potential_title looks like a subtitle
