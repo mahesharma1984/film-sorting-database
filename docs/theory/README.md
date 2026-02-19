@@ -1,6 +1,6 @@
 # Theory Knowledge Base
 
-This directory contains eight essays that articulate the theoretical foundation of the film sorting archive. The operational documentation (sorting rules, decision trees, implementation guides) lives in `docs/`. These essays address the **why** — why decades, why these tiers, why exploitation cinema belongs in a serious archive.
+This directory contains nine essays that articulate the theoretical foundation of the film sorting archive. The operational documentation (sorting rules, decision trees, implementation guides) lives in `docs/`. These essays address the **why** — why decades, why these tiers, why exploitation cinema belongs in a serious archive.
 
 ---
 
@@ -16,6 +16,7 @@ For a newcomer, read in this sequence:
 6. **[POPCORN_WAVES.md](POPCORN_WAVES.md)** — Studio cinema as a parallel history to the auteur tradition.
 7. **[FORMAT_AS_INTENTION.md](FORMAT_AS_INTENTION.md)** — Why seeking out a 35mm scan is a curatorial act, not a technical preference.
 8. **[REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md)** — How categories are built: the recursive refinement process, when a sub-category earns its name, and how new categories are applied retroactively.
+9. **[SATELLITE_DEPTH.md](SATELLITE_DEPTH.md)** — Applying Core/Reference logic within Satellite categories: vetting strategy, within-category masters, and the seeking programme that emerges from recognising them.
 
 ---
 
@@ -30,7 +31,8 @@ COLLECTION_IDENTITY (master thesis)
   ├── TIER_ARCHITECTURE (why 4 tiers)
   │     └── FORMAT_AS_INTENTION (format is metadata, not tier)
   ├── AUTEUR_CRITERIA ←→ MARGINS_AND_TEXTURE (auteur/genre-master boundary)
-  └── REFINEMENT_AND_EMERGENCE (how all of the above is built and rebuilt over time)
+  ├── REFINEMENT_AND_EMERGENCE (how all of the above is built and rebuilt over time)
+  └── SATELLITE_DEPTH (Core/Reference logic applied within Satellite categories → seeking strategy)
 ```
 
 ---
