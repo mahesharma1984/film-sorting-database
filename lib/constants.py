@@ -378,8 +378,8 @@ SATELLITE_ROUTING_RULES = {
             'CN', 'TW', 'KR', 'IR', 'JP', 'HU', 'IN', 'RO',
             # Historical country codes: Czechoslovakia (pre-1993 split into CZ + SK)
             'CS', 'XC',
-            # Additional film nations
-            'RU', 'GR',
+            # Additional European film nations
+            'RU', 'GR', 'BG',
         ],
         'decades': ['1960s', '1970s', '1980s', '1990s', '2000s', '2010s', '2020s'],  # extended back (Issue #20)
         'genres': ['Drama', 'Romance', 'Thriller', 'Science Fiction'],  # added Sci-Fi for arthouse SF (Ikarie XB-1, Fantastic Planet)
