@@ -29,10 +29,12 @@ COLLECTION_IDENTITY (master thesis)
   │     ├── MARGINS_AND_TEXTURE (Satellite categories are wave-bounded)
   │     └── POPCORN_WAVES (studio cinema has its own wave structure)
   ├── TIER_ARCHITECTURE (why 4 tiers)
-  │     └── FORMAT_AS_INTENTION (format is metadata, not tier)
+  │     ├── FORMAT_AS_INTENTION (format is metadata, not tier)
+  │     └── REFINEMENT_AND_EMERGENCE (how the tier system evolves: splits, retroactive application, history)
   ├── AUTEUR_CRITERIA ←→ MARGINS_AND_TEXTURE (auteur/genre-master boundary)
-  ├── REFINEMENT_AND_EMERGENCE (how all of the above is built and rebuilt over time)
-  └── SATELLITE_DEPTH (Core/Reference logic applied within Satellite categories → seeking strategy)
+  ├── AUTEUR_CRITERIA → SATELLITE_DEPTH (same Core/Reference criteria applied recursively within categories)
+  ├── MARGINS_AND_TEXTURE → SATELLITE_DEPTH (Satellite categories develop internal depth hierarchies)
+  └── REFINEMENT_AND_EMERGENCE ←→ SATELLITE_DEPTH (outward splitting ↔ inward deepening)
 ```
 
 ---

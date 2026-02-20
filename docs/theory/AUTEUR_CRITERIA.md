@@ -113,6 +113,8 @@ These additions are contingent on acquiring films, not on any theoretical barrie
 
 The promotion path from Satellite also feeds the whitelist. A director who starts as Satellite texture (e.g., Wakamatsu, Candeias, Ferrara) can be promoted to Core when the collector's engagement deepens to the point of auteur obsession. The whitelist is a living document.
 
+(See also: [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) §5–6 — the within-category vetting and seeking pathway through which exploitation directors accumulate the engagement that makes them Core candidates.)
+
 ---
 
 ## Cross-References
@@ -122,3 +124,5 @@ The promotion path from Satellite also feeds the whitelist. A director who start
 - [MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md) — The Core/Satellite boundary from the other side
 - [POPCORN_WAVES.md](POPCORN_WAVES.md) — The auteur/craftsman boundary
 - [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — Core's implicit cap via the whitelist mechanism
+- [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) — The same four criteria applied recursively within each Satellite category; mirrors this document at within-category scale
+- [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) — How the promotion pathway from Satellite → Core has worked in the archive's history

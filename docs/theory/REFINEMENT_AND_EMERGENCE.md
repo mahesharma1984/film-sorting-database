@@ -206,3 +206,13 @@ The test in every case: wait for density, look for coherence, confirm archival n
 | **Routing order encodes the hierarchy** | Historical categories before functional; specific before general; first match wins |
 | **Shadow cinema** | Every satellite category is the shadow of something in Core or Reference. Identify it. |
 | **Split to clarify; merge to simplify** | Over-splitting creates noise; over-merging loses information. The three-condition test is the guard against both. |
+
+---
+
+## Cross-References
+
+- [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — §8 Permeable Boundaries; the living tier system that this document explains over time
+- [MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md) — The satellite categories whose creation history is documented in §3 of this essay
+- [AUTEUR_CRITERIA.md](AUTEUR_CRITERIA.md) — The Core whitelist; AUTEUR_CRITERIA explains the criteria for inclusion, this essay documents how the system grows and refines around them
+- [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) — The complementary inward movement: as macro categories mature, internal depth hierarchies develop within each named category
+- [COLLECTION_IDENTITY.md](COLLECTION_IDENTITY.md) — The master thesis within which all refinement events occur; the stable framework the process refines

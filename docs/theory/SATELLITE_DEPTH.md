@@ -273,3 +273,13 @@ The end state is not a finished taxonomy. It is a living system in which every l
 | **The shadow principle applies within** | Every Category Core director is the shadow of something in global Core. Identify the relationship. |
 | **Encode when stable** | SORTING_DATABASE.md for certain cases, constants.py for rules, folder structure for mature categories |
 | **Monthly review applies within** | Within-category vetting is continuous, not a one-time sort |
+
+---
+
+## Cross-References
+
+- [AUTEUR_CRITERIA.md](AUTEUR_CRITERIA.md) — Global Core criteria; this document applies the same four criteria recursively at Satellite category scale
+- [MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md) — The satellite categories and their rationale; SATELLITE_DEPTH adds internal hierarchy to each
+- [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — §8 Permeable Boundaries; the global tier movement that the within-category promotion pathway feeds into
+- [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) — The complementary outward movement: how macro categories split into micro; SATELLITE_DEPTH is how micro categories develop internal depth
+- [COLLECTION_IDENTITY.md](COLLECTION_IDENTITY.md) — The four-relationship model at whole-archive level that this document extends recursively

@@ -117,7 +117,7 @@ The border between Satellite and Core is not a wall. It is a threshold that dire
 
 This means Satellite is, among other things, a staging ground for potential auteur engagements. Russ Meyer is currently Satellite — a genre specialist whose exploitation films provide 1970s American texture. But if the collector's engagement with Meyer deepens from "texture I find interesting" to "filmmaker whose complete work I need to understand," Meyer could be promoted to Core.
 
-The same applies to Dario Argento (currently Satellite giallo, potentially Core if a full retrospective develops), Koji Wakamatsu (currently Satellite pinku, potentially Core), and Ozualdo Candeias (currently Satellite Brazilian, potentially Core).
+The same applies to Dario Argento (currently Satellite giallo, potentially Core if a full retrospective develops), Koji Wakamatsu (currently Satellite pinku, potentially Core), and Ozualdo Candeias (currently Satellite Brazilian, potentially Core). (See also: [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) §5–6 — how within-category vetting identifies these directors as promotion candidates and generates the seeking programme that deepens engagement.)
 
 **[YOUR INPUT: Has any director actually been promoted from Satellite to Core during this project? A concrete example would make this section real rather than hypothetical. If not, is there a director who is closest to the threshold right now?]**
 
@@ -144,3 +144,5 @@ This is the museum analogy at its strongest: a gallery of Godard films is intere
 - [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — Satellite caps and the tier ratio question
 - [AUTEUR_CRITERIA.md](AUTEUR_CRITERIA.md) — The auteur/genre-master boundary (where Core ends and Satellite begins)
 - [POPCORN_WAVES.md](POPCORN_WAVES.md) — The Satellite/Popcorn boundary (texture vs. pleasure)
+- [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) — Core/Reference vetting strategy within each Satellite category; how to identify the masters of each tradition and generate a seeking programme
+- [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) — How these categories were historically created and the three conditions for new category emergence

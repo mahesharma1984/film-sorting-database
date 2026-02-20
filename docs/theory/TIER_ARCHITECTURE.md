@@ -122,7 +122,7 @@ This variation is evidence that the tier system is responsive to historical real
 
 The tier architecture is a living system, not a fixed taxonomy. Films and directors can move:
 
-**Promotion (Satellite → Core):** "If director becomes auteur obsession, promote to Core." When casual interest in an exploitation director deepens into genuine engagement with their full body of work, the relationship changes from "interest" to "identity," and the tier follows.
+**Promotion (Satellite → Core):** "If director becomes auteur obsession, promote to Core." When casual interest in an exploitation director deepens into genuine engagement with their full body of work, the relationship changes from "interest" to "identity," and the tier follows. (See also: [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) §5–6 — the within-category vetting pathway that precedes global Core promotion.)
 
 **Reclassification (any tier → any tier):** Monthly review can reclassify films. A film you thought was Popcorn might reveal itself as Reference after you realize its historical significance. A Satellite film might get cut to /Out when you realize you kept it from obligation, not interest.
 
@@ -139,3 +139,5 @@ This permeability is important because it means the tier architecture describes 
 - [AUTEUR_CRITERIA.md](AUTEUR_CRITERIA.md) — How Core's whitelist implicitly caps the tier
 - [MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md) — Satellite caps as curatorial discipline
 - [POPCORN_WAVES.md](POPCORN_WAVES.md) — Why Popcorn is separate from Reference
+- [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) — How the tier system evolves over time: category splits, retroactive reclassification, and the history of all refinement events
+- [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) — Within-category tier movement; how the Satellite → Core promotion pathway works in practice
