@@ -92,7 +92,8 @@ class OMDbClient:
             params = {
                 'apikey': self.api_key,
                 't': title,
-                'type': 'movie'
+                'type': 'movie',
+                'plot': 'full',
             }
 
             if year:
@@ -165,7 +166,8 @@ class OMDbClient:
                 'countries': countries,
                 'cast': cast,
                 'vote_count': vote_count,
-                'original_language': None  # OMDb doesn't provide original language
+                'original_language': None,  # OMDb doesn't provide original language
+                'plot': data.get('Plot', '') if data.get('Plot') != 'N/A' else '',
             }
 
             logger.info(f"OMDb: '{title}' ({year}) → '{result['title']}' dir:{director} countries:{countries}")

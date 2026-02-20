@@ -301,27 +301,24 @@ class TestFrenchNewWaveRouting:
             f"Eustache should route to French New Wave, got {result!r}"
         )
 
-    def test_godard_core_guard_prevents_satellite_routing(self, mock_metadata):
-        """Godard with active core_db → None (Core guard fires before FNW routing)
+    def test_godard_routes_to_fnw_in_movement_period(self, classifier, mock_metadata):
+        """Godard 1960 → French New Wave (Issue #25: Core guard removed)
 
-        The SatelliteClassifier Core guard intercepts Core directors and returns None,
-        leaving routing to the main classifier's Core stage. This test asserts that
-        Godard never reaches any Satellite category when core_db is active.
+        Issue #25 removed the Core director guard from SatelliteClassifier. Core directors
+        whose films fall within a movement's decade bounds now route to that movement.
+        Godard is in the FNW directors list; 1960s is within FNW bounds → French New Wave.
+        The main pipeline (classify.py) fires Satellite before Core, so Godard 1960s films
+        reach this point and correctly land in FNW.
         """
-        class _MockCoreDB:
-            def is_core_director(self, name: str) -> bool:
-                return 'godard' in name.lower()
-
         tmdb_data = {
             'director': 'Jean-Luc Godard',
             'year': 1960,
             'countries': ['FR'],
             'genres': ['Drama']
         }
-        classifier = SatelliteClassifier(core_db=_MockCoreDB())
         result = classifier.classify(mock_metadata, tmdb_data)
-        assert result is None, (
-            f"Godard should be intercepted by Core guard (return None), got {result!r}"
+        assert result == 'French New Wave', (
+            f"Godard 1960 should route to French New Wave (movement period), got {result!r}"
         )
 
     def test_unknown_french_1965_drama_falls_to_european_sexploitation(self, classifier, mock_metadata):

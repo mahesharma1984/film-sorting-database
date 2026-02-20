@@ -180,7 +180,7 @@ dest = f'Satellite/{category}/{decade}/'
 
 Categories are checked in dictionary order (Python 3.7+ preserves insertion order). **Order matters** when directors might match multiple categories.
 
-**Current order (as of Issue #16):**
+**Current order (as of Issue #27):**
 
 1. French New Wave (director-only, no country/genre fallback)
 2. Brazilian Exploitation
@@ -189,13 +189,16 @@ Categories are checked in dictionary order (Python 3.7+ preserves insertion orde
 5. Japanese Exploitation
 6. Hong Kong Action
 7. Blaxploitation
-8. American Exploitation
-9. European Sexploitation
-10. Music Films
-11. **Classic Hollywood** ← catch-all for pre-1960 US (MUST be near end)
-12. **Indie Cinema** ← catch-all for post-1980 international (MUST be last)
+8. **American New Hollywood** (director-only, 1960s–1980s)
+9. American Exploitation
+10. European Sexploitation
+11. Music Films
+12. **Classic Hollywood** ← catch-all for pre-1960 US (MUST be near end)
+13. **Indie Cinema** ← catch-all for post-1980 international (MUST be last)
 
 **Critical rule (Issue #16):** Indie Cinema and Classic Hollywood are broad catch-alls. They MUST come AFTER all exploitation categories. If they appear earlier, they intercept films that should reach exploitation director checks.
+
+**Pipeline change (Issue #25):** The overall classify.py pipeline now fires Satellite routing BEFORE the Core director check. Core is a fallback for prestige non-movement work; Satellite catches movement-period films by any director (including Core directors). See `docs/theory/TIER_ARCHITECTURE.md` §3 and §11 for the full rationale.
 
 **Example:** Ernest Dickerson could match both Blaxploitation (1970s, 1990s) and Indie Cinema (US, Drama, 1990s). Blaxploitation is listed BEFORE Indie Cinema, so a 1992 Dickerson film routes to Blaxploitation (correct). If Indie Cinema were listed first, it would intercept the film before Blaxploitation was checked.
 

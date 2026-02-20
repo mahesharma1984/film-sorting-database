@@ -72,18 +72,20 @@ Every operation is either REASONING or PRECISION. Never mix them in one step.
 The 4-tier priority hierarchy is the PATTERN. All films are instances classified into it:
 
 ```
-Core (auteur identity) → Reference (canon, 50-film cap) → Satellite (margins/exploitation) → Popcorn (pleasure) → Unsorted
+Reference (canon) → Satellite (movement match) → Core (prestige non-movement) → Popcorn (pleasure) → Unsorted
 ```
+
+(Explicit lookup always fires first — SORTING_DATABASE overrides everything. This describes the heuristic chain.)
 
 This priority order is a design decision, not an implementation detail. The classifier checks tiers in this order — first match wins. Never reorder without explicit redesign.
 
-The classification pipeline checks in this priority:
+The classification pipeline checks in this priority (Issue #25):
 1. Explicit lookup (SORTING_DATABASE.md) — human-curated, highest trust
-2. Core director check — whitelist match
-3. Reference canon check — 50-film hardcoded list
-4. User tag recovery — trust previous human classification
-5. Popcorn check — popularity + format signals (Issue #14: checked BEFORE Satellite)
-6. Satellite routing — country + decade + director rules (decade-bounded)
+2. Reference canon check — 50-film hardcoded list
+3. Satellite routing — country + decade + director rules (decade-bounded, movement-first)
+4. User tag recovery — trust previous human classification (after Satellite, so stale Core tags don't block movement routing)
+5. Core director check — whitelist match (fallback for non-movement prestige work)
+6. Popcorn check — popularity + format signals
 7. Default → Unsorted with reason code
 
 ### Rule 3: Failure Gates

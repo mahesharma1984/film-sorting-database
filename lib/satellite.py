@@ -72,19 +72,19 @@ class SatelliteClassifier:
                 'countries': [],
                 'genres': [],
                 'cast': [],
+                'keywords': [],
+                'overview': '',
+                'tagline': '',
+                'plot': '',
             }
 
-        # NEW (Issue #16): Defensive gate - check if director is Core before Satellite routing
-        # Prevents Core auteurs from being caught by Satellite director-based routing
-        # Example: Dario Argento (if Core) shouldn't route to Giallo before Core check
-        # core_db is passed in at init time from FilmClassifier (avoid circular import)
-        director = tmdb_data.get('director', '') or ''
-        if director and self.core_db:
-            if self.core_db.is_core_director(director):
-                # This is a Core auteur - must NOT route to Satellite
-                # Return None so main classifier handles Core routing
-                logger.debug(f"Skipping Satellite routing for Core director: {director}")
-                return None
+        # Issue #25: Core director guard removed. With Satellite routing before Core in the
+        # pipeline (classify.py), Core directors now intentionally route to Satellite for
+        # their movement-period films. The movement's decade gate is the natural boundary:
+        # a director in the FNW list (1950s-1970s) routes to FNW for those decades, then
+        # falls through to the Core director check for work outside the movement period.
+        # Prestige films are pinned to Core via SORTING_DATABASE.md entries (Stage 2),
+        # which fire before Satellite routing is ever reached.
 
         # Extract structured data
         countries = tmdb_data.get('countries', [])
@@ -143,6 +143,27 @@ class SatelliteClassifier:
             if country_match and genre_match:
                 return self._check_cap(category_name)
 
+            # Issue #29 Tier A: country + decade + keyword hit (genre gate waived)
+            # Fires when structural country match succeeded but genre tag is absent/wrong —
+            # e.g. an Italian Drama 1970s with a "giallo" TMDb tag routes to Giallo
+            # despite TMDb not filing it under Horror/Thriller.
+            keyword_signals = rules.get('keyword_signals')
+            if keyword_signals and country_match and not genre_match:
+                hit, _ = self._keyword_hit(tmdb_data, keyword_signals)
+                if hit:
+                    return self._check_cap(category_name)
+
+            # Issue #29 Tier B: TMDb keyword tag alone for movement categories.
+            # Fires for director-only categories (French New Wave, American New Hollywood)
+            # when no director match was found but a movement-specific TMDb tag is present.
+            # Restricted to tmdb_tags only — text_terms are not precise enough without
+            # structural corroboration.
+            if rules.get('tier_b_eligible') and keyword_signals:
+                tmdb_tags_lower = [k.lower() for k in tmdb_data.get('keywords', [])]
+                if any(tag in tmdb_tags_lower
+                       for tag in keyword_signals.get('tmdb_tags', [])):
+                    return self._check_cap(category_name)
+
         return None
 
     @staticmethod
@@ -171,6 +192,28 @@ class SatelliteClassifier:
         if not title:
             return False
         return any(keyword in title for keyword in keywords)
+
+    @staticmethod
+    def _keyword_hit(tmdb_data: Dict, signals: Dict):
+        """Check TMDb keyword tags and text fields for keyword_signals matches.
+
+        Returns (hit: bool, source: str | None).
+        TMDb tags checked first (higher precision). Text terms scan overview, tagline, plot.
+        """
+        tmdb_tags_lower = [k.lower() for k in tmdb_data.get('keywords', [])]
+        text_blob = ' '.join([
+            tmdb_data.get('overview', '') or '',
+            tmdb_data.get('tagline', '') or '',
+            tmdb_data.get('plot', '') or '',
+        ]).lower()
+
+        for tag in signals.get('tmdb_tags', []):
+            if tag.lower() in tmdb_tags_lower:
+                return True, 'tmdb_tag'
+        for term in signals.get('text_terms', []):
+            if term.lower() in text_blob:
+                return True, 'text_term'
+        return False, None
 
     def _check_cap(self, category: str) -> Optional[str]:
         """Check if category has reached cap"""

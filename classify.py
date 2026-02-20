@@ -415,6 +415,18 @@ class FilmClassifier:
             merged['tmdb_id'] = tmdb_data['tmdb_id']
             merged['tmdb_title'] = tmdb_data.get('tmdb_title')
 
+        # Keywords: TMDb only (Issue #29)
+        merged['keywords'] = tmdb_data.get('keywords', []) if tmdb_data else []
+
+        # Text fields: longer source wins — encyclopedic preferred (Issue #29)
+        tmdb_overview = (tmdb_data.get('overview', '') or '') if tmdb_data else ''
+        tmdb_tagline = (tmdb_data.get('tagline', '') or '') if tmdb_data else ''
+        omdb_plot = (omdb_data.get('plot', '') or '') if omdb_data else ''
+        merged['overview'] = tmdb_overview
+        merged['tagline'] = tmdb_tagline
+        # plot: longer of OMDb plot vs TMDb overview (encyclopedic preferred)
+        merged['plot'] = omdb_plot if len(omdb_plot) >= len(tmdb_overview) else tmdb_overview
+
         return merged
 
     def classify(self, metadata: FilmMetadata) -> ClassificationResult:
@@ -494,26 +506,7 @@ class FilmClassifier:
 
         decade = get_decade(metadata.year)
 
-        # === Stage 3: Core director check ===
-        if metadata.director and self.core_db.is_core_director(metadata.director):
-            canonical = self.core_db.get_canonical_name(metadata.director)
-            director_decade = self.core_db.get_director_decade(metadata.director, metadata.year)
-
-            if canonical and director_decade:
-                self.stats['core_director'] += 1
-                dest = f'Core/{director_decade}/{canonical}/'
-                return ClassificationResult(
-                    filename=metadata.filename, title=metadata.title,
-                    year=metadata.year, director=canonical,
-                    language=metadata.language, country=metadata.country,
-                    user_tag=metadata.user_tag,
-                    tier='Core', decade=director_decade, subdirectory=canonical,
-                    destination=dest,
-                    confidence=1.0, reason='core_director',
-                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                )
-
-        # === Stage 4: Reference canon check (constants.py hardcoded list) ===
+        # === Stage 3: Reference canon check (constants.py hardcoded list) ===
         normalized_title = normalize_for_lookup(metadata.title, strip_format_signals=True)
         ref_key = (normalized_title, metadata.year)
         if ref_key in REFERENCE_CANON:
@@ -530,7 +523,53 @@ class FilmClassifier:
                 tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
             )
 
-        # === Stage 5: User tag recovery ===
+        # === Stage 4: Language/country → Satellite routing (from filename) ===
+        # Issue #25: Satellite fires before Core. Movement character takes priority over
+        # director identity. Core directors' movement-period films route here.
+        if metadata.country and metadata.country in COUNTRY_TO_WAVE:
+            wave_config = COUNTRY_TO_WAVE[metadata.country]
+            if decade in wave_config['decades']:
+                category = wave_config['category']
+                self.stats['country_satellite'] += 1
+                dest = f'Satellite/{category}/{decade}/'  # Category-first (Issue #6)
+                return ClassificationResult(
+                    filename=metadata.filename, title=metadata.title,
+                    year=metadata.year, director=metadata.director,
+                    language=metadata.language, country=metadata.country,
+                    user_tag=metadata.user_tag,
+                    tier='Satellite', decade=decade, subdirectory=category,
+                    destination=dest,
+                    confidence=0.7, reason='country_satellite',
+                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                )
+
+        # === Stage 5: TMDb-based satellite classification ===
+        # Also fires when tmdb_data is None but metadata.director is set (from filename).
+        # satellite.py constructs a minimal director-only dict in that case, enabling
+        # director-list routing rules (FNW, Indie Cinema directors) to fire without API data.
+        # Issue #25: Satellite fires before Core — Core directors in movement director lists
+        # (e.g. Godard in FNW, Scorsese in AmNH) route to Satellite for their movement period.
+        if tmdb_data or metadata.director:
+            satellite_cat = self.satellite_classifier.classify(metadata, tmdb_data)
+            if satellite_cat:
+                self.stats['tmdb_satellite'] += 1
+                dest = f'Satellite/{satellite_cat}/{decade}/'  # Category-first (Issue #6)
+                return ClassificationResult(
+                    filename=metadata.filename, title=metadata.title,
+                    year=metadata.year, director=metadata.director,
+                    language=metadata.language, country=metadata.country,
+                    user_tag=metadata.user_tag,
+                    tier='Satellite', decade=decade, subdirectory=satellite_cat,
+                    destination=dest,
+                    confidence=0.7, reason='tmdb_satellite',
+                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                )
+
+        # === Stage 6: User tag recovery ===
+        # Fires AFTER Satellite (Issue #25) so movement routing takes priority over stale
+        # [Core] user tags. A film previously tagged [Core] that now matches a movement
+        # is correctly routed to Satellite; the Core tag only applies when no movement
+        # match is found.
         if metadata.user_tag:
             parsed_tag = self._parse_user_tag(metadata.user_tag)
             if 'tier' in parsed_tag and 'decade' in parsed_tag:
@@ -576,11 +615,31 @@ class FilmClassifier:
                         confidence=0.8, reason='user_tag_recovery',
                         tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                     )
-                # dest is None — fall through to Stage 6 (Popcorn check)
+                # dest is None — fall through to Stage 7 (Core director check)
 
-        # === Stage 6: Popcorn check (MOVED UP - Issue #14 priority reorder) ===
-        # Check Popcorn BEFORE Satellite to prevent mainstream films from
-        # being caught by exploitation categories (especially post-1980)
+        # === Stage 7: Core director check (Issue #25: moved after Satellite) ===
+        # Fallback for prestige non-movement work. Movement-period films by Core directors
+        # are caught by Stages 4-5 (Satellite); this stage handles work outside movement
+        # decade bounds and any director not listed in a movement's director list.
+        if metadata.director and self.core_db.is_core_director(metadata.director):
+            canonical = self.core_db.get_canonical_name(metadata.director)
+            director_decade = self.core_db.get_director_decade(metadata.director, metadata.year)
+
+            if canonical and director_decade:
+                self.stats['core_director'] += 1
+                dest = f'Core/{director_decade}/{canonical}/'
+                return ClassificationResult(
+                    filename=metadata.filename, title=metadata.title,
+                    year=metadata.year, director=canonical,
+                    language=metadata.language, country=metadata.country,
+                    user_tag=metadata.user_tag,
+                    tier='Core', decade=director_decade, subdirectory=canonical,
+                    destination=dest,
+                    confidence=1.0, reason='core_director',
+                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                )
+
+        # === Stage 8: Popcorn check ===
         popcorn_reason = self.popcorn_classifier.classify_reason(metadata, tmdb_data)
         if popcorn_reason:
             self.stats['popcorn_auto'] += 1
@@ -596,44 +655,6 @@ class FilmClassifier:
                 confidence=0.65, reason=popcorn_reason,
                 tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
             )
-
-        # === Stage 7: Language/country → Satellite routing (from filename) ===
-        if metadata.country and metadata.country in COUNTRY_TO_WAVE:
-            wave_config = COUNTRY_TO_WAVE[metadata.country]
-            if decade in wave_config['decades']:
-                category = wave_config['category']
-                self.stats['country_satellite'] += 1
-                dest = f'Satellite/{category}/{decade}/'  # Category-first (Issue #6)
-                return ClassificationResult(
-                    filename=metadata.filename, title=metadata.title,
-                    year=metadata.year, director=metadata.director,
-                    language=metadata.language, country=metadata.country,
-                    user_tag=metadata.user_tag,
-                    tier='Satellite', decade=decade, subdirectory=category,
-                    destination=dest,
-                    confidence=0.7, reason='country_satellite',
-                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                )
-
-        # === Stage 8: TMDb-based satellite classification ===
-        # Also fires when tmdb_data is None but metadata.director is set (from filename).
-        # satellite.py constructs a minimal director-only dict in that case, enabling
-        # director-list routing rules (FNW, Indie Cinema directors) to fire without API data.
-        if tmdb_data or metadata.director:
-            satellite_cat = self.satellite_classifier.classify(metadata, tmdb_data)
-            if satellite_cat:
-                self.stats['tmdb_satellite'] += 1
-                dest = f'Satellite/{satellite_cat}/{decade}/'  # Category-first (Issue #6)
-                return ClassificationResult(
-                    filename=metadata.filename, title=metadata.title,
-                    year=metadata.year, director=metadata.director,
-                    language=metadata.language, country=metadata.country,
-                    user_tag=metadata.user_tag,
-                    tier='Satellite', decade=decade, subdirectory=satellite_cat,
-                    destination=dest,
-                    confidence=0.7, reason='tmdb_satellite',
-                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                )
 
         # === Stage 9: Unsorted (default) ===
         reason_parts = []

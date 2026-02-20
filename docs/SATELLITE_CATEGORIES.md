@@ -226,7 +226,7 @@
 - **Category Core:** Bob Fosse, Hal Ashby, Alan J. Pakula
 - **Category Reference:** Sydney Pollack, Sidney Lumet, Peter Bogdanovich, Robert Altman
 - **Overlapping Core candidates:** Francis Ford Coppola, Martin Scorsese
-  - NOTE: Coppola and Scorsese are also strong Core whitelist candidates. If they are added to the Core director whitelist, the Core check (Stage 3) fires first and they never reach Satellite routing. The overlap is safe — Core priority prevents double-classification.
+  - NOTE: Coppola and Scorsese are also strong Core whitelist candidates. With Satellite routing firing before Core (Issue #25), their 1960s–1980s films route to Satellite/AmNH when they match the decade and director gate. Their post-movement work (1990s+) falls through to the Core director check. Prestige films by either director can be pinned to Core via SORTING_DATABASE.md entries, which fire before Satellite routing.
 
 **Cap:** 25 films
 
@@ -668,9 +668,16 @@ Satellite/
 - Category filmmaking (HK action, blaxploitation)
 - Films kept for margins/context, not spine
 
+**YES (Core director's movement-period films):**
+- A Core director's films in their documented movement period route to Satellite, not Core
+- Examples: Godard 1960s–1970s → Satellite/French New Wave; Scorsese 1970s → Satellite/American New Hollywood
+- The director must be listed in that movement's SATELLITE_ROUTING_RULES director list
+- Exception: films added to SORTING_DATABASE.md with an explicit Core destination bypass Satellite entirely
+
 **NO (goes to Core instead):**
-- Any film by a Core whitelist director
-- Auteur-driven cult (Jodorowsky, Lynch, Waters)
+- A Core director's films pinned in SORTING_DATABASE.md (their most important work — manually curated)
+- A Core director's non-movement work (decade gate fails — film's year outside movement bounds)
+- Auteur-driven cult without movement membership (Jodorowsky, Waters)
 - Films that define your collection identity
 
 **NO (goes to Popcorn instead):**

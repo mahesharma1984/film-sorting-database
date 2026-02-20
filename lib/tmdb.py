@@ -247,6 +247,8 @@ class TMDbClient:
                 'vote_count': details_data.get('vote_count'),
                 'original_language': details_data.get('original_language') or film_data.get('original_language'),
                 'keywords': keywords,
+                'overview': details_data.get('overview', '') or '',
+                'tagline': details_data.get('tagline', '') or '',
                 'tmdb_id': film_id,
                 'tmdb_title': details_data.get('title') or film_data.get('title'),
             }

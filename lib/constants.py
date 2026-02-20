@@ -253,19 +253,34 @@ SATELLITE_ROUTING_RULES = {
     # Rohmer (Core 1990s) will have his 1960s FNW films routed to Core when core_db
     # is active. This is a known architectural quirk, not a bug to fix here.
     #
-    # Non-Core Nouvelle Vague directors in this list (confirmed against whitelist, #22):
-    #   Marker ✅  Malle ✅  Eustache ✅  Truffaut ✅ (added #22)  Robbe-Grillet ✅ (added #22)
-    # Confirmed Core (NOT in this list): Godard, Varda, Chabrol, Demy, Duras
-    # If adding a director, first verify they are NOT in CORE_DIRECTOR_WHITELIST_FINAL.md.
+    # Issue #25: Core directors are now intentionally included in this list.
+    # With Satellite routing before Core (Issue #25 pipeline reorder), these directors'
+    # 1950s-1970s films route to Satellite/French New Wave. Their non-movement-period
+    # work (1980s+) falls through to the Core director check as before.
+    # Prestige films that should stay in Core are pinned via SORTING_DATABASE.md entries,
+    # which fire before Satellite routing.
+    #   Core directors added (Issue #25): Godard, Varda, Chabrol, Demy, Duras
+    #   Non-Core directors (confirmed against whitelist, #22): Marker, Malle, Eustache, Truffaut, Robbe-Grillet
+    #   Resnais and Rivette were already present (also Core directors — now correctly routed)
     'French New Wave': {
         'country_codes': [],  # Director-only (no country fallback)
         'decades': ['1950s', '1960s', '1970s'],  # 1958-1973 movement
         'genres': [],  # Director-only (no genre fallback)
         'directors': [
+            'godard',         # Issue #25: Jean-Luc Godard — Core director, FNW period 1960s-1970s
+            'varda',          # Issue #25: Agnès Varda — Core director, FNW period 1960s-1970s
+            'chabrol',        # Issue #25: Claude Chabrol — Core director, FNW period 1960s-1970s
+            'demy',           # Issue #25: Jacques Demy — Core director, FNW period 1960s-1970s
+            'duras',          # Issue #25: Marguerite Duras — Core director, FNW period 1960s-1970s
             'marker', 'rohmer', 'resnais', 'rivette', 'malle', 'eustache',
             'truffaut',       # Issue #22: François Truffaut — confirmed not in Core whitelist
             'robbe-grillet',  # Issue #22: Alain Robbe-Grillet — confirmed not in Core whitelist
         ],
+        'tier_b_eligible': True,  # Issue #29: TMDb tag alone can route without director match
+        'keyword_signals': {
+            'tmdb_tags': ['nouvelle vague', 'french new wave', 'new wave', 'cinéma vérité', 'cinema verite'],
+            'text_terms': ['nouvelle vague', 'new wave', 'jump cut', 'cinéma vérité', 'left bank', 'french new wave'],
+        },
     },
 
     # EXPLOITATION CATEGORIES (Issue #6, Issue #14)
@@ -275,12 +290,21 @@ SATELLITE_ROUTING_RULES = {
         'decades': ['1960s', '1970s', '1980s', '1990s'],  # widened (Issue #20): pornochanchada peak 1970-1989, broader tradition 1960s-1990s
         'genres': ['Drama', 'Crime', 'Thriller', 'Horror', 'Romance'],
         'directors': [],  # Country-driven, not director-driven
+        'keyword_signals': {
+            'tmdb_tags': ['pornochanchada', 'boca do lixo', 'brazilian exploitation'],
+            'text_terms': ['pornochanchada', 'chanchada', 'boca do lixo', 'embrafilme', 'erotic comedy'],
+        },
     },
     'Giallo': {
         'country_codes': ['IT'],
         'decades': ['1960s', '1970s', '1980s'],
         'genres': ['Horror', 'Thriller', 'Mystery'],
         'directors': ['bava', 'argento', 'fulci', 'martino', 'soavi', 'lenzi'],
+        'keyword_signals': {
+            'tmdb_tags': ['giallo', 'italian horror', 'psychosexual thriller', 'black-gloved killer'],
+            'text_terms': ['giallo', 'stylized violence', 'voyeurism', 'whodunit', 'fetishism',
+                           'mystery thriller', 'slasher', 'italian genre'],
+        },
     },
     'Pinku Eiga': {
         'country_codes': ['JP'],
@@ -290,6 +314,11 @@ SATELLITE_ROUTING_RULES = {
             'wakamatsu', 'kumashiro', 'tanaka',
             'masumura',  # NEW: Yasuzō Masumura (Issue #6)
         ],
+        'keyword_signals': {
+            'tmdb_tags': ['pink film', 'roman porno', 'pinku eiga', 'nikkatsu', 'erotic drama'],
+            'text_terms': ['pink film', 'roman porno', 'erotica', 'softcore', 'exploitation',
+                           'pinku', 'nikkatsu'],
+        },
     },
     'Japanese Exploitation': {  # NEW CATEGORY (Issue #6)
         'country_codes': ['JP'],
@@ -298,6 +327,11 @@ SATELLITE_ROUTING_RULES = {
         'directors': [
             'fukasaku',  # NEW: Kinji Fukasaku (Issue #6)
         ],
+        'keyword_signals': {
+            'tmdb_tags': ['yakuza', 'jidaigeki', 'toei', 'chambara', 'japanese crime film'],
+            'text_terms': ['yakuza', 'gang war', 'crime syndicate', 'organized crime',
+                           'samurai', 'yakuza film', 'toei'],
+        },
     },
     'Hong Kong Action': {
         'country_codes': ['HK', 'CN'],
@@ -307,6 +341,12 @@ SATELLITE_ROUTING_RULES = {
             'tsui hark', 'ringo lam', 'john woo',
             'lam nai-choi',  # NEW: Lam Nai-Choi (Issue #6)
         ],
+        'keyword_signals': {
+            'tmdb_tags': ['martial arts', 'wuxia', 'kung fu', 'triad', 'heroic bloodshed',
+                          'shaw brothers', 'hong kong action'],
+            'text_terms': ['martial arts', 'kung fu', 'wuxia', 'swordplay', 'triad',
+                           'heroic bloodshed', 'shaw brothers', 'golden harvest', 'category iii'],
+        },
     },
     'Blaxploitation': {  # MOVED BEFORE American Exploitation (Issue #6 - priority order)
         'country_codes': ['US'],
@@ -319,6 +359,11 @@ SATELLITE_ROUTING_RULES = {
             'gordon parks', 'jack hill',
             'ernest dickerson', 'ernest r. dickerson',
         ],
+        'keyword_signals': {
+            'tmdb_tags': ['blaxploitation', 'african american', 'inner city', 'black power'],
+            'text_terms': ['blaxploitation', 'soul', 'ghetto', 'black power',
+                           'inner city', 'african american exploitation'],
+        },
     },
     # Director-only routing — like French New Wave (no country gate).
     # Issue #27: Post-Production Code prestige studio cinema, c.1965–1985.
@@ -340,6 +385,12 @@ SATELLITE_ROUTING_RULES = {
             'coppola',      # Francis Ford Coppola — minor/indie work; prestige → Core when whitelisted
             'scorsese',     # Martin Scorsese — minor/indie work; prestige → Core when whitelisted
         ],
+        'tier_b_eligible': True,  # Issue #29: TMDb tag alone can route without director match
+        'keyword_signals': {
+            'tmdb_tags': ['new hollywood', 'american new wave', 'counterculture', 'post-code'],
+            'text_terms': ['new hollywood', 'new american cinema', 'post-production code',
+                           'counterculture', 'auteur', 'vietnam era', 'anti-establishment'],
+        },
     },
     'American Exploitation': {
         'country_codes': ['US'],
@@ -349,6 +400,12 @@ SATELLITE_ROUTING_RULES = {
             'russ meyer', 'abel ferrara', 'larry cohen', 'herschell gordon lewis',
             'larry clark',  # NEW: Larry Clark (Issue #6)
         ],
+        'keyword_signals': {
+            'tmdb_tags': ['grindhouse', 'exploitation film', 'b-movie', 'troma', 'slasher',
+                          'drive-in movie'],
+            'text_terms': ['grindhouse', 'drive-in', 'exploitation', 'splatter', 'gore',
+                           'b-movie', 'troma', 'low budget horror', 'cult classic'],
+        },
     },
     'European Sexploitation': {
         'country_codes': ['FR', 'IT', 'DE', 'BE'],
@@ -359,12 +416,22 @@ SATELLITE_ROUTING_RULES = {
             'jaeckin',  # NEW: Just Jaeckin (Emmanuelle) (Issue #14)
             'p\u00e9cas',  # Max Pécas (FR) — TMDb genres Crime/Thriller, director match needed
         ],
+        'keyword_signals': {
+            'tmdb_tags': ['erotic film', 'softcore', 'sexploitation', 'european erotica'],
+            'text_terms': ['erotic film', 'softcore', 'erotica', 'sexploitation',
+                           'adult film', 'european erotica'],
+        },
     },
     'Music Films': {
         'country_codes': None,  # Any country
         'decades': None,  # Any decade (no restriction)
         'genres': ['Music', 'Musical', 'Documentary'],
         'directors': [],
+        'keyword_signals': {
+            'tmdb_tags': ['concert film', 'rockumentary', 'musical performance', 'rock documentary'],
+            'text_terms': ['concert film', 'rockumentary', 'music documentary',
+                           'concert', 'live performance'],
+        },
     },
 
     # CATCH-ALL CATEGORIES (Issue #14, Issue #16)
@@ -375,6 +442,12 @@ SATELLITE_ROUTING_RULES = {
         'decades': ['1930s', '1940s', '1950s'],
         'genres': None,  # Issue #16: genre gate removed - decade (1930s-1950s) + US is sufficient gate
         'directors': [],  # Country + decade driven, not director-specific
+        'keyword_signals': {
+            'tmdb_tags': ['film noir', 'pre-code', 'golden age of hollywood', 'screwball comedy',
+                          'classical hollywood'],
+            'text_terms': ['film noir', 'golden age', 'studio system', 'pre-code',
+                           'screwball comedy', 'hays code', 'classical hollywood'],
+        },
     },
     # Functional arthouse catch-all — NOT a historical wave category.
     # Catches non-exploitation, non-Popcorn, non-Core films from any major film nation.

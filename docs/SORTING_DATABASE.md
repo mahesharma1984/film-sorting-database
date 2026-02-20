@@ -20,6 +20,7 @@
 - The Music Room (1958) → 1950s/Core/Satyajit Ray/
 - Apur Sansar (1959) → 1950s/Core/Satyajit Ray/
 - Touch of Evil (1958) → 1950s/Core/Orson Welles/
+- Hiroshima Mon Amour (1959) → 1950s/Core/Alain Resnais/
 
 ### Reference
 - Rashomon (1950) → 1950s/Reference/
@@ -87,6 +88,15 @@
 ### Core - Orson Welles
 - The Trial (1962) → 1960s/Core/Orson Welles/
 - Chimes at Midnight (1965) → 1960s/Core/Orson Welles/
+
+### Core - Agnès Varda
+- Cléo de 5 à 7 (1962) → 1960s/Core/Agnès Varda/
+- Cleo from 5 to 7 (1962) → 1960s/Core/Agnès Varda/
+- Le Bonheur (1965) → 1960s/Core/Agnès Varda/
+
+### Core - Alain Resnais
+- Last Year at Marienbad (1961) → 1960s/Core/Alain Resnais/
+- Muriel (1963) → 1960s/Core/Alain Resnais/
 
 ### Core - Claude Chabrol
 - La Femme Infidèle (1969) → 1960s/Core/Claude Chabrol/
@@ -202,6 +212,9 @@
 
 ### Core - Orson Welles
 - F for Fake (1973) → 1970s/Core/Orson Welles/
+
+### Core - Marguerite Duras
+- India Song (1975) → 1970s/Core/Marguerite Duras/
 
 ### Core - Claude Chabrol
 - Le Boucher (1970) → 1970s/Core/Claude Chabrol/

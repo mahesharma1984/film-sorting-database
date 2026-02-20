@@ -48,14 +48,16 @@ class TestCoreDirectorPriority:
         assert "Jacques Demy" in result.destination
         assert "1960s" in result.destination
 
-    def test_demy_1970s_routes_to_core_not_satellite(self, classifier):
-        """Demy 1970 film → Core/1970s/Jacques Demy (NOT Satellite/European Sexploitation)
+    def test_demy_1970s_routes_to_fnw(self, classifier):
+        """Demy 1970 film → Satellite/French New Wave (Issue #25: movement character first)
 
-        This is the PRIMARY test for Issue #14. Before the fix, this film
-        would route to Satellite/European Sexploitation/1970s because:
-        - Country: FR + Decade: 1970s matched European Sexploitation
-        - Demy is only in 1960s whitelist section
-        - Core check failed due to decade-gating
+        Issue #14 fixed: Demy no longer routes to European Sexploitation.
+        Issue #25 change: Demy IS in the FNW directors list, 1970s is within FNW decade bounds
+        (1950s-1970s), so Satellite/FNW fires BEFORE the Core director check.
+
+        Films pinned in SORTING_DATABASE.md still route to Core (explicit lookup fires
+        at Stage 2, before Satellite). Donkey Skin has no SORTING_DATABASE entry, so it
+        reaches Satellite routing and correctly lands in French New Wave.
         """
         meta = FilmMetadata(
             filename="Donkey Skin (1970).mkv",
@@ -66,12 +68,10 @@ class TestCoreDirectorPriority:
         )
         result = classifier.classify(meta)
 
-        assert result.tier == "Core", f"Expected Core, got {result.tier} ({result.reason})"
-        assert "Jacques Demy" in result.destination, f"Expected Demy folder, got {result.destination}"
-        assert "1970s" in result.destination, f"Expected 1970s folder, got {result.destination}"
-        assert "Satellite" not in result.destination
+        assert result.tier == "Satellite", f"Expected Satellite, got {result.tier} ({result.reason})"
+        assert "French New Wave" in result.destination, f"Expected FNW folder, got {result.destination}"
         assert "Sexploitation" not in result.destination
-        assert result.reason == "core_director"
+        assert result.reason == "tmdb_satellite"
 
     # =========================================================================
     # TEST GROUP 2: Multi-decade directors (Kubrick spanning 1960s-1990s)
@@ -170,8 +170,13 @@ class TestCoreDirectorPriority:
     # TEST GROUP 4: Decade folder calculation
     # =========================================================================
 
-    def test_godard_1960s_folder(self, classifier):
-        """Godard 1967 → Core/1960s/Jean-Luc Godard"""
+    def test_godard_1960s_no_db_entry_routes_to_fnw(self, classifier):
+        """Godard 1967 (no SORTING_DATABASE entry) → Satellite/French New Wave/1960s/
+
+        Issue #25: Godard is now in the FNW directors list; 1960s is within FNW decade
+        bounds. Satellite fires before Core. Films without a SORTING_DATABASE entry reach
+        Stage 5 (TMDb satellite) and match FNW. Weekend has no explicit lookup entry.
+        """
         meta = FilmMetadata(
             filename="Weekend (1967).mkv",
             title="Weekend",
@@ -180,7 +185,8 @@ class TestCoreDirectorPriority:
         )
         result = classifier.classify(meta)
 
-        assert result.tier == "Core"
+        assert result.tier == "Satellite"
+        assert "French New Wave" in result.destination
         assert "1960s" in result.destination
 
     def test_godard_1980s_folder(self, classifier):
@@ -204,7 +210,12 @@ class TestCoreDirectorPriority:
     # =========================================================================
 
     def test_core_director_case_insensitive(self, classifier):
-        """Core director check should be case-insensitive"""
+        """Movement routing is case-insensitive (Issue #25: Satellite before Core)
+
+        Demy "Test Film" (1970) has no SORTING_DATABASE entry. Satellite routing
+        fires before Core. Demy is in the FNW directors list; 1970s is within FNW bounds.
+        Director matching is case-insensitive → routes to Satellite/French New Wave.
+        """
         meta = FilmMetadata(
             filename="test.mkv",
             title="Test Film",
@@ -213,8 +224,8 @@ class TestCoreDirectorPriority:
         )
         result = classifier.classify(meta)
 
-        assert result.tier == "Core"
-        assert "Jacques Demy" in result.destination
+        assert result.tier == "Satellite"
+        assert "French New Wave" in result.destination
 
     @pytest.mark.skip(reason="Director normalization doesn't strip internal spaces - low priority edge case")
     def test_core_director_extra_spaces(self, classifier):
@@ -229,3 +240,96 @@ class TestCoreDirectorPriority:
 
         assert result.tier == "Core"
         assert "Jacques Demy" in result.destination
+
+
+    # =========================================================================
+    # TEST GROUP 6: Issue #25 — Character-first classification (Satellite before Core)
+    # =========================================================================
+
+    def test_godard_1960s_db_entry_routes_to_core(self, classifier):
+        """Godard film with SORTING_DATABASE entry → Core (explicit lookup fires first)
+
+        SORTING_DATABASE entries fire at Stage 2, before Satellite routing.
+        La Chinoise (1967) is in SORTING_DATABASE → Core. Even though Godard is in
+        the FNW directors list, explicit lookup takes priority.
+        """
+        meta = FilmMetadata(
+            filename="La Chinoise (1967).mkv",
+            title="La Chinoise",
+            year=1967,
+            director="Jean-Luc Godard"
+        )
+        result = classifier.classify(meta)
+        assert result.tier == "Core"
+        assert result.reason == "explicit_lookup"
+
+    def test_godard_post_movement_routes_to_core(self, classifier):
+        """Godard 1985 → Core (1980s is outside FNW decade bounds 1950s-1970s)
+
+        FNW decade bounds are 1950s-1970s. Godard's 1980s work falls outside the
+        movement period. Satellite check fails (decade gate); Core director fallback fires.
+        Hail Mary (1985) is also in SORTING_DATABASE → Core via explicit lookup.
+        """
+        meta = FilmMetadata(
+            filename="Hail Mary (1985).mkv",
+            title="Hail Mary",
+            year=1985,
+            director="Jean-Luc Godard"
+        )
+        result = classifier.classify(meta)
+        assert result.tier == "Core"
+        assert "1980s" in result.destination
+
+    def test_kubrick_not_in_movement_routes_to_core(self, classifier):
+        """Kubrick 1968 → Core (Kubrick is not in any Satellite movement director list)
+
+        Kubrick is a Core director but is not listed in FNW, AmNH, Giallo, or any other
+        movement's director list. Satellite check passes through without a match;
+        Core director fallback fires correctly.
+        """
+        meta = FilmMetadata(
+            filename="2001 A Space Odyssey (1968).mkv",
+            title="2001 A Space Odyssey",
+            year=1968,
+            director="Stanley Kubrick"
+        )
+        result = classifier.classify(meta)
+        assert result.tier == "Core"
+        assert "Stanley Kubrick" in result.destination
+        assert "1960s" in result.destination
+
+    def test_varda_1960s_db_entry_routes_to_core(self, classifier):
+        """Varda Cleo from 5 to 7 (1962) → Core (SORTING_DATABASE entry fires first)
+
+        Varda is now in the FNW directors list (Issue #25). But Cleo from 5 to 7
+        has an explicit SORTING_DATABASE entry → Core/1960s/Agnès Varda/. Explicit
+        lookup (Stage 2) fires before Satellite (Stages 4-5).
+        """
+        meta = FilmMetadata(
+            filename="Cleo from 5 to 7 (1962).mkv",
+            title="Cleo from 5 to 7",
+            year=1962,
+            director="Agnès Varda"
+        )
+        result = classifier.classify(meta)
+        assert result.tier == "Core"
+        assert result.reason == "explicit_lookup"
+        assert "Varda" in result.destination
+
+    def test_godard_1960s_no_db_entry_routes_to_fnw(self, classifier):
+        """Godard film without SORTING_DATABASE entry → Satellite/French New Wave
+
+        Weekend (1967) has no SORTING_DATABASE entry. Godard is in FNW directors list;
+        1960s is within FNW decade bounds. Stage 5 (TMDb satellite) matches FNW.
+        Stage 7 (Core director check) is never reached.
+        """
+        meta = FilmMetadata(
+            filename="Weekend (1967).mkv",
+            title="Weekend",
+            year=1967,
+            director="Jean-Luc Godard"
+        )
+        result = classifier.classify(meta)
+        assert result.tier == "Satellite"
+        assert "French New Wave" in result.destination
+        assert "1960s" in result.destination

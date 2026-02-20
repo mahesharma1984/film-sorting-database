@@ -37,15 +37,22 @@ These are not degrees of the same thing. They are categorically different relati
 
 The classification system checks tiers in a specific order:
 
-1. **Core first** — Is the director on the whitelist?
-2. **Reference second** — Is the film in the reference canon?
-3. **Popcorn third** — Does it pass the tonight test? (mainstream popularity + format signals)
-4. **Satellite fourth** — Does the film match a satellite category (country, decade, director)?
-5. **Unsorted last** — If nothing matches, stage for manual review.
+1. **Explicit lookup first** — Is the film in SORTING_DATABASE.md with a curated destination?
+2. **Reference second** — Is the film in the 50-film reference canon?
+3. **Satellite third** — Does the film belong to a documented genre movement (country, decade, director)?
+4. **Core fourth** — Is this prestige auteur work by a whitelisted director, outside a movement?
+5. **Popcorn fifth** — Does it pass the tonight test? (mainstream popularity + format signals)
+6. **Indie Cinema sixth** — International arthouse catch-all.
+7. **Unsorted last** — If nothing matches, stage for manual review.
 
-This priority order is not an implementation detail. It is a philosophical statement: **identity trumps everything**. A Kubrick film is Core even if it is also canonical (could be Reference), even if it is genre cinema (could be Satellite), even if it is rewatchable comfort viewing (could be Popcorn). The auteur relationship takes priority because the archive is, first and last, an auteur thesis.
+This priority order is not an implementation detail. It is a philosophical statement: **character determines tier, not director prestige alone**. A Godard film in his French New Wave period is a genre movement film first — it routes to Satellite/French New Wave. A Godard film from his post-movement period (1980s+) routes to Core, because no movement's decade bounds apply. The decade gate built into every Satellite category is the natural differentiator — it does the heavy lifting automatically.
 
-Reference comes second because canonical status is more durable than genre classification or personal pleasure. Popcorn comes third because mainstream popularity signals are checked before the more specific Satellite routing — this prevents well-known films with high vote counts from being absorbed by Satellite categories (Issue #14). Satellite comes fourth because its historically-bounded routing is the most specific and context-dependent check. Unsorted collects everything the system cannot confidently classify.
+Reference comes second because canonical status is the most authoritative human-curated signal after an explicit lookup. Satellite comes before Core because movement membership is more specific than director identity — what a film *is* takes priority over who made it. Core is the fallback for prestige auteur work that does not fit any documented movement. Popcorn comes after Core because mainstream popularity is a less specific signal than either movement membership or director prestige. Unsorted collects everything the system cannot confidently classify.
+
+For a Core director's body of work, three levels emerge naturally from this pipeline:
+- **SORTING_DATABASE entry (→ Core):** The director's most important films, manually curated. These fire at Stage 2 and bypass movement routing entirely.
+- **Movement-period film (→ Satellite):** Films in the director's documented movement period, not on the above list. Routed by decade gate.
+- **Non-movement film (→ Core):** Work outside any movement period. The director fallback fires here.
 
 The decision tree is the tier architecture expressed as algorithm.
 
@@ -55,8 +62,8 @@ The decision tree is the tier architecture expressed as algorithm.
 
 The tiers define each other through mutual exclusion:
 
-- **Core** is not just "auteur films." It is auteur films that are not Reference canon (Citizen Kane is Reference, not Core, even though Welles is an auteur — because Welles is not on your whitelist).
-- **Reference** is not just "important films." It is important films by directors not on the Core whitelist (Psycho is Reference; if Hitchcock were on the whitelist, it would be Core).
+- **Core** is not just "auteur films." It is prestige auteur work that does not fit a documented genre movement. A Core director's movement-period films route to Satellite; their non-movement work and manually pinned prestige films route to Core.
+- **Reference** is not just "important films." It is the 50 canonical films kept by historical obligation — typically one per director, regardless of whether that director is on the Core whitelist. A Core director's most canonical film can be Reference if added to the 50-film list.
 - **Satellite** is not just "exploitation." It is exploitation that is not Popcorn (Rush Hour is Popcorn despite having Hong Kong action DNA, because it is rewatchable studio entertainment).
 - **Popcorn** is not just "fun." It is fun films that are not Core, Reference, or Satellite (The Big Lebowski is fun but goes to Core because the Coen Brothers are on the whitelist).
 
@@ -170,13 +177,14 @@ The narrative is not just a list. It is a STORY — about how cinema's artistic 
 
 ## 11. The Operational Rule
 
-Once a director is on the whitelist, classification is mechanical:
+Once a director is on the whitelist, classification follows a two-step rule:
 
-> Any film by a whitelisted director in their relevant decade = automatic Core tier.
+1. **Satellite first:** If the film falls within a documented movement's decade bounds, and the director is listed in that movement's director list, it routes to Satellite. Movement character takes priority over director identity.
+2. **Core as fallback:** If the film does not fit any movement — either because the director is not in any movement's list, or because the film's decade is outside movement bounds — the whitelist fires and it routes to Core.
 
-This is a deliberate separation of reasoning from precision. The REASONING happened once, when the director was evaluated for whitelist inclusion. It required cultural judgment, historical knowledge, and personal engagement. After that, every individual film classification is PRECISION — a binary lookup. Is the director on the list? Yes or no.
+This is a deliberate separation of reasoning from precision. The REASONING happened at two levels: (a) when the director was evaluated for whitelist inclusion, and (b) when their most important films were added to SORTING_DATABASE.md with an explicit Core destination to preserve them from movement routing. After those decisions, every individual film classification is PRECISION — the decade gate determines movement eligibility; the director check is the fallback.
 
-This design has a practical benefit: it eliminates case-by-case judgment for the ~140 Core films. You never have to decide whether THIS Godard film is "Core-worthy." Godard is Core. All his films are Core. The decision was made at the director level, not the film level.
+The practical benefit: you only make case-by-case judgment twice — when deciding a director belongs on the whitelist, and when deciding which of their films are important enough to pin to Core via SORTING_DATABASE. Everything else — movement routing, Core fallback — is mechanical.
 
 ---
 
