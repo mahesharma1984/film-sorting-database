@@ -67,7 +67,7 @@ Within-category vetting informed by Altman identifies not just great directors b
 
 ## 3. The Four Criteria for Within-Category Core Status
 
-The same four criteria that define global Core status (inferred in AUTEUR_CRITERIA.md) apply within a Satellite category. A director earns within-category Core status when all four hold:
+The same four criteria that define global Core status (inferred in TIER_ARCHITECTURE.md Part II: Auteur Criteria) apply within a Satellite category. A director earns within-category Core status when all four hold:
 
 **Criterion 1: Sustained body of work within the category**
 Multiple films in the tradition, across multiple years. A director with 2–3 films in a category is a practitioner. A director with 8–15 films who returned to the form repeatedly across a career is committed to it. That commitment earns Core consideration.
@@ -278,8 +278,7 @@ The end state is not a finished taxonomy. It is a living system in which every l
 
 ## Cross-References
 
-- [AUTEUR_CRITERIA.md](AUTEUR_CRITERIA.md) — Global Core criteria; this document applies the same four criteria recursively at Satellite category scale
+- [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — Part II (Auteur Criteria): global Core criteria that this document applies recursively; §8 Permeable Boundaries: the global tier movement that the within-category promotion pathway feeds into
 - [MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md) — The satellite categories and their rationale; SATELLITE_DEPTH adds internal hierarchy to each
-- [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — §8 Permeable Boundaries; the global tier movement that the within-category promotion pathway feeds into
 - [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) — The complementary outward movement: how macro categories split into micro; SATELLITE_DEPTH is how micro categories develop internal depth
-- [COLLECTION_IDENTITY.md](COLLECTION_IDENTITY.md) — The four-relationship model at whole-archive level that this document extends recursively
+- [COLLECTION_THESIS.md](COLLECTION_THESIS.md) — The four-relationship model at whole-archive level that this document extends recursively

@@ -36,7 +36,7 @@ State what a completed Discovery looks like. Not what you'll find — that's unk
 ```
 BAD:  "Let's figure out which directors belong in Core"
 GOOD: "We will produce a list of director names, each with
-       a one-line justification citing AUTEUR_CRITERIA.md.
+       a one-line justification citing TIER_ARCHITECTURE.md (Part II: Auteur Criteria).
        The list is complete when every director who appears
        in the collection has either a whitelist entry or a
        documented exclusion reason."
@@ -74,7 +74,7 @@ Fix: restate the output form from Step 1. If it's changed significantly, update 
 
 **"Which directors belong in Core?" (FNW Core audit, Issue #22)**
 
-Output form: a list of director names, each with a justification against AUTEUR_CRITERIA.md, plus a routing assignment for non-Core FNW directors (SATELLITE_ROUTING_RULES directors list entry or documented exclusion).
+Output form: a list of director names, each with a justification against TIER_ARCHITECTURE.md (Part II: Auteur Criteria), plus a routing assignment for non-Core FNW directors (SATELLITE_ROUTING_RULES directors list entry or documented exclusion).
 
 Stopping criterion: every director who appears in the collection with FNW-era films has been classified — either Core whitelist entry, or SATELLITE_ROUTING_RULES entry, or documented "falls to Unsorted (expected)."
 
@@ -136,7 +136,7 @@ Criteria (from CLAUDE.md and TIER_ARCHITECTURE.md): non-Core director; canonical
 
 **Core whitelist entry decision**
 
-Criteria (from AUTEUR_CRITERIA.md): director has a self-consistent body of work spanning multiple decades; the work constitutes a coherent artistic project; the director is not primarily associated with a single movement or period. Done when the decision is justified against those three criteria — not when everyone agrees the director is important.
+Criteria (from TIER_ARCHITECTURE.md (Part II: Auteur Criteria)): director has a self-consistent body of work spanning multiple decades; the work constitutes a coherent artistic project; the director is not primarily associated with a single movement or period. Done when the decision is justified against those three criteria — not when everyone agrees the director is important.
 
 **Decade boundary decision for a Satellite category**
 
@@ -186,7 +186,7 @@ When completing a Discovery task:
 
 When starting a Creative task:
 - [ ] Stated evaluation criteria before generating options
-- [ ] Criteria are grounded in published theory or explicit project standards (AUTEUR_CRITERIA.md, TIER_ARCHITECTURE.md, etc.)
+- [ ] Criteria are grounded in published theory or explicit project standards (TIER_ARCHITECTURE.md (Part II: Auteur Criteria), TIER_ARCHITECTURE.md, etc.)
 - [ ] Revision limit or time budget is set
 
 When completing a Creative task:

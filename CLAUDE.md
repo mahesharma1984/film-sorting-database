@@ -26,8 +26,7 @@ Read first:
 
 ### Understanding Mode
 Read first:
-- `docs/theory/README.md` — reading order for all 7 theory essays
-- `docs/PROJECT_COMPLETE_SUMMARY.md` — collection stats and tier ratios
+- `docs/theory/README.md` — reading order for all 5 theory essays
 
 ---
 

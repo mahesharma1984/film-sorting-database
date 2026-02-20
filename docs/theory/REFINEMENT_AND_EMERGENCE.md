@@ -211,8 +211,7 @@ The test in every case: wait for density, look for coherence, confirm archival n
 
 ## Cross-References
 
-- [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — §8 Permeable Boundaries; the living tier system that this document explains over time
+- [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — §8 Permeable Boundaries; the living tier system that this document explains over time; Part II (Auteur Criteria) explains Core whitelist inclusion criteria
 - [MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md) — The satellite categories whose creation history is documented in §3 of this essay
-- [AUTEUR_CRITERIA.md](AUTEUR_CRITERIA.md) — The Core whitelist; AUTEUR_CRITERIA explains the criteria for inclusion, this essay documents how the system grows and refines around them
 - [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) — The complementary inward movement: as macro categories mature, internal depth hierarchies develop within each named category
-- [COLLECTION_IDENTITY.md](COLLECTION_IDENTITY.md) — The master thesis within which all refinement events occur; the stable framework the process refines
+- [COLLECTION_THESIS.md](COLLECTION_THESIS.md) — The master thesis within which all refinement events occur; the stable framework the process refines

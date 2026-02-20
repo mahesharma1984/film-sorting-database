@@ -1,6 +1,6 @@
 # Theory Knowledge Base
 
-This directory contains nine essays that articulate the theoretical foundation of the film sorting archive. The operational documentation (sorting rules, decision trees, implementation guides) lives in `docs/`. These essays address the **why** — why decades, why these tiers, why exploitation cinema belongs in a serious archive.
+This directory contains five essays that articulate the theoretical foundation of the film sorting archive. The operational documentation (sorting rules, decision trees, implementation guides) lives in `docs/`. These essays address the **why** — why decades, why these tiers, why exploitation cinema belongs in a serious archive.
 
 ---
 
@@ -8,33 +8,23 @@ This directory contains nine essays that articulate the theoretical foundation o
 
 For a newcomer, read in this sequence:
 
-1. **[COLLECTION_IDENTITY.md](COLLECTION_IDENTITY.md)** — Start here. What this archive is and what thesis it embodies.
-2. **[DECADE_WAVE_THEORY.md](DECADE_WAVE_THEORY.md)** — Why decades are the organizing unit (not movements, nations, or directors).
-3. **[TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md)** — Why exactly four tiers, how they interact, and what the ratios mean.
-4. **[AUTEUR_CRITERIA.md](AUTEUR_CRITERIA.md)** — What makes a director Core. The whitelist as thesis statement.
-5. **[MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md)** — Why the archive contains exploitation cinema. Satellite as context for Core.
-6. **[POPCORN_WAVES.md](POPCORN_WAVES.md)** — Studio cinema as a parallel history to the auteur tradition.
-7. **[FORMAT_AS_INTENTION.md](FORMAT_AS_INTENTION.md)** — Why seeking out a 35mm scan is a curatorial act, not a technical preference.
-8. **[REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md)** — How categories are built: the recursive refinement process, when a sub-category earns its name, and how new categories are applied retroactively.
-9. **[SATELLITE_DEPTH.md](SATELLITE_DEPTH.md)** — Applying Core/Reference logic within Satellite categories: vetting strategy, within-category masters, and the seeking programme that emerges from recognising them.
+1. **[COLLECTION_THESIS.md](COLLECTION_THESIS.md)** — Start here. What this archive is, why decades are the organizing unit, and why format curation matters.
+2. **[TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md)** — Why exactly four tiers, what makes a director Core, and how Popcorn constitutes a parallel cinema history.
+3. **[MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md)** — Why the archive contains exploitation cinema. Satellite as context for Core.
+4. **[REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md)** — How categories are built: the recursive refinement process, when a sub-category earns its name, and how new categories are applied retroactively.
+5. **[SATELLITE_DEPTH.md](SATELLITE_DEPTH.md)** — Applying Core/Reference logic within Satellite categories: vetting strategy, within-category masters, and the seeking programme that emerges from recognising them.
 
 ---
 
 ## How the Essays Relate
 
 ```
-COLLECTION_IDENTITY (master thesis)
-  ├── DECADE_WAVE_THEORY (why decades)
-  │     ├── AUTEUR_CRITERIA (Core directors defined within waves)
-  │     ├── MARGINS_AND_TEXTURE (Satellite categories are wave-bounded)
-  │     └── POPCORN_WAVES (studio cinema has its own wave structure)
-  ├── TIER_ARCHITECTURE (why 4 tiers)
-  │     ├── FORMAT_AS_INTENTION (format is metadata, not tier)
-  │     └── REFINEMENT_AND_EMERGENCE (how the tier system evolves: splits, retroactive application, history)
-  ├── AUTEUR_CRITERIA ←→ MARGINS_AND_TEXTURE (auteur/genre-master boundary)
-  ├── AUTEUR_CRITERIA → SATELLITE_DEPTH (same Core/Reference criteria applied recursively within categories)
-  ├── MARGINS_AND_TEXTURE → SATELLITE_DEPTH (Satellite categories develop internal depth hierarchies)
-  └── REFINEMENT_AND_EMERGENCE ←→ SATELLITE_DEPTH (outward splitting ↔ inward deepening)
+COLLECTION_THESIS (what & why: identity + decades + format)
+  └── TIER_ARCHITECTURE (how: 4 tiers + auteur criteria + Popcorn waves)
+        ├── MARGINS_AND_TEXTURE (Satellite categories, caps, boundaries)
+        │     └── SATELLITE_DEPTH (within-category depth hierarchies)
+        └── REFINEMENT_AND_EMERGENCE (how the tier system evolves over time)
+              └── SATELLITE_DEPTH (outward splitting ↔ inward deepening)
 ```
 
 ---
@@ -43,18 +33,20 @@ COLLECTION_IDENTITY (master thesis)
 
 These essays are hybrid frameworks: scaffolding drafted from existing documentation, with gaps marked by `[YOUR INPUT]` where the collector's curatorial judgment is needed. These are not bugs — they are the places where the theory depends on personal conviction that only the collector can provide.
 
-The most important gaps:
+The most important gaps (18 total across 3 essays):
 
 | Essay | Gap | Why It Matters |
 |-------|-----|---------------|
-| AUTEUR_CRITERIA | Formal criteria for Core status | The whitelist exists but its logic is unstated |
-| AUTEUR_CRITERIA | Warhol vs. Russ Meyer distinction | Defines where Core ends and Satellite begins |
-| MARGINS_AND_TEXTURE | Why these 12 categories | Are they principled, personal, or pragmatic? |
-| DECADE_WAVE_THEORY | Wave labels for 1950s and 2000s-2010s | These decades need stronger identities |
-| COLLECTION_IDENTITY | Personal taste vs. historical rigor | The most interesting tension in the project |
-| TIER_ARCHITECTURE | Ratios designed or emergent | Changes whether the architecture is prescriptive or descriptive |
-| POPCORN_WAVES | Philosophy of the "tonight test" | What IS pleasure as a curatorial criterion? |
-| FORMAT_AS_INTENTION | Anti-streaming thesis | Is format curation resistance or just preference? |
+| TIER_ARCHITECTURE (Part II) | Formal criteria for Core status | The whitelist exists but its logic is unstated |
+| TIER_ARCHITECTURE (Part II) | Warhol vs. Russ Meyer distinction | Defines where Core ends and Satellite begins |
+| TIER_ARCHITECTURE (Part III) | Philosophy of the "tonight test" | What IS pleasure as a curatorial criterion? |
+| TIER_ARCHITECTURE (Part I) | Ratios designed or emergent | Changes whether the architecture is prescriptive or descriptive |
+| COLLECTION_THESIS (Part I) | Personal taste vs. historical rigor | The most interesting tension in the project |
+| COLLECTION_THESIS (Part II) | Wave labels for 1950s and 2000s-2010s | These decades need stronger identities |
+| COLLECTION_THESIS (Part III) | Anti-streaming thesis | Is format curation resistance or just preference? |
+| MARGINS_AND_TEXTURE | Why these 16 categories | Are they principled, personal, or pragmatic? |
+
+REFINEMENT_AND_EMERGENCE and SATELLITE_DEPTH have no gaps — they are fully authored.
 
 Fill these in at your own pace. Each `[YOUR INPUT]` marker includes context and possible directions to consider.
 

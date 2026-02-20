@@ -81,13 +81,13 @@ Start here when you have a problem, question, or task. Find your symptom, follow
 
 ### "Add a Core director"
 
-1. Determine which decade(s) — see `docs/theory/AUTEUR_CRITERIA.md` for criteria
+1. Determine which decade(s) — see `docs/theory/TIER_ARCHITECTURE.md` Part II for criteria
 2. Add to `docs/CORE_DIRECTOR_WHITELIST_FINAL.md`
 3. Update whitelist parser if format changed
 4. Run classifier, verify the director's films now route to Core
 5. Check: did any films move OUT of other tiers unexpectedly?
 
-→ See: `docs/CORE_DIRECTOR_WHITELIST_FINAL.md`, `docs/theory/AUTEUR_CRITERIA.md`
+→ See: `docs/CORE_DIRECTOR_WHITELIST_FINAL.md`, `docs/theory/TIER_ARCHITECTURE.md` Part II
 
 ### "Add a known film to the database"
 
@@ -171,4 +171,4 @@ Run `audit.py` after each batch of `move.py --execute` to keep the picture curre
 2. `docs/CORE_DOCUMENTATION_INDEX.md` — Where to find everything (2 min)
 3. `REFACTOR_PLAN.md` — How the system works (10 min)
 4. `docs/theory/README.md` → Theory essays — Why the system works this way (30 min)
-5. `docs/PROJECT_COMPLETE_SUMMARY.md` — Collection stats and outcomes (5 min)
+5. `docs/theory/COLLECTION_THESIS.md` — Collection identity, decade theory, format curation (10 min)

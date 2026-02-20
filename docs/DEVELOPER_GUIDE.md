@@ -253,7 +253,7 @@ When code changes require doc updates:
 3. **New Core director** → Update `docs/CORE_DIRECTOR_WHITELIST_FINAL.md`
 4. **New known film** → Edit `docs/SORTING_DATABASE.md` (human only)
 5. **Bug fix** → Update relevant `issues/` file or create new one
-6. **Workflow change** → Update `docs/WORKFLOW_REGISTRY.md`
+6. **Workflow change** → Update `docs/DEVELOPER_GUIDE.md` or `CLAUDE.md`
 
 **Critical rule:** Update docs in the same commit as code changes. Stale docs are worse than no docs.
 

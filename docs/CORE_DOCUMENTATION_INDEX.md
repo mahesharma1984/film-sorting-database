@@ -17,7 +17,7 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | How do I classify a film? | Run classify.py on source directory | `docs/DEVELOPER_GUIDE.md` |
 | How do I see the full library state? | Run audit.py → load library_audit.csv in dashboard | `audit.py`, `docs/WORK_ROUTER.md` |
 | Why does the dashboard show 0% classified? | sorting_manifest.csv = Unsorted queue only; use library_audit.csv | `docs/WORK_ROUTER.md` |
-| What are the satellite categories? | 12 categories with decade boundaries | `docs/SATELLITE_CATEGORIES.md` |
+| What are the satellite categories? | 16 categories with decade boundaries | `docs/SATELLITE_CATEGORIES.md` |
 | How do I find a film's classification? | Search SORTING_DATABASE.md | `docs/SORTING_DATABASE.md` |
 | What directors are in Core? | 38-43 directors by decade | `docs/CORE_DIRECTOR_WHITELIST_FINAL.md` |
 | What is the Reference canon? | 50-film hardcoded list | `docs/REFERENCE_CANON_LIST.md` |
@@ -44,13 +44,10 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Reference canon** | `docs/REFERENCE_CANON_LIST.md` | AUTHORITATIVE |
 | **Film classifications** | `docs/SORTING_DATABASE.md` | AUTHORITATIVE |
 | **Satellite margins** | `docs/theory/MARGINS_AND_TEXTURE.md` | AUTHORITATIVE |
-| **Decade theory** | `docs/theory/DECADE_WAVE_THEORY.md` | AUTHORITATIVE |
-| **Auteur criteria** | `docs/theory/AUTEUR_CRITERIA.md` | AUTHORITATIVE |
-| **Popcorn theory** | `docs/theory/POPCORN_WAVES.md` | AUTHORITATIVE |
-| **Format curation** | `docs/theory/FORMAT_AS_INTENTION.md` | AUTHORITATIVE |
-| **Collection identity** | `docs/theory/COLLECTION_IDENTITY.md` | AUTHORITATIVE |
+| **Collection thesis** | `docs/theory/COLLECTION_THESIS.md` | AUTHORITATIVE |
+| **Category refinement** | `docs/theory/REFINEMENT_AND_EMERGENCE.md` | AUTHORITATIVE |
+| **Satellite depth** | `docs/theory/SATELLITE_DEPTH.md` | AUTHORITATIVE |
 | **Thread discovery** | `docs/THREAD_DISCOVERY_GUIDE.md` | AUTHORITATIVE |
-| **Project summary** | `docs/PROJECT_COMPLETE_SUMMARY.md` | STABLE |
 | **Debug runbook** | `docs/DEBUG_RUNBOOK.md` | AUTHORITATIVE |
 | **Methodology** | `CLAUDE.md` | AUTHORITATIVE |
 

@@ -49,13 +49,13 @@ The date ranges for historical categories are not arbitrary. Brazilian exploitat
 
 A 2010s Italian thriller is NOT Giallo. A 2004 Japanese drama is NOT Pinku Eiga — but it IS Indie Cinema.
 
-(See also: [DECADE_WAVE_THEORY.md](DECADE_WAVE_THEORY.md) — satellite categories as wave-specific phenomena)
+(See also: [COLLECTION_THESIS.md](COLLECTION_THESIS.md) Part II — satellite categories as wave-specific phenomena)
 
 ---
 
-## 3. Why These Twelve Categories?
+## 3. Why These Sixteen Categories?
 
-**[YOUR INPUT: This is a major gap. The twelve categories clearly reflect what the collection ACTUALLY CONTAINS — you have Brazilian exploitation films, so there is a Brazilian Exploitation category. This is honest. But the theoretical question remains: why these margins and not others?**
+**[YOUR INPUT: This is a major gap. The sixteen categories clearly reflect what the collection ACTUALLY CONTAINS — you have Brazilian exploitation films, so there is a Brazilian Exploitation category. This is honest. But the theoretical question remains: why these margins and not others?**
 
 **Some possible arguments:**
 
@@ -65,7 +65,7 @@ A 2010s Italian thriller is NOT Giallo. A 2004 Japanese drama is NOT Pinku Eiga 
 
 **C. These are the exploitation traditions with enough surviving, accessible films to constitute a meaningful archive.** Some margins are too scattered or too lost to collect. These twelve represent traditions where the material exists in sufficient quantity and quality.
 
-**Which is it? Or is it all three? The answer determines whether the twelve categories are principled (would exist even in someone else's archive), personal (reflect your taste), or pragmatic (reflect what is available to collect).]**
+**Which is it? Or is it all three? The answer determines whether the sixteen categories are principled (would exist even in someone else's archive), personal (reflect your taste), or pragmatic (reflect what is available to collect).]**
 
 ---
 
@@ -91,7 +91,7 @@ Each satellite category has an individual cap:
 
 The caps are not just limits. They are statements about the depth of engagement with each tradition. American Exploitation at 80 means: this is a margin you care about deeply. Mondo at 10 means: a representative sample is enough. The cap numbers encode a hierarchy of interest.
 
-Caps also prevent Satellite from overwhelming Core. Without them, a casual interest in any category could inflate to hundreds of films and drown the auteur spine. The total Satellite cap (~410) is deliberately larger than Core (~140) — the margins are wide — but individual category caps prevent any one margin from dominating.
+Caps also prevent Satellite from overwhelming Core. Without them, a casual interest in any category could inflate to hundreds of films and drown the auteur spine. The total Satellite cap (~435 across 13 capped categories; 3 categories — Indie Cinema, Classic Hollywood, French New Wave — are uncapped) is deliberately larger than Core (~140) — the margins are wide — but individual category caps prevent any one margin from dominating.
 
 **[YOUR INPUT: Are the cap numbers principled or pragmatic? Did you set Brazilian at 45 because that is the right density for the category's role in the archive, or because you have roughly 45 Brazilian exploitation films? If the latter, that is fine — but the essay should acknowledge it. The caps might be "what I have, formalized as a limit" rather than "what I theoretically believe the right number is."]**
 
@@ -133,16 +133,13 @@ The deepest justification for Satellite is relational, not intrinsic. Satellite 
 
 This is the museum analogy at its strongest: a gallery of Godard films is interesting; a gallery of Godard films surrounded by the exploitation cinema of his era is illuminating. The margins provide scale. They show how radical the center actually was.
 
-(See also: [COLLECTION_IDENTITY.md](COLLECTION_IDENTITY.md) — the museum question)
+(See also: [COLLECTION_THESIS.md](COLLECTION_THESIS.md) §4 — the museum question)
 
 ---
 
 ## Cross-References
 
-- [COLLECTION_IDENTITY.md](COLLECTION_IDENTITY.md) — Satellite as "interest" in the four-relationship model
-- [DECADE_WAVE_THEORY.md](DECADE_WAVE_THEORY.md) — Satellite categories as wave-specific phenomena
-- [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — Satellite caps and the tier ratio question
-- [AUTEUR_CRITERIA.md](AUTEUR_CRITERIA.md) — The auteur/genre-master boundary (where Core ends and Satellite begins)
-- [POPCORN_WAVES.md](POPCORN_WAVES.md) — The Satellite/Popcorn boundary (texture vs. pleasure)
+- [COLLECTION_THESIS.md](COLLECTION_THESIS.md) — Satellite as "interest" in the four-relationship model; satellite categories as wave-specific phenomena
+- [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — Satellite caps and the tier ratio question; the auteur/genre-master boundary (Part II); the Satellite/Popcorn boundary (Part III)
 - [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) — Core/Reference vetting strategy within each Satellite category; how to identify the masters of each tradition and generate a seeking programme
 - [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) — How these categories were historically created and the three conditions for new category emergence
