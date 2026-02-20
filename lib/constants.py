@@ -403,7 +403,11 @@ SATELLITE_ROUTING_RULES = {
             'RU', 'GR', 'BG',
         ],
         'decades': ['1960s', '1970s', '1980s', '1990s', '2000s', '2010s', '2020s'],  # extended back (Issue #20)
-        'genres': ['Drama', 'Romance', 'Thriller', 'Science Fiction'],  # added Sci-Fi for arthouse SF (Ikarie XB-1, Fantastic Planet)
+        'genres': ['Drama', 'Romance', 'Thriller', 'Science Fiction', 'Comedy',
+                   'Fantasy', 'Mystery', 'History', 'War', 'Documentary', 'Music'],
+                   # Comedy added: OMDb labels many arthouse films Comedy that TMDb would call Drama.
+                   # Action/Crime/Horror intentionally excluded: block late-decade exploitation
+                   # directors (Argento 2010s Horror, Fukasaku 2000s Crime) from landing here.
         'directors': [
             # US indie (director match fires regardless of country_codes exclusion)
             'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',
