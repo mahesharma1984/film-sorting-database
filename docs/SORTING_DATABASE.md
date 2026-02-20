@@ -263,12 +263,10 @@
 ### Satellite - Hong Kong Action
 - Drunken Master (1978) → 1970s/Satellite/Hong Kong Action/
 
-### Satellite - Russ Meyer
-- Supervixens (1975) → 1970s/Satellite/Russ Meyer/
-- Cherry Harry & Raquel (1970) → 1970s/Satellite/Russ Meyer/
-- Beneath the Valley of the Ultra Vixens (1979) → 1970s/Satellite/Russ Meyer/
-
 ### Satellite - American Exploitation
+- Supervixens (1975) - Russ Meyer → 1970s/Satellite/American Exploitation/
+- Cherry Harry & Raquel (1970) - Russ Meyer → 1970s/Satellite/American Exploitation/
+- Beneath the Valley of the Ultra Vixens (1979) - Russ Meyer → 1970s/Satellite/American Exploitation/
 - Pink Flamingos (1972) - John Waters → 1970s/Satellite/American Exploitation/
 - Female Trouble (1974) - John Waters → 1970s/Satellite/American Exploitation/
 - 9 Lives of a Wet Pussy (1976) → 1970s/Satellite/American Exploitation/
@@ -299,8 +297,8 @@
 - The Beatles - First U.S. Visit → 1970s/Satellite/Music Films/
 
 ### Satellite - Indie Cinema
-- All That Jazz (1979) → 1970s/Satellite/Indie Cinema/
-- Being There (1979) → 1970s/Satellite/Indie Cinema/
+- All That Jazz (1979) → 1970s/Satellite/Indie Cinema/ [MISCLASSIFIED: should be American New Hollywood — reclassify when category is added to SATELLITE_ROUTING_RULES, Issue #27]
+- Being There (1979) → 1970s/Satellite/Indie Cinema/ [MISCLASSIFIED: should be American New Hollywood — reclassify when category is added to SATELLITE_ROUTING_RULES, Issue #27]
 
 ### Popcorn
 - Young Frankenstein (1974) 16mm → 1970s/Popcorn/

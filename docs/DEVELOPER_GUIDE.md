@@ -259,6 +259,33 @@ When code changes require doc updates:
 
 ---
 
+## Theory and Implementation Status
+
+The theory knowledge base is in `docs/theory/` — five essays organized by the reading order in `docs/theory/README.md`. The full development methodology is in `exports/skills/` — nine composable skills summarized as Rules 1–9 in `CLAUDE.md` §3.
+
+**Theory is currently ahead of implementation.** The two most recent essays describe work not yet implemented:
+
+- `REFINEMENT_AND_EMERGENCE.md` → **Phase 1: American New Hollywood** as a new Satellite category. Specified in Issue #27 (Gap 1); implementation tracked in Issue #23.
+- `SATELLITE_DEPTH.md` → **Phase 2–3: Within-category Core/Reference depth hierarchy.** Architecture decision: Option A (destination-changing, `core_directors` field in `SATELLITE_ROUTING_RULES`). Specified in Issue #27 (Gap 3).
+
+Phase 2–3 is intentionally deferred until Phase 1 is complete — American New Hollywood is the test case for within-category depth.
+
+The pre-implementation documentation gaps are tracked in `issues/027-pre-implementation-documentation-gaps.md`.
+
+### RAG Semantic Search
+
+For cross-concept questions across all documentation (including skills and knowledge-base):
+
+```bash
+python3 -m lib.rag.query "your question"                              # Top-5 results
+python3 -m lib.rag.query "query" --filter AUTHORITATIVE               # Authority-filtered
+python3 -m lib.rag.indexer --force                                     # Rebuild after doc changes
+```
+
+The index covers `docs/`, `exports/skills/`, and `exports/knowledge-base/`. See `docs/RAG_QUERY_GUIDE.md` for query patterns.
+
+---
+
 ## Commit Messages
 
 Format:

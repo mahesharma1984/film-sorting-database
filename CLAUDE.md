@@ -8,6 +8,8 @@ On every interaction, read:
 
 For curatorial context, read `docs/theory/README.md` → individual essays as needed.
 
+For cross-concept questions or quick verification: `python3 -m lib.rag.query "your question"` — returns top-5 ranked doc sections with file paths and line ranges. See `docs/RAG_QUERY_GUIDE.md` for query patterns.
+
 ---
 
 ## §2 Work Modes
@@ -18,11 +20,25 @@ Read first:
 - `docs/theory/TIER_ARCHITECTURE.md` — why tiers work this way
 - `docs/theory/MARGINS_AND_TEXTURE.md` — satellite logic rationale
 
+Primary skills: Prototype Building (Rule 8), Pattern-First (Rule 2), R/P Split (Rule 1), Domain Grounding (Rule 4)
+
 ### Debug / Regression Mode
 Read first:
 - `docs/DEBUG_RUNBOOK.md` — symptom → diagnosis → fix
 - `issues/` — past bugs and their root causes
 - `docs/WORK_ROUTER.md` — route symptoms to the right doc
+
+Primary skills: Constraint Gates (Rule 5), Failure Gates (Rule 3), Measurement-Driven (Rule 7), Boundary-Aware Measurement (Rule 6)
+
+### Discovery / Curatorial Mode
+Use when exploring new categories, auditing director lists, or making taxonomy decisions.
+
+Read first:
+- `docs/theory/REFINEMENT_AND_EMERGENCE.md` — how categories are built
+- `docs/theory/SATELLITE_DEPTH.md` — within-category depth hierarchies
+- `docs/SATELLITE_CATEGORIES.md` — existing category specifications
+
+Primary skills: Creative & Discovery (Rule 9), Domain Grounding (Rule 4), Prototype Building (Rule 8)
 
 ### Understanding Mode
 Read first:
@@ -31,6 +47,8 @@ Read first:
 ---
 
 ## §3 Decision Rules
+
+Rules 1–9 below are operational summaries of the full methodology in `exports/skills/`. For detailed theory, examples, and checklists, see individual skill docs.
 
 ### Rule 1: R/P Split (Reasoning vs Precision)
 
@@ -70,7 +88,7 @@ The classification pipeline checks in this priority:
 
 ### Rule 3: Failure Gates
 
-Every check declares what happens on failure:
+Every check declares what happens on failure. Gate type determines severity:
 
 | Check | Hard Gate (stops) | Soft Gate (continues) |
 |-------|-------------------|-----------------------|
@@ -80,6 +98,124 @@ Every check declares what happens on failure:
 | TMDb/OMDb: no API keys or both fail | — | Continue with filename-only classification |
 | Lookup: no match in SORTING_DATABASE | — | Continue to heuristic checks |
 | Core director: no whitelist match | — | Continue to Reference check |
+
+**Gate design rules:**
+- **Level 0 gates everything** — If the data source is unreliable (e.g. TMDb returns wrong film), all downstream metrics describe the error, not the film. Validate inputs first.
+- **Hard gates have no repair logic** — If repair is needed, add a separate stage with its own gates.
+- **Soft gates accumulate** — Individual soft failures are fine; accumulation signals systemic issues.
+- **Absence-based properties need scope gates** — "No Core director in Satellite" requires checking all N items and reporting N, not just failing to find a counterexample.
+
+### Rule 4: Domain Grounding
+
+Every Satellite category must be grounded in published film-historical scholarship, not invented from collection contents.
+
+| Requirement | How to verify |
+|-------------|---------------|
+| Category cites a historical movement | Check `docs/SATELLITE_CATEGORIES.md` — each entry names its tradition and date bounds |
+| Director lists reflect documented membership | Directors must appear in published filmographies of the movement, not just "seem to fit" |
+| Decade bounds match historical record | A category active 1965–1982 uses `1960s`, `1970s`, `1980s` — not extended to 1990s without evidence |
+| New categories follow Add/Split/Retire protocol | Add: demonstrate density + coherence + archival necessity. Split: existing category has ≥2 internally distinct sub-populations. Retire: category catches <3 films for 2+ audit cycles |
+
+**Test:** If you remove all films from the collection, does the category definition still make sense as a description of a real film-historical movement? If yes, grounding is working. If the category only exists because of specific films you own, it's post-hoc.
+
+### Rule 5: Constraint Gates
+
+Find the binding constraint before optimising. Don't run expensive stages on defective data.
+
+**The constraint protocol:**
+1. **Map value flow** at each stage boundary — what data is produced upstream, what is consumed downstream, what is lost
+2. **Identify the binding constraint** — the handoff where the most valuable information is destroyed
+3. **Add a gate** — validate that critical data survived the boundary ($0, reads checkpoint files)
+4. **Fix the root cause** — fix the upstream stage so the gate passes; then the constraint moves
+
+**Cost ordering — cheap checks first:**
+
+| Check | Cost | Run when |
+|-------|------|----------|
+| Handoff validation (checkpoint read) | $0 | After every stage |
+| Schema contract check | $0 | After every stage |
+| Full API measurement | $$ | Only when all gates pass |
+| Manual review | Time | Only when metrics are ambiguous |
+
+**This project's binding constraints (known):**
+- TMDb result validation (`_validate_result()` in `lib/tmdb.py`) — prevents cache poisoning that compounds over runs
+- OMDb country code mapping (`_map_countries_to_codes()` in `lib/omdb.py`) — corrupt 2-letter codes silently misroute all downstream Satellite classification
+- Director matching (`_director_matches()` in `lib/satellite.py`) — substring vs whole-word determines false-positive rate for all Satellite routing
+
+### Rule 6: Boundary-Aware Measurement
+
+The classification pipeline has a natural boundary: **enrichment** (API queries + data merge) vs. **routing** (tier assignment + destination building).
+
+| What changed | Measure on |
+|-------------|------------|
+| Parser or API logic | Enrichment metrics only (data completeness, field coverage) |
+| Routing rules, constants, tier logic | Routing metrics only (classification rate, tier distribution) |
+| Both sides | Full pipeline |
+
+**Cost-ordering principle:** If only enrichment changed, don't re-run the full classification on 491 films ($$ in API calls). Validate the handoff ($0), measure enrichment quality ($), skip routing measurement entirely.
+
+**Scoping rule:** `classify.py` Stage 1–4 is enrichment. Stages 5–8 are routing. A change to `lib/tmdb.py` only requires re-measuring Stages 1–4; a change to `lib/satellite.py` only requires Stages 5–8.
+
+### Rule 7: Measurement-Driven Development
+
+After any pipeline change, follow this cycle:
+
+```
+IDENTIFY (what failed?) → DIAGNOSE (which stage? use R/P Split, Pattern-First)
+  → FIX → VALIDATE HANDOFFS ($0) → MEASURE DEPTH (target case before/after)
+  → REBALANCE (if new metric/stage added) → MEASURE BREADTH (regressions?)
+  → STABILIZE (document what changed with metric evidence)
+```
+
+**Two modes:**
+- **Frontier (depth-first):** Pushing capability — targets single case or small set. High-risk, high-reward. Use when a case is missing something obviously important.
+- **Consistency (breadth-first):** Preventing regressions — targets full corpus. Lower-risk, systematic. Use after frontier changes, before declaring stable.
+
+**The ratio shifts over time.** Early development is mostly frontier (build capability). Mature development is mostly consistency (prevent regressions). This project is transitioning: enrichment is mature (consistency work), routing still has frontier gaps (American New Hollywood, US 1960s–1970s mainstream).
+
+### Rule 8: Prototype Building
+
+Don't build until the pattern is confirmed. Exploration must complete before execution.
+
+```
+EXPLORATION (must complete first):
+1. Problem Definition    → State it in one sentence
+2. Decomposition         → What are the sub-problems?
+3. Pattern Recognition   → What approach will work? Test against real case
+4. Abstraction           → Classify tasks as R/P before building
+─────────────────────────────────────────────────────────
+EXECUTION (only after exploration):
+5. Build                 → Follow the confirmed pattern
+```
+
+**Real Case First:** Never build in the abstract. Start with one real film, one real classification, one real failure case. The real case forces concrete decisions and reveals hidden assumptions.
+
+**Rabbit hole detection:**
+
+| Signal | Recovery |
+|--------|----------|
+| "This changes everything" | Probably doesn't — restate original problem |
+| Same problem reframed 3+ times | Lost the thread — what's the one concrete test case? |
+| 1000+ words explaining a simple fix | Over-engineering — what's the simplest thing that works? |
+| Building infrastructure for hypothetical use | Premature optimisation — can you do it manually first? |
+
+### Rule 9: Creative & Discovery
+
+Two task types that Rules 1–3 don't cover: **Discovery** (exploring before the problem is defined) and **Creative** (no single correct answer).
+
+**Discovery protocol (e.g. "Should Romanian New Wave be a Satellite category?"):**
+1. Define the output form before exploring — not what you'll find, but what shape the answer takes
+2. Set stopping criteria — discovery is complete when the next Precision/Reasoning task can be written with no unknowns
+3. Scope before depth — survey breadth first (how many films?), depth (per-film research) second
+4. Rabbit-hole tripwire — if you can't answer "what would done look like?", you're still in problem definition
+
+**Creative protocol (e.g. "Which 50 films belong in the Reference canon?"):**
+1. State evaluation criteria before generating options — criteria must predict what a new option looks like
+2. Apply criteria, don't reverse-engineer them — select options that meet criteria; don't generate a list then write criteria to justify it
+3. "Done" is criteria-passing, not consensus — defensible against the published framework (Domain Grounding) is the bar
+4. Bound the iteration — 2–3 revision passes max, then ship and revisit if new evidence contradicts
+
+**Handoff rule:** Discovery and Creative tasks are complete only when their output is documented in a form that feeds the next task. "We decided X" is not a handoff. "We updated SATELLITE_ROUTING_RULES with entry Y" is.
 
 ---
 
@@ -218,6 +354,12 @@ python scripts/validate_handoffs.py                   # Self-test demonstration
 python audit.py                                       # Walk all tier folders → output/library_audit.csv
 # Load library_audit.csv in dashboard for collection-wide classification rate
 # (sorting_manifest.csv = Unsorted work queue only; library_audit.csv = full library)
+
+# RAG semantic search — cross-concept questions across all docs
+python3 -m lib.rag.query "How does Satellite routing work?"           # Top-5 results
+python3 -m lib.rag.query "Satellite decade boundaries" --filter AUTHORITATIVE  # Authority-filtered
+python3 -m lib.rag.query "Films by Lucio Fulci" --json --top 10      # JSON output, more results
+python3 -m lib.rag.indexer --force                                    # Rebuild index after doc changes
 ```
 
 ---
@@ -227,5 +369,6 @@ python audit.py                                       # Walk all tier folders �
 - `config.yaml` / `config_external.yaml` — contain paths and API keys
 - `output/*.csv` — generated manifests (sorting_manifest.csv, rename_manifest.csv)
 - `output/tmdb_cache.json` — API response cache
+- `output/rag/` — RAG index and embeddings (rebuilt locally with `python3 -m lib.rag.indexer --force`)
 - `.DS_Store`
 - `__pycache__/`, `*.pyc`

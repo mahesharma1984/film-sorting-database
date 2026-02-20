@@ -44,7 +44,7 @@ The most important gaps (18 total across 3 essays):
 | COLLECTION_THESIS (Part I) | Personal taste vs. historical rigor | The most interesting tension in the project |
 | COLLECTION_THESIS (Part II) | Wave labels for 1950s and 2000s-2010s | These decades need stronger identities |
 | COLLECTION_THESIS (Part III) | Anti-streaming thesis | Is format curation resistance or just preference? |
-| MARGINS_AND_TEXTURE | Why these 16 categories | Are they principled, personal, or pragmatic? |
+| MARGINS_AND_TEXTURE | Why these 17 categories | Are they principled, personal, or pragmatic? |
 
 REFINEMENT_AND_EMERGENCE and SATELLITE_DEPTH have no gaps — they are fully authored.
 

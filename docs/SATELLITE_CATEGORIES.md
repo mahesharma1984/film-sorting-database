@@ -183,6 +183,53 @@
 
 ---
 
+### 6. AMERICAN NEW HOLLYWOOD (NEW - Issue #27)
+
+**Definition:**
+- Post-Production Code prestige studio cinema, c.1965–1985
+- The bounded industrial moment when a generation of directors reshaped American studio filmmaking between the collapse of the Code and the blockbuster era
+- Distinct from American Exploitation (grindhouse/cult) and from Core (auteur identity)
+
+**Date bounds:** 1960s–1980s (captures 1965–1985 span across three system decades)
+
+**Directors (routing gate — widest configuration):**
+- **Category Core:** Bob Fosse, Hal Ashby, Alan J. Pakula
+- **Category Reference:** Sydney Pollack, Sidney Lumet, Peter Bogdanovich, Robert Altman
+- **Overlapping Core candidates:** Francis Ford Coppola, Martin Scorsese
+  - NOTE: Coppola and Scorsese are also strong Core whitelist candidates. If they are added to the Core director whitelist, the Core check (Stage 3) fires first and they never reach Satellite routing. The overlap is safe — Core priority prevents double-classification.
+
+**Cap:** 25 films
+
+**Cap per decade:**
+- 1960s: max 5 films (only late-60s: 1965–1969)
+- 1970s: max 15 films (peak of the movement)
+- 1980s: max 5 films (movement fading into blockbuster era)
+
+**Rationale:**
+- Without this category, Fosse and Russ Meyer end up in the same folder (American Exploitation), collapsing the distinction between a prestige auteur and a grindhouse specialist
+- Density: 15–25 films in the collection currently misfiled in AmEx, Indie Cinema, or Unsorted
+- Coherence: documented historical movement with identifiable directors and a bounded industrial moment
+- Archival necessity: the collection needs this distinction to be meaningful
+
+**Boundary rules:**
+- Fosse, Ashby, Pakula → Satellite/American New Hollywood (Category Core)
+- Pollack, Lumet, Bogdanovich, Altman → Satellite/American New Hollywood (Category Reference)
+- Coppola, Scorsese → Core if on whitelist; otherwise Satellite/American New Hollywood
+- Russ Meyer → American Exploitation (genre specialist, not prestige cinema)
+- John Waters → American Exploitation or Core (depending on collection expansion)
+- Generic 1970s US dramas without a listed director → Unsorted (no country-gate; director-only routing like FNW)
+
+**Routing design:** Director-only routing (like French New Wave). US ('US') is NOT added to `COUNTRY_TO_WAVE` — that would auto-route all American films in those decades. Only films by listed directors qualify.
+
+**Routing position:** Before American Exploitation in `SATELLITE_ROUTING_RULES`. Both are US historical categories, but American New Hollywood is more specific — it must be checked first to prevent its films from being caught by AmEx's broader net.
+
+**Films currently in collection that belong here (examples):**
+- All That Jazz (1979) — currently misclassified as Indie Cinema
+- Being There (1979) — currently misclassified as Indie Cinema
+- (Full audit of ~15–25 misfiled films to be completed as part of Issue #23 Stage 3)
+
+---
+
 ### 7. AMERICAN EXPLOITATION / GRINDHOUSE / VHS CULT
 
 **Definition:**
@@ -475,19 +522,20 @@
 3. Japanese Exploitation: 25 films (NEW - Issue #6)
 4. Brazilian exploitation: 45 films
 5. Hong Kong action/Category III: 65 films
-6. American exploitation/grindhouse: 60 films (NARROWED - Issue #14: now 1960s-1980s only)
-7. Nunsploitation: 15 films
-8. European sexploitation: 20 films (NARROWED - Issue #14: excludes FNW directors)
-9. Blaxploitation: 20 films
-10. WIP/rape-revenge: 15 films
-11. Music/concert films: 20 films
-12. Mondo: 10 films
-13. Cult oddities: 50 films
-14. **French New Wave: 30 films** (NEW - Issue #14)
-15. **Indie Cinema: 40 films** (NEW - Issue #14)
-16. **Classic Hollywood: 25 films** (NEW - Issue #14)
+6. **American New Hollywood: 25 films** (NEW - Issue #27)
+7. American exploitation/grindhouse: 60 films (NARROWED - Issue #14: now 1960s-1980s only)
+8. Nunsploitation: 15 films
+9. European sexploitation: 20 films (NARROWED - Issue #14: excludes FNW directors)
+10. Blaxploitation: 20 films
+11. WIP/rape-revenge: 15 films
+12. Music/concert films: 20 films
+13. Mondo: 10 films
+14. Cult oddities: 50 films
+15. **French New Wave: 30 films** (NEW - Issue #14)
+16. **Indie Cinema: 40 films** (NEW - Issue #14)
+17. **Classic Hollywood: 25 films** (NEW - Issue #14)
 
-**TOTAL SATELLITE CAP: ~505 films maximum across all categories** (increased by 95 with new categories)
+**TOTAL SATELLITE CAP: ~530 films maximum across 17 categories** (increased by 25 with American New Hollywood)
 
 This is intentionally large because Satellite is the margins/texture tier. But individual category caps keep it from sprawling.
 

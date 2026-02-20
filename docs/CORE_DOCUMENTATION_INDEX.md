@@ -17,7 +17,7 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | How do I classify a film? | Run classify.py on source directory | `docs/DEVELOPER_GUIDE.md` |
 | How do I see the full library state? | Run audit.py → load library_audit.csv in dashboard | `audit.py`, `docs/WORK_ROUTER.md` |
 | Why does the dashboard show 0% classified? | sorting_manifest.csv = Unsorted queue only; use library_audit.csv | `docs/WORK_ROUTER.md` |
-| What are the satellite categories? | 16 categories with decade boundaries | `docs/SATELLITE_CATEGORIES.md` |
+| What are the satellite categories? | 17 categories with decade boundaries | `docs/SATELLITE_CATEGORIES.md` |
 | How do I find a film's classification? | Search SORTING_DATABASE.md | `docs/SORTING_DATABASE.md` |
 | What directors are in Core? | 38-43 directors by decade | `docs/CORE_DIRECTOR_WHITELIST_FINAL.md` |
 | What is the Reference canon? | 50-film hardcoded list | `docs/REFERENCE_CANON_LIST.md` |
@@ -50,6 +50,9 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Thread discovery** | `docs/THREAD_DISCOVERY_GUIDE.md` | AUTHORITATIVE |
 | **Debug runbook** | `docs/DEBUG_RUNBOOK.md` | AUTHORITATIVE |
 | **Methodology** | `CLAUDE.md` | AUTHORITATIVE |
+| **Development skills** | `exports/skills/README.md` | STABLE |
+| **Theoretical foundations** | `exports/knowledge-base/` | STABLE |
+| **RAG query guide** | `docs/RAG_QUERY_GUIDE.md` | STABLE |
 
 ---
 

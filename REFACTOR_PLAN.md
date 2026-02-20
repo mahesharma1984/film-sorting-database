@@ -286,3 +286,78 @@ Step 2 (normalize) and Step 4 (review) are key human checkpoints. Normalize is p
 | Correct decade assignment | Wrong for multi-decade directors | Correct (uses film's year) |
 | Move speed (same filesystem) | 60-80 hours (byte copy) | 2-5 minutes (os.rename) |
 | Manifest CSV integrity | Broken by commas in filenames | Properly quoted |
+
+---
+
+## v2.0: American New Hollywood + Within-Category Depth
+
+> **Status:** Specification complete. Implementation not started.
+> **Pre-work:** Issue #27 (documentation gaps). Curatorial decisions resolved.
+> **Theory:** `REFINEMENT_AND_EMERGENCE.md` §3 (AmNH), `SATELLITE_DEPTH.md` §4–7 (depth).
+
+### Architectural Decision: Option A (Destination-Changing)
+
+Within-category depth hierarchy will be **structural, not metadata-only**. The `core_directors` field in `SATELLITE_ROUTING_RULES` produces different file destinations for within-category Core directors vs. Reference/texture directors.
+
+**Rationale:** The collection is large enough that within-category Core directors (Bava in Giallo, Fosse in American New Hollywood) have filmographies that warrant their own space. Metadata-only depth would leave this distinction invisible to browsing and Plex library organisation.
+
+### Phase 1: American New Hollywood (independent of Phase 2–3)
+
+Add a new Satellite category: director-only routing, 1960s–1980s, 25-film cap.
+
+**Changes required:**
+
+| File | Change |
+|------|--------|
+| `lib/constants.py` | Add `'American New Hollywood'` entry to `SATELLITE_ROUTING_RULES` with directors list, decades `['1960s', '1970s', '1980s']`, `genres: None`, `country_codes: None` (director-only). Position: before American Exploitation. |
+| `lib/constants.py` | Add `'American New Hollywood': 25` to `SatelliteClassifier` caps. |
+| `scaffold.py` | Will auto-generate `Satellite/American New Hollywood/{1960s,1970s,1980s}/` from routing rules. |
+| `docs/SORTING_DATABASE.md` | Reclassify All That Jazz (1979) and Being There (1979) from Indie Cinema → American New Hollywood. Audit remaining ~15–25 misfiled films. |
+| `tests/` | Add routing tests: Fosse 1979 → AmNH, Fosse 2010 → None (outside decades), non-listed director → falls through. |
+
+**Director list (routing gate):**
+- Category Core: `fosse`, `ashby`, `pakula`
+- Category Reference: `pollack`, `lumet`, `bogdanovich`, `altman`
+- Overlapping Core candidates: `coppola`, `scorsese` (Core whitelist check fires first if present)
+
+### Phase 2–3: Within-Category Depth (depends on Phase 1)
+
+American New Hollywood is the test case. If successful, apply to mature categories (Giallo, Pinku Eiga).
+
+**Changes required:**
+
+| File | Change |
+|------|--------|
+| `lib/constants.py` | Add optional `core_directors` field to `SATELLITE_ROUTING_RULES` entries. |
+| `lib/satellite.py` | When `core_directors` field exists and director matches, return `'{Category}/Core Tier'` instead of `'{Category}'`. |
+| `classify.py` | `_build_destination()` produces `Satellite/Giallo/Core Tier/1970s/` for Bava/Argento vs. `Satellite/Giallo/1970s/` for Lenzi. |
+| `scaffold.py` | For categories with `core_directors`, create `Core Tier/` and `Reference/` sub-folders inside each decade folder. |
+| `docs/SORTING_DATABASE.md` | Update entries for known Category Core films to use sub-paths. |
+
+**Example folder structure after Phase 2–3:**
+```
+Satellite/
+├── Giallo/
+│   ├── Core Tier/
+│   │   ├── 1960s/   (Bava)
+│   │   ├── 1970s/   (Argento, Bava)
+│   │   └── 1980s/   (Argento)
+│   ├── 1960s/       (texture/Reference directors)
+│   ├── 1970s/
+│   └── 1980s/
+├── American New Hollywood/
+│   ├── Core Tier/
+│   │   └── 1970s/   (Fosse, Ashby, Pakula)
+│   ├── 1960s/
+│   ├── 1970s/       (Pollack, Lumet, Bogdanovich, Altman)
+│   └── 1980s/
+```
+
+**Not every category gets depth.** Per `SATELLITE_DEPTH.md` §7: depth is appropriate when the Category Core directors have filmographies large enough to warrant their own space. Categories with thin collections (Nunsploitation, Mondo) stay flat.
+
+### Ordering
+
+Phase 1 is independent of Phase 2–3. Phase 2–3 depends on Phase 1:
+- Phase 1 can be implemented and shipped without any depth hierarchy
+- Phase 2–3 uses American New Hollywood as the first test case for within-category depth
+- After Phase 2–3 succeeds on AmNH, apply to Giallo and Pinku Eiga

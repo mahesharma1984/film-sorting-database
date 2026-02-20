@@ -12,6 +12,10 @@ from pathlib import Path
 # Where your documentation lives and where the index should be stored.
 
 DOCS_ROOT = Path("docs")
+ADDITIONAL_DOCS_ROOTS = [
+    Path("exports/skills"),         # Methodology skill docs (9 skills)
+    Path("exports/knowledge-base"), # Theoretical foundations (8 docs)
+]
 OUTPUT_DIR = Path("output/rag")  # Film project uses output/ not outputs/
 INDEX_FILE = OUTPUT_DIR / "index.jsonl"
 EMBEDDINGS_FILE = OUTPUT_DIR / "embeddings.npy"
@@ -119,6 +123,7 @@ EXCLUDED_PATHS = [
     # "docs/issues/",  # Uncomment to exclude issues (we'll include them for now)
     # "docs/generated/",
     ".git",  # Skip git metadata
+    "docs/archive/",  # Historical artifacts — 17 docs archived after consolidation
 ]
 
 # =============================================================================

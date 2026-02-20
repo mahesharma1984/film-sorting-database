@@ -67,9 +67,14 @@ def build_index(
     doc_metadata = parse_core_doc_index()
     print(f"  Loaded metadata for {len(doc_metadata)} files")
 
-    # Discover all .md files
+    # Discover all .md files from primary root + additional roots
     print(f"Discovering markdown files in {docs_root}...")
     all_md_files = list(docs_root.rglob("*.md"))
+    for additional_root in getattr(config, 'ADDITIONAL_DOCS_ROOTS', []):
+        if additional_root.exists():
+            additional_files = list(additional_root.rglob("*.md"))
+            print(f"  + {len(additional_files)} files from {additional_root}")
+            all_md_files.extend(additional_files)
 
     # Filter out excluded paths
     repo_root = Path.cwd()
