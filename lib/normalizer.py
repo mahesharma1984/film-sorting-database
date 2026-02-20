@@ -20,7 +20,7 @@ Rules are applied in strict order:
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Set, Tuple
 
 
 @dataclass
@@ -166,11 +166,119 @@ class FilenameNormalizer:
 
     # ── cleaning rules ──────────────────────────────────────────────────────
 
+    # Tokens that identify a filename as torrent/rip-style (dot-separated junk)
+    _JUNK_TOKENS: Set[str] = {
+        # Resolution
+        '480p', '576p', '720p', '1080p', '2160p', '4k', 'uhd', 'hd',
+        # Source
+        'bluray', 'blu-ray', 'bdrip', 'brrip', 'web-dl', 'webrip', 'web',
+        'dvdrip', 'dvdscr', 'hdrip', 'hdtv', 'pdtv', 'tvrip', 'amzn', 'nf',
+        # Codec
+        'x264', 'x265', 'h264', 'h265', 'hevc', 'avc', 'xvid', 'divx',
+        # Audio
+        'aac', 'ac3', 'dts', 'flac', 'mp3', 'ddp', 'truehd', 'atmos',
+        'dd2', 'dd5', 'eac3', 'ma',
+        # Modifiers
+        'repack', 'proper', 'remastered', 'remux', 'extended', 'theatrical',
+        'internal', 'limited', 'multi', 'dual', 'hybrid', 'hdr', 'hdr10',
+        # Language/country tokens used as junk in filenames
+        'ita', 'eng', 'fre', 'ger', 'spa', 'por', 'jap', 'rus',
+        'french', 'italian', 'german', 'spanish', 'japanese', 'portuguese',
+        'english', 'usa',
+        # Release group indicators
+        'yify', 'rarbg', 'vxt', 'tigole', 'sartre', 'handjob',
+    }
+
+    def _is_junk_token(self, token: str) -> bool:
+        """Return True if a dot-separated token is technical/release junk."""
+        t = token.lower()
+        if t in self._JUNK_TOKENS:
+            return True
+        # Pure digits or digits+letter like '4k', '5', '1' — but NOT 4-digit years
+        if re.match(r'^\d+[a-z]?\d*$', t) and not re.match(r'^(19|20)\d{2}$', t):
+            return True
+        # Release group tag like 'YTS-MX', 'x264-HANDJOB', 'H264-CKTV'
+        if re.match(r'^[a-z0-9]+-[A-Z0-9]+$', token):
+            return True
+        return False
+
+    def _normalize_dot_separated(self, stem: str) -> Tuple[str, str]:
+        """
+        Rule 2: Convert torrent-style dot-separated filenames to space-separated.
+
+        'Title.Words.Year.TechJunk' → 'Title Words (Year)'
+
+        Only fires when:
+        - No spaces in the stem (confirms dot-separated format)
+        - At least 3 dots
+        - At least one known junk token OR a year is present
+
+        Preserves: filenames with spaces, filenames with no year and no junk.
+        """
+        if ' ' in stem or stem.count('.') < 3:
+            return stem, ''
+
+        parts = stem.split('.')
+
+        # Find year (first 19xx or 20xx token)
+        year: Optional[str] = None
+        year_idx: Optional[int] = None
+        for i, p in enumerate(parts):
+            if re.match(r'^(19|20)\d{2}$', p):
+                year, year_idx = p, i
+                break
+
+        # Require at least one junk token to confirm torrent-style.
+        # Year alone is not enough — 'Raoul.Ruiz.2000.Comedy.of.Innocence'
+        # has a year but no junk, so it could be Director.Year.Title format.
+        has_junk = any(self._is_junk_token(p) for p in parts)
+        if not has_junk:
+            return stem, ''  # e.g. 'A.Gathering.of.Magic-Grym', 'Raoul.Ruiz.2000.Comedy...' — leave alone
+
+        # Extract title parts
+        if year_idx == 0:
+            # Year at start: title is parts after year, up to first junk token
+            rest = parts[1:]
+            cut = next((i for i, p in enumerate(rest) if self._is_junk_token(p)), len(rest))
+            title_parts = rest[:cut]
+        elif year_idx is not None:
+            title_parts = parts[:year_idx]
+        else:
+            # No year: find first junk token from the left — everything before it
+            # is the title. This handles cases like 'The.Speed.of.Life.1080p.H.264-Koza'
+            # where 'H' and '264-Koza' at the end would otherwise defeat a right-to-left scan.
+            cut = next((i for i, p in enumerate(parts) if self._is_junk_token(p)), len(parts))
+            title_parts = parts[:cut]
+
+        # Build title string
+        title = ' '.join(title_parts)
+
+        # Strip AKA alternative title (keep primary language title only)
+        title = re.sub(r'\s+(?:AKA|aka)\s+.*', '', title).strip()
+
+        # Strip leading disc/numbering prefix like '2-'
+        title = re.sub(r'^\d+-', '', title).strip()
+
+        # Strip parenthetical fragments from dot-splitting (e.g. "(J-Luc" or "Godard)")
+        title = re.sub(r'\s*\([^)]*\)?\s*', ' ', title).strip()
+        title = re.sub(r'\s*\)?\s*$', '', title).strip()
+
+        title = re.sub(r'\s+', ' ', title).strip()
+
+        if not title:
+            return stem, ''
+
+        result = f'{title} ({year})' if year else title
+        if result == stem:
+            return stem, ''
+
+        return result, f'converted dot-separated torrent filename'
+
     def _apply_cleaning_rules(
         self, stem: str
     ) -> Tuple[str, List[Tuple[str, str]]]:
         """
-        Apply rules 3-7 sequentially.
+        Apply rules 2-7 sequentially.
 
         Returns:
             (cleaned_stem, [(change_type, note), ...])
@@ -178,6 +286,12 @@ class FilenameNormalizer:
         """
         changes: List[Tuple[str, str]] = []
         current = stem
+
+        # Rule 2: convert dot-separated torrent-style filenames (MUST run first)
+        result, note = self._normalize_dot_separated(current)
+        if result != current:
+            changes.append(('strip_junk', note))
+            current = result
 
         # Rule 3: strip [TAG] bracket prefix
         result, note = self._strip_bracket_prefix(current)

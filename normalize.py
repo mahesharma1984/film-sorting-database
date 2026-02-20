@@ -46,7 +46,9 @@ def scan_directory(source_dir: Path) -> list[Path]:
     """Return all video files in source_dir (non-recursive)."""
     return sorted(
         f for f in source_dir.iterdir()
-        if f.is_file() and f.suffix.lower() in VIDEO_EXTENSIONS
+        if f.is_file()
+        and f.suffix.lower() in VIDEO_EXTENSIONS
+        and not f.name.startswith('._')  # skip macOS resource fork sidecars
     )
 
 
