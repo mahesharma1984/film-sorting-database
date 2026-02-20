@@ -352,7 +352,7 @@ SATELLITE_ROUTING_RULES = {
     'Classic Hollywood': {
         'country_codes': ['US'],
         'decades': ['1930s', '1940s', '1950s'],
-        'genres': [],  # Issue #16: genre gate removed - decade (1930s-1950s) + US is sufficient gate
+        'genres': None,  # Issue #16: genre gate removed - decade (1930s-1950s) + US is sufficient gate
         'directors': [],  # Country + decade driven, not director-specific
     },
     # Functional arthouse catch-all — NOT a historical wave category.
@@ -376,9 +376,13 @@ SATELLITE_ROUTING_RULES = {
             'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL',
             # Added (Issue #20): East/South Asian and underrepresented film nations
             'CN', 'TW', 'KR', 'IR', 'JP', 'HU', 'IN', 'RO',
+            # Historical country codes: Czechoslovakia (pre-1993 split into CZ + SK)
+            'CS', 'XC',
+            # Additional European film nations
+            'RU', 'GR', 'BG',
         ],
         'decades': ['1960s', '1970s', '1980s', '1990s', '2000s', '2010s', '2020s'],  # extended back (Issue #20)
-        'genres': ['Drama', 'Romance', 'Thriller'],  # Issue #16: added Thriller (Comedy removed - too broad)
+        'genres': ['Drama', 'Romance', 'Thriller', 'Science Fiction'],  # added Sci-Fi for arthouse SF (Ikarie XB-1, Fantastic Planet)
         'directors': [
             # US indie (director match fires regardless of country_codes exclusion)
             'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',

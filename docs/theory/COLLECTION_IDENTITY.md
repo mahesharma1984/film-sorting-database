@@ -120,3 +120,4 @@ The smallest tier is Reference. This is also not an accident. It says: you resis
 - [MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md) — Why the archive contains exploitation cinema
 - [POPCORN_WAVES.md](POPCORN_WAVES.md) — The parallel studio cinema history
 - [FORMAT_AS_INTENTION.md](FORMAT_AS_INTENTION.md) — Why format choices are curatorial acts
+- [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) — How the living system described in §6 ("Not Fixed") works in practice: the history of all category splits and retroactive applications

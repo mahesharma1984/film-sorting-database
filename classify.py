@@ -616,7 +616,10 @@ class FilmClassifier:
                 )
 
         # === Stage 8: TMDb-based satellite classification ===
-        if tmdb_data:
+        # Also fires when tmdb_data is None but metadata.director is set (from filename).
+        # satellite.py constructs a minimal director-only dict in that case, enabling
+        # director-list routing rules (FNW, Indie Cinema directors) to fire without API data.
+        if tmdb_data or metadata.director:
             satellite_cat = self.satellite_classifier.classify(metadata, tmdb_data)
             if satellite_cat:
                 self.stats['tmdb_satellite'] += 1
