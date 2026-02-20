@@ -320,6 +320,27 @@ SATELLITE_ROUTING_RULES = {
             'ernest dickerson', 'ernest r. dickerson',
         ],
     },
+    # Director-only routing — like French New Wave (no country gate).
+    # Issue #27: Post-Production Code prestige studio cinema, c.1965–1985.
+    # Must come BEFORE American Exploitation (both US 1960s-1980s; AmNH is more specific).
+    # Coppola + Scorsese: minor/indie work routes here; prestige work → Core when whitelisted
+    # (Core check fires first, so whitelisted directors never reach this entry).
+    'American New Hollywood': {
+        'country_codes': [],   # Director-only (adding US would auto-route all US films)
+        'decades': ['1960s', '1970s', '1980s'],  # captures 1965-1985 span
+        'genres': [],          # Director-only (no genre fallback)
+        'directors': [
+            'fosse',        # Bob Fosse — Category Core
+            'ashby',        # Hal Ashby — Category Core
+            'pakula',       # Alan J. Pakula — Category Core
+            'pollack',      # Sydney Pollack — Category Reference
+            'lumet',        # Sidney Lumet — Category Reference
+            'bogdanovich',  # Peter Bogdanovich — Category Reference
+            'altman',       # Robert Altman — Category Reference
+            'coppola',      # Francis Ford Coppola — minor/indie work; prestige → Core when whitelisted
+            'scorsese',     # Martin Scorsese — minor/indie work; prestige → Core when whitelisted
+        ],
+    },
     'American Exploitation': {
         'country_codes': ['US'],
         'decades': ['1960s', '1970s', '1980s'],  # NARROWED (Issue #14): was 1960s-2000s

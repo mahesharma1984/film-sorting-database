@@ -296,9 +296,11 @@
 - Tommy (1975) → 1970s/Satellite/Music Films/
 - The Beatles - First U.S. Visit → 1970s/Satellite/Music Films/
 
+### Satellite - American New Hollywood
+- All That Jazz (1979) - Bob Fosse → 1970s/Satellite/American New Hollywood/
+- Being There (1979) - Hal Ashby → 1970s/Satellite/American New Hollywood/
+
 ### Satellite - Indie Cinema
-- All That Jazz (1979) → 1970s/Satellite/Indie Cinema/ [MISCLASSIFIED: should be American New Hollywood — reclassify when category is added to SATELLITE_ROUTING_RULES, Issue #27]
-- Being There (1979) → 1970s/Satellite/Indie Cinema/ [MISCLASSIFIED: should be American New Hollywood — reclassify when category is added to SATELLITE_ROUTING_RULES, Issue #27]
 
 ### Popcorn
 - Young Frankenstein (1974) 16mm → 1970s/Popcorn/

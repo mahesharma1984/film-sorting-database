@@ -58,7 +58,7 @@ class SortingDatabaseLookup:
                     continue
 
                 # Skip lines with notes/comments
-                if '[NOTE' in line or '[BORDER' in line or '[Wrong' in line or '[OR ' in line:
+                if '[NOTE' in line or '[BORDER' in line or '[Wrong' in line or '[OR ' in line or '[MISCLASSIFIED' in line:
                     continue
 
                 # Try standard format first: "Title (Year) → Destination"
