@@ -283,6 +283,27 @@ The classifier uses **parallel query with smart merge**, not fallback:
 - **Country:** OMDb > TMDb > filename (OMDb fixes TMDb's weakness)
 - **Genres:** TMDb > OMDb (TMDb has richer structured data)
 - **Year:** filename > OMDb > TMDb (filename is curated, highest trust)
+- **Text (overview/plot):** longer source wins — Wikipedia > TMDb overview > OMDb plot (encyclopedic preferred; deferred pending Issue #29)
+
+**Fields extracted from each API (Issue #29 adds text fields):**
+
+| Field | TMDb | OMDb | Notes |
+|---|---|---|---|
+| director | ✓ | ✓ | OMDb wins |
+| countries | ✓ | ✓ | OMDb wins |
+| genres | ✓ | ✓ | TMDb wins |
+| keywords | ✓ | — | Used for Satellite keyword routing (Issue #29) |
+| overview | ✓ | — | Plot summary — add to result dict (Issue #29) |
+| tagline | ✓ | — | Marketing tagline — add to result dict (Issue #29) |
+| plot | — | ✓ | Add `plot=full` param; extract `Plot` field (Issue #29) |
+| popularity | ✓ | — | Popcorn signal |
+| vote_count | ✓ | ✓ | Popcorn signal |
+
+**Keyword routing (Issue #29):** Each satellite category defines a `keyword_signals` list in `SATELLITE_ROUTING_RULES`. Keyword evidence adds two new routing sub-rules inside the Satellite stage:
+- **Tier A:** country + decade + keyword match → route (keyword substitutes for genre gate)
+- **Tier B:** TMDb keyword alone → route (French New Wave and American New Hollywood only — movement-specific tags are high-confidence without structural corroboration)
+
+Keyword signals apply to **positive-space categories only** (named historical movements with distinctive vocabulary). Indie Cinema and Popcorn have no keyword routing — they are negative-space categories defined by the absence of other signals. See `docs/theory/MARGINS_AND_TEXTURE.md` §8.
 
 **Implementation:** `classify.py` methods `_query_apis()` and `_merge_api_results()` handle parallel querying and intelligent merging. Both APIs use persistent JSON caching to minimize costs.
 

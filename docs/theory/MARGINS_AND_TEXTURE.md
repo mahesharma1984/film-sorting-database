@@ -137,6 +137,30 @@ This is the museum analogy at its strongest: a gallery of Godard films is intere
 
 ---
 
+## 8. Positive-Space vs. Negative-Space Categories (Issue #29)
+
+The seventeen satellite categories divide into two fundamentally different types. This distinction matters for how the classification system can be improved.
+
+**Positive-space categories** have a real historical identity with distinctive vocabulary. Giallo, French New Wave, Blaxploitation, Hong Kong Action — these are named movements with documented scholarship, specific studio systems, and a critical lexicon that appears in contemporary and retrospective writing. If you read a Wikipedia article, a Criterion essay, or a TMDb plot summary about a film in these categories, the text will often use the movement's own terms: "giallo", "nouvelle vague", "pornochanchada", "yakuza eiga". This vocabulary is specific enough that its presence in a film's metadata is a meaningful signal. A film tagged "nouvelle vague" by TMDb's crowd-curators almost certainly belongs in French New Wave. A film whose plot summary mentions "giallo" is almost certainly Italian genre cinema of the relevant period.
+
+This is why keyword signals can improve classification for positive-space categories: the words that define the category appear in the data we already have, and matching those words against a film's text fields (TMDb overview, TMDb keywords, OMDb plot) adds a third routing path alongside director matching and country+genre matching.
+
+**Negative-space categories** have no such vocabulary. Indie Cinema, Popcorn, and Classic Hollywood (to a lesser degree) are defined not by what they ARE but by what they are NOT. Indie Cinema is the category reached when a film is:
+- not by a Core auteur
+- not in the Reference canon
+- not mainstream popular enough for Popcorn
+- not a named exploitation or movement category
+
+There is no word that means "this is an Indie Cinema film." "Art house", "independent film", "festival film" all appear in texts about Core auteurs (Godard is an arthouse filmmaker), in promotional copy for prestige Popcorn films (Oscar bait is often called "independent"), and in texts about Satellite movement films (the French New Wave was independent of the studio system). These terms cannot distinguish Indie Cinema from adjacent categories.
+
+Keyword signals applied to Indie Cinema would produce widespread false positives and collapse the tier boundaries that make the classification meaningful. The negative-space categories must remain structurally defined — reached only when all positive-space routes have failed — and no amount of text enrichment can substitute for this.
+
+**The practical implication:** Classification improvement through text signals is bounded by this distinction. Keyword enrichment can recover films that belong in positive-space categories but are currently falling through to Indie Cinema due to incomplete structural data (e.g., a Nouvelle Vague film whose director name is a variant spelling). It cannot improve Indie Cinema classification itself, because Indie Cinema has no positive definition to improve.
+
+This is also why Wikipedia corpus integration (deferred, Issue #29) would have asymmetric value: encyclopedic plot text helps identify positive-space films (the Wikipedia article for an Alain Resnais film says "a key work of the French New Wave" in the first paragraph), but it adds nothing for films that genuinely belong in Indie Cinema, since those films are defined by the absence of a movement rather than the presence of one.
+
+---
+
 ## Cross-References
 
 - [COLLECTION_THESIS.md](COLLECTION_THESIS.md) — Satellite as "interest" in the four-relationship model; satellite categories as wave-specific phenomena

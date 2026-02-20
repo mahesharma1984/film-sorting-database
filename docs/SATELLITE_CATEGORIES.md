@@ -17,6 +17,11 @@
 - 1960s-1980s peak
 - Directors: Mario Bava, Dario Argento, Lucio Fulci, Sergio Martino, Michele Soavi, Umberto Lenzi
 
+**Keyword signals (Issue #29):**
+- TMDb tags: `giallo`, `italian horror`, `psychosexual thriller`, `black-gloved killer`
+- Text terms: `giallo`, `stylized violence`, `voyeurism`, `whodunit`, `fetishism`, `italian genre`
+- Routing tier: **A only** (keyword reinforces country+decade match; cannot route alone)
+
 **Films in Collection:**
 - Blood and Black Lace (likely Bava)
 - A Bay of Blood (Bava)
@@ -46,6 +51,11 @@
 - Roman Porno, independent pink films
 - Directors: Kōji Wakamatsu, Tatsumi Kumashiro, Noboru Tanaka, Yasuzō Masumura (Issue #6)
 
+**Keyword signals (Issue #29):**
+- TMDb tags: `pink film`, `roman porno`, `pinku eiga`, `nikkatsu`, `erotic drama`
+- Text terms: `pink film`, `roman porno`, `erotica`, `softcore`, `pinku`, `nikkatsu`
+- Routing tier: **A only** (keyword reinforces country+decade match; cannot route alone)
+
 **Films in Collection:**
 - Go Go Second Time Virgin (1969)
 - Gate of Flesh (1964) - Seijun Suzuki (this is Core, not Satellite!)
@@ -73,6 +83,11 @@
 - Distinct from Pinku Eiga (erotic) - focuses on violence/action
 - Directors: Kinji Fukasaku (Battle Royale, Battles Without Honor and Humanity series)
 
+**Keyword signals (Issue #29):**
+- TMDb tags: `yakuza`, `jidaigeki`, `toei`, `chambara`, `japanese crime film`
+- Text terms: `yakuza`, `gang war`, `crime syndicate`, `organized crime`, `samurai`, `toei`
+- Routing tier: **A only** (keyword reinforces country+decade match; cannot route alone)
+
 **Films in Collection:**
 - (To be classified)
 
@@ -89,6 +104,11 @@
 ---
 
 ### 4. BRAZILIAN PORNOCHANCHADA / EXPLOITATION
+
+**Keyword signals (Issue #29):**
+- TMDb tags: `pornochanchada`, `boca do lixo`, `brazilian exploitation`
+- Text terms: `pornochanchada`, `chanchada`, `boca do lixo`, `embrafilme`, `erotic comedy`
+- Routing tier: **A only** — note: expected low hit rate (TMDb/OMDb coverage of Brazilian exploitation is thin). Keywords are supplementary to the primary country+decade routing gate.
 
 **Definition:**
 - Brazilian erotic comedies and exploitation
@@ -132,6 +152,11 @@
 ---
 
 ### 5. HONG KONG ACTION / MARTIAL ARTS / CATEGORY III
+
+**Keyword signals (Issue #29):**
+- TMDb tags: `martial arts`, `wuxia`, `kung fu`, `triad`, `heroic bloodshed`, `shaw brothers`, `hong kong action`
+- Text terms: `martial arts`, `kung fu`, `wuxia`, `swordplay`, `triad`, `heroic bloodshed`, `shaw brothers`, `golden harvest`, `category iii`
+- Routing tier: **A only** (keyword reinforces country+decade match; cannot route alone)
 
 **Definition:**
 - HK genre cinema outside of Core auteurs (Wong Kar-wai, Johnnie To, Ann Hui)
@@ -185,6 +210,11 @@
 
 ### 6. AMERICAN NEW HOLLYWOOD (NEW - Issue #27)
 
+**Keyword signals (Issue #29):**
+- TMDb tags: `new hollywood`, `american new wave`, `counterculture`, `post-code`
+- Text terms: `new hollywood`, `new american cinema`, `post-production code`, `counterculture`, `vietnam era`, `anti-establishment`
+- Routing tier: **A and B** — Tier B eligible because "new hollywood" and "american new wave" as TMDb tags are movement-specific enough to route without a director match. Text terms alone are insufficient for Tier B.
+
 **Definition:**
 - Post-Production Code prestige studio cinema, c.1965–1985
 - The bounded industrial moment when a generation of directors reshaped American studio filmmaking between the collapse of the Code and the blockbuster era
@@ -231,6 +261,11 @@
 ---
 
 ### 7. AMERICAN EXPLOITATION / GRINDHOUSE / VHS CULT
+
+**Keyword signals (Issue #29):**
+- TMDb tags: `grindhouse`, `exploitation film`, `b-movie`, `troma`, `slasher`, `drive-in movie`
+- Text terms: `grindhouse`, `drive-in`, `exploitation`, `splatter`, `gore`, `b-movie`, `troma`, `low budget horror`
+- Routing tier: **A only** — supplements the existing title keyword gate; keyword evidence is additive, not a replacement for the gate.
 
 **Definition:**
 - American exploitation, grindhouse, direct-to-video cult
@@ -303,6 +338,11 @@
 
 ### 9. EUROPEAN SEXPLOITATION / ARTHOUSE-ADJACENT EROTICA
 
+**Keyword signals (Issue #29):**
+- TMDb tags: `erotic film`, `softcore`, `sexploitation`, `european erotica`
+- Text terms: `erotic film`, `softcore`, `erotica`, `sexploitation`, `adult film`, `european erotica`
+- Routing tier: **A only** (keyword reinforces country+decade+genre match; cannot route alone)
+
 **Definition:**
 - European erotic cinema that's not quite auteur, not quite pure exploitation
 - 1960s-1980s
@@ -330,6 +370,11 @@
 ---
 
 ### 10. BLAXPLOITATION
+
+**Keyword signals (Issue #29):**
+- TMDb tags: `blaxploitation`, `african american`, `inner city`, `black power`
+- Text terms: `blaxploitation`, `soul`, `ghetto`, `black power`, `inner city`, `african american exploitation`
+- Routing tier: **A only** — supplements the existing title keyword gate.
 
 **Definition:**
 - 1970s Black action/exploitation cinema (extended to 1990s for Ernest Dickerson - Issue #6)
@@ -374,6 +419,11 @@
 ---
 
 ### 12. MUSIC / CONCERT FILMS (NON-CORE)
+
+**Keyword signals (Issue #29):**
+- TMDb tags: `concert film`, `rockumentary`, `musical performance`, `rock documentary`
+- Text terms: `concert film`, `rockumentary`, `music documentary`, `live performance`
+- Routing tier: **A only** — supplements the genre gate (Music/Musical/Documentary).
 
 **Definition:**
 - Concert films, music documentaries not by Core directors
@@ -438,6 +488,11 @@
 
 ### 15. FRENCH NEW WAVE (NEW - Issue #14)
 
+**Keyword signals (Issue #29):**
+- TMDb tags: `nouvelle vague`, `french new wave`, `new wave`, `cinéma vérité`, `cinema verite`
+- Text terms: `nouvelle vague`, `new wave`, `jump cut`, `cinéma vérité`, `left bank`, `french new wave`
+- Routing tier: **A and B** — Tier B eligible because "nouvelle vague" and "french new wave" as TMDb tags are movement-specific enough to route without a director match. Text terms alone are insufficient for Tier B.
+
 **Definition:**
 - French art cinema from the Nouvelle Vague movement
 - Non-Core directors who participated in or orbited the movement
@@ -465,6 +520,10 @@
 ---
 
 ### 16. INDIE CINEMA (NEW - Issue #14, WIDENED - Issue #20)
+
+**Keyword signals (Issue #29):** NONE — no keyword routing.
+
+Indie Cinema is a **negative-space category** defined by what it is NOT (not exploitation, not Popcorn mainstream, not Core auteur, not a named historical movement). No keyword set can define it positively without widespread false positives: "art house", "independent film", "festival film" all appear in texts about Core auteurs, French New Wave films, and prestige Popcorn alike. Indie Cinema is reached structurally — when all other satellite routing fails — and keyword signals cannot accelerate or improve this. See `docs/theory/MARGINS_AND_TEXTURE.md` §8.
 
 **Definition:**
 - Functional arthouse catch-all for non-exploitation, non-Popcorn, non-Core films
@@ -495,6 +554,11 @@
 ---
 
 ### 17. CLASSIC HOLLYWOOD (NEW - Issue #14)
+
+**Keyword signals (Issue #29):**
+- TMDb tags: `film noir`, `pre-code`, `golden age of hollywood`, `screwball comedy`, `classical hollywood`
+- Text terms: `film noir`, `golden age`, `studio system`, `pre-code`, `screwball comedy`, `hays code`
+- Routing tier: **A only** — supplements the country+decade gate (US 1930s-1950s is already a tight structural gate; keywords confirm genre classification within that window).
 
 **Definition:**
 - American studio cinema from classical era
