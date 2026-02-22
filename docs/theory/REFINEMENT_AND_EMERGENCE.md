@@ -95,7 +95,7 @@ Rule changes require:
 - Director gates for movements that are person-driven rather than country-driven
 - Tests in `tests/test_satellite.py`
 
-### Component 3: Cache invalidation and re-classification
+### Component 3: Cache invalidation and re-classification of new files
 
 After rule changes, the API cache may contain stale data. Run:
 ```bash
@@ -103,7 +103,68 @@ python scripts/invalidate_null_cache.py conservative
 python classify.py <source_directory>
 ```
 
-For files already in tier folders, the classifier will not re-examine them. Manual file moves (or a future `--audit-existing` mode) are required for retroactive reclassification of already-sorted files.
+This handles new files entering through the Unsorted queue. For existing library films, see §4a below.
+
+---
+
+## 4a. The Curatorial Lifecycle
+
+The classification pipeline handles one direction: new films enter through Unsorted, get classified, and get moved to the library. But curation is a cycle, not a one-way pipeline. Categories get redefined. Routing rules tighten. Connoisseurship deepens. Films that were placed correctly under old rules may be wrong under current ones — and films that were placed manually before the pipeline existed may never have been evaluated against any rules at all.
+
+The full curatorial lifecycle has five stages:
+
+### Stage 1: Define
+
+Establish category identity. A category must satisfy the three conditions (§2: density, coherence, archival necessity) and have clear boundaries encoded in `SATELLITE_ROUTING_RULES`: country codes, decade bounds, genre gates, director lists, keyword signals. Historical categories are director-gated and movement-anchored. Functional categories are negatively defined.
+
+This is the work documented in `docs/SATELLITE_CATEGORIES.md` and `lib/constants.py`.
+
+### Stage 2: Cluster
+
+Route films into categories using the available data. The classification pipeline (`classify.py`) applies the routing rules to produce an initial assignment. This is approximate — it depends on API data quality, filename parsing accuracy, and the completeness of director lists and keyword signals. The initial clustering is a hypothesis, not a verdict.
+
+For new films, `classify.py` handles this. For films already in the library, there is currently no automated mechanism to re-evaluate their placement (see Issue #31). The library audit (`audit.py`) reports what is in each folder but does not check whether it belongs there.
+
+**The gap:** The pipeline was designed assuming manual organisation was correct and only new files needed classification. That assumption was wrong. Films placed by hand before the pipeline existed — and films placed by earlier, looser routing rules — are never re-evaluated. This is the single largest source of category pollution.
+
+### Stage 3: Refine
+
+Compare each film's current placement against the current routing rules and flag discrepancies. This is the re-audit step: run the classifier on existing library contents and surface films where "folder says X, classifier says Y."
+
+The output is a discrepancy report, not an automatic move. The curator reviews each flagged film and decides:
+- **Reclassify:** the film genuinely belongs elsewhere; move it
+- **Pin:** the film is correctly placed despite the routing rules (edge case); add it to SORTING_DATABASE.md to override future routing
+- **Investigate:** the routing rules themselves may be wrong; the discrepancy reveals a definition problem
+
+This stage does not yet have tooling. It requires a re-classification audit script (Issue #31).
+
+### Stage 4: Retain and discard
+
+Once categories contain only films that belong there, apply within-category hierarchy (SATELLITE_DEPTH.md §3–4). Identify Category Core films (define the tradition), Category Reference (essential range), and texture (skilled practitioners). Films below the cap are kept. Films above the cap are ranked: tentpoles stay, texture is the first to be cut.
+
+This is the tentpole ranking described in Issue #30. It depends on Stage 3 being complete — you cannot rank films within a category if the category contains films that don't belong there.
+
+### Stage 5: Reinforce
+
+Confirmed curatorial decisions feed back into the classification model:
+- Films pinned during Stage 3 are added to SORTING_DATABASE.md (explicit lookup, highest trust)
+- Directors identified as Category Core during Stage 4 are added to `core_directors` in routing rules
+- Keyword patterns discovered during refinement are added to `keyword_signals`
+- Caps are adjusted based on actual curatorial engagement, not collection size
+
+Each pass through the cycle makes the routing rules more precise, which makes the next clustering more accurate, which reduces the refinement burden. The system gets smarter — but only if every stage completes.
+
+### The cycle is continuous
+
+```
+Define → Cluster → Refine → Retain/Discard → Reinforce
+  ↑                                              │
+  └──────────────────────────────────────────────┘
+```
+
+The lifecycle is not a one-time migration. It is the ongoing operating model. Monthly reviews (TIER_ARCHITECTURE.md §8) are micro-iterations of this cycle. Category splits (§3 of this document) are macro-iterations. The tentpole ranking process (Issue #30) is a systematic pass through Stages 4–5 across all categories.
+
+**Current status (2026-02):** The system has been operating at Stage 2 (clustering new films) since the pipeline was built. Stages 3–5 have not been executed systematically against the existing library. The ~500 films placed before the pipeline existed have never been re-evaluated. This is the architectural gap that Issue #31 addresses.
 
 ---
 
@@ -203,6 +264,7 @@ The test in every case: wait for density, look for coherence, confirm archival n
 | **Three conditions for a new category** | Density (enough films), coherence (historical or functional), archival necessity (the films would be lost without it) |
 | **Two kinds of category** | Historical (movement-bounded, director-gated) and Functional (negatively defined, catch-all with principles) |
 | **Retroactive application is mandatory** | A new category that is not applied to existing films is incomplete. Update SORTING_DATABASE.md, update constants.py, re-classify. |
+| **Curation is a cycle, not a pipeline** | Define → Cluster → Refine → Retain/Discard → Reinforce. Each pass makes the routing rules more precise. The system only gets smarter if every stage completes (§4a). |
 | **Routing order encodes the hierarchy** | Historical categories before functional; specific before general; first match wins |
 | **Shadow cinema** | Every satellite category is the shadow of something in Core or Reference. Identify it. |
 | **Split to clarify; merge to simplify** | Over-splitting creates noise; over-merging loses information. The three-condition test is the guard against both. |

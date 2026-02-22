@@ -23,6 +23,8 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | What is the Reference canon? | 50-film hardcoded list | `docs/REFERENCE_CANON_LIST.md` |
 | What are the 4 tiers? | Core, Reference, Satellite, Popcorn | `docs/theory/TIER_ARCHITECTURE.md` |
 | How do satellite decade boundaries work? | Historically bounded categories | `docs/theory/MARGINS_AND_TEXTURE.md` |
+| What is the curatorial lifecycle? | Define → Cluster → Refine → Retain/Discard → Reinforce | `docs/theory/REFINEMENT_AND_EMERGENCE.md` §4a |
+| How do I re-audit existing library films? | Re-classification audit (Issue #31) | `docs/theory/REFINEMENT_AND_EMERGENCE.md` §4a |
 | How do I run tests? | pytest tests/ | `docs/DEVELOPER_GUIDE.md` |
 | What is the R/P Split? | Reasoning vs Precision separation | `CLAUDE.md` |
 | How do I commit changes? | Use git commit workflow | `docs/DEVELOPER_GUIDE.md` |

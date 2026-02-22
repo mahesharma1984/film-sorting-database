@@ -158,6 +158,8 @@ Category Core directors → full filmographies → potential promotion to global
 
 The within-category vetting is not a retroactive filing exercise. It is an active seeking programme. Once you know who the masters of a tradition are, you know what to find.
 
+**Prerequisite:** Vertical seeking assumes the category contains only films that belong there. If the category is polluted with misclassified films (placed manually or by earlier routing rules), the patterns that emerge from watching are distorted. The re-audit step (REFINEMENT_AND_EMERGENCE.md §4a, Stage 3) must precede within-category vetting for any category whose contents have not been validated against current routing rules.
+
 ---
 
 ## 6. How Exploitation Directors Become Auteurs
