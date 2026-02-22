@@ -1289,6 +1289,175 @@ def render_thread_discovery(df: pd.DataFrame):
 
 
 # ---------------------------------------------------------------------------
+# Tentpole Rankings
+# ---------------------------------------------------------------------------
+
+def _parse_rankings_md(path: Path) -> dict:
+    """Parse output/tentpole_rankings.md into structured dict keyed by category."""
+    if not path.exists():
+        return {}
+    text = path.read_text(encoding='utf-8')
+    categories = {}
+
+    # Split on category headers: ## Category Name — Tentpole Ranking
+    sections = re.split(r'^## ', text, flags=re.MULTILINE)
+    for section in sections[1:]:  # skip preamble
+        lines = section.strip().split('\n')
+        header = lines[0]
+        m = re.match(r'(.+?) — Tentpole Ranking', header)
+        if not m:
+            continue
+        cat_name = m.group(1).strip()
+
+        # Parse summary line: *N films in collection | Cap: N | N films lack API data*
+        count, cap, no_data = 0, 0, 0
+        for line in lines[:5]:
+            sm = re.match(r'\*(\d+) films in collection \| Cap: (\d+) \| (\d+) films lack', line)
+            if sm:
+                count, cap, no_data = int(sm.group(1)), int(sm.group(2)), int(sm.group(3))
+                break
+
+        # Parse tier blocks and films
+        films = []
+        current_tier = 'Texture'
+        for line in lines:
+            tier_m = re.match(r'### (Category Core|Category Reference|Texture)', line)
+            if tier_m:
+                label = tier_m.group(1)
+                if 'Core' in label:
+                    current_tier = 'Core'
+                elif 'Reference' in label:
+                    current_tier = 'Reference'
+                else:
+                    current_tier = 'Texture'
+                continue
+
+            # Film line: N. **Title (year)** — Director — **score/10**
+            fm = re.match(r'\d+\.\s+\*\*(.+?)\s+\((\d{4})\)\*\*\s*—\s*(.*?)\s*—\s*\*\*(\d+)/10\*\*', line)
+            if fm:
+                title, year, director, score = fm.group(1), int(fm.group(2)), fm.group(3).strip(), int(fm.group(4))
+                films.append({
+                    'title': title, 'year': year, 'director': director,
+                    'score': score, 'tier': current_tier,
+                    'breakdown': '', 'keywords': '',
+                })
+                continue
+
+            # Breakdown line immediately after film
+            if films and line.strip().startswith('`director:'):
+                films[-1]['breakdown'] = line.strip().strip('`')
+                continue
+
+            # Keywords line
+            if films and line.strip().startswith('Keywords:'):
+                films[-1]['keywords'] = line.strip()[len('Keywords:'):].strip()
+
+        categories[cat_name] = {
+            'count': count, 'cap': cap, 'no_data': no_data, 'films': films
+        }
+    return categories
+
+
+@st.cache_data(ttl=60)
+def load_rankings_data() -> dict:
+    path = PROJECT_ROOT / 'output' / 'tentpole_rankings.md'
+    return _parse_rankings_md(path)
+
+
+def render_tentpole_rankings(_df: pd.DataFrame):
+    """Tentpole Rankings section — per-category curation guide."""
+    st.header("Tentpole Rankings")
+    st.caption(
+        "AI-scored ranking per Satellite category. "
+        "**Core** (8–10) = keep last. **Reference** (5–7) = keep if cap allows. "
+        "**Texture** (0–4) = cut first when over cap."
+    )
+
+    rankings = load_rankings_data()
+    if not rankings:
+        st.warning("No rankings data found. Run: `python scripts/rank_category_tentpoles.py --all --output output/tentpole_rankings.md`")
+        return
+
+    # Category selector
+    cats = sorted(rankings.keys())
+    col_sel, col_info = st.columns([2, 3])
+    with col_sel:
+        selected_cat = st.selectbox("Category", cats)
+    data = rankings[selected_cat]
+
+    # Cap status
+    count, cap = data['count'], data['cap']
+    over = count - cap
+    with col_info:
+        st.markdown(f"**{count}** films | Cap: **{cap}** | "
+                    + (f":red[{over} over cap — cut {over} films]" if over > 0
+                       else f":green[{cap - count} slots remaining]"))
+
+    films = data['films']
+    if not films:
+        st.info("No films ranked in this category.")
+        return
+
+    # Build DataFrame for display
+    rows = []
+    for f in films:
+        # Parse breakdown string: "director:3 decade:2 keywords:2 canonical:0 text:0 external:0"
+        bd = {}
+        for part in f['breakdown'].split():
+            if ':' in part:
+                k, v = part.split(':', 1)
+                bd[k] = v
+        rows.append({
+            'Tier': f['tier'],
+            'Score': f['score'],
+            'Title': f['title'],
+            'Year': f['year'],
+            'Director': f['director'],
+            'Dir': bd.get('director', ''),
+            'Dec': bd.get('decade', ''),
+            'Kw': bd.get('keywords', ''),
+            'Can': bd.get('canonical', ''),
+            'Txt': bd.get('text', ''),
+            'Ext': bd.get('external', ''),
+            'Keywords matched': f['keywords'],
+        })
+    rdf = pd.DataFrame(rows)
+
+    # Color rows by tier
+    tier_colors_bg = {'Core': '#2d4a2d', 'Reference': '#2d3a4a', 'Texture': '#1e1e1e'}
+    tier_order = {'Core': 0, 'Reference': 1, 'Texture': 2}
+    rdf['_order'] = rdf['Tier'].map(tier_order)
+    rdf = rdf.sort_values(['_order', 'Score'], ascending=[True, False]).drop(columns='_order')
+
+    # Tier sections
+    for tier in ['Core', 'Reference', 'Texture']:
+        tier_films = rdf[rdf['Tier'] == tier]
+        if tier_films.empty:
+            continue
+        icons = {'Core': '★ Category Core', 'Reference': '◆ Category Reference', 'Texture': '▽ Texture'}
+        labels = {'Core': 'keep last — defines what this category means',
+                  'Reference': 'keep if cap allows',
+                  'Texture': 'cut first when over cap'}
+        st.subheader(f"{icons[tier]} — {labels[tier]}")
+        display = tier_films[['Score', 'Title', 'Year', 'Director', 'Dir', 'Dec', 'Kw', 'Can', 'Txt', 'Ext', 'Keywords matched']].reset_index(drop=True)
+        display.index += 1
+        st.dataframe(
+            display,
+            use_container_width=True,
+            column_config={
+                'Score': st.column_config.ProgressColumn('Score', min_value=0, max_value=10, format='%d'),
+                'Dir': st.column_config.NumberColumn('Dir', help='director_tier (0–3)', width='small'),
+                'Dec': st.column_config.NumberColumn('Dec', help='decade_match (0–2)', width='small'),
+                'Kw': st.column_config.NumberColumn('Kw', help='keyword_alignment (0–2)', width='small'),
+                'Can': st.column_config.NumberColumn('Can', help='canonical_recognition (0–1)', width='small'),
+                'Txt': st.column_config.NumberColumn('Txt', help='text_signal (0–1)', width='small'),
+                'Ext': st.column_config.NumberColumn('Ext', help='external_canonical (0–3)', width='small'),
+            },
+            height=min(400, 40 + len(display) * 38),
+        )
+
+
+# ---------------------------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------------------------
 
@@ -1324,7 +1493,7 @@ def render_sidebar():
         # Section navigation
         section = st.radio(
             "Section",
-            ["Collection Overview", "Pipeline Health", "Film Browser", "Thread Discovery"],
+            ["Collection Overview", "Pipeline Health", "Film Browser", "Tentpole Rankings", "Thread Discovery"],
             label_visibility='collapsed',
         )
 
@@ -1351,6 +1520,8 @@ def main():
         render_pipeline_health(df)
     elif section == "Film Browser":
         render_film_browser(df)
+    elif section == "Tentpole Rankings":
+        render_tentpole_rankings(df)
     elif section == "Thread Discovery":
         render_thread_discovery(df)
 
