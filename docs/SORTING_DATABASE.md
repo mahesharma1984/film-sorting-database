@@ -4,10 +4,20 @@
 
 ---
 
+## 1930s FILMS
+
+### Core - William Wyler
+- Wuthering Heights (1939) → Core/1930s/William Wyler/
+
+---
+
 ## 1940s FILMS
 
 ### Core - Orson Welles
 - The Magnificent Ambersons (1942) → 1940s/Core/Orson Welles/
+
+### Core - William Wyler
+- The Little Foxes (1941) → Core/1940s/William Wyler/
 
 ### Reference
 - Citizen Kane (1941) → 1940s/Reference/
@@ -15,6 +25,11 @@
 ---
 
 ## 1950s FILMS
+
+### Core - Billy Wilder
+- Ace in the Hole (1951) → Core/1950s/Billy Wilder/
+- Stalag 17 (1953) → Core/1950s/Billy Wilder/
+- Love in the Afternoon (1957) → Core/1950s/Billy Wilder/
 
 ### Core
 - The Music Room (1958) → 1950s/Core/Satyajit Ray/
@@ -35,6 +50,12 @@
 - Notorious → 1950s/Reference/
 - Dial M for Murder → 1950s/Reference/
 - To Catch a Thief → 1950s/Reference/
+- Princess Yang Kwei Fei (1955) → 1950s/Reference/
+
+### Satellite - Indie Cinema
+- Les Mauvaises Rencontres (1955) → Satellite/Indie Cinema/1950s/
+- La valigia dei sogni (1953) → Satellite/Indie Cinema/1950s/
+- Pandora and the Flying Dutchman (1951) → Satellite/Indie Cinema/1950s/
 
 ### Satellite
 - Les Collegiennes (1957) → 1950s/Satellite/European Sexploitation/
@@ -71,6 +92,7 @@
 - The Umbrellas of Cherbourg (1964) → 1960s/Core/Jacques Demy/
 - The Young Girls of Rochefort (1967) → 1960s/Core/Jacques Demy/
 - Les Copains (1965) → 1960s/Core/Jacques Demy/
+- Donkey Skin (1970) → Core/1970s/Jacques Demy/
 
 ### Core - Bernardo Bertolucci
 - Prima della rivoluzione (1964) → 1960s/Core/Bernardo Bertolucci/
@@ -113,6 +135,9 @@
 - Midnight Cowboy (1969) → 1960s/Reference/
 - Breakfast At Tiffany's (1961) → 1960s/Reference/
 - Belle de Jour (1967) → 1960s/Reference/
+- Picnic On The Grass (1959) → 1960s/Reference/
+- The Dark at the Top of the Stairs (1960) → Popcorn/1960s/
+- The Exiles (1961) → Satellite/Indie Cinema/1960s/
 
 ### Satellite - Pinku Eiga
 - Go Go Second Time Virgin (1969) → 1960s/Satellite/Pinku Eiga/
@@ -176,8 +201,8 @@
 - Le Cercle Rouge (1970) → 1970s/Core/Jean-Pierre Melville/
 
 ### Core - Billy Wilder
-- Avanti! (1972) → Core/Billy Wilder/1970s/
-- The Private Life of Sherlock Holmes (1970) → Core/Billy Wilder/1970s/
+- Avanti! (1972) → Core/1970s/Billy Wilder/
+- The Private Life of Sherlock Holmes (1970) → Core/1970s/Billy Wilder/
 
 ### Core - Jacques Rivette
 - Celine and Julie Go Boating (1974) → 1970s/Core/Jacques Rivette/
@@ -400,6 +425,9 @@
 ### Core - Claude Chabrol
 - The Cry of the Owl (1987) → 1980s/Core/Claude Chabrol/
 
+### Core - Brian De Palma
+- Blow Out (1981) → Core/1980s/Brian De Palma/
+
 ### Core - Pedro Almodóvar
 - Laberinto de pasiones Pedro Almodovar (1982) → Core/1980s/Pedro Almodóvar/
 
@@ -516,10 +544,44 @@
 - La Cérémonie (1995) → 1990s/Core/Claude Chabrol/
 
 ### Core - Coen Brothers
-- Miller's Crossing (1990) → Core/Coen Brothers/1990s/
-- Barton Fink (1991) → Core/Coen Brothers/1990s/
-- Fargo (1996) → Core/Coen Brothers/1990s/
-- The Big Lebowski (1998) → Core/Coen Brothers/1990s/
+- Miller's Crossing (1990) → Core/1990s/Coen Brothers/
+- Barton Fink (1991) → Core/1990s/Coen Brothers/
+- Fargo (1996) → Core/1990s/Coen Brothers/
+- The Big Lebowski (1998) → Core/1990s/Coen Brothers/
+
+### Core - Krzysztof Kieślowski
+- Three Colors: Blue (1993) → Core/1990s/Krzysztof Kieślowski/
+- Three Colors: Red (1994) → Core/1990s/Krzysztof Kieślowski/
+- Three Colors: White (1994) → Core/1990s/Krzysztof Kieślowski/
+
+### Core - Edward Yang
+- A Brighter Summer Day (1991) → Core/1990s/Edward Yang/
+
+### Core - Hou Hsiao-hsien
+- Flowers of Shanghai (1998) → Core/1990s/Hou Hsiao-hsien/
+
+### Core - Pedro Almodóvar
+- Kika (1993) → Core/1990s/Pedro Almodóvar/
+
+### Core - Nicolas Winding Refn
+- Pusher (1996) → Core/1990s/Nicolas Winding Refn/
+- Bleeder (1999) → Core/1990s/Nicolas Winding Refn/
+
+### Core - Raúl Ruiz
+- Three Lives and Only One Death (1996) → Core/1990s/Raúl Ruiz/
+
+### Core - Wong Kar-wai
+- Days of Being Wild (1990) → Core/1990s/Wong Kar-wai/
+- Ashes of Time (1994) → Core/1990s/Wong Kar-wai/
+- Chungking Express (1994) → Core/1990s/Wong Kar-wai/
+- Fallen Angels (1995) → Core/1990s/Wong Kar-wai/
+- Happy Together (1997) → Core/1990s/Wong Kar-wai/
+
+### Core - Johnnie To
+- The Fun The Luck The Tycoon (1990) → Core/1990s/Johnnie To/
+
+### Core - Brian De Palma
+- Snake Eyes (1998) → Core/1990s/Brian De Palma/
 
 ### Satellite - Indie Cinema
 - House Party (1990) → 1990s/Satellite/Indie Cinema/
@@ -569,6 +631,18 @@
 ### Core - Satoshi Kon
 - Tokyo Godfathers → 2000s/Core/Satoshi Kon/
 
+### Core - Seijun Suzuki
+- Pistol Opera (2001) → Core/2000s/Seijun Suzuki/
+
+### Core - Tsai Ming-liang
+- Goodbye Dragon Inn (2003) → Core/2000s/Tsai Ming-liang/
+
+### Core - Pedro Almodóvar
+- Volver (2006) → Core/2000s/Pedro Almodóvar/
+
+### Core - Wong Kar-wai (2000s)
+- My Blueberry Nights (2007) → Core/2000s/Wong Kar-wai/
+
 ### Reference
 - The Matrix (1999) 35mm → 1990s/Reference/
 - The Silence of the Lambs (1991) → 1990s/Reference/
@@ -605,6 +679,18 @@
 ---
 
 ## 2010s FILMS
+
+### Core - Claire Denis
+- Bastards (2013) → Core/2010s/Claire Denis/
+
+### Core - Jim Jarmusch
+- Only Lovers Left Alive (2013) → Core/2010s/Jim Jarmusch/
+
+### Core - Johnnie To
+- Dont Go Breaking My Heart 2 (2014) → Core/2010s/Johnnie To/
+
+### Core - Wong Kar-wai
+- The Grandmaster (2013) → Core/2010s/Wong Kar-wai/
 
 ### Reference
 - The Complete Epic 1901–1959 - HBO Chronological Cut (2016) → 2010s/Reference/
