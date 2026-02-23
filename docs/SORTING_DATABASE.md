@@ -49,7 +49,8 @@
 - Breathless (1960) → 1960s/Core/Jean-Luc Godard/
 - Une Femme est une femme (1961) → 1960s/Core/Jean-Luc Godard/
 - Vivre Sa Vie (1962) → 1960s/Core/Jean-Luc Godard/
-- Le mepris (Contempt) (1963) → 1960s/Core/Jean-Luc Godard/
+- Le mepris (1963) → 1960s/Core/Jean-Luc Godard/
+- Contempt (1963) → 1960s/Core/Jean-Luc Godard/
 - Bande a part (1964) → 1960s/Core/Jean-Luc Godard/
 - Alphaville (1965) → 1960s/Core/Jean-Luc Godard/
 - Masculin Feminin (1966) → 1960s/Core/Jean-Luc Godard/
@@ -72,7 +73,8 @@
 - Les Copains (1965) → 1960s/Core/Jacques Demy/
 
 ### Core - Bernardo Bertolucci
-- Prima della rivoluzione (Before the Revolution) → 1960s/Core/Bernardo Bertolucci/
+- Prima della rivoluzione (1964) → 1960s/Core/Bernardo Bertolucci/
+- Before the Revolution (1964) → 1960s/Core/Bernardo Bertolucci/
 
 ### Core - Stanley Kubrick
 - Dr. Strangelove (1964) → 1960s/Core/Stanley Kubrick/
@@ -164,8 +166,10 @@
 
 ### Core - Satyajit Ray
 - Days and Nights in the Forest (1970) → 1970s/Core/Satyajit Ray/
-- Seemabaddha (Company Limited) (1971) → 1970s/Core/Satyajit Ray/
-- Jana Aranya (The Middleman) (1975) → 1970s/Core/Satyajit Ray/
+- Seemabaddha (1971) → 1970s/Core/Satyajit Ray/
+- Company Limited (1971) → 1970s/Core/Satyajit Ray/
+- Jana Aranya (1975) → 1970s/Core/Satyajit Ray/
+- The Middleman (1975) → 1970s/Core/Satyajit Ray/
 - The Chess Players (1977) → 1970s/Core/Satyajit Ray/
 
 ### Core - John Cassavetes
