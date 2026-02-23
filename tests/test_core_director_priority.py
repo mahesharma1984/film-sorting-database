@@ -49,19 +49,18 @@ class TestCoreDirectorPriority:
         assert "1960s" in result.destination
 
     def test_demy_1970s_routes_to_fnw(self, classifier):
-        """Demy 1970 film → Satellite/French New Wave (Issue #25: movement character first)
+        """Demy 1970 film (no lookup pin) → Satellite/French New Wave
 
         Issue #14 fixed: Demy no longer routes to European Sexploitation.
         Issue #25 change: Demy IS in the FNW directors list, 1970s is within FNW decade bounds
         (1950s-1970s), so Satellite/FNW fires BEFORE the Core director check.
 
-        Films pinned in SORTING_DATABASE.md still route to Core (explicit lookup fires
-        at Stage 2, before Satellite). Donkey Skin has no SORTING_DATABASE entry, so it
-        reaches Satellite routing and correctly lands in French New Wave.
+        Films pinned in SORTING_DATABASE.md route to Core (Stage 2 explicit lookup).
+        This test uses a synthetic Demy title to avoid coupling to evolving manual pins.
         """
         meta = FilmMetadata(
-            filename="Donkey Skin (1970).mkv",
-            title="Donkey Skin",
+            filename="Demy Test Film (1970).mkv",
+            title="Demy Test Film",
             year=1970,
             director="Jacques Demy",
             country="FR"

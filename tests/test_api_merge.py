@@ -66,6 +66,18 @@ class TestTitleCleaning:
         assert "Dr." in clean
         assert ":" in clean
 
+    @pytest.mark.parametrize("title", ["Shadow", "The Conformist", "Shahid"])
+    def test_release_tags_do_not_truncate_real_words(self, classifier, title):
+        """Short release tags (hd/nf) should not match inside normal words."""
+        clean = classifier._clean_title_for_api(title)
+        assert clean == title
+
+    def test_release_tags_still_strip_when_tokenized(self, classifier):
+        """Tokenized release tags should still be removed."""
+        title = "Shadow 1080p NF"
+        clean = classifier._clean_title_for_api(title)
+        assert clean == "Shadow"
+
 
 class TestParallelQuery:
     """Test _query_apis() parallel execution"""

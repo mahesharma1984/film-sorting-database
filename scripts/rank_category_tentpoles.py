@@ -28,7 +28,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from lib.parser import FilenameParser
 from lib.core_directors import CoreDirectorDatabase
-from lib.normalization import normalize_for_lookup
+from lib.normalization import normalize_for_lookup, strip_release_tags
 from lib.constants import SATELLITE_ROUTING_RULES, SATELLITE_TENTPOLES
 
 # ---------------------------------------------------------------------------
@@ -247,7 +247,6 @@ def load_json_cache(path: Path) -> Dict:
 # ---------------------------------------------------------------------------
 # Title cleaning (mirrors classify.py._clean_title_for_api)
 # ---------------------------------------------------------------------------
-from lib.constants import RELEASE_TAGS
 
 _RESIDUAL_PATTERNS = [
     re.compile(r'\b(metro|pc|sr|moc|kl|doc|vo)\b', re.IGNORECASE),
@@ -263,12 +262,7 @@ def clean_title_for_cache(title: str) -> str:
     # Strip user tag brackets [...] and {imdb-tt...} markers
     clean = re.sub(r'\s*\[.+?\]\s*', ' ', clean)
     clean = re.sub(r'\s*\{[^}]+\}\s*', ' ', clean)
-    title_lower = clean.lower()
-    for tag in RELEASE_TAGS:
-        idx = title_lower.find(tag)
-        if idx != -1:
-            clean = clean[:idx]
-            title_lower = title_lower[:idx]
+    clean = strip_release_tags(clean)
     for pat in _RESIDUAL_PATTERNS:
         clean = pat.sub('', clean)
     clean = re.sub(r'\s*\(\s*\)', '', clean)

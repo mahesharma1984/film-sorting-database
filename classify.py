@@ -272,8 +272,7 @@ class FilmClassifier:
         Returns:
             Cleaned title string ready for API query
         """
-        from lib.normalization import _strip_format_signals
-        from lib.constants import RELEASE_TAGS
+        from lib.normalization import _strip_format_signals, strip_release_tags
 
         # Remove user tag brackets
         clean_title = re.sub(r'\s*\[.+?\]\s*', ' ', title)
@@ -282,14 +281,10 @@ class FilmClassifier:
         clean_title = _strip_format_signals(clean_title)
 
         # NEW (Issue #16): Second-pass RELEASE_TAGS truncation
-        # Parser's _clean_title() stops at FIRST tag, this catches survivors
-        # Example: "A Man and a Woman Metro 1080p" → "A Man and a Woman"
-        title_lower = clean_title.lower()
-        for tag in RELEASE_TAGS:
-            idx = title_lower.find(tag)
-            if idx != -1:
-                clean_title = clean_title[:idx]
-                title_lower = title_lower[:idx]
+        # Parser's _clean_title() stops at FIRST tag, this catches survivors.
+        # Uses token-boundary matching so short tags like "hd"/"nf" do not
+        # truncate normal words (e.g. "Shadow", "Conformist").
+        clean_title = strip_release_tags(clean_title)
 
         # NEW (Issue #16): Strip common residual tokens not in RELEASE_TAGS
         # These are tokens that appear mid-title after incomplete parser truncation

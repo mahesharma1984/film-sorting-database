@@ -4,6 +4,38 @@ All notable changes to the Film Sorting Database project.
 
 ---
 
+## [v1.3] - 2026-02-23
+
+### Fixed
+
+- **Release-tag truncation bug in API/cache title cleaning**
+
+  Short release tags (`hd`, `nf`) were being matched as raw substrings during second-pass cleanup. This could truncate valid titles (for example, `Shadow` or `The Conformist`) before TMDb/OMDb lookup.
+
+  Fix: added boundary-aware release-tag stripping in `lib/normalization.py` and updated all affected callers:
+  - `classify.py` (`_clean_title_for_api`)
+  - `scripts/rank_category_tentpoles.py` (`clean_title_for_cache`)
+
+- **Deterministic test failure from stale explicit-lookup assumption**
+
+  `tests/test_core_director_priority.py::test_demy_1970s_routes_to_fnw` assumed `Donkey Skin (1970)` had no explicit lookup pin. `docs/SORTING_DATABASE.md` now explicitly pins this film to Core, so the test failed whenever Stage 2 lookup fired.
+
+  Fix: test now uses a synthetic Demy title with no lookup pin, preserving the intended movement-vs-Core routing assertion without coupling to mutable curator data.
+
+### Added
+
+- **Regression tests for release-tag boundary behavior**
+
+  Added API title-cleaning tests to ensure:
+  - in-word substrings are not treated as release tags (`Shadow`, `The Conformist`, `Shahid`)
+  - tokenized tags are still removed (`Shadow 1080p NF` → `Shadow`)
+
+### Testing
+
+- `pytest tests/ -q` → **295 passed, 1 skipped**
+
+---
+
 ## [v1.2] - 2026-02-17
 
 ### Fixed

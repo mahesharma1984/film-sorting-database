@@ -14,7 +14,7 @@ import re
 import unicodedata
 from typing import List
 
-from lib.constants import FORMAT_SIGNALS
+from lib.constants import FORMAT_SIGNALS, RELEASE_TAGS
 
 
 def _strip_format_signals(title: str) -> str:
@@ -39,6 +39,28 @@ def _strip_format_signals(title: str) -> str:
         title = re.sub(pattern, ' ', title, flags=re.IGNORECASE)
 
     return title.strip()
+
+
+def strip_release_tags(title: str) -> str:
+    """
+    Strip scene-release tokens using token boundaries.
+
+    Keeps substrings inside real words intact (e.g., "Shadow" should not be
+    truncated because "hd" is a release tag).
+    """
+    title_lower = title.lower()
+    cut_idx = None
+
+    for tag in RELEASE_TAGS:
+        pattern = r'(?<![a-zA-Z0-9])' + re.escape(tag) + r'(?![a-zA-Z0-9])'
+        match = re.search(pattern, title_lower)
+        if match and (cut_idx is None or match.start() < cut_idx):
+            cut_idx = match.start()
+
+    if cut_idx is None:
+        return title.strip()
+
+    return title[:cut_idx].strip()
 
 
 def normalize_for_lookup(title: str, strip_format_signals: bool = True) -> str:
