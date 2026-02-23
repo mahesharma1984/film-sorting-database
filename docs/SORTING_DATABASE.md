@@ -76,6 +76,7 @@
 - Alphaville (1965) → 1960s/Core/Jean-Luc Godard/
 - Masculin Feminin (1966) → 1960s/Core/Jean-Luc Godard/
 - La Chinoise (1967) → 1960s/Core/Jean-Luc Godard/
+- i (1967) → Core/1960s/Jean-Luc Godard/
 
 ### Core - Jean-Pierre Melville
 - Le Samourai (1967) → 1960s/Core/Jean-Pierre Melville/
@@ -158,6 +159,7 @@
 ### Satellite - European Sexploitation
 - Femina Ridens (1969) → 1960s/Satellite/European Sexploitation/
 - Girl with a Suitcase (1961) → 1960s/Satellite/European Sexploitation/
+- Blood and Roses (1960) → Satellite/European Sexploitation/1960s/
 
 ### Satellite - Cult Oddities
 - Skidoo (1968) → 1960s/Satellite/Cult Oddities/
@@ -176,8 +178,10 @@
 ### Satellite - French New Wave
 - L'immortelle (1963) → Satellite/French New Wave/1960s/
 
+### Core - William Wyler
+- How to Steal a Million (1966) → Core/1960s/William Wyler/
+
 ### Satellite - Classic Hollywood
-- How to Steal a Million (1966) → 1960s/Satellite/Classic Hollywood/
 
 ### Popcorn
 - Yellow Submarine (1968) 16mm → 1960s/Popcorn/
@@ -203,6 +207,7 @@
 ### Core - Billy Wilder
 - Avanti! (1972) → Core/1970s/Billy Wilder/
 - The Private Life of Sherlock Holmes (1970) → Core/1970s/Billy Wilder/
+- Fedora (1978) → Core/1970s/Billy Wilder/
 
 ### Core - Jacques Rivette
 - Celine and Julie Go Boating (1974) → 1970s/Core/Jacques Rivette/
@@ -473,7 +478,6 @@
 - Peking Opera Blues (1986) → 1980s/Satellite/Hong Kong Action/
 - Iceman Cometh (1989) → 1980s/Satellite/Hong Kong Action/
 - Encounter of the Spooky Kind (1980) → 1980s/Satellite/Hong Kong Action/
-- My Heart is That Eternal Rose (1989) → 1980s/Satellite/Hong Kong Action/
 - Girls Without Tomorrow (1988) → 1980s/Satellite/Hong Kong Action/
 - How to Pick Girls Up! (1988) → 1980s/Satellite/Hong Kong Action/
 
@@ -491,12 +495,20 @@
 - Troma's War (1988) → 1980s/Satellite/American Exploitation/
 - Dr. Caligari (1989) → 1980s/Satellite/American Exploitation/
 
+### Core - Wong Kar-wai
+- As Tears Go By (1988) → Core/1980s/Wong Kar-wai/
+
+### Satellite - Hong Kong New Wave
+- Rouge (1987) → Satellite/Hong Kong New Wave/1980s/
+- My Heart Is That Eternal Rose (1989) → Satellite/Hong Kong New Wave/1980s/
+
 ### Satellite - Indie Cinema
 - Crimewave (1985) → 1980s/Satellite/Indie Cinema/
 - Cracking Up (1983) → 1980s/Satellite/Indie Cinema/
 - Cold Feet (1989) → 1980s/Satellite/Indie Cinema/
 - Tuff Turf (1985) → 1980s/Satellite/Indie Cinema/
 - The Cook, The Thief, His Wife and Her Lover (1989) → Satellite/Indie Cinema/1980s/
+- Palombella Rossa (1989) → Satellite/Indie Cinema/1980s/
 
 ### Satellite - Giallo
 - A Leap in the Dark (1980) → Satellite/Giallo/1980s/
@@ -594,6 +606,17 @@
 
 ### Core - Brian De Palma
 - Snake Eyes (1998) → Core/1990s/Brian De Palma/
+
+### Satellite - Hong Kong New Wave
+- Center Stage (1991) → Satellite/Hong Kong New Wave/1990s/
+- Comrades Almost A Love Story (1996) → Satellite/Hong Kong New Wave/1990s/
+
+### Satellite - Hong Kong Category III
+- Erotic Ghost Story (1990) → Satellite/Hong Kong Category III/1990s/
+- Erotic Ghost Story II (1991) → Satellite/Hong Kong Category III/1990s/
+- Erotic Ghost Story III (1992) → Satellite/Hong Kong Category III/1990s/
+- Robotrix (1991) → Satellite/Hong Kong Category III/1990s/
+- Green Snake (1993) → Satellite/Hong Kong Category III/1990s/
 
 ### Satellite - Indie Cinema
 - House Party (1990) → 1990s/Satellite/Indie Cinema/

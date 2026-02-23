@@ -622,27 +622,59 @@ Indie Cinema is a **negative-space category** defined by what it is NOT (not exp
 
 ---
 
+### 18. HONG KONG NEW WAVE (NEW - Issue #34)
+
+**Movement:** Hong Kong New Wave (late 1970s–1990s) — art cinema emerging alongside but distinct from the genre-action tradition. David Bordwell's "Planet Hong Kong" (2000) is the primary scholarly reference. Criterion selections (Rouge, Center Stage) confirm institutional recognition.
+
+**Decade bounds:** 1970s–1990s (movement active 1979–1997, pre-handover era)
+
+**Routing:** Director-only (like French New Wave). No country+genre auto-match — too many HK films would catch.
+
+**Directors:** Ann Hui, Patrick Tam, Allen Fong, Stanley Kwan, Peter Ho-Sun Chan, Clara Law, Yim Ho.
+Note: Wong Kar-wai and Johnnie To are Core directors — their films route to Core, not here.
+
+**Cap:** 15 films. **Certainty tier:** 2 (director-anchored movement).
+
+**Boundary with HK Action:** Action genre films (Tsui Hark, John Woo, Ringo Lam) → HK Action. Drama/romance/art films by the above directors → HK New Wave. Use SORTING_DATABASE pins to resolve per-film ambiguity.
+
+---
+
+### 19. HONG KONG CATEGORY III (NEW - Issue #34)
+
+**Classification:** MPIA Category III rating (1988+) — films made to exploit Hong Kong's adult-content rating, typically erotic horror or supernatural erotica. Real institutional classification system with distinct commercial identity.
+
+**Routing:** MANUAL CURATION ONLY via SORTING_DATABASE pins. No auto-routing — ratings system ≠ genre, and country+genre combos would produce false positives.
+
+**Cap:** 10 films. **Certainty tier:** 4 (manual only).
+
+**Boundary with HK Action:** Films like Green Snake (Tsui Hark) are Category III despite the director being in HK Action. SORTING_DATABASE pin overrides director routing.
+
+---
+
 ## TOTAL SATELLITE CAPS BY CATEGORY
 
 1. Giallo: 30 films
 2. Pinku eiga: 35 films
-3. Japanese Exploitation: 25 films (NEW - Issue #6)
-4. Brazilian exploitation: 45 films
-5. Hong Kong action/Category III: 65 films
-6. **American New Hollywood: 25 films** (NEW - Issue #27)
-7. American exploitation/grindhouse: 60 films (NARROWED - Issue #14: now 1960s-1980s only)
-8. Nunsploitation: 15 films
-9. European sexploitation: 20 films (NARROWED - Issue #14: excludes FNW directors)
-10. Blaxploitation: 20 films
-11. WIP/rape-revenge: 15 films
-12. Music/concert films: 20 films
-13. Mondo: 10 films
-14. Cult oddities: 50 films
-15. **French New Wave: 30 films** (NEW - Issue #14)
-16. **Indie Cinema: 40 films** (NEW - Issue #14)
-17. **Classic Hollywood: 25 films** (NEW - Issue #14)
+3. Japanese New Wave: 15 films (Issue #33)
+4. Japanese Exploitation: 25 films (Issue #6)
+5. Brazilian exploitation: 45 films
+6. Hong Kong New Wave: 15 films (NEW - Issue #34)
+7. Hong Kong Category III: 10 films (NEW - Issue #34)
+8. Hong Kong Action: 65 films
+9. **American New Hollywood: 25 films** (Issue #27)
+10. American exploitation/grindhouse: 80 films (NARROWED - Issue #14: now 1960s-1980s only)
+11. Nunsploitation: 15 films
+12. European sexploitation: 25 films
+13. Blaxploitation: 20 films
+14. WIP/rape-revenge: 15 films
+15. Music/concert films: 20 films
+16. Mondo: 10 films
+17. Cult oddities: 50 films
+18. **French New Wave: 30 films** (Issue #14)
+19. **Indie Cinema: 40 films** (Issue #14)
+20. **Classic Hollywood: 25 films** (Issue #14)
 
-**TOTAL SATELLITE CAP: ~530 films maximum across 17 categories** (increased by 25 with American New Hollywood)
+**TOTAL SATELLITE CAP: ~560 films maximum across 20 categories**
 
 This is intentionally large because Satellite is the margins/texture tier. But individual category caps keep it from sprawling.
 

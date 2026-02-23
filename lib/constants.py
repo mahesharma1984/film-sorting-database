@@ -370,6 +370,47 @@ SATELLITE_ROUTING_RULES = {
                            'samurai', 'yakuza film', 'toei'],
         },
     },
+    # Hong Kong New Wave: DIRECTOR-ONLY routing (Issue #34)
+    # Late 1970s–1990s art cinema movement distinct from HK Action's genre films.
+    # Scholarly basis: David Bordwell "Planet Hong Kong" (2000); Criterion HK selections.
+    # Must come BEFORE Hong Kong Action so directors route here, not to action genre.
+    # Wong Kar-wai and Johnnie To are Core directors — not listed here; their films
+    # route to Core via SORTING_DATABASE pins or the Core director check.
+    'Hong Kong New Wave': {
+        'country_codes': [],   # Director-only — no country+genre auto-match
+        'decades': ['1970s', '1980s', '1990s'],
+        'genres': [],
+        'directors': [
+            'ann hui',
+            'patrick tam',
+            'allen fong',
+            'stanley kwan',
+            'peter chan', 'peter ho-sun chan',
+            'clara law',
+            'yim ho',
+        ],
+        'keyword_signals': {
+            'tmdb_tags': ['hong kong new wave', 'hong kong cinema', 'pre-handover'],
+            'text_terms': ['hong kong new wave', 'new wave', 'pre-handover'],
+        },
+        'tier_b_eligible': False,
+    },
+    # Hong Kong Category III: MANUAL CURATION ONLY (no auto-routing).
+    # MPIA Category III rating system (1988+) — films made to exploit the classification.
+    # Distinct from HK Action's martial arts/triad genre films.
+    # No country+genre auto-match: rating system ≠ genre, too risky to auto-route.
+    # All entries via SORTING_DATABASE.md pins only.
+    'Hong Kong Category III': {
+        'country_codes': [],   # No auto-routing — SORTING_DATABASE pins only
+        'decades': ['1980s', '1990s'],
+        'genres': [],
+        'directors': [],
+        'keyword_signals': {
+            'tmdb_tags': ['category iii', 'hong kong category iii', 'category 3'],
+            'text_terms': ['category iii', 'category 3'],
+        },
+        'tier_b_eligible': False,
+    },
     'Hong Kong Action': {
         'country_codes': ['HK', 'CN'],
         'decades': ['1970s', '1980s', '1990s'],
@@ -382,7 +423,7 @@ SATELLITE_ROUTING_RULES = {
             'tmdb_tags': ['martial arts', 'wuxia', 'kung fu', 'triad', 'heroic bloodshed',
                           'shaw brothers', 'hong kong action'],
             'text_terms': ['martial arts', 'kung fu', 'wuxia', 'swordplay', 'triad',
-                           'heroic bloodshed', 'shaw brothers', 'golden harvest', 'category iii'],
+                           'heroic bloodshed', 'shaw brothers', 'golden harvest'],
         },
     },
     'Blaxploitation': {  # MOVED BEFORE American Exploitation (Issue #6 - priority order)
@@ -554,9 +595,13 @@ CATEGORY_CERTAINTY_TIERS: dict = {
     # Tier 3 — negative-space / catch-all categories (weak gates)
     'Music Films': 3,
     'Indie Cinema': 3,
+    # Tier 2 — named historical movements, director-anchored
+    'Japanese New Wave': 2,
+    'Hong Kong New Wave': 2,
     # Tier 4 — manual curation only; auto-classification is strongly discouraged
     'Japanese Exploitation': 4,
     'Cult Oddities': 4,
+    'Hong Kong Category III': 4,
 }
 
 # Confidence value assigned per certainty tier
@@ -604,6 +649,18 @@ SATELLITE_TENTPOLES = {
         ('A Super Fêmea', 1973, 'Aníbal Massaini Neto'),
         ('O Império do Desejo', 1981, 'Carlos Reichenbach'),
         ('Amadas e Violentadas', 1976, 'Jean Garrett'),
+    ],
+    'Hong Kong New Wave': [
+        ('Rouge', 1987, 'Stanley Kwan'),
+        ('Center Stage', 1991, 'Stanley Kwan'),
+        ('My Heart Is That Eternal Rose', 1989, 'Patrick Tam'),
+        ('Boat People', 1982, 'Ann Hui'),
+        ('Comrades Almost A Love Story', 1996, 'Peter Chan'),
+    ],
+    'Hong Kong Category III': [
+        ('Erotic Ghost Story', 1990, 'Ngai Choi Lam'),
+        ('Green Snake', 1993, 'Tsui Hark'),
+        ('Robotrix', 1991, 'Jamie Luk'),
     ],
     'Hong Kong Action': [
         ('Drunken Master', 1978, 'Yuen Woo-ping'),
