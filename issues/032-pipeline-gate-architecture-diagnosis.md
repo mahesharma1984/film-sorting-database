@@ -376,6 +376,30 @@ The highest-stakes architectural decision.
 
 ---
 
+## Decision 0: Core-auteurs-in-Satellite — RESOLVED (2026-02-23)
+
+**Question:** Should Stage 7 (Core director check) be moved before Stage 4–5 (Satellite routing)?
+
+**Answer: No. The current design is correct and intentional.**
+
+`lib/satellite.py` lines 81–87 document the resolution from Issue #25:
+> Core directors now intentionally route to Satellite for their movement-period films. The
+> movement's decade gate is the natural boundary. Prestige films are pinned to Core via
+> SORTING_DATABASE.md entries (Stage 2), which fire before Satellite routing is ever reached.
+
+The `core_db` parameter stored in `SatelliteClassifier.__init__()` was an earlier design
+idea (Issue #16) that was explicitly superseded by Issue #25's resolution. It is dead code.
+
+**Resolution mechanism**: SORTING_DATABASE.md entries (Stage 2) are the correct tool for
+pinning Core director films to Core when they would otherwise route to Satellite. These entries
+fire before all heuristic stages. Session 2026-02-23 added 23 entries implementing this for
+the most polluted categories (AmEx, Blaxploitation, EuroSex).
+
+**Pollution baseline after 2026-02-23 corrections**: 252 discrepancies (527/779 confirmed),
+down from 265 (514/779) at session start.
+
+---
+
 ## Recommended Resolution Order
 
 Based on the binding constraint analysis:
