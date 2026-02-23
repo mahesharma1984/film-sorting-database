@@ -493,6 +493,42 @@ SATELLITE_ROUTING_RULES = {
 }
 
 # =============================================================================
+# CERTAINTY TIERS (Issue #30 — confidence-gated routing)
+# =============================================================================
+# Maps each Satellite category to a certainty tier (1–4).
+# Tier 1: 4+ corroborating signals (country + genre + decade + directors) → confidence 0.8
+# Tier 2: 3 signals (director/country + decade + keywords) → confidence 0.7
+# Tier 3: 2 weak signals (genre/country + decade, negative-space categories) → confidence 0.5
+# Tier 4: manual only (auto-classification strongly discouraged) → confidence 0.3
+
+CATEGORY_CERTAINTY_TIERS: dict = {
+    # Tier 1 — high-certainty exploitation genres with distinctive genre+country+decade gates
+    'Giallo': 1,
+    'Brazilian Exploitation': 1,
+    'Hong Kong Action': 1,
+    'Pinku Eiga': 1,
+    'American Exploitation': 1,
+    'European Sexploitation': 1,
+    'Blaxploitation': 1,
+    # Tier 2 — named historical movements, director-anchored
+    'Classic Hollywood': 2,
+    'French New Wave': 2,
+    'American New Hollywood': 2,
+    # Tier 3 — negative-space / catch-all categories (weak gates)
+    'Music Films': 3,
+    'Indie Cinema': 3,
+    # Tier 4 — manual curation only; auto-classification is strongly discouraged
+    'Japanese Exploitation': 4,
+    'Cult Oddities': 4,
+}
+
+# Confidence value assigned per certainty tier
+TIER_CONFIDENCE: dict = {1: 0.8, 2: 0.7, 3: 0.5, 4: 0.3}
+
+# Films classified below this confidence threshold go to the review queue (Issue #30)
+REVIEW_CONFIDENCE_THRESHOLD: float = 0.5
+
+# =============================================================================
 # SATELLITE TENTPOLES (Thread Discovery Anchors - Issue #12)
 # =============================================================================
 

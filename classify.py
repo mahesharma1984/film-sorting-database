@@ -40,7 +40,11 @@ from lib.core_directors import CoreDirectorDatabase
 from lib.satellite import SatelliteClassifier
 from lib.popcorn import PopcornClassifier
 from lib.normalization import normalize_for_lookup
-from lib.constants import REFERENCE_CANON, COUNTRY_TO_WAVE
+from lib.constants import (
+    REFERENCE_CANON, COUNTRY_TO_WAVE,
+    CATEGORY_CERTAINTY_TIERS, TIER_CONFIDENCE, REVIEW_CONFIDENCE_THRESHOLD,
+)
+from lib.enrichment import ManualEnrichmentSource
 
 # Configure logging
 logging.basicConfig(
@@ -69,6 +73,9 @@ class ClassificationResult:
     # Audit trail: which TMDb film was used for enrichment (Issue #21)
     tmdb_id: Optional[int] = None
     tmdb_title: Optional[str] = None
+    # Data readiness level at time of classification (Issue #30)
+    # R0=no year, R1=no director+country, R2=partial data, R3=full data
+    data_readiness: str = 'R3'
 
 
 def get_decade(year: int) -> str:
@@ -142,6 +149,12 @@ class FilmClassifier:
         self.satellite_classifier = SatelliteClassifier(core_db=self.core_db)
         self.popcorn_classifier = PopcornClassifier()  # Issue #25 D8: lookup_db removed (dead code)
 
+        # Manual enrichment source — curator-supplied metadata for API-dark films (Issue #30)
+        enrichment_path = Path('output/manual_enrichment.csv')
+        self.enrichment = ManualEnrichmentSource(enrichment_path)
+        if len(self.enrichment) > 0:
+            logger.info(f"Loaded manual enrichment: {len(self.enrichment)} entries")
+
     def _build_destination(self, tier: str, decade: Optional[str], subdirectory: Optional[str]) -> str:
         """Build destination path string from classification components (tier-first)"""
         if tier == 'Unsorted':
@@ -156,6 +169,30 @@ class FilmClassifier:
             return f'Popcorn/{decade}/'
         else:
             return 'Unsorted/'
+
+    def _assess_readiness(self, metadata: 'FilmMetadata', tmdb_data: Optional[Dict]) -> str:
+        """
+        Assess data readiness level after API enrichment (Issue #30).
+
+        R0: no year → hard gate already handles this, but reported for completeness
+        R1: year present but no director AND no country → skip heuristic routing
+        R2: partial (director OR country, not both) → route but cap confidence at 0.6
+        R3: full (director AND country AND genres) → full pipeline, no cap
+        """
+        if not metadata.year:
+            return 'R0'
+        has_director = bool(
+            metadata.director or (tmdb_data and tmdb_data.get('director'))
+        )
+        has_country = bool(
+            metadata.country or (tmdb_data and tmdb_data.get('countries'))
+        )
+        has_genres = bool(tmdb_data and tmdb_data.get('genres'))
+        if not has_director and not has_country:
+            return 'R1'
+        if has_director and has_country and has_genres:
+            return 'R3'
+        return 'R2'
 
     def _parse_destination_path(self, path: str) -> dict:
         """Parse a destination path from SORTING_DATABASE.md into components (supports both formats)"""
@@ -447,6 +484,15 @@ class FilmClassifier:
         - No year: hard gate (cannot route to decade → Unsorted)
         """
 
+        # === Manual enrichment: fill empty metadata fields before API query (Issue #30) ===
+        # Enrichment fills gaps; API data takes priority (metadata fields only update if None).
+        _enrichment = self.enrichment.get(metadata.filename)
+        if _enrichment:
+            if _enrichment.get('director') and not metadata.director:
+                metadata.director = _enrichment['director']
+            if _enrichment.get('country') and not metadata.country:
+                metadata.country = _enrichment['country']
+
         # === Stage 1: API Enrichment (TMDb + OMDb parallel query with smart merge) ===
         api_results = self._query_apis(metadata)
         tmdb_data = self._merge_api_results(
@@ -455,6 +501,17 @@ class FilmClassifier:
             metadata
         )
         # Note: metadata.director and metadata.country updated as side effect
+
+        # Inject enrichment genres if API returned none (Issue #30)
+        if _enrichment and _enrichment.get('genres'):
+            if tmdb_data is None:
+                tmdb_data = {'genres': _enrichment['genres'], 'countries': [], 'keywords': []}
+            elif not tmdb_data.get('genres'):
+                tmdb_data['genres'] = _enrichment['genres']
+
+        # === Data readiness assessment (Issue #30) ===
+        # Assessed after API enrichment so enriched director/country are considered.
+        _readiness = self._assess_readiness(metadata, tmdb_data)
 
         # Audit trail: capture which TMDb film was used (Issue #21)
         _tmdb_id = tmdb_data.get('tmdb_id') if tmdb_data else None
@@ -488,6 +545,7 @@ class FilmClassifier:
                         destination=dest,
                         confidence=1.0, reason='explicit_lookup',
                         tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                        data_readiness=_readiness,
                     )
 
         # === Hard gate: no year = cannot route to decade ===
@@ -502,6 +560,7 @@ class FilmClassifier:
                 destination='Unsorted/',
                 confidence=0.0, reason='unsorted_no_year',
                 tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                data_readiness='R0',
             )
 
         decade = get_decade(metadata.year)
@@ -521,17 +580,23 @@ class FilmClassifier:
                 destination=dest,
                 confidence=1.0, reason='reference_canon',
                 tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                data_readiness=_readiness,
             )
 
         # === Stage 4: Language/country → Satellite routing (from filename) ===
+        # Skipped for R1 films (no director AND no country — routing would be meaningless)
         # Issue #25: Satellite fires before Core. Movement character takes priority over
         # director identity. Core directors' movement-period films route here.
-        if metadata.country and metadata.country in COUNTRY_TO_WAVE:
+        if _readiness != 'R1' and metadata.country and metadata.country in COUNTRY_TO_WAVE:
             wave_config = COUNTRY_TO_WAVE[metadata.country]
             if decade in wave_config['decades']:
                 category = wave_config['category']
                 self.stats['country_satellite'] += 1
                 dest = f'Satellite/{category}/{decade}/'  # Category-first (Issue #6)
+                _tier_num = CATEGORY_CERTAINTY_TIERS.get(category, 2)
+                _confidence = TIER_CONFIDENCE[_tier_num]
+                if _readiness == 'R2':
+                    _confidence = min(_confidence, 0.6)
                 return ClassificationResult(
                     filename=metadata.filename, title=metadata.title,
                     year=metadata.year, director=metadata.director,
@@ -539,21 +604,27 @@ class FilmClassifier:
                     user_tag=metadata.user_tag,
                     tier='Satellite', decade=decade, subdirectory=category,
                     destination=dest,
-                    confidence=0.7, reason='country_satellite',
+                    confidence=_confidence, reason='country_satellite',
                     tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                    data_readiness=_readiness,
                 )
 
         # === Stage 5: TMDb-based satellite classification ===
+        # Skipped for R1 films (no director AND no country — no basis for satellite routing).
         # Also fires when tmdb_data is None but metadata.director is set (from filename).
         # satellite.py constructs a minimal director-only dict in that case, enabling
         # director-list routing rules (FNW, Indie Cinema directors) to fire without API data.
         # Issue #25: Satellite fires before Core — Core directors in movement director lists
         # (e.g. Godard in FNW, Scorsese in AmNH) route to Satellite for their movement period.
-        if tmdb_data or metadata.director:
+        if _readiness != 'R1' and (tmdb_data or metadata.director):
             satellite_cat = self.satellite_classifier.classify(metadata, tmdb_data)
             if satellite_cat:
                 self.stats['tmdb_satellite'] += 1
                 dest = f'Satellite/{satellite_cat}/{decade}/'  # Category-first (Issue #6)
+                _tier_num = CATEGORY_CERTAINTY_TIERS.get(satellite_cat, 2)
+                _confidence = TIER_CONFIDENCE[_tier_num]
+                if _readiness == 'R2':
+                    _confidence = min(_confidence, 0.6)
                 return ClassificationResult(
                     filename=metadata.filename, title=metadata.title,
                     year=metadata.year, director=metadata.director,
@@ -561,8 +632,9 @@ class FilmClassifier:
                     user_tag=metadata.user_tag,
                     tier='Satellite', decade=decade, subdirectory=satellite_cat,
                     destination=dest,
-                    confidence=0.7, reason='tmdb_satellite',
+                    confidence=_confidence, reason='tmdb_satellite',
                     tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                    data_readiness=_readiness,
                 )
 
         # === Stage 6: User tag recovery ===
@@ -614,14 +686,16 @@ class FilmClassifier:
                         destination=dest,
                         confidence=0.8, reason='user_tag_recovery',
                         tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                        data_readiness=_readiness,
                     )
                 # dest is None — fall through to Stage 7 (Core director check)
 
         # === Stage 7: Core director check (Issue #25: moved after Satellite) ===
+        # Skipped for R1 films (no director — cannot match whitelist).
         # Fallback for prestige non-movement work. Movement-period films by Core directors
         # are caught by Stages 4-5 (Satellite); this stage handles work outside movement
         # decade bounds and any director not listed in a movement's director list.
-        if metadata.director and self.core_db.is_core_director(metadata.director):
+        if _readiness != 'R1' and metadata.director and self.core_db.is_core_director(metadata.director):
             canonical = self.core_db.get_canonical_name(metadata.director)
             director_decade = self.core_db.get_director_decade(metadata.director, metadata.year)
 
@@ -637,10 +711,11 @@ class FilmClassifier:
                     destination=dest,
                     confidence=1.0, reason='core_director',
                     tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                    data_readiness=_readiness,
                 )
 
-        # === Stage 8: Popcorn check ===
-        popcorn_reason = self.popcorn_classifier.classify_reason(metadata, tmdb_data)
+        # === Stage 8: Popcorn check (skipped for R1 — no popularity/API data) ===
+        popcorn_reason = None if _readiness == 'R1' else self.popcorn_classifier.classify_reason(metadata, tmdb_data)
         if popcorn_reason:
             self.stats['popcorn_auto'] += 1
             self.stats[popcorn_reason] += 1
@@ -654,17 +729,22 @@ class FilmClassifier:
                 destination=dest,
                 confidence=0.65, reason=popcorn_reason,
                 tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                data_readiness=_readiness,
             )
 
         # === Stage 9: Unsorted (default) ===
-        reason_parts = []
-        if not metadata.director:
-            reason_parts.append('no_director')
-        if metadata.director:
-            reason_parts.append('no_match')
-        reason = f"unsorted_{'_'.join(reason_parts)}" if reason_parts else 'unsorted_unknown'
-
-        self.stats[reason] += 1
+        # R1: insufficient data (no director AND no country) — distinct from taxonomy gap
+        if _readiness == 'R1':
+            reason = 'unsorted_insufficient_data'
+            self.stats['unsorted_insufficient_data'] += 1
+        else:
+            reason_parts = []
+            if not metadata.director:
+                reason_parts.append('no_director')
+            if metadata.director:
+                reason_parts.append('no_match')
+            reason = f"unsorted_{'_'.join(reason_parts)}" if reason_parts else 'unsorted_unknown'
+            self.stats[reason] += 1
         return ClassificationResult(
             filename=metadata.filename, title=metadata.title,
             year=metadata.year, director=metadata.director,
@@ -674,6 +754,7 @@ class FilmClassifier:
             destination='Unsorted/',
             confidence=0.0, reason=reason,
             tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+            data_readiness=_readiness,
         )
 
     def process_directory(self, source_dir: Path) -> List[ClassificationResult]:
@@ -714,7 +795,7 @@ class FilmClassifier:
                 'language', 'country', 'user_tag',
                 'tier', 'decade', 'subdirectory',
                 'destination', 'confidence', 'reason',
-                'tmdb_id', 'tmdb_title',
+                'tmdb_id', 'tmdb_title', 'data_readiness',
             ]
             writer = csv.DictWriter(f, fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
             writer.writeheader()
@@ -736,6 +817,7 @@ class FilmClassifier:
                     'reason': result.reason,
                     'tmdb_id': result.tmdb_id or '',
                     'tmdb_title': result.tmdb_title or '',
+                    'data_readiness': result.data_readiness,
                 })
 
         logger.info(f"Wrote manifest to {output_path}")
@@ -759,6 +841,51 @@ class FilmClassifier:
                 f.write("-" * 60 + "\n")
 
         logger.info(f"Wrote staging report to {output_path}")
+
+    def write_review_queue(self, results: List[ClassificationResult], output_path: Path):
+        """
+        Write films that need curator review (Issue #30).
+
+        Two populations:
+        1. Classified films with confidence < REVIEW_CONFIDENCE_THRESHOLD (Tier 3-4 auto-classifications)
+        2. Unsorted R2/R3 films that have data but no rule matched (taxonomy gaps)
+        """
+        review = []
+        for r in results:
+            if r.tier != 'Unsorted' and r.confidence < REVIEW_CONFIDENCE_THRESHOLD:
+                review.append((r, 'low_confidence'))
+            elif (r.tier == 'Unsorted'
+                  and r.data_readiness in ('R2', 'R3')
+                  and r.reason in ('unsorted_no_match', 'unsorted_no_director')):
+                review.append((r, 'enriched_unsorted'))
+
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        fieldnames = [
+            'filename', 'title', 'year', 'director', 'country',
+            'tier', 'decade', 'subdirectory', 'destination',
+            'confidence', 'reason', 'data_readiness', 'review_reason',
+        ]
+        with open(output_path, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
+            writer.writeheader()
+            for result, review_reason in review:
+                writer.writerow({
+                    'filename': result.filename,
+                    'title': result.title,
+                    'year': result.year or '',
+                    'director': result.director or '',
+                    'country': result.country or '',
+                    'tier': result.tier,
+                    'decade': result.decade or '',
+                    'subdirectory': result.subdirectory or '',
+                    'destination': result.destination,
+                    'confidence': result.confidence,
+                    'reason': result.reason,
+                    'data_readiness': result.data_readiness,
+                    'review_reason': review_reason,
+                })
+
+        logger.info(f"Wrote review queue ({len(review)} films) to {output_path}")
 
     def print_stats(self, results: List[ClassificationResult]):
         """Print classification statistics"""
@@ -861,6 +988,9 @@ Examples:
 
     staging_path = args.output.parent / 'staging_report.txt'
     classifier.write_staging_report(results, staging_path)
+
+    review_path = args.output.parent / 'review_queue.csv'
+    classifier.write_review_queue(results, review_path)
 
     # Print stats
     classifier.print_stats(results)
