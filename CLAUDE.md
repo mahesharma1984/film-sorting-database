@@ -219,6 +219,62 @@ Two task types that Rules 1–3 don't cover: **Discovery** (exploring before the
 
 **Handoff rule:** Discovery and Creative tasks are complete only when their output is documented in a form that feeds the next task. "We decided X" is not a handoff. "We updated SATELLITE_ROUTING_RULES with entry Y" is.
 
+### Rule 10: Data Readiness
+
+Before routing, assess whether enough data exists to produce a meaningful classification.
+
+**Readiness levels:**
+
+| Level | Data Present | Action |
+|-------|-------------|--------|
+| R0 | No year | Hard stop → `unsorted_no_year` (already implemented) |
+| R1 | Title + year, no director AND no country | Skip Stages 4-8 → `unsorted_insufficient_data` |
+| R2 | Partial (director OR country, not both) | Route but cap confidence at 0.6 |
+| R3 | Full (director AND country AND genres) | Full pipeline, no confidence cap |
+
+**Key principle:** Don't run routing on films that lack the data routing needs. 126 films currently enter all 9 routing stages with empty data and fail at each one — the reason code `unsorted_no_director` conflates "no data available" with "no rule matched." R1 early exit distinguishes these populations.
+
+**Assessment point:** After `_merge_api_results()` (Stage 1), before routing (Stages 2+). $0 cost field check.
+
+### Rule 11: Certainty-First Classification
+
+Classify what you can prove first. Use proven classifications as anchors. Expand outward with decreasing certainty but increasing gates.
+
+**Category certainty tiers:**
+
+| Tier | Categories | Gates | Auto? |
+|------|-----------|-------|-------|
+| 1 | Giallo, Brazilian Exploitation, HK Action, Pinku Eiga, American Exploitation, European Sexploitation, Blaxploitation | country + genre + decade + directors (4+) | Yes |
+| 2 | Classic Hollywood, French New Wave, American New Hollywood | director/country + decade + keywords (3) | Yes |
+| 3 | Music Films, Indie Cinema | genre/country + decade (2, negative-space) | Review-flagged |
+| 4 | Japanese Exploitation, Cult Oddities | Manual only | No |
+
+**The anchor-then-expand pattern:**
+1. Establish anchors — explicit lookups (SORTING_DATABASE) + Reference canon + SATELLITE_TENTPOLES
+2. High-certainty routing — Tier 1-2 categories auto-classify with standard confidence
+3. Fuzzy expansion (gated) — R2 films with no rule match get SUGGESTED to review queue based on anchor proximity, not auto-classified
+
+**Inverse gate rule:** As certainty decreases, gates get stricter. Tier 1 match → auto-classify. Tier 3 match → flag for review. Tier 4 → manual only via SORTING_DATABASE.
+
+### Rule 12: Curation Loop
+
+Every classification is a suggestion until a curator confirms it. Curatorial decisions feed back into the system.
+
+**Four curator actions:**
+
+| Action | When | System Effect |
+|--------|------|--------------|
+| Accept | Classification correct | Move file to destination |
+| Override | Classification wrong, curator knows correct | Stage entry for SORTING_DATABASE.md |
+| Enrich | Data missing, curator can supply | Write to `manual_enrichment.csv`, reclassify |
+| Defer | Uncertain, needs research | Park in review queue for next cycle |
+
+**The review queue:** Films with confidence < 0.5 go to `output/review_queue.csv` — a staging area for classifications that need human confirmation. Tier 3-4 auto-classifications, R2/R3 unsorted films, and re-audit discrepancies populate the queue.
+
+**Lifecycle completion:** Accept = Stage 3 execution. Override = Stage 5 reinforcement. Enrich = Stage 3 input quality improvement. This closes the lifecycle gap where Stages 3-5 produce reports but have no execution tools.
+
+**Enrich before Override:** Prefer enrichment (systemic improvement — helps all films by that director) over override (point fix — helps only this specific film).
+
 ---
 
 ## §4 Project-Specific Rules

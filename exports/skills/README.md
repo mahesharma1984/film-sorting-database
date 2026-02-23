@@ -17,6 +17,9 @@ Skills are self-contained methodology modules that you can adopt independently o
 | [Constraint Gates](constraint-gates.md) | Bottleneck identification and pull-based quality | "Am I fixing the right stage, or just patching symptoms?" |
 | [Prototype Building](prototype-building.md) | Exploration → execution methodology | "Am I building the right thing before building it right?" |
 | [Creative & Discovery](creative-discovery.md) | Unstructured problem types | "How do I scope a Discovery task without going down a rabbit hole?" |
+| [Data Readiness](data-readiness.md) | Input quality gates for routing pipelines | "Does this film have enough data to be worth classifying?" |
+| [Certainty-First](certainty-first.md) | Anchor-then-expand classification strategy | "Which categories can I prove, and which are aspirational?" |
+| [Curation Loop](curation-loop.md) | Bidirectional feedback between system and curator | "How does a curatorial decision get back into the system?" |
 
 ## Composition Guide
 
@@ -32,6 +35,9 @@ Skills are self-contained methodology modules that you can adopt independently o
 - **Creative & Discovery** — Defines new categories, scopes boundary decisions, runs director audits
 - **Domain Grounding** — Anchors categories in published theory; prevents taxonomy drift
 - **Pattern-First** — Ensures taxonomy (schema) is stable before classifying entities (instances)
+- **Certainty-First** — Classifies from proven anchors outward; gates expand with decreasing certainty
+- **Data Readiness** — Prevents routing on films that lack the data routing needs
+- **Curation Loop** — Feeds curator decisions back into the system; completes the lifecycle
 - **Measurement-Driven** — Measures classification consistency and coverage
 
 ### Staged Pipeline Projects
@@ -42,7 +48,7 @@ Skills are self-contained methodology modules that you can adopt independently o
 - **Measurement-Driven** — Tracks quality across depth (single case) and breadth (all cases)
 
 ### Full Stack (Complex Systems)
-All nine skills compose into a complete methodology:
+All twelve skills compose into a complete methodology:
 
 ```
 Creative & Discovery (define the schema when it isn't known yet)
@@ -53,8 +59,12 @@ Pattern-First (dependency ordering)
     ↓ structures pipeline
 Domain Grounding (taxonomy design)
     ↓ anchors classifications in published theory
+Certainty-First (anchor-then-expand)
+    ↓ classifies from proven anchors outward
 R/P Split (task allocation)
     ↓ assigns work correctly
+Data Readiness (input quality gates)
+    ↓ gates routing behind data availability
 Failure Gates (reliability semantics)
     ↓ prevents cascading failures
 Constraint Gates (bottleneck protection)
@@ -63,7 +73,9 @@ Boundary-Aware Measurement (scoped quality)
     ↓ measures subsystems independently
 Measurement-Driven (quality cycles)
     ↓ validates changes across depth and breadth
-STABLE SYSTEM
+Curation Loop (bidirectional feedback)
+    ↓ feeds curator decisions back into system
+IMPROVING SYSTEM
 ```
 
 ## How Skills Relate
@@ -108,7 +120,10 @@ STABLE SYSTEM
 - **Boundary-Aware Measurement** scopes measurement to the right subsystem at the right cost
 - **R/P Split, Pattern-First, Failure Gates** are adjustment strategies — they tell you *how* to fix problems
 - **Domain Grounding** anchors classifications in published theory — it tells you *what categories* to use
+- **Certainty-First** governs classification strategy — it tells you *what to classify first* and *how much to trust each result*
+- **Data Readiness** gates the pipeline — it tells you *whether to classify at all* given available data
 - **Constraint Gates** is the diagnostic layer — it tells you *where* to fix (which handoff is the bottleneck)
+- **Curation Loop** closes the feedback cycle — it tells you *how decisions get back into the system*
 - **Prototype Building** is the foundation — it ensures you understand before you build
 
 ## Adopting Skills
