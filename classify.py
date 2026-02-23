@@ -212,7 +212,13 @@ class FilmClassifier:
                 if len(parts) > 2:
                     result['subdirectory'] = '/'.join(parts[2:])
             elif len(parts) > 1:
-                result['subdirectory'] = '/'.join(parts[1:])
+                # Check if last part is a decade (Satellite/Category/1970s format — Issue #33)
+                # e.g. "Satellite/Japanese New Wave/1970s" → subdirectory=Japanese New Wave, decade=1970s
+                if len(parts) > 2 and re.match(r'\d{4}s$', parts[-1]):
+                    result['decade'] = parts[-1]
+                    result['subdirectory'] = '/'.join(parts[1:-1])
+                else:
+                    result['subdirectory'] = '/'.join(parts[1:])
         # Legacy decade-first format (for backward compatibility): "1960s/Core/Director"
         elif re.match(r'\d{4}s$', first):
             result['decade'] = first

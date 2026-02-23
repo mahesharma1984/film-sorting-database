@@ -142,7 +142,7 @@
 ### Satellite - Pinku Eiga
 - Go Go Second Time Virgin (1969) → 1960s/Satellite/Pinku Eiga/
 - Inflatable Sex Doll of the Wastelands (1967) → 1960s/Satellite/Pinku Eiga/
-- Woman of the lake (1966) → 1960s/Satellite/Pinku Eiga/
+- Woman of the Lake (1966) → Satellite/Japanese New Wave/1960s/
 
 ### Satellite - American Exploitation
 - Faster Pussycat! Kill! Kill! (1965) - Russ Meyer → 1960s/Satellite/American Exploitation/
@@ -289,12 +289,24 @@
 - Zero Woman: Red Handcuffs (1974) → 1970s/Satellite/Pinku Eiga/
 - Woods Are Wet (1973) → 1970s/Satellite/Pinku Eiga/
 - Forbidden Game of Love (1975) → 1970s/Satellite/Pinku Eiga/
-- Grass Labyrinth (1979) → 1970s/Satellite/Pinku Eiga/
+- Grass Labyrinth (1979) → Satellite/Japanese New Wave/1970s/
+
+### Satellite - Japanese New Wave
+- Throw Away Your Books, Rally in the Streets (1971) → Satellite/Japanese New Wave/1970s/
+- AKA Serial Killer (1975) → Satellite/Japanese New Wave/1970s/
+- Demon Pond (1979) → Satellite/Japanese New Wave/1970s/
+- Wuthering Heights (1988) → Satellite/Japanese New Wave/1980s/
+- The Ballad of Narayama (1983) → Satellite/Indie Cinema/1980s/
+- Tampopo (1985) → Satellite/Indie Cinema/1980s/
+- Akira (1988) → Satellite/Indie Cinema/1980s/
+- Twilight of the Cockroaches (1987) → Satellite/Indie Cinema/1980s/
 
 ### Satellite - Japanese Exploitation
 - Battles Without Honor and Humanity (1973) → 1970s/Satellite/Japanese Exploitation/
 - Street Mobster (1972) → 1970s/Satellite/Japanese Exploitation/
 - Graveyard of Honor (1975) → 1970s/Satellite/Japanese Exploitation/
+- Doberman Cop (1977) → Satellite/Japanese Exploitation/1970s/
+- Black Lizard (1968) → Satellite/Japanese Exploitation/1960s/
 
 ### Satellite - Brazilian Exploitation (TRIM TO 25 MAX)
 - Escola Penal de Meninas Violentadas (1977) → 1970s/Satellite/Brazilian Exploitation/

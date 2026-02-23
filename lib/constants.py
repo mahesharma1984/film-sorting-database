@@ -306,6 +306,43 @@ SATELLITE_ROUTING_RULES = {
                            'mystery thriller', 'slasher', 'italian genre'],
         },
     },
+    # Japanese New Wave: DIRECTOR-ONLY routing (Issue #33)
+    # Matches the same pattern as French New Wave — country_codes: [] prevents
+    # country+genre fallback; only director matches fire.
+    # Without this guard, 'JP + Drama + 1960s-1980s' would auto-route all Japanese
+    # drama from those decades (too broad — Pinku, Exploitation, Anime, etc.).
+    #
+    # Placement: before Pinku Eiga so that directors appearing in both lists
+    # (e.g. future Wakamatsu non-pink work) route to JNW first. Specific Wakamatsu
+    # pink films are pinned to Pinku Eiga via SORTING_DATABASE.md (Stage 2, fires
+    # before Satellite routing).
+    #
+    # Directors confirmed against Isolde Standish (2011), David Desser (1988),
+    # Criterion "Japanese New Wave" collection, Senses of Cinema entries.
+    # Masahiro Shinoda added — Shochiku Nouvelle Vague member (Pale Flower, Double Suicide).
+    # Shôhei Imamura added for 1960s work; late Imamura pinned to Indie Cinema in SORTING_DATABASE.
+    # Seijun Suzuki added — Nikkatsu underground period.
+    'Japanese New Wave': {
+        'country_codes': [],          # Director-only (no country fallback)
+        'decades': ['1950s', '1960s', '1970s', '1980s'],  # peak 1960s-1970s
+        'genres': [],                 # Director-only (no genre fallback)
+        'directors': [
+            'nagisa oshima',          # In the Realm of the Senses, Death by Hanging, Boy
+            'shuji terayama', 'shoji terayama',  # Throw Away Your Books, Pastoral, Grass Labyrinth
+            'masao adachi',           # AKA Serial Killer, Red Army/PFLP
+            'yoshishige yoshida', 'kiju yoshida',  # Eros + Massacre, Heroic Purgatory
+            'shinoda',                # Masahiro Shinoda — Pale Flower, Double Suicide, Demon Pond
+            'imamura',                # Shôhei Imamura — Insect Woman, Intentions of Murder (early work)
+            # Note: Seijun Suzuki is in the Core whitelist — omitted here to avoid Satellite
+            # routing before Core check (Issue #25 architecture). His films route via Core.
+        ],
+        'tier_b_eligible': False,     # Movement requires director evidence; no keyword-only routing
+        'keyword_signals': {
+            'tmdb_tags': ['japanese new wave', 'nuberu bagu', 'political cinema',
+                          'underground film', 'avant-garde'],
+            'text_terms': ['new wave', 'underground', 'political', 'rebellion', 'nuberu bagu'],
+        },
+    },
     'Pinku Eiga': {
         'country_codes': ['JP'],
         'decades': ['1960s', '1970s', '1980s'],
@@ -544,6 +581,12 @@ SATELLITE_TENTPOLES = {
         ('The Beyond', 1981, 'Lucio Fulci'),
         ('Tenebrae', 1982, 'Dario Argento'),
         ('A Bay of Blood', 1971, 'Mario Bava'),
+    ],
+    'Japanese New Wave': [
+        ('In the Realm of the Senses', 1976, 'Nagisa Oshima'),
+        ('Death by Hanging', 1968, 'Nagisa Oshima'),
+        ('Throw Away Your Books, Rally in the Streets', 1971, 'Shuji Terayama'),
+        ('AKA Serial Killer', 1975, 'Masao Adachi'),
     ],
     'Pinku Eiga': [
         ('Go Go Second Time Virgin', 1969, 'Kōji Wakamatsu'),

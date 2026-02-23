@@ -37,6 +37,8 @@ from lib.constants import SATELLITE_ROUTING_RULES, SATELLITE_TENTPOLES
 # Format: frozenset of (normalized_title, year) tuples
 # ---------------------------------------------------------------------------
 SIGHT_AND_SOUND_2022 = frozenset([
+    # Japanese New Wave
+    ('in the realm of the senses', 1976),
     # Giallo / Italian Horror
     ('suspiria', 1977),
     # French New Wave
@@ -113,6 +115,7 @@ PEAK_DECADES: Dict[str, Optional[List[str]]] = {
     'European Sexploitation': ['1970s'],
     'Blaxploitation': ['1970s'],
     'French New Wave': ['1960s'],
+    'Japanese New Wave': ['1960s', '1970s'],
     'Classic Hollywood': ['1940s', '1950s'],
     'Music Films': None,    # No peak — any decade scores 2
     'Indie Cinema': None,   # No peak — any decade scores 2
@@ -130,6 +133,7 @@ CATEGORY_CAPS = {
     'Blaxploitation': 20,
     'Music Films': 20,
     'French New Wave': 30,
+    'Japanese New Wave': 15,
     'Indie Cinema': 40,
     'Classic Hollywood': 25,
     'American New Hollywood': 25,
@@ -200,6 +204,12 @@ RANKING_TAGS: Dict[str, List[str]] = {
     'Music Films': [
         'concert film', 'documentary', 'music', 'rock', 'jazz', 'blues',
         'musician', 'band', 'performance', 'live music', 'backstage',
+    ],
+    'Japanese New Wave': [
+        'japanese new wave', 'nuberu bagu', 'political cinema', 'underground film',
+        'avant-garde', 'new wave', 'rebellion', 'social critique', 'nikkatsu',
+        'shochiku', 'counter-culture', 'student protest', 'protest film',
+        'experimental', 'political film', 'anti-war',
     ],
     'Indie Cinema': [
         'independent film', 'art house', 'arthouse', 'festival film',
@@ -416,6 +426,7 @@ WIKIPEDIA_CATEGORY_URLS = {
     'Indie Cinema': 'https://en.wikipedia.org/wiki/Independent_film',
     'Music Films': 'https://en.wikipedia.org/wiki/Concert_film',
     'Japanese Exploitation': 'https://en.wikipedia.org/wiki/Yakuza_film',
+    'Japanese New Wave': 'https://en.wikipedia.org/wiki/Japanese_New_Wave',
 }
 
 # Regex to extract film titles from Wikipedia text (italic titles in year lists)

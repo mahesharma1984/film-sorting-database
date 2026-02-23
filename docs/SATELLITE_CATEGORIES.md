@@ -103,6 +103,49 @@
 
 ---
 
+### 3b. JAPANESE NEW WAVE (NEW - Issue #33)
+
+**Definition:**
+- Japanese art cinema, political cinema, underground films
+- Peak: 1960s–1970s (movement active c.1959–1975); extended: 1950s–1980s
+- Distinct from Pinku Eiga (erotic) and Japanese Exploitation (genre action)
+- Scholaraly grounding: Isolde Standish, *Japanese New Wave Cinema* (BFI, 2011);
+  David Desser, *Eros Plus Massacre* (1988); Criterion "Japanese New Wave" collection
+
+**Routing design:**
+- **Director-only routing** — no country+genre+decade auto-match
+- `country_codes: []` (like French New Wave) prevents all-Japanese-Drama auto-routing
+- Without a director match, a Japanese 1960s Drama falls to Indie Cinema (JP is in its country_codes)
+
+**Core directors (documented movement members):**
+- Nagisa Oshima — *In the Realm of the Senses*, *Death by Hanging*, *Boy*
+- Shûji/Shoji Terayama — *Throw Away Your Books, Rally in the Streets*, *Grass Labyrinth*
+- Masao Adachi — *AKA Serial Killer*, *Red Army/PFLP*
+- Yoshishige/Kiju Yoshida — *Eros + Massacre*, *Heroic Purgatory*, *Woman of the Lake*
+- Masahiro Shinoda — *Pale Flower*, *Double Suicide*, *Demon Pond* (Shochiku Nouvelle Vague)
+- Shôhei Imamura (early work only) — *Pigs and Battleships*, *The Insect Woman*
+- Note: Seijun Suzuki is in the Core whitelist — his films route via Core check, not JNW routing
+
+**Keyword signals (Issue #29):**
+- TMDb tags: `japanese new wave`, `nuberu bagu`, `political cinema`, `underground film`, `avant-garde`
+- Text terms: `new wave`, `underground`, `political`, `rebellion`, `nuberu bagu`
+- Routing tier: **director match only** (tier_b_eligible: False — movement requires director evidence)
+
+**Overlap/split rules:**
+- Wakamatsu's pink films → Pinku Eiga (via SORTING_DATABASE pins; director appears in both lists)
+- Late Imamura (Narayama 1983, Black Rain 1989) → Indie Cinema (pinned in SORTING_DATABASE)
+- Fukasaku yakuza films → Japanese Exploitation (Doberman Cop, Battles Without Honor)
+- Teshigahara (*Woman in the Dunes*) → Core candidate (pending whitelist promotion; Indie Cinema fallback)
+
+**Cap:**
+- **Total cap: 15 films** (tighter than Giallo at 30 — specialized movement)
+
+**Boundary rule:**
+- If director becomes full auteur obsession (complete Oshima, complete Yoshida), promote to Core
+- Late/post-movement work by JNW directors → Indie Cinema via SORTING_DATABASE pin
+
+---
+
 ### 4. BRAZILIAN PORNOCHANCHADA / EXPLOITATION
 
 **Keyword signals (Issue #29):**

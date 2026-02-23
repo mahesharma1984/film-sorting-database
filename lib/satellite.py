@@ -32,6 +32,7 @@ class SatelliteClassifier:
         # Human-curated only; cap removed to avoid dead code confusion.
         self.caps = {
             'Giallo': 30,
+            'Japanese New Wave': 15,      # NEW: Issue #33
             'Pinku Eiga': 35,
             'Japanese Exploitation': 25,  # NEW: Issue #6
             'Brazilian Exploitation': 45,
