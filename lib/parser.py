@@ -52,12 +52,15 @@ class FilenameParser:
         # Replace dots/underscores with spaces (scene release format)
         title = title.replace('.', ' ').replace('_', ' ')
 
-        # Remove release group tags and quality indicators
+        # Remove release group tags and quality indicators.
+        # Use non-alphanumeric boundary matching so short tags like "nf", "hd", "aac"
+        # don't truncate real words ("conformist", "shadow", "isaac", etc.)
         title_lower = title.lower()
         for tag in RELEASE_TAGS:  # Use imported constant
-            # Find tag and remove everything after it
-            idx = title_lower.find(tag)
-            if idx != -1:
+            pattern = r'(?<![a-zA-Z0-9])' + re.escape(tag) + r'(?![a-zA-Z0-9])'
+            match = re.search(pattern, title_lower)
+            if match:
+                idx = match.start()
                 title = title[:idx]
                 title_lower = title_lower[:idx]
 
@@ -147,6 +150,12 @@ class FilenameParser:
 
         # Extract user tag
         user_tag = self._extract_user_tag(filename)
+
+        # Strip validated classification tags from name so they don't contaminate
+        # title extraction (e.g., "[1970s-Core-Jean-Pierre Melville]" must not end up
+        # in the title string that gets fed to the lookup table).
+        if user_tag:
+            name = re.sub(r'\s*\[[^\]]+\]', '', name).strip()
 
         # === PRIORITY 0: Check for (Director, Year) pattern FIRST ===
         # Bug 3 fix: "A Bay of Blood (Mario Bava, 1971).mkv"

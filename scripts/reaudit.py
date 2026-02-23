@@ -20,6 +20,7 @@ import csv
 import json
 import argparse
 import logging
+import unicodedata
 from collections import defaultdict
 from pathlib import Path
 from typing import Optional, Dict, List
@@ -109,14 +110,19 @@ def _confidence_label(reason: str, tmdb_id: Optional[int]) -> str:
     return 'low'
 
 
+def _nfc(s: str) -> str:
+    """Normalize to NFC so accented chars compare equal regardless of encoding."""
+    return unicodedata.normalize('NFC', s)
+
+
 def _discrepancy_type(result: ClassificationResult, current_tier: str,
                       current_category: str) -> str:
     """Determine discrepancy_type string. Returns '' for a match."""
     classified_tier = result.tier
     classified_category = result.subdirectory or ''
 
-    # Matching check
-    if classified_tier == current_tier and classified_category == current_category:
+    # Matching check — normalize Unicode so e.g. "Almodóvar" (NFD) == "Almodóvar" (NFC)
+    if classified_tier == current_tier and _nfc(classified_category) == _nfc(current_category):
         return ''
 
     # Unsorted outcomes

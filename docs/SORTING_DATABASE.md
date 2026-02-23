@@ -112,6 +112,7 @@
 - Psycho (1960) 35mm → 1960s/Reference/
 - Midnight Cowboy (1969) → 1960s/Reference/
 - Breakfast At Tiffany's (1961) → 1960s/Reference/
+- Belle de Jour (1967) → 1960s/Reference/
 
 ### Satellite - Pinku Eiga
 - Go Go Second Time Virgin (1969) → 1960s/Satellite/Pinku Eiga/
@@ -138,6 +139,18 @@
 - Head (1968) → 1960s/Satellite/Cult Oddities/
 - Putney Swope (1969) → 1960s/Satellite/Cult Oddities/
 
+### Satellite - American New Hollywood
+- Targets (1968) → Satellite/American New Hollywood/1960s/
+- Who's that Knocking at My Door (1967) → Satellite/American New Hollywood/1960s/
+
+### Satellite - Indie Cinema
+- The Fearless Vampire Killers (1967) → Satellite/Indie Cinema/1960s/
+- The Collector (1965) → Satellite/Indie Cinema/1960s/
+- A Man and a Woman (1966) → Satellite/Indie Cinema/1960s/
+
+### Satellite - French New Wave
+- L'immortelle (1963) → Satellite/French New Wave/1960s/
+
 ### Satellite - Classic Hollywood
 - How to Steal a Million (1966) → 1960s/Satellite/Classic Hollywood/
 
@@ -147,6 +160,8 @@
 - What a Way to Go! (1964) → 1960s/Popcorn/
 - The Ladies Man (1961) → 1960s/Popcorn/
 - Gigi (1958) → 1960s/Popcorn/
+- Wait Until Dark (1967) → Popcorn/1960s/
+- Hombre (1967) → Popcorn/1960s/
 
 ### Staging (Need Director Verification)
 - Os Cafajestes (1962) → Staging/Unknown/
@@ -159,6 +174,10 @@
 
 ### Core - Jean-Pierre Melville
 - Le Cercle Rouge (1970) → 1970s/Core/Jean-Pierre Melville/
+
+### Core - Billy Wilder
+- Avanti! (1972) → Core/Billy Wilder/1970s/
+- The Private Life of Sherlock Holmes (1970) → Core/Billy Wilder/1970s/
 
 ### Core - Jacques Rivette
 - Celine and Julie Go Boating (1974) → 1970s/Core/Jacques Rivette/
@@ -194,6 +213,7 @@
 
 ### Core - Bernardo Bertolucci
 - The Conformist (1970) → 1970s/Core/Bernardo Bertolucci/
+- Conformist, The (1970) → 1970s/Core/Bernardo Bertolucci/
 - Last Tango in Paris (1972) → 1970s/Core/Bernardo Bertolucci/
 
 ### Core - Francis Ford Coppola
@@ -316,8 +336,14 @@
 ### Satellite - American New Hollywood
 - All That Jazz (1979) - Bob Fosse → 1970s/Satellite/American New Hollywood/
 - Being There (1979) - Hal Ashby → 1970s/Satellite/American New Hollywood/
+- Three Days of the Condor (1975) → Satellite/American New Hollywood/1970s/
 
 ### Satellite - Indie Cinema
+- Going Places (1974) → Satellite/Indie Cinema/1970s/
+- La Grande Bouffe (1973) → Satellite/Indie Cinema/1970s/
+
+### Satellite - French New Wave
+- Successive Slidings of Pleasure (1974) → Satellite/French New Wave/1970s/
 
 ### Popcorn
 - Young Frankenstein (1974) 16mm → 1970s/Popcorn/
@@ -325,6 +351,8 @@
 - The Wiz (1978) → 1970s/Popcorn/
 - Cooley High (1975) → 1970s/Popcorn/ [NOTE: Also in Blaxploitation - choose one]
 - Bobby Deerfield (1977) → 1970s/Popcorn/
+- Little Murders (1971) → Popcorn/1970s/
+- Dirty Mary Crazy Larry (1974) → Popcorn/1970s/
 
 ---
 
@@ -415,7 +443,7 @@
 - From Beyond (1986) → 1980s/Satellite/American Exploitation/
 - Society (1989) → 1980s/Satellite/American Exploitation/
 - Brain Damage (1988) → 1980s/Satellite/American Exploitation/
-- Ms 45 (1981) → 1980s/Satellite/American Exploitation/ [Abel Ferrara - consider Core]
+- Ms 45 (1981) → 1980s/Satellite/American Exploitation/
 - Savage Streets (1984) → 1980s/Satellite/American Exploitation/
 - Christmas Evil (1980) → 1980s/Satellite/American Exploitation/
 - Mixed Blood (1984) → 1980s/Satellite/American Exploitation/
@@ -428,11 +456,18 @@
 - Cracking Up (1983) → 1980s/Satellite/Indie Cinema/
 - Cold Feet (1989) → 1980s/Satellite/Indie Cinema/
 - Tuff Turf (1985) → 1980s/Satellite/Indie Cinema/
+- The Cook, The Thief, His Wife and Her Lover (1989) → Satellite/Indie Cinema/1980s/
+
+### Satellite - Giallo
+- A Leap in the Dark (1980) → Satellite/Giallo/1980s/
 
 ### Satellite - Music Films
 - Louie Bluie (1985) → 1980s/Satellite/Music Films/
 - Poetry in Motion (1982) → 1980s/Satellite/Music Films/
 - Thelonious Monk Straight No Chaser (1988) → 1980s/Satellite/Music Films/
+- True Stories (1986) → Satellite/Music Films/1980s/
+- Streets of Fire (1984) → Satellite/Music Films/1980s/
+- Heavy Metal (1981) → Satellite/Music Films/1980s/
 
 ### Popcorn - Back to the Future Franchise
 - Back to the Future (1985) 35mm → 1980s/Popcorn/Back to the Future/
@@ -451,7 +486,7 @@
 - Weird Science (1985) → 1980s/Popcorn/
 - Into The Night (1985) → 1980s/Popcorn/
 - A Christmas Story (1983) → 1980s/Popcorn/
-- Blankman (1994) → 1990s/Popcorn/ [Wrong decade]
+- Blankman (1994) → 1990s/Popcorn/
 
 ### Popcorn - Drama
 - Dead Poets Society (1989) → 1980s/Popcorn/
@@ -480,8 +515,20 @@
 ### Core - Claude Chabrol
 - La Cérémonie (1995) → 1990s/Core/Claude Chabrol/
 
+### Core - Coen Brothers
+- Miller's Crossing (1990) → Core/Coen Brothers/1990s/
+- Barton Fink (1991) → Core/Coen Brothers/1990s/
+- Fargo (1996) → Core/Coen Brothers/1990s/
+- The Big Lebowski (1998) → Core/Coen Brothers/1990s/
+
 ### Satellite - Indie Cinema
 - House Party (1990) → 1990s/Satellite/Indie Cinema/
+- High Art (1998) → Satellite/Indie Cinema/1990s/
+- In the Soup (1992) → Satellite/Indie Cinema/1990s/
+- Leaving Las Vegas (1995) → Satellite/Indie Cinema/1990s/
+
+### Satellite - Music Films
+- Paris Is Burning (1990) → Satellite/Music Films/1990s/
 
 ### Popcorn
 - Serial Mom (1994) - John Waters → 1990s/Popcorn/
@@ -491,6 +538,8 @@
 - Milk Money (1994) → 1990s/Popcorn/
 - Dick (1999) → 1990s/Popcorn/
 - Jack Frost (1998) → 1990s/Popcorn/
+- Nick of Time (1995) → Popcorn/1990s/
+- Bulworth (1998) → Popcorn/1990s/
 
 ---
 
@@ -521,8 +570,8 @@
 - Tokyo Godfathers → 2000s/Core/Satoshi Kon/
 
 ### Reference
-- The Matrix (1999) 35mm → 2000s/Reference/ [Actually 1999, late 90s]
-- The Silence of the Lambs (1991) → 1990s/Reference/ [Wrong decade]
+- The Matrix (1999) 35mm → 1990s/Reference/
+- The Silence of the Lambs (1991) → 1990s/Reference/
 
 ### Popcorn - Spider-Man Franchise
 - Spider-Man (2002) 35mm Full Frame → 2000s/Popcorn/Spider-Man/
@@ -549,6 +598,9 @@
 
 ### Satellite - Music Films
 - The Smashing Machine (2002) → 2000s/Satellite/Music Films/
+
+### Satellite - Indie Cinema
+- Eros (2004) → Satellite/Indie Cinema/2000s/
 
 ---
 
