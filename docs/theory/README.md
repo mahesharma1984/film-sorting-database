@@ -1,6 +1,6 @@
 # Theory Knowledge Base
 
-This directory contains five essays that articulate the theoretical foundation of the film sorting archive. The operational documentation (sorting rules, decision trees, implementation guides) lives in `docs/`. These essays address the **why** — why decades, why these tiers, why exploitation cinema belongs in a serious archive.
+This directory contains six essays that articulate the theoretical foundation of the film sorting archive. The operational documentation (sorting rules, decision trees, implementation guides) lives in `docs/`. These essays address the **why** — why decades, why these tiers, why exploitation cinema belongs in a serious archive, and why the system-level frameworks (data readiness, certainty tiers, curation loops) take the forms they do.
 
 ---
 
@@ -19,6 +19,7 @@ For deep-dives into specific topics, read in this sequence:
 3. **[MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md)** — Why the archive contains exploitation cinema. Satellite as context for Core.
 4. **[REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md)** — How categories are built: the recursive refinement process, when a sub-category earns its name, and how new categories are applied retroactively.
 5. **[SATELLITE_DEPTH.md](SATELLITE_DEPTH.md)** — Applying Core/Reference logic within Satellite categories: vetting strategy, within-category masters, and the seeking programme that emerges from recognising them.
+6. **[THEORETICAL_GROUNDING.md](THEORETICAL_GROUNDING.md)** — Scholarly foundations for the system-level frameworks: recursive curation (Deming, Settles), data readiness (Wang & Strong, signal detection theory), certainty tiers (Bayesian reasoning), curation loop (Amershi et al., Hooper-Greenhill), country deepening (Higson, Hjort & Mackenzie). Complements SATELLITE_DEPTH's film-studies grounding with information science, classification theory, and human-in-the-loop ML.
 
 ---
 
@@ -35,6 +36,8 @@ docs/theory/  (this directory)
           │     └── SATELLITE_DEPTH (WHY — within-category depth, Sarris→Altman)
           └── REFINEMENT_AND_EMERGENCE (WHY — how the tier system evolves)
                 └── SATELLITE_DEPTH (outward splitting ↔ inward deepening)
+  THEORETICAL_GROUNDING (WHY — scholarly foundations for architecture frameworks)
+    └── grounds: data readiness, certainty tiers, curation loop, country deepening
 ```
 
 The architecture doc describes **how the system works**. The theory essays describe **why it works this way** — grounded in film-historical scholarship, auteur theory, and curatorial practice.

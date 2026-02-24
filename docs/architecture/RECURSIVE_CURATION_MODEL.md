@@ -586,17 +586,18 @@ Each pass through the cycle makes routing rules more precise. The system only ge
 
 ## Appendix A: Relationship to Theory Essays
 
-This document is **architecture** (how). The five theory essays in `docs/theory/` are **theory** (why):
+This document is **architecture** (how). The six theory essays in `docs/theory/` are **theory** (why):
 
 | Essay | Deep-dive for | Sections of this doc |
 |-------|--------------|---------------------|
 | [TIER_ARCHITECTURE.md](../theory/TIER_ARCHITECTURE.md) | Why four tiers, auteur criteria, Popcorn as parallel history | §3 |
 | [MARGINS_AND_TEXTURE.md](../theory/MARGINS_AND_TEXTURE.md) | Satellite categories, caps, positive/negative-space | §4 |
 | [REFINEMENT_AND_EMERGENCE.md](../theory/REFINEMENT_AND_EMERGENCE.md) | How categories split, the five-stage lifecycle, shadow cinema | §1, §4, §7, §10 |
-| [SATELLITE_DEPTH.md](../theory/SATELLITE_DEPTH.md) | Within-category hierarchy, theoretical grounding (Sarris through Altman) | §6 |
+| [SATELLITE_DEPTH.md](../theory/SATELLITE_DEPTH.md) | Within-category hierarchy, film-studies grounding (Sarris through Altman) | §6 |
+| [THEORETICAL_GROUNDING.md](../theory/THEORETICAL_GROUNDING.md) | System-level grounding: Deming, Ranganathan, Wang & Strong, Settles, Bourdieu, Bowker & Star, Higson | §1, §2, §3, §4, §5, §7, §8 |
 | COLLECTION_THESIS.md | The curator's voice and personal philosophy | Not referenced here (orthogonal) |
 
-Reading order for new arrivals: **this document first** (the whole system), then the essay most relevant to current work.
+Reading order for new arrivals: **this document first** (the whole system), then the essay most relevant to current work. For practical usage, see `docs/CURATOR_WORKFLOW.md`.
 
 ---
 
