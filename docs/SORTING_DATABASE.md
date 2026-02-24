@@ -369,6 +369,7 @@
 - Shaft (1971) → 1970s/Satellite/Blaxploitation/
 - Hell Up in Harlem (1973) → 1970s/Satellite/Blaxploitation/
 - Cooley High (1975) → 1970s/Satellite/Blaxploitation/
+- Black Girl (1972) → Satellite/Blaxploitation/1970s/
 
 ### Satellite - Music Films
 - 200 Motels (1971) → 1970s/Satellite/Music Films/
@@ -509,6 +510,7 @@
 - Tuff Turf (1985) → 1980s/Satellite/Indie Cinema/
 - The Cook, The Thief, His Wife and Her Lover (1989) → Satellite/Indie Cinema/1980s/
 - Palombella Rossa (1989) → Satellite/Indie Cinema/1980s/
+- Noyade interdite (1987) → Satellite/Indie Cinema/1980s/
 
 ### Satellite - Giallo
 - A Leap in the Dark (1980) → Satellite/Giallo/1980s/
@@ -623,6 +625,7 @@
 - High Art (1998) → Satellite/Indie Cinema/1990s/
 - In the Soup (1992) → Satellite/Indie Cinema/1990s/
 - Leaving Las Vegas (1995) → Satellite/Indie Cinema/1990s/
+- Braindead (1992) → Satellite/Indie Cinema/1990s/
 
 ### Satellite - Music Films
 - Paris Is Burning (1990) → Satellite/Music Films/1990s/
@@ -637,6 +640,8 @@
 - Jack Frost (1998) → 1990s/Popcorn/
 - Nick of Time (1995) → Popcorn/1990s/
 - Bulworth (1998) → Popcorn/1990s/
+- Andrew Dice Clay For Ladies (1992) → Popcorn/1990s/
+- Red Shoe Diaries (1992) → Popcorn/1990s/
 
 ---
 

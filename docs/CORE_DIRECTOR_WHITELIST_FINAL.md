@@ -36,6 +36,16 @@
 **Orson Welles**
 - Touch of Evil (1958)
 
+**Kenji Mizoguchi**
+- Ugetsu (1953)
+- Sansho the Bailiff (1954)
+- (Other 1950s masterworks — Japanese classical cinema)
+
+**Jean Renoir**
+- The Rules of the Game (1939) — also listed in 1930s/Reference canon
+- Picnic on the Grass (1959)
+- (Classic French humanist auteur; films outside 1950s route to decade-appropriate Core)
+
 ---
 
 ## 1960s CORE (Modernism Rupture / New Waves)

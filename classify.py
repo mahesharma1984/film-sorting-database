@@ -45,6 +45,7 @@ from lib.constants import (
     CATEGORY_CERTAINTY_TIERS, TIER_CONFIDENCE, REVIEW_CONFIDENCE_THRESHOLD,
 )
 from lib.enrichment import ManualEnrichmentSource
+from lib.normalizer import FilenameNormalizer
 
 # Configure logging
 logging.basicConfig(
@@ -103,6 +104,7 @@ class FilmClassifier:
         project_path = Path(self.config['project_path'])
 
         self.parser = FilenameParser()
+        self.normalizer = FilenameNormalizer()
 
         # TMDb client with caching (optional — graceful degradation)
         tmdb_key = self.config.get('tmdb_api_key')
@@ -484,6 +486,22 @@ class FilmClassifier:
         Each check is a soft gate (no match → continue) except:
         - No year: hard gate (cannot route to decade → Unsorted)
         """
+
+        # === Pre-Stage: Non-film detection (Issue #33) ===
+        # Supplements, trailers, and TV episodes are identified by filename pattern.
+        # These skip all routing stages and are excluded from the classification rate.
+        _stem = Path(metadata.filename).stem
+        _nonfim = self.normalizer._detect_nonfim(_stem)
+        if _nonfim:
+            self.stats['non_film_supplement'] += 1
+            return ClassificationResult(
+                filename=metadata.filename, title=metadata.filename,
+                year=None, director=None, language=None, country=None,
+                user_tag=None, tier='Non-Film', decade=None, subdirectory=None,
+                destination='Non-Film/',
+                confidence=0.0, reason='non_film_supplement',
+                data_readiness='R0',
+            )
 
         # === Manual enrichment: fill empty metadata fields before API query (Issue #30) ===
         # Enrichment fills gaps; API data takes priority (metadata fields only update if None).
@@ -895,26 +913,38 @@ class FilmClassifier:
             tier_counts[r.tier] += 1
 
         total = len(results)
-        classified = total - tier_counts.get('Unsorted', 0)
+        non_film = tier_counts.get('Non-Film', 0)
+        film_total = total - non_film  # Films only (excludes supplements)
+        classified = film_total - tier_counts.get('Unsorted', 0)
 
         print("\n" + "=" * 60)
         print("CLASSIFICATION STATISTICS (v1.0)")
         print("=" * 60)
-        print(f"Total films processed: {total}\n")
+        print(f"Total files processed: {total}")
+        if non_film:
+            print(f"  Non-film supplements filtered: {non_film}")
+            print(f"  Films (excl. supplements):     {film_total}\n")
+        else:
+            print()
 
         print("BY TIER:")
         for tier in ['Core', 'Reference', 'Satellite', 'Popcorn', 'Unsorted']:
             count = tier_counts.get(tier, 0)
-            pct = (count / total * 100) if total > 0 else 0
+            pct = (count / film_total * 100) if film_total > 0 else 0
             print(f"  {tier:15s}: {count:4d} ({pct:5.1f}%)")
+        if non_film:
+            print(f"  {'Non-Film':15s}: {non_film:4d} (excluded from rate)")
 
         print(f"\nBY REASON:")
         for reason, count in sorted(self.stats.items(), key=lambda x: -x[1]):
             if reason != 'errors':
                 print(f"  {reason:30s}: {count:4d}")
 
-        classification_rate = (classified / total * 100) if total > 0 else 0
-        print(f"\nClassification rate: {classification_rate:.1f}% ({classified}/{total})")
+        classification_rate = (classified / film_total * 100) if film_total > 0 else 0
+        rate_label = f"{classified}/{film_total}"
+        if non_film:
+            rate_label += f" films (excl. {non_film} supplements)"
+        print(f"\nClassification rate: {classification_rate:.1f}% ({rate_label})")
 
         if self.stats.get('errors'):
             print(f"Errors: {self.stats['errors']}")

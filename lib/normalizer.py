@@ -82,13 +82,39 @@ class FilenameNormalizer:
         r'Conversations?\s+with\b',
         r'A Conversation with\b',
         r'An [Ii]ntroduction (?:to|by)\b',
+        r'Introduction by\b',
         r'On [Tt]he [Ss]et\b',
+        # Trailers / promos
+        r'Trailer\b',
+        r'Theatrical [Tt]railer\b',
+        r'Teaser\b',
+        r'Promo\b',
+        r'TV [Ss]pots?\b',
+        r'Radio [Ss]pots?\b',
+        # Blu-ray supplement types
+        r'Featurette\b',
+        r'Behind [Tt]he [Ss]cenes?\b',
+        r'Commentary\b',
+        r'Outtakes?\b',
+        r'Audio [Oo]uttakes?\b',
+        r'Q\s*&\s*A\b',
+        r'Gallery\b',
+        r'Photo\.?[Gg]allery\b',
+        r'Restoration\b',
+        r'Screen [Tt]ests?\b',
+        r'Post [Pp]roduction\b',
+        r'Selected [Ss]cene\b',
+        r'Super-8 [Vv]ersion\b',
+        r'Extended [Ss]cene\b',
+        r'Extended [Cc]ut\s*[-–]',  # "Extended cut - Jade.mkv" (supplement, not edition)
     ]
 
     # Supplementary content detected anywhere in the stem (not just prefix)
     _SUPPLEMENTARY_SEARCH = [
         r' - (?:The )?[Mm]aking [Oo]f ',
         r' - Interview with\b',
+        # Studio ident reels (appear as "Trailer | United Artists | 1970" in R2a)
+        r'\b(?:20th Century Fox|Warner Brothers?|United Artists)\b',
     ]
 
     def normalize(self, filename: str) -> NormalizationResult:
