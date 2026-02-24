@@ -4,11 +4,17 @@ This directory contains five essays that articulate the theoretical foundation o
 
 ---
 
-## Reading Order
+## Start Here
 
-For a newcomer, read in this sequence:
+**[RECURSIVE_CURATION_MODEL.md](RECURSIVE_CURATION_MODEL.md)** — The unified architecture reference. Integrates all five theory essays, the twelve operational skills, the recursive deepening pattern, the country deepening model, and the Unsorted data-gathering protocol into a single description of how the system works as a self-refining whole. Read this first for the complete picture, then dive into individual essays below for depth on specific topics.
 
-1. **[COLLECTION_THESIS.md](COLLECTION_THESIS.md)** — Start here. What this archive is, why decades are the organizing unit, and why format curation matters.
+---
+
+## Reading Order (Individual Essays)
+
+For deep-dives into specific topics, read in this sequence:
+
+1. **[COLLECTION_THESIS.md](COLLECTION_THESIS.md)** — What this archive is, why decades are the organizing unit, and why format curation matters.
 2. **[TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md)** — Why exactly four tiers, what makes a director Core, and how Popcorn constitutes a parallel cinema history.
 3. **[MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md)** — Why the archive contains exploitation cinema. Satellite as context for Core.
 4. **[REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md)** — How categories are built: the recursive refinement process, when a sub-category earns its name, and how new categories are applied retroactively.
@@ -16,15 +22,28 @@ For a newcomer, read in this sequence:
 
 ---
 
-## How the Essays Relate
+## How the Documents Relate
 
 ```
-COLLECTION_THESIS (what & why: identity + decades + format)
-  └── TIER_ARCHITECTURE (how: 4 tiers + auteur criteria + Popcorn waves)
-        ├── MARGINS_AND_TEXTURE (Satellite categories, caps, boundaries)
-        │     └── SATELLITE_DEPTH (within-category depth hierarchies)
-        └── REFINEMENT_AND_EMERGENCE (how the tier system evolves over time)
-              └── SATELLITE_DEPTH (outward splitting ↔ inward deepening)
+RECURSIVE_CURATION_MODEL (unified reference — the complete system)
+  │
+  ├── integrates:
+  │
+  COLLECTION_THESIS (what & why: identity + decades + format)
+    └── TIER_ARCHITECTURE (how: 4 tiers + auteur criteria + Popcorn waves)
+          ├── MARGINS_AND_TEXTURE (Satellite categories, caps, boundaries)
+          │     └── SATELLITE_DEPTH (within-category depth hierarchies)
+          └── REFINEMENT_AND_EMERGENCE (how the tier system evolves over time)
+                └── SATELLITE_DEPTH (outward splitting ↔ inward deepening)
+  │
+  ├── plus frameworks from:
+  │     exports/skills/ (12 operational skills)
+  │     CLAUDE.md §3 (decision rules)
+  │
+  └── adds:
+        Data readiness (R0–R3), certainty tiers (1–4),
+        curation loop, country deepening model,
+        Unsorted protocol
 ```
 
 ---
