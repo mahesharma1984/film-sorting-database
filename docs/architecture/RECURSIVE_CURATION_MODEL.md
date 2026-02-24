@@ -2,9 +2,9 @@
 
 > A classification system that cannot learn from its own output is a filing cabinet. One that can is a curatorial practice.
 
-This document is the unified architecture reference for the film sorting database. It integrates the five theory essays, the twelve operational skills, the recursive deepening pattern observed across national cinemas, and the data gathering protocol for Unsorted films into a single description of how the system works as a recursive, self-refining whole.
+This document is the **system architecture** for the film sorting database. It describes **how** the system works: the recursive classification cycle, data readiness gates, certainty tiers, the curation feedback loop, and the Unsorted reduction protocol. It integrates the five theory essays, the twelve operational skills, and the recursive deepening pattern observed across national cinemas into a single operational reference.
 
-The existing theory essays remain as deep-dives into specific topics. This document describes how they fit together.
+This is architecture, not theory. For **why** the system works this way — the film-historical scholarship, auteur theory, and curatorial philosophy that ground these design decisions — see the theory essays in `docs/theory/`.
 
 ---
 
@@ -44,7 +44,7 @@ Each pass produces two kinds of output:
 
 The system degrades when only classifications are produced and discoveries are ignored. It improves when discoveries feed back into rules, data, and category definitions.
 
-*Deep-dive: [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) §1 (the curatorial process is recursive), §4a (the five-stage lifecycle).*
+*Deep-dive: [REFINEMENT_AND_EMERGENCE.md](../theory/REFINEMENT_AND_EMERGENCE.md) §1 (the curatorial process is recursive), §4a (the five-stage lifecycle).*
 
 ---
 
@@ -136,7 +136,7 @@ The classification pipeline checks tiers in a specific priority order:
 
 This order is a philosophical statement: **character determines tier, not director prestige alone**. A Godard film in his French New Wave period routes to Satellite/FNW. A Godard film from his post-movement period routes to Core. The decade gate does the heavy lifting.
 
-*Deep-dive: [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — Parts I-III (why four tiers, auteur criteria, Popcorn as parallel history).*
+*Deep-dive: [TIER_ARCHITECTURE.md](../theory/TIER_ARCHITECTURE.md) — Parts I-III (why four tiers, auteur criteria, Popcorn as parallel history).*
 
 ---
 
@@ -196,7 +196,7 @@ Each category has a cap (maximum film count). Caps are not arbitrary — they en
 
 When a category approaches its cap, the within-category depth hierarchy (§6) determines what stays and what goes. Tentpoles stay. Texture is the first to be cut.
 
-*Deep-dive: [MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md) (satellite categories and caps), [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) §2-3 (split conditions and history).*
+*Deep-dive: [MARGINS_AND_TEXTURE.md](../theory/MARGINS_AND_TEXTURE.md) (satellite categories and caps), [REFINEMENT_AND_EMERGENCE.md](../theory/REFINEMENT_AND_EMERGENCE.md) §2-3 (split conditions and history).*
 
 ---
 
@@ -282,7 +282,7 @@ Films scoring highest become Category Core tentpoles. These anchor the category'
 
 **Critical dependency:** Tentpole ranking assumes clean categories. If American Exploitation contains Dead Poets Society, the ranking scores a film that does not belong. The curation loop (§7) must clean categories BEFORE ranking fires.
 
-*Deep-dive: [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) (full theoretical grounding — Sarris, Bloom, Bourdieu, Baxandall, Foucault, Altman).*
+*Deep-dive: [SATELLITE_DEPTH.md](../theory/SATELLITE_DEPTH.md) (full theoretical grounding — Sarris, Bloom, Bourdieu, Baxandall, Foucault, Altman).*
 
 ---
 
@@ -527,7 +527,7 @@ Route films into categories using available data.
 | Heuristic routing | lib/satellite.py, lib/core_directors.py | Certainty-tier-aware confidence |
 | Output | sorting_manifest.csv + review_queue.csv | Confidence threshold gates manifest vs review |
 
-**Tooling:** `classify.py`, `move.py`.
+**Tooling:** `classify.py` (data readiness assessment, certainty-tier confidence, R1 early exit, review queue output), `move.py`, `lib/enrichment.py` (manual enrichment integration).
 
 ### Stage 3: Refine
 
@@ -542,7 +542,7 @@ Compare each film's current placement against current routing rules. Flag discre
 
 **Gate:** reaudit.py requires fresh library_audit.csv (mtime check). Ranking (Stage 4) should not fire on stale audit data.
 
-**Tooling:** `scripts/reaudit.py` (diagnostic), `scripts/curate.py` (execution, planned).
+**Tooling:** `scripts/reaudit.py` (diagnostic), `scripts/curate.py` (execution — reads `output/curation_decisions.csv`, executes accept/override/enrich/defer).
 
 ### Stage 4: Retain and Discard
 
@@ -574,24 +574,26 @@ Each pass through the cycle makes routing rules more precise. The system only ge
 
 | Stage | Tool | Status |
 |-------|------|--------|
-| 1. Define | SATELLITE_CATEGORIES.md, constants.py | Complete |
-| 2. Cluster | classify.py, move.py | Complete (data readiness + certainty gating planned: Issue #30) |
-| 3. Refine | reaudit.py (diagnostic) | Diagnostic complete; execution tool planned (Issue #30 Component 5) |
-| 4. Retain/Discard | rank_category_tentpoles.py | Diagnostic complete; no execution tool yet |
-| 5. Reinforce | Manual edits to SORTING_DATABASE.md, constants.py | Process-enforced, not code-enforced |
+| 1. Define | SATELLITE_CATEGORIES.md, constants.py | ✅ Complete |
+| 2. Cluster | classify.py, move.py | ✅ Complete — data readiness (R0-R3), certainty tiers, confidence gating, R1 early exit all implemented |
+| 3. Refine | reaudit.py (diagnostic), curate.py (execution), review_queue.csv | ⚠️ Partial — diagnostic and execution tools built; review queue populated from classify.py; **gap: reaudit.py output not wired into review queue** |
+| 4. Retain/Discard | rank_category_tentpoles.py | ⚠️ Diagnostic only — ranking report produced; no execution tool for curator retain/discard decisions |
+| 5. Reinforce | curate.py (override → SORTING_DATABASE staging, enrich → manual_enrichment.csv) | ⚠️ Partial — individual feedback paths work; **gap: no pattern detection across overrides to suggest routing rule changes** |
+
+**Workflow gap:** The tools exist but the curator journey between them is undocumented. See `docs/CURATOR_WORKFLOW.md` (planned) for end-to-end usage.
 
 ---
 
 ## Appendix A: Relationship to Theory Essays
 
-This document is the unified architecture reference. The five theory essays are deep-dives:
+This document is **architecture** (how). The five theory essays in `docs/theory/` are **theory** (why):
 
 | Essay | Deep-dive for | Sections of this doc |
 |-------|--------------|---------------------|
-| [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) | Why four tiers, auteur criteria, Popcorn as parallel history | §3 |
-| [MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md) | Satellite categories, caps, positive/negative-space | §4 |
-| [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) | How categories split, the five-stage lifecycle, shadow cinema | §1, §4, §7, §10 |
-| [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) | Within-category hierarchy, theoretical grounding (Sarris through Altman) | §6 |
+| [TIER_ARCHITECTURE.md](../theory/TIER_ARCHITECTURE.md) | Why four tiers, auteur criteria, Popcorn as parallel history | §3 |
+| [MARGINS_AND_TEXTURE.md](../theory/MARGINS_AND_TEXTURE.md) | Satellite categories, caps, positive/negative-space | §4 |
+| [REFINEMENT_AND_EMERGENCE.md](../theory/REFINEMENT_AND_EMERGENCE.md) | How categories split, the five-stage lifecycle, shadow cinema | §1, §4, §7, §10 |
+| [SATELLITE_DEPTH.md](../theory/SATELLITE_DEPTH.md) | Within-category hierarchy, theoretical grounding (Sarris through Altman) | §6 |
 | COLLECTION_THESIS.md | The curator's voice and personal philosophy | Not referenced here (orthogonal) |
 
 Reading order for new arrivals: **this document first** (the whole system), then the essay most relevant to current work.
@@ -648,5 +650,6 @@ Studio trailers (United Artists, Warner Brothers, 20th Century Fox) and compilat
 - `docs/CORE_DIRECTOR_WHITELIST_FINAL.md` — Core director list
 - `docs/SORTING_DATABASE.md` — human-curated overrides
 - `lib/constants.py` — SATELLITE_ROUTING_RULES, SATELLITE_TENTPOLES, REFERENCE_CANON
-- Issue #30 — Phase 2: Structural architecture (data readiness scoring, confidence gating, review queue, curation tool)
-- Issue #31 — Phase 3: Tactical wiring (handoff gates, R1 exit, confidence thresholds, category scale-back)
+- Issue #30 — Phase 2: Structural architecture (largely complete — data readiness, confidence gating, review queue, manual enrichment, curation tool all implemented)
+- Issue #31 — Phase 3: Tactical wiring (partially complete — R1 early exit and confidence thresholds implemented; handoff gate wiring and category scale-back pending)
+- Issue #33 — Unsorted Protocol: non-film filtering, routing bug fixes, cache recovery, review queue population, reduction cycle automation

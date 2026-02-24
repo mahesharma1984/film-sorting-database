@@ -6,7 +6,7 @@ This directory contains five essays that articulate the theoretical foundation o
 
 ## Start Here
 
-**[RECURSIVE_CURATION_MODEL.md](RECURSIVE_CURATION_MODEL.md)** — The unified architecture reference. Integrates all five theory essays, the twelve operational skills, the recursive deepening pattern, the country deepening model, and the Unsorted data-gathering protocol into a single description of how the system works as a self-refining whole. Read this first for the complete picture, then dive into individual essays below for depth on specific topics.
+**[RECURSIVE_CURATION_MODEL.md](../architecture/RECURSIVE_CURATION_MODEL.md)** — The unified **architecture** reference (lives in `docs/architecture/`, not here). Integrates all five theory essays, the twelve operational skills, the recursive deepening pattern, the country deepening model, and the Unsorted data-gathering protocol into a single description of how the system works. Read this first for the complete picture, then return here for the theoretical deep-dives below.
 
 ---
 
@@ -25,26 +25,19 @@ For deep-dives into specific topics, read in this sequence:
 ## How the Documents Relate
 
 ```
-RECURSIVE_CURATION_MODEL (unified reference — the complete system)
-  │
-  ├── integrates:
-  │
-  COLLECTION_THESIS (what & why: identity + decades + format)
-    └── TIER_ARCHITECTURE (how: 4 tiers + auteur criteria + Popcorn waves)
-          ├── MARGINS_AND_TEXTURE (Satellite categories, caps, boundaries)
-          │     └── SATELLITE_DEPTH (within-category depth hierarchies)
-          └── REFINEMENT_AND_EMERGENCE (how the tier system evolves over time)
+docs/architecture/
+  RECURSIVE_CURATION_MODEL (HOW — unified system architecture)
+
+docs/theory/  (this directory)
+  COLLECTION_THESIS (WHY — identity + decades + format)
+    └── TIER_ARCHITECTURE (WHY — 4 tiers + auteur criteria + Popcorn)
+          ├── MARGINS_AND_TEXTURE (WHY — exploitation cinema, caps, boundaries)
+          │     └── SATELLITE_DEPTH (WHY — within-category depth, Sarris→Altman)
+          └── REFINEMENT_AND_EMERGENCE (WHY — how the tier system evolves)
                 └── SATELLITE_DEPTH (outward splitting ↔ inward deepening)
-  │
-  ├── plus frameworks from:
-  │     exports/skills/ (12 operational skills)
-  │     CLAUDE.md §3 (decision rules)
-  │
-  └── adds:
-        Data readiness (R0–R3), certainty tiers (1–4),
-        curation loop, country deepening model,
-        Unsorted protocol
 ```
+
+The architecture doc describes **how the system works**. The theory essays describe **why it works this way** — grounded in film-historical scholarship, auteur theory, and curatorial practice.
 
 ---
 

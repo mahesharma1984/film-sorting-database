@@ -24,10 +24,10 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | What are the 4 tiers? | Core, Reference, Satellite, Popcorn | `docs/theory/TIER_ARCHITECTURE.md` |
 | How do satellite decade boundaries work? | Historically bounded categories | `docs/theory/MARGINS_AND_TEXTURE.md` |
 | What is the curatorial lifecycle? | Define → Cluster → Refine → Retain/Discard → Reinforce | `docs/theory/REFINEMENT_AND_EMERGENCE.md` §4a |
-| How does the whole system fit together? | Recursive curation model — unified architecture | `docs/theory/RECURSIVE_CURATION_MODEL.md` |
-| What are data readiness levels? | R0–R3: No year → Full enrichment | `docs/theory/RECURSIVE_CURATION_MODEL.md` §2 |
-| What are certainty tiers? | Tier 1–4 based on independent gate count | `docs/theory/RECURSIVE_CURATION_MODEL.md` §5 |
-| How does the curation loop work? | Accept/Override/Enrich/Defer → review queue | `docs/theory/RECURSIVE_CURATION_MODEL.md` §7 |
+| How does the whole system fit together? | Recursive curation model — unified architecture | `docs/architecture/RECURSIVE_CURATION_MODEL.md` |
+| What are data readiness levels? | R0–R3: No year → Full enrichment | `docs/architecture/RECURSIVE_CURATION_MODEL.md` §2 |
+| What are certainty tiers? | Tier 1–4 based on independent gate count | `docs/architecture/RECURSIVE_CURATION_MODEL.md` §5 |
+| How does the curation loop work? | Accept/Override/Enrich/Defer → review queue | `docs/architecture/RECURSIVE_CURATION_MODEL.md` §7 |
 | How do I re-audit existing library films? | Re-classification audit (Issue #31) | `docs/theory/REFINEMENT_AND_EMERGENCE.md` §4a |
 | How do I run tests? | pytest tests/ | `docs/DEVELOPER_GUIDE.md` |
 | What is the R/P Split? | Reasoning vs Precision separation | `CLAUDE.md` |
@@ -52,7 +52,7 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Satellite margins** | `docs/theory/MARGINS_AND_TEXTURE.md` | AUTHORITATIVE |
 | **Collection thesis** | `docs/theory/COLLECTION_THESIS.md` | AUTHORITATIVE |
 | **Category refinement** | `docs/theory/REFINEMENT_AND_EMERGENCE.md` | AUTHORITATIVE |
-| **Recursive curation model** | `docs/theory/RECURSIVE_CURATION_MODEL.md` | AUTHORITATIVE |
+| **Recursive curation model** | `docs/architecture/RECURSIVE_CURATION_MODEL.md` | AUTHORITATIVE |
 | **Satellite depth** | `docs/theory/SATELLITE_DEPTH.md` | AUTHORITATIVE |
 | **Thread discovery** | `docs/THREAD_DISCOVERY_GUIDE.md` | AUTHORITATIVE |
 | **Debug runbook** | `docs/DEBUG_RUNBOOK.md` | AUTHORITATIVE |
