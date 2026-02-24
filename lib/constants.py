@@ -838,3 +838,49 @@ assert len(REFERENCE_CANON) <= 55, (
     f"REFERENCE_CANON has {len(REFERENCE_CANON)} entries (cap is 55). "
     "Remove entries before adding new ones."
 )
+
+
+# ---------------------------------------------------------------------------
+# Issue #35 — Evidence Architecture: per-film gate result data structures
+# ---------------------------------------------------------------------------
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
+
+
+@dataclass
+class GateResult:
+    """Three-valued gate result for a single routing condition.
+
+    status values:
+      'pass'           — condition met (value holds the matching datum)
+      'fail'           — condition not met (reason explains the mismatch)
+      'untestable'     — data absent; cannot determine pass or fail
+                         (distinct from fail — Dempster-Shafer absent≠negative)
+      'not_applicable' — gate does not apply to this category's rules
+    """
+    status: str        # 'pass' | 'fail' | 'untestable' | 'not_applicable'
+    value: Any = None  # what matched (e.g. director entry 'hopper', genre 'Horror')
+    reason: str = ''   # explanatory detail for fail/untestable
+
+
+@dataclass
+class CategoryEvidence:
+    """Gate-by-gate evidence record for one Satellite category."""
+    decade_gate:   GateResult = field(default_factory=lambda: GateResult('not_applicable'))
+    director_gate: GateResult = field(default_factory=lambda: GateResult('not_applicable'))
+    country_gate:  GateResult = field(default_factory=lambda: GateResult('not_applicable'))
+    genre_gate:    GateResult = field(default_factory=lambda: GateResult('not_applicable'))
+    keyword_gate:  GateResult = field(default_factory=lambda: GateResult('not_applicable'))
+    title_kw_gate: GateResult = field(default_factory=lambda: GateResult('not_applicable'))
+    matched: bool = False  # True if this category was the winning match
+
+
+@dataclass
+class SatelliteEvidence:
+    """Full evidence profile from a satellite classification attempt.
+
+    matched_category mirrors the Optional[str] return of classify() for
+    backward compatibility.  per_category records every category tested.
+    """
+    matched_category: Optional[str]
+    per_category: Dict[str, CategoryEvidence]

@@ -22,6 +22,7 @@ Classification priority order:
 
 import sys
 import csv
+import json
 import re
 import logging
 import argparse
@@ -77,6 +78,8 @@ class ClassificationResult:
     # Data readiness level at time of classification (Issue #30)
     # R0=no year, R1=no director+country, R2=partial data, R3=full data
     data_readiness: str = 'R3'
+    # Issue #35: per-film evidence trail (shadow pass — purely additive, never alters verdict)
+    evidence_trail: Optional[dict] = None
 
 
 def get_decade(year: int) -> str:
@@ -554,7 +557,7 @@ class FilmClassifier:
                     if parsed['tier'] == 'Satellite' and parsed.get('subdirectory'):
                         self.satellite_classifier.increment_count(parsed['subdirectory'])
 
-                    return ClassificationResult(
+                    _result = ClassificationResult(
                         filename=metadata.filename, title=metadata.title,
                         year=metadata.year, director=metadata.director,
                         language=metadata.language, country=metadata.country,
@@ -566,11 +569,13 @@ class FilmClassifier:
                         tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                         data_readiness=_readiness,
                     )
+                    _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
+                    return _result
 
         # === Hard gate: no year = cannot route to decade ===
         if not metadata.year:
             self.stats['unsorted_no_year'] += 1
-            return ClassificationResult(
+            _result = ClassificationResult(
                 filename=metadata.filename, title=metadata.title,
                 year=None, director=metadata.director,
                 language=metadata.language, country=metadata.country,
@@ -581,6 +586,8 @@ class FilmClassifier:
                 tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                 data_readiness='R0',
             )
+            _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, 'R0')
+            return _result
 
         decade = get_decade(metadata.year)
 
@@ -590,7 +597,7 @@ class FilmClassifier:
         if ref_key in REFERENCE_CANON:
             self.stats['reference_canon'] += 1
             dest = f'Reference/{decade}/'
-            return ClassificationResult(
+            _result = ClassificationResult(
                 filename=metadata.filename, title=metadata.title,
                 year=metadata.year, director=metadata.director,
                 language=metadata.language, country=metadata.country,
@@ -601,6 +608,8 @@ class FilmClassifier:
                 tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                 data_readiness=_readiness,
             )
+            _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
+            return _result
 
         # === Stage 4: Language/country → Satellite routing (from filename) ===
         # Skipped for R1 films (no director AND no country — routing would be meaningless)
@@ -616,7 +625,7 @@ class FilmClassifier:
                 _confidence = TIER_CONFIDENCE[_tier_num]
                 if _readiness == 'R2':
                     _confidence = min(_confidence, 0.6)
-                return ClassificationResult(
+                _result = ClassificationResult(
                     filename=metadata.filename, title=metadata.title,
                     year=metadata.year, director=metadata.director,
                     language=metadata.language, country=metadata.country,
@@ -627,6 +636,8 @@ class FilmClassifier:
                     tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                     data_readiness=_readiness,
                 )
+                _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
+                return _result
 
         # === Stage 5: TMDb-based satellite classification ===
         # Skipped for R1 films (no director AND no country — no basis for satellite routing).
@@ -644,7 +655,7 @@ class FilmClassifier:
                 _confidence = TIER_CONFIDENCE[_tier_num]
                 if _readiness == 'R2':
                     _confidence = min(_confidence, 0.6)
-                return ClassificationResult(
+                _result = ClassificationResult(
                     filename=metadata.filename, title=metadata.title,
                     year=metadata.year, director=metadata.director,
                     language=metadata.language, country=metadata.country,
@@ -655,6 +666,8 @@ class FilmClassifier:
                     tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                     data_readiness=_readiness,
                 )
+                _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
+                return _result
 
         # === Stage 6: User tag recovery ===
         # Fires AFTER Satellite (Issue #25) so movement routing takes priority over stale
@@ -696,7 +709,7 @@ class FilmClassifier:
 
                 if dest is not None:
                     self.stats['user_tag_recovery'] += 1
-                    return ClassificationResult(
+                    _result = ClassificationResult(
                         filename=metadata.filename, title=metadata.title,
                         year=metadata.year, director=metadata.director,
                         language=metadata.language, country=metadata.country,
@@ -707,6 +720,8 @@ class FilmClassifier:
                         tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                         data_readiness=_readiness,
                     )
+                    _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
+                    return _result
                 # dest is None — fall through to Stage 7 (Core director check)
 
         # === Stage 7: Core director check (Issue #25: moved after Satellite) ===
@@ -721,7 +736,7 @@ class FilmClassifier:
             if canonical and director_decade:
                 self.stats['core_director'] += 1
                 dest = f'Core/{director_decade}/{canonical}/'
-                return ClassificationResult(
+                _result = ClassificationResult(
                     filename=metadata.filename, title=metadata.title,
                     year=metadata.year, director=canonical,
                     language=metadata.language, country=metadata.country,
@@ -732,6 +747,8 @@ class FilmClassifier:
                     tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                     data_readiness=_readiness,
                 )
+                _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
+                return _result
 
         # === Stage 8: Popcorn check (skipped for R1 — no popularity/API data) ===
         popcorn_reason = None if _readiness == 'R1' else self.popcorn_classifier.classify_reason(metadata, tmdb_data)
@@ -739,7 +756,7 @@ class FilmClassifier:
             self.stats['popcorn_auto'] += 1
             self.stats[popcorn_reason] += 1
             dest = f'Popcorn/{decade}/'
-            return ClassificationResult(
+            _result = ClassificationResult(
                 filename=metadata.filename, title=metadata.title,
                 year=metadata.year, director=metadata.director,
                 language=metadata.language, country=metadata.country,
@@ -750,6 +767,8 @@ class FilmClassifier:
                 tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                 data_readiness=_readiness,
             )
+            _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
+            return _result
 
         # === Stage 9: Unsorted (default) ===
         # R1: insufficient data (no director AND no country) — distinct from taxonomy gap
@@ -764,7 +783,7 @@ class FilmClassifier:
                 reason_parts.append('no_match')
             reason = f"unsorted_{'_'.join(reason_parts)}" if reason_parts else 'unsorted_unknown'
             self.stats[reason] += 1
-        return ClassificationResult(
+        _result = ClassificationResult(
             filename=metadata.filename, title=metadata.title,
             year=metadata.year, director=metadata.director,
             language=metadata.language, country=metadata.country,
@@ -775,6 +794,8 @@ class FilmClassifier:
             tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
             data_readiness=_readiness,
         )
+        _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
+        return _result
 
     def process_directory(self, source_dir: Path) -> List[ClassificationResult]:
         """Process all video files in directory"""
@@ -906,6 +927,261 @@ class FilmClassifier:
 
         logger.info(f"Wrote review queue ({len(review)} films) to {output_path}")
 
+    # ------------------------------------------------------------------
+    # Issue #35: Shadow pass — evidence accumulation (read-only)
+    # ------------------------------------------------------------------
+
+    def _gather_evidence(
+        self,
+        metadata,
+        tmdb_data: Optional[dict],
+        readiness: str,
+    ) -> dict:
+        """Collect per-stage evidence for one film WITHOUT modifying any state.
+
+        Runs all stage logic in read-only mode (no stats writes, no cap increments).
+        Returns a nested dict that is attached to ClassificationResult.evidence_trail.
+
+        INVARIANT: This method must never write to self.stats, self.satellite_classifier.counts,
+        or any other shared mutable state.
+        """
+        # --- Data readiness fields ---
+        fields_present = ['title', 'year'] if metadata.title and metadata.year else (
+            ['title'] if metadata.title else (['year'] if metadata.year else [])
+        )
+        if metadata.director:
+            fields_present.append('director')
+        if metadata.country:
+            fields_present.append('country')
+
+        fields_absent = []
+        genres = (tmdb_data or {}).get('genres', [])
+        countries = (tmdb_data or {}).get('countries', [])
+        if not metadata.director and not (tmdb_data or {}).get('director'):
+            fields_absent.append('director')
+        if not metadata.country and not countries:
+            fields_absent.append('country')
+        if not genres:
+            fields_absent.append('genres')
+
+        # --- Lookup stage ---
+        lookup_ev: dict = {'checked': False, 'matched': False}
+        if metadata.title:
+            lookup_ev['checked'] = True
+            dest = self.lookup_db.lookup(metadata.title, metadata.year)
+            if dest:
+                lookup_ev['matched'] = True
+                lookup_ev['dest'] = dest
+
+        # --- Reference canon stage ---
+        reference_ev: dict = {'checked': False, 'matched': False}
+        if metadata.title and metadata.year:
+            reference_ev['checked'] = True
+            normalized_title = normalize_for_lookup(metadata.title, strip_format_signals=True)
+            if (normalized_title, metadata.year) in REFERENCE_CANON:
+                reference_ev['matched'] = True
+
+        # Compute decade from metadata (same logic as classify())
+        _year = metadata.year or (tmdb_data or {}).get('year')
+        decade = f"{(_year // 10) * 10}s" if _year else None
+
+        # --- Country-to-wave satellite (Stage 4) ---
+        country_wave_ev: dict = {'checked': False, 'matched': False}
+        if readiness != 'R1' and metadata.country and decade:
+            country_wave_ev['checked'] = True
+            if metadata.country in COUNTRY_TO_WAVE:
+                wave_config = COUNTRY_TO_WAVE[metadata.country]
+                if decade in wave_config['decades']:
+                    country_wave_ev['matched'] = True
+                    country_wave_ev['category'] = wave_config['category']
+
+        # --- Satellite evidence (Stage 5) — evidence_classify() is read-only ---
+        sat_ev_obj = self.satellite_classifier.evidence_classify(metadata, tmdb_data)
+
+        # Compute nearest-miss from per_category evidence
+        nearest_miss = None
+        gates_missing_for_nearest: list = []
+        best_pass_count = 0
+        # Priority order from SATELLITE_ROUTING_RULES iteration order (matches classify())
+        for cat_name, cat_ev in sat_ev_obj.per_category.items():
+            if cat_ev.matched:
+                continue  # skip actual winner for near-miss calculation
+            gates = [
+                cat_ev.decade_gate,
+                cat_ev.director_gate,
+                cat_ev.country_gate,
+                cat_ev.genre_gate,
+                cat_ev.keyword_gate,
+                cat_ev.title_kw_gate,
+            ]
+            pass_count = sum(1 for g in gates if g.status == 'pass')
+            blocking = [
+                name for name, g in [
+                    ('decade_gate', cat_ev.decade_gate),
+                    ('director_gate', cat_ev.director_gate),
+                    ('country_gate', cat_ev.country_gate),
+                    ('genre_gate', cat_ev.genre_gate),
+                    ('keyword_gate', cat_ev.keyword_gate),
+                    ('title_kw_gate', cat_ev.title_kw_gate),
+                ]
+                if g.status in ('fail', 'untestable')
+                and g.status != 'not_applicable'
+            ]
+            if pass_count > best_pass_count:
+                best_pass_count = pass_count
+                nearest_miss = cat_name
+                gates_missing_for_nearest = blocking
+
+        # Serialize SatelliteEvidence.per_category to a JSON-safe dict
+        def _gate_dict(g) -> dict:
+            return {'status': g.status, 'value': g.value, 'reason': g.reason}
+
+        sat_serialized: dict = {
+            'matched_category': sat_ev_obj.matched_category,
+            'per_category': {
+                cat_name: {
+                    'decade_gate':   _gate_dict(cat_ev.decade_gate),
+                    'director_gate': _gate_dict(cat_ev.director_gate),
+                    'country_gate':  _gate_dict(cat_ev.country_gate),
+                    'genre_gate':    _gate_dict(cat_ev.genre_gate),
+                    'keyword_gate':  _gate_dict(cat_ev.keyword_gate),
+                    'title_kw_gate': _gate_dict(cat_ev.title_kw_gate),
+                    'matched':       cat_ev.matched,
+                }
+                for cat_name, cat_ev in sat_ev_obj.per_category.items()
+            },
+        }
+
+        # --- User tag stage ---
+        user_tag_ev: dict = {'has_tag': bool(metadata.user_tag)}
+        if metadata.user_tag:
+            parsed_tag = self._parse_user_tag(metadata.user_tag)
+            user_tag_ev['parsed'] = parsed_tag
+
+        # --- Core director stage ---
+        core_ev: dict = {'checked': False, 'matched': False}
+        if readiness != 'R1' and metadata.director:
+            core_ev['checked'] = True
+            if self.core_db.is_core_director(metadata.director):
+                core_ev['matched'] = True
+                core_ev['canonical'] = self.core_db.get_canonical_name(metadata.director)
+
+        # --- Popcorn stage ---
+        popcorn_ev: dict = {'checked': False, 'matched': False, 'reason': None}
+        if readiness != 'R1':
+            popcorn_ev['checked'] = True
+            popcorn_reason = self.popcorn_classifier.classify_reason(metadata, tmdb_data)
+            if popcorn_reason:
+                popcorn_ev['matched'] = True
+                popcorn_ev['reason'] = popcorn_reason
+
+        return {
+            'data_readiness': readiness,
+            'fields_present': fields_present,
+            'fields_absent': fields_absent,
+            'lookup': lookup_ev,
+            'reference': reference_ev,
+            'country_wave': country_wave_ev,
+            'satellite': sat_serialized,
+            'user_tag': user_tag_ev,
+            'core': core_ev,
+            'popcorn': popcorn_ev,
+            'nearest_miss': nearest_miss,
+            'gates_missing_for_nearest': gates_missing_for_nearest,
+        }
+
+    def write_evidence_trails(self, results: List[ClassificationResult], output_path: Path):
+        """Write per-film evidence trails to a flat CSV (Issue #35).
+
+        One row per film. Satellite per-category gates are flattened to individual
+        columns (Option A — flat) so a curator can filter directly in a spreadsheet:
+          Filter indie_cinema_country=pass AND indie_cinema_genre=untestable
+          → the 44 R2b films from Issue #34.
+
+        Films with no evidence_trail (Non-Film supplements) are skipped.
+        """
+        from lib.constants import SATELLITE_ROUTING_RULES
+
+        # Build ordered list of categories for consistent column ordering
+        categories = list(SATELLITE_ROUTING_RULES.keys())
+        gate_names = ['decade', 'director', 'country', 'genre', 'keyword', 'title_kw']
+        # Map gate_names → CategoryEvidence attribute names
+        gate_attr_map = {
+            'decade': 'decade_gate', 'director': 'director_gate',
+            'country': 'country_gate', 'genre': 'genre_gate',
+            'keyword': 'keyword_gate', 'title_kw': 'title_kw_gate',
+        }
+
+        # Base columns
+        base_cols = [
+            'filename', 'title', 'year', 'director', 'country',
+            'data_readiness', 'tier', 'reason',
+            'lookup_matched', 'reference_matched',
+            'country_wave_matched', 'country_wave_category',
+            'satellite_matched_category',
+            'nearest_miss', 'gates_missing_for_nearest',
+            'fields_absent',
+        ]
+        # Per-category gate columns: {cat_slug}_{gate}
+        def _slug(name: str) -> str:
+            return name.lower().replace(' ', '_').replace('/', '_')
+
+        cat_cols = [
+            f'{_slug(cat)}_{gate}'
+            for cat in categories
+            for gate in gate_names
+        ]
+
+        fieldnames = base_cols + cat_cols
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(output_path, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames, quoting=csv.QUOTE_ALL,
+                                    extrasaction='ignore')
+            writer.writeheader()
+
+            for result in results:
+                if result.evidence_trail is None:
+                    continue  # Non-Film supplements — no evidence collected
+
+                ev = result.evidence_trail
+                sat = ev.get('satellite', {})
+                per_cat = sat.get('per_category', {})
+
+                row: dict = {
+                    'filename': result.filename,
+                    'title': result.title,
+                    'year': result.year or '',
+                    'director': result.director or '',
+                    'country': result.country or '',
+                    'data_readiness': result.data_readiness,
+                    'tier': result.tier,
+                    'reason': result.reason,
+                    'lookup_matched': ev.get('lookup', {}).get('matched', False),
+                    'reference_matched': ev.get('reference', {}).get('matched', False),
+                    'country_wave_matched': ev.get('country_wave', {}).get('matched', False),
+                    'country_wave_category': ev.get('country_wave', {}).get('category', ''),
+                    'satellite_matched_category': sat.get('matched_category', ''),
+                    'nearest_miss': ev.get('nearest_miss', ''),
+                    'gates_missing_for_nearest': ','.join(ev.get('gates_missing_for_nearest', [])),
+                    'fields_absent': ','.join(ev.get('fields_absent', [])),
+                }
+
+                # Flatten per-category gate statuses
+                for cat in categories:
+                    cat_ev = per_cat.get(cat, {})
+                    slug = _slug(cat)
+                    for gate in gate_names:
+                        gate_key = gate_attr_map[gate] if gate != 'title_kw' else 'title_kw_gate'
+                        gate_data = cat_ev.get(gate_key, {})
+                        if not gate_data:
+                            gate_data = cat_ev.get(f'{gate}_gate', {})
+                        row[f'{slug}_{gate}'] = gate_data.get('status', 'not_applicable')
+
+                writer.writerow(row)
+
+        logger.info(f"Wrote evidence trails ({sum(1 for r in results if r.evidence_trail)} films) to {output_path}")
+
     def print_stats(self, results: List[ClassificationResult]):
         """Print classification statistics"""
         tier_counts = defaultdict(int)
@@ -1022,6 +1298,10 @@ Examples:
 
     review_path = args.output.parent / 'review_queue.csv'
     classifier.write_review_queue(results, review_path)
+
+    # Issue #35: Write per-film evidence trails
+    evidence_path = args.output.parent / 'evidence_trails.csv'
+    classifier.write_evidence_trails(results, evidence_path)
 
     # Print stats
     classifier.print_stats(results)

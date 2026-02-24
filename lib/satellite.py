@@ -169,6 +169,183 @@ class SatelliteClassifier:
 
         return None
 
+    def evidence_classify(self, metadata, tmdb_data: Optional[Dict]) -> 'SatelliteEvidence':
+        """Read-only evidence-producing twin of classify().
+
+        Runs the same gate logic as classify() but:
+        - Returns SatelliteEvidence instead of Optional[str]
+        - Uses three-valued gate logic: pass / fail / untestable
+        - Never calls _check_cap() or increments self.counts
+        - Records evidence for every category, including ones that fail early
+
+        Issue #35: Used by _gather_evidence() in classify.py (shadow pass).
+        """
+        from lib.constants import (
+            SATELLITE_ROUTING_RULES,
+            AMERICAN_EXPLOITATION_TITLE_KEYWORDS,
+            BLAXPLOITATION_TITLE_KEYWORDS,
+            GateResult, CategoryEvidence, SatelliteEvidence,
+        )
+
+        per_category: Dict[str, CategoryEvidence] = {}
+
+        # Construct minimal dict when tmdb_data absent (mirrors classify() behaviour)
+        if not tmdb_data:
+            if not (hasattr(metadata, 'director') and metadata.director):
+                return SatelliteEvidence(matched_category=None, per_category={})
+            tmdb_data = {
+                'director': metadata.director,
+                'year': metadata.year,
+                'countries': [],
+                'genres': [],
+                'cast': [],
+                'keywords': [],
+                'overview': '',
+                'tagline': '',
+                'plot': '',
+            }
+
+        countries = tmdb_data.get('countries', [])
+        genres = tmdb_data.get('genres', [])
+        director = tmdb_data.get('director', '') or ''
+        year = tmdb_data.get('year')
+        title = (tmdb_data.get('title') or getattr(metadata, 'title', '') or '').lower()
+        director_lower = director.lower()
+        director_tokens = set(director_lower.split())
+
+        decade = None
+        if year:
+            decade = f"{(year // 10) * 10}s"
+
+        matched_category = None
+
+        for category_name, rules in SATELLITE_ROUTING_RULES.items():
+            ev = CategoryEvidence()
+
+            # --- Decade gate ---
+            if rules['decades'] is not None:
+                if decade and decade in rules['decades']:
+                    ev.decade_gate = GateResult('pass', value=decade)
+                elif not decade:
+                    ev.decade_gate = GateResult('untestable', reason='year absent — decade unknown')
+                else:
+                    ev.decade_gate = GateResult('fail', reason=f'{decade} not in {rules["decades"]}')
+                    per_category[category_name] = ev
+                    continue  # decade-bounded and out of range — skip remaining gates
+            # else: no decade restriction → leave as 'not_applicable'
+
+            # --- Director gate ---
+            if rules['directors']:
+                if director:
+                    matched_dir = next(
+                        (d for d in rules['directors']
+                         if self._director_matches(director_lower, director_tokens, d)),
+                        None,
+                    )
+                    if matched_dir:
+                        ev.director_gate = GateResult('pass', value=matched_dir)
+                        ev.matched = True
+                        per_category[category_name] = ev
+                        if matched_category is None:
+                            matched_category = category_name
+                        continue  # director match wins — skip country/genre path
+                    else:
+                        ev.director_gate = GateResult('fail', reason=f'{director!r} not in directors list')
+                else:
+                    ev.director_gate = GateResult('untestable', reason='no director data')
+
+            # --- Country gate ---
+            if rules['country_codes'] is not None:
+                if countries:
+                    matched_country = next(
+                        (c for c in rules['country_codes'] if c in countries), None
+                    )
+                    if matched_country:
+                        ev.country_gate = GateResult('pass', value=matched_country)
+                    else:
+                        ev.country_gate = GateResult(
+                            'fail',
+                            reason=f'{countries} ∩ {rules["country_codes"]} = ∅',
+                        )
+                else:
+                    ev.country_gate = GateResult('untestable', reason='countries=[] — no country data')
+            # else: no country restriction → leave as 'not_applicable'
+
+            # --- Genre gate ---
+            if rules['genres'] is not None:
+                if genres:
+                    matched_genre = next(
+                        (g for g in rules['genres'] if g in genres), None
+                    )
+                    if matched_genre:
+                        ev.genre_gate = GateResult('pass', value=matched_genre)
+                    else:
+                        ev.genre_gate = GateResult(
+                            'fail',
+                            reason=f'genres={genres} ∩ {rules["genres"]} = ∅',
+                        )
+                else:
+                    ev.genre_gate = GateResult('untestable', reason='genres=[] — no genre data from API')
+            # else: no genre restriction → leave as 'not_applicable'
+
+            # --- Title keyword gate (American Exploitation, Blaxploitation) ---
+            if category_name == 'American Exploitation':
+                if self._title_matches_keywords(title, AMERICAN_EXPLOITATION_TITLE_KEYWORDS):
+                    ev.title_kw_gate = GateResult('pass')
+                else:
+                    ev.title_kw_gate = GateResult('fail', reason='title keyword gate')
+            elif category_name == 'Blaxploitation':
+                if self._title_matches_keywords(title, BLAXPLOITATION_TITLE_KEYWORDS):
+                    ev.title_kw_gate = GateResult('pass')
+                else:
+                    ev.title_kw_gate = GateResult('fail', reason='title keyword gate')
+
+            # --- Determine match via country + genre path ---
+            country_passes = ev.country_gate.status == 'pass'
+            genre_passes = ev.genre_gate.status == 'pass'
+            title_kw_passes = ev.title_kw_gate.status in ('pass', 'not_applicable')
+
+            if country_passes and genre_passes and title_kw_passes:
+                ev.matched = True
+                per_category[category_name] = ev
+                if matched_category is None:
+                    matched_category = category_name
+                continue
+
+            # --- Keyword gate (Tier A: country + keyword waives genre) ---
+            keyword_signals = rules.get('keyword_signals')
+            if keyword_signals and country_passes and not genre_passes:
+                hit, source = self._keyword_hit(tmdb_data, keyword_signals)
+                if hit:
+                    ev.keyword_gate = GateResult('pass', value=source)
+                    ev.matched = True
+                    per_category[category_name] = ev
+                    if matched_category is None:
+                        matched_category = category_name
+                    continue
+                else:
+                    ev.keyword_gate = GateResult('fail', reason='no keyword signal matched')
+
+            # --- Keyword gate (Tier B: TMDb tag alone for movement categories) ---
+            if rules.get('tier_b_eligible') and keyword_signals:
+                tmdb_tags_lower = [k.lower() for k in tmdb_data.get('keywords', [])]
+                matched_tag = next(
+                    (tag for tag in keyword_signals.get('tmdb_tags', [])
+                     if tag in tmdb_tags_lower),
+                    None,
+                )
+                if matched_tag:
+                    ev.keyword_gate = GateResult('pass', value=f'tier_b:{matched_tag}')
+                    ev.matched = True
+                    per_category[category_name] = ev
+                    if matched_category is None:
+                        matched_category = category_name
+                    continue
+
+            per_category[category_name] = ev
+
+        return SatelliteEvidence(matched_category=matched_category, per_category=per_category)
+
     @staticmethod
     def _director_matches(director_lower: str, director_tokens: set, entry: str) -> bool:
         """Whole-word match for single-word entries; substring for multi-word entries.
