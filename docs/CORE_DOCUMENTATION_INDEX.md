@@ -35,6 +35,8 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | What published research grounds the frameworks? | Deming, Ranganathan, Settles, Bourdieu, Bowker & Star, signal detection | `docs/theory/THEORETICAL_GROUNDING.md` |
 | Why does the pipeline keep hitting dead ends? | Information destruction at every stage; single-loop learning | `docs/architecture/EVIDENCE_ARCHITECTURE.md` §1 |
 | What is evidence architecture? | Per-film evidence trails, failure cohorts, hypothesis generation | `docs/architecture/EVIDENCE_ARCHITECTURE.md` §3 |
+| What is the accuracy of the organised library? | Two populations: SORTING_DATABASE (100%) vs pipeline heuristics (~91.2%) | `docs/architecture/CLASSIFICATION_ACCURACY.md` §4 |
+| How is classification accuracy measured? | Re-run classifier on organised films; compare to current location | `docs/architecture/CLASSIFICATION_ACCURACY.md` §3 |
 | What is double-loop learning? | Questioning governing variables, not just fixing instances | `docs/theory/THEORETICAL_GROUNDING.md` §8 |
 | How do I re-audit existing library films? | Re-classification audit (Issue #31) | `docs/theory/REFINEMENT_AND_EMERGENCE.md` §4a |
 | How do I run tests? | pytest tests/ | `docs/DEVELOPER_GUIDE.md` |
@@ -63,6 +65,7 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Recursive curation model** | `docs/architecture/RECURSIVE_CURATION_MODEL.md` | AUTHORITATIVE |
 | **Theoretical grounding** | `docs/theory/THEORETICAL_GROUNDING.md` | AUTHORITATIVE |
 | **Evidence architecture** | `docs/architecture/EVIDENCE_ARCHITECTURE.md` | AUTHORITATIVE |
+| **Classification accuracy** | `docs/architecture/CLASSIFICATION_ACCURACY.md` | AUTHORITATIVE |
 | **Satellite depth** | `docs/theory/SATELLITE_DEPTH.md` | AUTHORITATIVE |
 | **Curator workflow** | `docs/CURATOR_WORKFLOW.md` | AUTHORITATIVE |
 | **Thread discovery** | `docs/THREAD_DISCOVERY_GUIDE.md` | AUTHORITATIVE |
