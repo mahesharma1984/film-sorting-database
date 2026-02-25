@@ -86,6 +86,16 @@ class FilenameParser:
         # Clean up extra spaces
         title = ' '.join(title.split())
 
+        # Strip AKA alternative titles: "La femme infidele AKA The Unfaithful Wife" → "La femme infidele"
+        title = re.sub(r'\s+AKA\s+.*', '', title, flags=re.IGNORECASE)
+
+        # Normalize inverted articles: "Woman is a Woman, A" → "A Woman is a Woman"
+        # Use greedy match so "Good, the Bad and the Ugly, The" → "The Good, the Bad and the Ugly"
+        title = re.sub(
+            r'^(.*),\s+(A|An|The|Le|La|Les|L\'|Un|Une|Los|Las|El|Die|Der|Das|Det|Den|De|Het)\s*$',
+            r'\2 \1', title, flags=re.IGNORECASE
+        )
+
         # Strip and return
         title = title.strip()
 
@@ -237,9 +247,15 @@ class FilenameParser:
         if paren_year_match:
             year = int(paren_year_match.group(1))
             if 1920 <= year <= 2029:
-                # Remove the whole parenthetical containing the year from title
-                title_without_year = re.sub(r'\s*\(\d{4}[^)]*\)\s*', ' ', name)
-                title = self._clean_title(title_without_year)
+                # Use everything BEFORE the year parenthetical as the title.
+                # Right-boundary rule: "Title (Year) AKA Alternate / English Dub / Metadata"
+                # — everything after the year is not part of the title.
+                # Fallback to full substitution only when year is at the very start.
+                pre_year = name[:paren_year_match.start()].strip()
+                if pre_year:
+                    title = self._clean_title(pre_year)
+                else:
+                    title = self._clean_title(re.sub(r'\s*\(\d{4}[^)]*\)\s*', ' ', name))
 
                 # Only attempt director extraction for "clean" paren years — (YYYY) alone.
                 # Messy parens like (1975 - 360p - Português) contain " - " inside the paren;
