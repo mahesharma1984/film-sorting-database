@@ -817,6 +817,8 @@ class FilmClassifier:
 
             try:
                 metadata = self.parser.parse(file_path.name)
+                # Store relative path so move.py can find files in subdirectories
+                metadata.filename = str(file_path.relative_to(source_dir))
                 result = self.classify(metadata)
                 results.append(result)
             except Exception as e:
