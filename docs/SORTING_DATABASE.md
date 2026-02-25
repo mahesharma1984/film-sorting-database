@@ -19,6 +19,13 @@
 ### Core - William Wyler
 - The Little Foxes (1941) → Core/1940s/William Wyler/
 
+### Core - Alfred Hitchcock
+- Spellbound (1945) → Core/1940s/Alfred Hitchcock/
+
+### Satellite - Classic Hollywood
+- Detour (1945) → Satellite/Classic Hollywood/1940s/
+- Cat People (1942) → Satellite/Classic Hollywood/1940s/
+
 ### Reference
 - Citizen Kane (1941) → Reference/1940s/
 
@@ -51,6 +58,11 @@
 - Dial M for Murder → Reference/1950s/
 - To Catch a Thief → Reference/1950s/
 - Princess Yang Kwei Fei (1955) → Reference/1950s/
+
+### Satellite - Classic Hollywood
+- Invasion of the Body Snatchers (1956) → Satellite/Classic Hollywood/1950s/
+- Johnny Guitar (1954) → Satellite/Classic Hollywood/1950s/
+- Orpheus (1950) → Satellite/Classic Hollywood/1950s/
 
 ### Satellite - Indie Cinema
 - Les Mauvaises Rencontres (1955) → Satellite/Indie Cinema/1950s/
@@ -177,11 +189,28 @@
 
 ### Satellite - French New Wave
 - L'immortelle (1963) → Satellite/French New Wave/1960s/
+- Mississippi Mermaid (1969) → Satellite/French New Wave/1960s/
+
+
+### Core - Sergio Leone
+- A Fistful of Dollars (1964) → Core/1960s/Sergio Leone/
+- Fistful of Dollars, A (1964) → Core/1960s/Sergio Leone/
+- For a Few Dollars More (1965) → Core/1960s/Sergio Leone/
+- The Good, the Bad and the Ugly (1966) → Core/1960s/Sergio Leone/
+- Good, the Bad, and the Ugly, The (1966) → Core/1960s/Sergio Leone/
+- Good, the Bad and the Ugly, The (1966) → Core/1960s/Sergio Leone/
+- Once Upon a Time in the West (1968) → Core/1960s/Sergio Leone/
 
 ### Core - William Wyler
 - How to Steal a Million (1966) → Core/1960s/William Wyler/
 
+### Satellite - European Sexploitation
+- Barbarella (1968) → Satellite/European Sexploitation/1960s/
+
 ### Satellite - Classic Hollywood
+
+### Satellite - Music Films
+- The Beatles Magical Mystery Tour (1967) → Satellite/Music Films/1960s/
 
 ### Popcorn
 - Yellow Submarine (1968) 16mm → Popcorn/1960s/
@@ -297,6 +326,16 @@
 - Grass Labyrinth (1979) → Satellite/Japanese New Wave/1970s/
 
 ### Satellite - Japanese New Wave
+- Stray Cat Rock - Wild Jumbo (1970) → Satellite/Japanese New Wave/1970s/
+- Wild Jumbo (1970) → Satellite/Japanese New Wave/1970s/
+- Stray Cat Rock - Sex Hunter (1970) → Satellite/Japanese New Wave/1970s/
+- Sex Hunter (1970) → Satellite/Japanese New Wave/1970s/
+- Stray Cat Rock - Machine Animal (1970) → Satellite/Japanese New Wave/1970s/
+- Machine Animal (1970) → Satellite/Japanese New Wave/1970s/
+- Stray Cat Rock - Delinquent Girl Boss (1970) → Satellite/Japanese New Wave/1970s/
+- Delinquent Girl Boss (1970) → Satellite/Japanese New Wave/1970s/
+- Stray Cat Rock - Beat '71 (1971) → Satellite/Japanese New Wave/1970s/
+- Beat '71 (1971) → Satellite/Japanese New Wave/1970s/
 - Throw Away Your Books, Rally in the Streets (1971) → Satellite/Japanese New Wave/1970s/
 - AKA Serial Killer (1975) → Satellite/Japanese New Wave/1970s/
 - Demon Pond (1979) → Satellite/Japanese New Wave/1970s/
@@ -384,6 +423,9 @@
 ### Satellite - Indie Cinema
 - Going Places (1974) → Satellite/Indie Cinema/1970s/
 - La Grande Bouffe (1973) → Satellite/Indie Cinema/1970s/
+
+### Satellite - Indie Cinema
+- Picnic at Hanging Rock (1975) → Satellite/Indie Cinema/1970s/
 
 ### Satellite - French New Wave
 - Successive Slidings of Pleasure (1974) → Satellite/French New Wave/1970s/
@@ -554,6 +596,7 @@
 - Explorers (1985) → Popcorn/1980s/
 - Who Framed Roger Rabbit (1988) 35mm → Popcorn/1980s/
 - Transformers: The Movie (1986) → Popcorn/1980s/
+- The Movie (1986) → Popcorn/1980s/
 - Clue (1985) → Popcorn/1980s/
 
 ### Popcorn - Horror
@@ -631,6 +674,7 @@
 - Paris Is Burning (1990) → Satellite/Music Films/1990s/
 
 ### Popcorn
+- Dances with Wolves (1990) → Popcorn/1990s/
 - Serial Mom (1994) - John Waters → Popcorn/1990s/
 - Cry-Baby (1990) - John Waters → Popcorn/1990s/
 - Pecker (1998) - John Waters → Popcorn/1990s/
@@ -712,6 +756,9 @@
 
 ### Satellite - Music Films
 - The Smashing Machine (2002) → Satellite/Music Films/2000s/
+
+### Satellite - Japanese New Wave
+- Battle Royale (2000) → Satellite/Japanese New Wave/2000s/
 
 ### Satellite - Indie Cinema
 - Eros (2004) → Satellite/Indie Cinema/2000s/

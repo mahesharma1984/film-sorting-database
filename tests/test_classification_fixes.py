@@ -36,7 +36,7 @@ class TestKubrickClassification:
         Test: Dr. Strangelove with Criterion format signal
 
         Before fix: Routed to Popcorn/1960s/ (format_signal)
-        After fix: Should route to 1960s/Core/Stanley Kubrick/ (explicit_lookup)
+        After fix: Should route to Core/1960s/Stanley Kubrick/ (explicit_lookup)
         """
         filename = 'Dr.Strangelove.1964.Criterion.1080p.BluRay.x265.10bit.mkv'
 
@@ -45,7 +45,7 @@ class TestKubrickClassification:
 
         assert result.tier == 'Core', \
             f"Expected Core, got {result.tier} (reason: {result.reason})"
-        assert result.destination == '1960s/Core/Stanley Kubrick/', \
+        assert result.destination == 'Core/1960s/Stanley Kubrick/', \
             f"Wrong destination: {result.destination}"
         assert result.year == 1964, f"Wrong year: {result.year}"
         assert result.reason == 'explicit_lookup', \
@@ -56,7 +56,7 @@ class TestKubrickClassification:
         Test: The Shining with 35mm and multiple format signals
 
         Before fix: Routed to Popcorn/1980s/ (format_signal)
-        After fix: Should route to 1980s/Core/Stanley Kubrick/ (explicit_lookup)
+        After fix: Should route to Core/1980s/Stanley Kubrick/ (explicit_lookup)
         """
         filename = 'The.Shining.1980.35mm.Scan.FullScreen.HYBRID.OPEN.MATTE.1080p.mkv'
 
@@ -65,7 +65,7 @@ class TestKubrickClassification:
 
         assert result.tier == 'Core', \
             f"Expected Core, got {result.tier} (reason: {result.reason})"
-        assert result.destination == '1980s/Core/Stanley Kubrick/', \
+        assert result.destination == 'Core/1980s/Stanley Kubrick/', \
             f"Wrong destination: {result.destination}"
         assert '1980s' in result.destination, \
             "Should be in 1980s, not other decade"
@@ -82,7 +82,7 @@ class TestKubrickClassification:
 
         After fix:
         - year = 1968 (from parentheses)
-        - Routed to 1960s/Core/Stanley Kubrick/
+        - Routed to Core/1960s/Stanley Kubrick/
         """
         filename = '2001 - A Space Odyssey (1968) - 4K.mkv'
 
@@ -98,7 +98,7 @@ class TestKubrickClassification:
             f"Expected Core, got {result.tier} (reason: {result.reason})"
         assert '1960s' in result.destination, \
             f"Should be 1960s (film from 1968), not 2000s: {result.destination}"
-        assert result.destination == '1960s/Core/Stanley Kubrick/', \
+        assert result.destination == 'Core/1960s/Stanley Kubrick/', \
             f"Wrong destination: {result.destination}"
         assert result.reason == 'explicit_lookup', \
             f"Should match via explicit_lookup, got: {result.reason}"

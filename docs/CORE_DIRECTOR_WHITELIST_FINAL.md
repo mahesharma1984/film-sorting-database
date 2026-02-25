@@ -119,6 +119,14 @@
 - Cara a Cara (1967)
 - Killed the Family and Went to the Movies (1969)
 
+**Sergio Leone**
+- A Fistful of Dollars (1964)
+- For a Few Dollars More (1965)
+- The Good, the Bad and the Ugly (1966)
+- Once Upon a Time in the West (1968)
+- Duck, You Sucker! (1971) - bridges to 1970s
+- Once Upon a Time in America (1984) - late career
+
 ---
 
 ## 1970s CORE (Political Cinema / New Hollywood / Auteur Expansion)

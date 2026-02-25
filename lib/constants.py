@@ -333,7 +333,11 @@ SATELLITE_ROUTING_RULES = {
             'yoshishige yoshida', 'kiju yoshida',  # Eros + Massacre, Heroic Purgatory
             'shinoda',                # Masahiro Shinoda — Pale Flower, Double Suicide, Demon Pond
             'imamura',                # Shôhei Imamura — Insect Woman, Intentions of Murder (early work)
-            # Note: Seijun Suzuki is in the Core whitelist — omitted here to avoid Satellite
+            'toshiya fujita',         # Stray Cat Rock series (Wild Jumbo, Sex Hunter, Beat '71)
+            'yasuharu hasebe',        # Stray Cat Rock series (Delinquent Girl Boss, Machine Animal)
+            # Note: Seijun Suzuki is in the Core whitelist
+            # Note: Kinji Fukasaku omitted — his 1970s yakuza films are Japanese Exploitation;
+            #   Battle Royale (2000) is pinned to JNW via SORTING_DATABASE — omitted here to avoid Satellite
             # routing before Core check (Issue #25 architecture). His films route via Core.
         ],
         'tier_b_eligible': False,     # Movement requires director evidence; no keyword-only routing
