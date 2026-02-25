@@ -28,8 +28,14 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | What are data readiness levels? | R0–R3: No year → Full enrichment | `docs/architecture/RECURSIVE_CURATION_MODEL.md` §2 |
 | What are certainty tiers? | Tier 1–4 based on independent gate count | `docs/architecture/RECURSIVE_CURATION_MODEL.md` §5 |
 | How does the curation loop work? | Accept/Override/Enrich/Defer → review queue | `docs/architecture/RECURSIVE_CURATION_MODEL.md` §7 |
-| How do I use the system end-to-end? | Curator workflow: normalise → classify → audit → review → curate → move | `docs/CURATOR_WORKFLOW.md` |
+| How do I use the system end-to-end? | Two workflows: Unsorted→Organised (Workflow A) and Organised→Reorganised (Workflow B) | `docs/CURATOR_WORKFLOW.md` |
+| Where does learning happen in the recursive model? | REFINE+REINFORCE gap: cohort hypotheses → rule changes → next classify run | `docs/CURATOR_WORKFLOW.md` §Where Learning Happens |
+| What are the cohort types? | cap_exceeded, director_gap, data_gap, gate_design_gap, taxonomy_gap | `docs/CURATOR_WORKFLOW.md` Phase B3 |
+| How do I find and fix systematic routing failures? | Run analyze_cohorts.py after classify; act on HIGH-confidence hypotheses | `docs/CURATOR_WORKFLOW.md` Phase B3–B4 |
 | What published research grounds the frameworks? | Deming, Ranganathan, Settles, Bourdieu, Bowker & Star, signal detection | `docs/theory/THEORETICAL_GROUNDING.md` |
+| Why does the pipeline keep hitting dead ends? | Information destruction at every stage; single-loop learning | `docs/architecture/EVIDENCE_ARCHITECTURE.md` §1 |
+| What is evidence architecture? | Per-film evidence trails, failure cohorts, hypothesis generation | `docs/architecture/EVIDENCE_ARCHITECTURE.md` §3 |
+| What is double-loop learning? | Questioning governing variables, not just fixing instances | `docs/theory/THEORETICAL_GROUNDING.md` §8 |
 | How do I re-audit existing library films? | Re-classification audit (Issue #31) | `docs/theory/REFINEMENT_AND_EMERGENCE.md` §4a |
 | How do I run tests? | pytest tests/ | `docs/DEVELOPER_GUIDE.md` |
 | What is the R/P Split? | Reasoning vs Precision separation | `CLAUDE.md` |
@@ -56,6 +62,7 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Category refinement** | `docs/theory/REFINEMENT_AND_EMERGENCE.md` | AUTHORITATIVE |
 | **Recursive curation model** | `docs/architecture/RECURSIVE_CURATION_MODEL.md` | AUTHORITATIVE |
 | **Theoretical grounding** | `docs/theory/THEORETICAL_GROUNDING.md` | AUTHORITATIVE |
+| **Evidence architecture** | `docs/architecture/EVIDENCE_ARCHITECTURE.md` | AUTHORITATIVE |
 | **Satellite depth** | `docs/theory/SATELLITE_DEPTH.md` | AUTHORITATIVE |
 | **Curator workflow** | `docs/CURATOR_WORKFLOW.md` | AUTHORITATIVE |
 | **Thread discovery** | `docs/THREAD_DISCOVERY_GUIDE.md` | AUTHORITATIVE |

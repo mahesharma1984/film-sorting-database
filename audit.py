@@ -112,14 +112,16 @@ def derive_row(file_path: Path, library_base: Path) -> dict | None:
             'confidence': '0.5',
         }
 
-    # --- Unsorted/file ---
+    # --- Unsorted/file or Unsorted/{subfolder}/file ---
     if top == 'Unsorted':
+        subfolder = parts[1] if len(parts) > 2 else ''
+        destination = f'Unsorted/{subfolder}/' if subfolder else 'Unsorted/'
         return {
             'filename': filename,
             'tier': 'Unsorted',
             'decade': '',
-            'subdirectory': '',
-            'destination': 'Unsorted/',
+            'subdirectory': subfolder,
+            'destination': destination,
             'reason': 'audit_unsorted',
             'confidence': '0.0',
         }

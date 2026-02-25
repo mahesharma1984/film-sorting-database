@@ -6,17 +6,39 @@ This is the **practical** guide. For **how** the system works, see `docs/archite
 
 ---
 
-## The Cycle
+## Two Workflows
 
-Every pass through the library follows the same six phases:
+The system has two distinct operational workflows. They share tools and data, but serve different purposes:
 
 ```
-NORMALISE → CLASSIFY → AUDIT → REVIEW → CURATE → MOVE
-    ↑                                                │
-    └────────────────────────────────────────────────┘
+Workflow A — Unsorted → Organised          Workflow B — Organised → Reorganised
+─────────────────────────────────          ─────────────────────────────────────
+NORMALISE                                  AUDIT (library inventory)
+    │                                           │
+CLASSIFY (Unsorted queue)                  REAUDIT (discrepancy check)
+    │                                           │
+AUDIT & DIAGNOSE                           ANALYSE COHORTS
+    │                                           │
+REVIEW & DECIDE                            FIX RULES (act on hypotheses)
+    │                                           │
+EXECUTE DECISIONS                          RE-RUN CLASSIFY
+    │                                           │
+MOVE                                       MOVE (within organised library)
+    │                                           │
+    └──── both feed back into each other ───────┘
 ```
 
-Each phase produces outputs that feed the next. The cycle repeats — each pass improves data quality and classification accuracy.
+**Workflow A** processes the Unsorted queue — it takes raw files and places them in the organised library. Run after adding new films or when the Unsorted queue needs attention.
+
+**Workflow B** improves the organised library — it finds films placed by outdated rules, surfaces cohort patterns, and feeds hypothesis-driven rule improvements back into Workflow A's next run. Run periodically (after every batch of moves, or when routing rules change).
+
+**Where learning happens:** In the gap between Workflow B and the next Workflow A run. Acting on Workflow B's cohort hypotheses (adding directors, raising caps, fixing SORTING_DATABASE entries) changes what the next classify run produces. Films that were Unsorted are now routed. Discrepancies that reaudit flagged are now clean. That is the learning event — the system accumulates new routing knowledge with each cycle. See [§ Where Learning Happens](#where-learning-happens) for the full mechanism.
+
+---
+
+## Workflow A: Unsorted → Organised
+
+Run these phases to process the Unsorted queue and move films into the organised library.
 
 ---
 
@@ -231,24 +253,234 @@ python move.py --execute
 
 ---
 
-## Phase 6: Iterate
+## Phase 6: Iterate (Workflow A)
 
-The cycle repeats. Each pass improves the system:
+Workflow A repeats. Each pass picks up new rules and enrichment from the previous cycle:
 
 ```bash
-# 1. Reclassify (picks up new manual enrichment + SORTING_DATABASE entries)
+# Picks up new manual enrichment + SORTING_DATABASE entries from previous cycle
 python classify.py /path/to/unsorted/films
 
-# 2. Re-audit the organised library against updated rules
-python audit.py && python scripts/reaudit.py --review
-
-# 3. Check unsorted — should be smaller now
-python scripts/unsorted_readiness.py
-
-# 4. Review, curate, move again
+# Then: audit → review → curate → move again
 ```
 
-**Convergence:** When two consecutive cycles produce zero changes (no new classifications, no new discrepancies), the remaining Unsorted population is stable. It needs new data (manual enrichment, better parsers) or new categories (split protocol) to make progress.
+**Convergence:** When two consecutive Workflow A cycles produce zero new classifications, the remaining Unsorted population is stable. It needs new data (manual enrichment, better parsers) or new categories (split protocol) to shrink further.
+
+---
+
+## Workflow B: Organised Library Reaudit
+
+Run these phases to check and improve the already-organised library. Workflow B is how the system learns — see [§ Where Learning Happens](#where-learning-happens).
+
+---
+
+## Phase B1: Audit — Build Library Inventory
+
+```bash
+# Walk all tier folders and build a complete inventory
+python audit.py
+```
+
+**Output:** `output/library_audit.csv` — one row per organised film with tier, category, decade, director, filename.
+
+**When to run:** After every batch of moves. Required before B2 and B3.
+
+---
+
+## Phase B2: Reaudit — Detect Discrepancies
+
+Re-classify every organised film against the current rules and compare against its current folder location.
+
+```bash
+# Run reaudit (requires fresh library_audit.csv from Phase B1)
+python scripts/reaudit.py
+
+# Write human-readable discrepancy report
+python scripts/reaudit.py --review
+
+# Also try live API for films with no cached data
+python scripts/reaudit.py --enrich
+```
+
+**Output:** `output/reaudit_review.md` — discrepancies grouped by type:
+- `wrong_tier` — film is in Satellite but current rules say Core, or vice versa
+- `wrong_category` — film is in Giallo but current rules say Indie Cinema
+- `wrong_decade` — correct tier and category but wrong decade folder
+- `unroutable` — rules return no destination for this film
+
+**What causes discrepancies:** Rules have changed since the film was last classified (new directors added, caps raised, SORTING_DATABASE entries added). This is expected and healthy — it means the system learned since the last move.
+
+---
+
+## Phase B3: Analyse Cohorts — Surface Patterns
+
+Convert anonymous discrepancies and Unsorted films into named, actionable cohorts.
+
+```bash
+# Analyse unsorted films and generate hypotheses
+python scripts/analyze_cohorts.py
+
+# Use a higher minimum cohort size to reduce noise
+python scripts/analyze_cohorts.py --min-cohort-size 3
+```
+
+**Outputs:**
+- `output/cohorts_report.md` — human-readable: one section per cohort with hypothesis and film list
+- `output/failure_cohorts.json` — machine-readable: same data for downstream tooling
+
+**Cohort types:**
+
+| Type | What it means | Action |
+|------|--------------|--------|
+| `cap_exceeded` | All gates pass but category is full | Raise cap in `lib/satellite.py` |
+| `director_gap` | R3 data, director not in category list | Add director to `SATELLITE_ROUTING_RULES` in `lib/constants.py` |
+| `data_gap` | Missing genres/country blocks routing | Enrich via `manual_enrichment.csv` or relax gate |
+| `gate_design_gap` | Film is 1 gate away from routing | Review gate strictness |
+| `taxonomy_gap` | Full data, no category fits this country/era | Consider new Satellite category (split protocol) |
+
+**Confidence levels:**
+- `HIGH` — 3+ films sharing the same blocking pattern → fix immediately
+- `MEDIUM` — 2 films → likely real, worth acting on
+- `LOW` — 1 film → may be an outlier, investigate first
+
+---
+
+## Phase B4: Fix Rules — Act on Hypotheses
+
+Read `output/cohorts_report.md`. For each HIGH or MEDIUM confidence cohort, decide whether to act:
+
+### Cap exceeded
+```python
+# In lib/satellite.py — raise the cap for the blocked category
+SATELLITE_CAPS = {
+    'Music Films': 35,   # was 20 — raised after 8 cap_exceeded films found
+}
+```
+
+### Director gap
+```python
+# In lib/constants.py — add the missing director to the category's directors list
+'American New Hollywood': {
+    'directors': ['..existing..', 'dennis hopper'],  # add after finding 3-film cohort
+}
+```
+
+### Data gap (enrich path)
+```csv
+# In output/manual_enrichment.csv — curator provides missing field
+filename,director,country,year
+"Fantastic Planet (1973).mkv","René Laloux","FR","1973"
+```
+
+### Data gap (gate relaxation path)
+If a genre gate blocks routing for R2 films that have country+decade but no genres, consider making the gate advisory for that readiness level. This is a code change in `lib/satellite.py` — gate it carefully (raises false-positive risk).
+
+### Taxonomy gap
+A sustained taxonomy gap cohort (5+ films, same country, same decade, HIGH confidence) triggers the split protocol:
+1. Research the country's film tradition for that era
+2. Verify density + coherence + archival necessity (`docs/architecture/RECURSIVE_CURATION_MODEL.md` §4)
+3. Add to `SATELLITE_ROUTING_RULES` in `lib/constants.py`
+4. Add SORTING_DATABASE pins for boundary cases
+
+---
+
+## Phase B5: Re-run Classify + Verify
+
+After rule changes, re-run Workflow A and check that the cohort population shrinks:
+
+```bash
+# 1. Reclassify Unsorted (picks up new rules)
+python classify.py /path/to/unsorted/films
+
+# 2. Check new evidence_trails.csv
+python scripts/analyze_cohorts.py
+
+# 3. Did the target cohort shrink?
+# Before: "Cap exceeded — Music Films: 8 films (HIGH)"
+# After:  cohort should not appear (cap raised, films now route)
+
+# 4. Re-audit organised library
+python audit.py && python scripts/reaudit.py --review
+```
+
+**Verification criteria:** A rule change is confirmed when:
+- The cohort it targeted no longer appears at the same confidence level
+- No new unexpected discrepancies appear in reaudit
+- Existing tests pass: `pytest tests/ -q`
+
+---
+
+## Phase B6: Move (Organised Library)
+
+When reaudit identifies wrong-tier or wrong-category films, those films need physical moves within the organised library. Currently this is manual — there is no `reorganize.py` equivalent to `move.py`.
+
+**Manual move procedure:**
+1. Open `output/reaudit_review.md`
+2. For each discrepancy, verify the new destination is correct
+3. Move the file at the shell: `mv "current/path/film.mkv" "new/path/film.mkv"`
+4. Run `python audit.py` to update the inventory
+5. Run `python scripts/reaudit.py` to confirm the discrepancy is resolved
+
+**Future:** A `reorganize.py` script that reads `reaudit_report.csv` and executes moves within the organised library would close this gap.
+
+---
+
+## Where Learning Happens
+
+The recursive curation model (§1 of `RECURSIVE_CURATION_MODEL.md`) describes the system as getting smarter with each pass. Here is precisely where that happens:
+
+### The Feedback Loop
+
+```
+Workflow A (classify Unsorted)
+    │
+    ├── Films route correctly → MOVE
+    │
+    └── Films stay Unsorted → evidence_trails.csv
+                                     │
+Workflow B                           ▼
+    ├── reaudit.py detects discrepancies
+    │
+    └── analyze_cohorts.py names the failure pattern
+              │
+              │   ← THIS IS WHERE LEARNING HAPPENS
+              ▼
+    Curator acts on HIGH-confidence hypotheses:
+    ├── Adds director to routing rules (director_gap cohort)
+    ├── Raises cap (cap_exceeded cohort)
+    ├── Adds SORTING_DATABASE pin (taxonomy_gap, no rule fits)
+    └── Enriches data (data_gap cohort)
+              │
+              ▼
+    Next Workflow A run incorporates the change
+    ├── Director-gap films now route correctly
+    ├── Cap-blocked films now route correctly
+    └── evidence_trails.csv has fewer films in that cohort
+              │
+              ▼
+    Verify: cohort is smaller or gone → learning confirmed
+```
+
+### What "Learning" Means Technically
+
+The system does not use machine learning in the statistical sense. Learning is **rule accumulation**:
+
+1. `SORTING_DATABASE.md` grows with each override — explicit lookup fires before all heuristics, so every added entry is permanent, precise knowledge
+2. `SATELLITE_ROUTING_RULES` directors lists grow with each director_gap cohort action — each new director makes a whole cohort routable on the next run
+3. Category caps are calibrated to actual collection depth — each cap adjustment brings the category's size in line with curatorial intent
+4. `manual_enrichment.csv` grows with enrich decisions — each enrichment promotes a film from R1/R2 to R2/R3, making it routable by heuristics
+
+These four accumulators are the system's memory. The cohort analysis makes the gaps visible so the curator can fill them efficiently — highest-leverage changes first (add one director → route 8 films) rather than ad hoc individual fixes.
+
+### Rate of Learning Per Cycle
+
+A single classify → reaudit → analyze → act cycle typically:
+- Produces 1–3 HIGH-confidence hypotheses
+- Each hypothesis, if acted on, routes 2–10 previously Unsorted films
+- Requires ~30 minutes of curator time (reading reports, making decisions)
+- Requires ~5 minutes of code/data changes
+
+After 3–5 cycles, the easy gains are captured. The remaining Unsorted population represents genuine taxonomy gaps (countries with no category, films no source can identify) or non-film content. These require either new data sources or new category definitions — both of which are strategic, not tactical, decisions.
 
 ---
 
@@ -276,8 +508,11 @@ python scripts/invalidate_null_cache.py aggressive      # missing director OR co
 | `output/review_queue.csv` | classify.py | Curator → curate.py | Regenerated each run, updated by curate.py |
 | `output/staging_report.txt` | classify.py | Curator | Regenerated each run |
 | `output/library_audit.csv` | audit.py | reaudit.py, tentpoles, category_fit | Regenerated on demand |
-| `output/reaudit_review.md` | reaudit.py | Curator | Regenerated on demand |
+| `output/reaudit_review.md` | reaudit.py | Curator (Workflow B) | Regenerated on demand |
 | `output/unsorted_readiness.md` | unsorted_readiness.py | Curator | Regenerated on demand |
+| `output/evidence_trails.csv` | classify.py (shadow pass) | analyze_cohorts.py | Regenerated each classify run |
+| `output/cohorts_report.md` | analyze_cohorts.py | Curator (Workflow B) | Regenerated on demand |
+| `output/failure_cohorts.json` | analyze_cohorts.py | Curator / tooling | Regenerated on demand |
 | `output/tentpole_rankings.md` | rank_category_tentpoles.py | Curator | Regenerated on demand |
 | `output/curation_decisions.csv` | **Curator** (manual) | curate.py | Created by curator per cycle |
 | `output/confirmed_films.csv` | curate.py | move.py | Appended each curate run |
@@ -308,3 +543,9 @@ Two options:
 
 ### "A whole cluster of films are going to Indie Cinema but shouldn't be"
 Run `python scripts/category_fit.py --category "Indie Cinema"`. If you see a cluster from the same country/decade, it may signal a missing Satellite category. See the split protocol in `docs/architecture/RECURSIVE_CURATION_MODEL.md` §4.
+
+### "I see unsorted films but don't know what to fix first"
+Run `python scripts/analyze_cohorts.py`. Read `output/cohorts_report.md`. Start with the HIGH-confidence cohorts — these are the highest-leverage changes: one director addition may route 3–8 films at once. Ignore LOW-confidence single-film cohorts until HIGH and MEDIUM are resolved.
+
+### "Reaudit shows discrepancies but cohorts report looks clean"
+The cohort analysis runs on the Unsorted queue (from `evidence_trails.csv`), not on discrepancies in the organised library. Reaudit discrepancies are wrong-location films already in the library — these require physical moves (Phase B6), not rule changes. Check `output/reaudit_review.md` directly for the discrepancy details.

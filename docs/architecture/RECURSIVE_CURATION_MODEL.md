@@ -578,9 +578,9 @@ Each pass through the cycle makes routing rules more precise. The system only ge
 | 2. Cluster | classify.py, move.py | ✅ Complete — data readiness (R0-R3), certainty tiers, confidence gating, R1 early exit all implemented |
 | 3. Refine | reaudit.py (diagnostic), curate.py (execution), review_queue.csv | ⚠️ Partial — diagnostic and execution tools built; review queue populated from classify.py; **gap: reaudit.py output not wired into review queue** |
 | 4. Retain/Discard | rank_category_tentpoles.py | ⚠️ Diagnostic only — ranking report produced; no execution tool for curator retain/discard decisions |
-| 5. Reinforce | curate.py (override → SORTING_DATABASE staging, enrich → manual_enrichment.csv) | ⚠️ Partial — individual feedback paths work; **gap: no pattern detection across overrides to suggest routing rule changes** |
+| 5. Reinforce | analyze_cohorts.py (pattern detection), curate.py (override → SORTING_DATABASE staging, enrich → manual_enrichment.csv) | ✅ Pattern detection complete (Issue #35) — analyze_cohorts.py generates named cohorts and HIGH/MEDIUM/LOW hypotheses; individual feedback paths work |
 
-**Workflow gap:** The tools exist but the curator journey between them is undocumented. See `docs/CURATOR_WORKFLOW.md` (planned) for end-to-end usage.
+**Two canonical workflows:** Workflow A (Unsorted → Organised) and Workflow B (Organised → Reorganised reaudit) are now fully documented in `docs/CURATOR_WORKFLOW.md`, including where learning happens in the recursive cycle.
 
 ---
 

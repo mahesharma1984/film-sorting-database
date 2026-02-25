@@ -164,7 +164,102 @@ Higson's distinction between inward-looking and outward-looking national cinema 
 
 ---
 
-## 8. Relationship to Existing Theory Essays
+## 8. Double-Loop Learning
+
+**Architecture claim:** The system should question its governing variables when failure patterns recur, not just correct individual instances (EVIDENCE_ARCHITECTURE.md §1).
+
+### Grounding: Argyris and Organisational Learning
+
+Chris Argyris and Donald Schon (*Organizational Learning: A Theory of Action Perspective*, 1978; Argyris, "Double Loop Learning in Organizations," *Harvard Business Review*, 1977) identified two modes of learning:
+
+**Single-loop:** Detect error → correct the specific action → governing variables unchanged. "Dennis Hopper is not in the directors list. Add him."
+
+**Double-loop:** Detect error → question the governing variables → change the rules. "44 films fail the same gate. The assumption that genre data is always available for routing is wrong for this population."
+
+Single-loop fixes the instance. Double-loop fixes the *kind of failure*. The classification pipeline currently operates in single-loop mode: each Issue (#14 through #34) adds a directors list entry, a SORTING_DATABASE pin, or a gate relaxation — correcting the specific symptom without questioning the structural assumption that produced it.
+
+### What the grounding adds
+
+Argyris identified **defensive routines** as the reason systems resist double-loop learning: patching the symptom is easier than questioning the architecture. The pattern is visible in the codebase: each Issue makes a specific failure disappear, but the pipeline continues to produce structurally identical failures because the information it would need to self-diagnose is destroyed at every stage.
+
+Double-loop learning requires the system to *capture evidence about its own failures* so that recurring patterns can be detected and structural causes identified — rather than relying on a human to re-derive the diagnosis from source code each time.
+
+---
+
+## 9. Evidence Under Uncertainty
+
+**Architecture claim:** Binary gates (pass/fail) destroy information by conflating negative evidence with absent evidence. Evidence-preserving gates would retain what was tested, what matched, and what could not be evaluated (EVIDENCE_ARCHITECTURE.md §2).
+
+### Grounding: Dempster-Shafer Evidence Theory
+
+Glenn Shafer (*A Mathematical Theory of Evidence*, 1976) developed a formal framework for reasoning under uncertainty that distinguishes three states: **belief** (evidence for), **disbelief** (evidence against), and **uncertainty** (absence of evidence). This is more expressive than Bayesian probability, which collapses uncertainty into a prior.
+
+When a film has `country=IT, decade=1970s, genres=[]` and the Giallo gate requires Horror/Thriller genres:
+- Belief: country + decade both match (evidence for Giallo)
+- Disbelief: none (no evidence actively contradicts Giallo)
+- Uncertainty: genres absent (cannot evaluate)
+
+Binary gates collapse this to `True AND False = False`. The positive evidence is destroyed by the absence of genre data. Dempster-Shafer would maintain all three signals: "moderate support for Giallo with high uncertainty on one gate."
+
+### What the grounding adds
+
+Dempster-Shafer predicts a specific failure mode the pipeline exhibits: **the information destruction cascade**. When gates short-circuit on the first `False`, all accumulated evidence for that category is abandoned. The `continue` statement in the Satellite routing loop is the cascade trigger. The theory also predicts the remedy: **evidence accumulation across gates** — evaluate all gates for all categories, then select the category with the strongest evidence profile. This is what `scripts/category_fit.py` does post-hoc; it should be the primary routing mechanism.
+
+This extends §5 (Certainty Tiers): Bayesian evidence combination described there assumes signals are present. Dempster-Shafer handles the case where signals are absent — the distinction that the current pipeline cannot make.
+
+---
+
+## 10. Collective Classification and Stigmergy
+
+**Architecture claim:** Films should not be classified in isolation. The accumulated results of previous classifications in a run constitute collective evidence that should inform ambiguous cases (EVIDENCE_ARCHITECTURE.md §2).
+
+### Grounding: Stigmergy (Grasse, 1959; Theraulaz and Bonabeau, 1999)
+
+Pierre-Paul Grasse coined "stigmergy" in 1959 to describe how termites coordinate construction without direct communication: each agent modifies the shared environment, and those modifications guide subsequent agents. Guy Theraulaz and Eric Bonabeau ("A Brief History of Stigmergy," *Artificial Life* 5(2), 1999) generalised this to any system where agents coordinate through environmental traces rather than direct communication. The key insight: **the intelligence is in the accumulated traces, not in any individual agent**.
+
+When 28 of 30 Italian 1970s films route to Giallo, the 29th film with missing genres receives no benefit from the 28 successful classifications. The pipeline has collective evidence that Italian 1970s films tend to be Giallo, but each film is a fresh start. The missing mechanism is environmental trace: each classification leaves a record (base rates, conditional probabilities, near-miss flags) that modifies the shared classification context within a run.
+
+### What the grounding adds
+
+Stigmergy predicts that classification quality should improve with corpus size — more films means richer context for ambiguous cases. The current architecture has the opposite property: corpus size is irrelevant because each film is classified in isolation. Stigmergy also predicts a natural mechanism for taxonomy gap detection: if a cluster of films leaves traces in the same unmatched region of the evidence space, that region is a candidate for a new category.
+
+---
+
+## 11. Shared Workspace vs Pipeline
+
+**Architecture claim:** The pipeline's sequential stage architecture prevents stages from seeing each other's evidence. A shared workspace would allow each stage to read the full accumulated context (EVIDENCE_ARCHITECTURE.md §2-3).
+
+### Grounding: Blackboard Architecture (Erman et al., 1980)
+
+The Hearsay-II speech understanding system (Erman, Hayes-Roth, Lesser, and Reddy, "The Hearsay-II Speech-Understanding System: Integrating Knowledge to Resolve Uncertainty," *Computing Surveys* 12(2), 1980) introduced the **blackboard architecture**: multiple knowledge sources contribute to a shared data structure. Any source can read the current state and add information. The system converges through incremental evidence accumulation, not sequential filtering.
+
+The blackboard was designed for problems where multiple independent knowledge sources exist, no single source suffices, evidence must be combined across sources, and the problem has inherent ambiguity. All four conditions describe the film classification problem.
+
+In the current pipeline, the Satellite classifier cannot see that the parser struggled with the title. The Popcorn classifier cannot see that Satellite almost matched. Each stage is blind to context accumulated elsewhere.
+
+### What the grounding adds
+
+The blackboard literature identifies **opportunistic problem-solving**: the most informative knowledge source should contribute next, regardless of fixed ordering. The pipeline's priority order (Reference → Satellite → Core → Popcorn) is correct as a tiebreaker when evidence is equal, but it should not determine which stages execute — that should be driven by data availability. A film with strong director data and absent country data should route on director first, not follow the fixed sequence.
+
+---
+
+## 12. Requisite Variety
+
+**Architecture claim:** The pipeline's response vocabulary (`unsorted_no_match`) is too impoverished to distinguish failure modes that require different remediation actions (EVIDENCE_ARCHITECTURE.md §3).
+
+### Grounding: Ashby's Law of Requisite Variety (1956)
+
+W. Ross Ashby (*An Introduction to Cybernetics*, 1956) proved that a controller can only regulate a system to the extent that the controller's variety matches the system's variety. If the system has more states than the controller has responses, some states go uncontrolled.
+
+The film corpus has high variety: films differ in country, decade, genre, director, data completeness, category proximity, and ambiguity. The routing rules have low variety: binary gates, a fixed response set, and a single reason code for all failures. The mismatch is predictable: `unsorted_no_match` conflates films needing enrichment (R1), films needing rules (R2b taxonomy gaps), genuinely unroutable films (adult, TV), and near-misses. The controller cannot distinguish them because its vocabulary doesn't include "near-miss," "data quality issue," or "taxonomy gap."
+
+### What the grounding adds
+
+Ashby's law predicts the remedy: increase the controller's variety to match the system's. Richer reason codes, structured failure output (which gates passed/failed), and population-level analysis that groups similar failures. The controller needs enough variety to distinguish failure modes that require *different actions* — enrichment, review, deferral, or new category evaluation.
+
+---
+
+## 13. Relationship to Existing Theory Essays
 
 This essay complements the theoretical grounding already present in the project:
 
@@ -182,12 +277,21 @@ This essay complements the theoretical grounding already present in the project:
 | **Certainty tiers** | **This essay** | Bayesian reasoning, signal detection theory |
 | **Curation loop** | **This essay** | Amershi et al. (HITL), Hooper-Greenhill (museums) |
 | **Country deepening** | **This essay** | Higson, Hjort & Mackenzie (national cinema) |
+| **Double-loop learning** | **This essay** | Argyris (organisational learning) |
+| **Evidence under uncertainty** | **This essay** | Dempster-Shafer (evidence theory) |
+| **Collective classification** | **This essay** | Grasse, Theraulaz & Bonabeau (stigmergy) |
+| **Shared workspace** | **This essay** | Erman et al. (blackboard architecture) |
+| **Requisite variety** | **This essay** | Ashby (cybernetics) |
 
 ---
 
 ## References
 
+Argyris, C. (1977). Double Loop Learning in Organizations. *Harvard Business Review*, 55(5), 115-125.
+
 Altman, R. (1999). *Film/Genre*. London: BFI Publishing.
+
+Ashby, W.R. (1956). *An Introduction to Cybernetics*. London: Chapman & Hall.
 
 Amershi, S., Cakmak, M., Knox, W.B., & Kulesza, T. (2014). Power to the People: The Role of Humans in Interactive Machine Learning. *AI Magazine*, 35(4), 105-120.
 
@@ -198,6 +302,10 @@ Bourdieu, P. (1979/1984). *Distinction: A Social Critique of the Judgement of Ta
 Bowker, G.C. & Star, S.L. (1999). *Sorting Things Out: Classification and Its Consequences*. Cambridge, MA: MIT Press.
 
 Deming, W.E. (1986). *Out of the Crisis*. Cambridge, MA: MIT Center for Advanced Engineering Study.
+
+Erman, L.D., Hayes-Roth, F., Lesser, V.R., & Reddy, D.R. (1980). The Hearsay-II Speech-Understanding System: Integrating Knowledge to Resolve Uncertainty. *Computing Surveys*, 12(2), 213-253.
+
+Grasse, P.-P. (1959). La reconstruction du nid et les coordinations interindividuelles chez Bellicositermes natalensis et Cubitermes sp. *Insectes Sociaux*, 6, 41-80.
 
 Green, D.M. & Swets, J.A. (1966). *Signal Detection Theory and Psychophysics*. New York: Wiley.
 
@@ -213,4 +321,10 @@ Sarris, A. (1968). *The American Cinema: Directors and Directions, 1929–1968*.
 
 Settles, B. (2012). *Active Learning*. Synthesis Lectures on Artificial Intelligence and Machine Learning. Morgan & Claypool.
 
+Shafer, G. (1976). *A Mathematical Theory of Evidence*. Princeton, NJ: Princeton University Press.
+
+Theraulaz, G. & Bonabeau, E. (1999). A Brief History of Stigmergy. *Artificial Life*, 5(2), 97-116.
+
 Wang, R.Y. & Strong, D.M. (1996). Beyond Accuracy: What Data Quality Means to Data Consumers. *Journal of Management Information Systems*, 12(4), 5-33.
+
+*§8-§12 ground the evidence architecture described in [EVIDENCE_ARCHITECTURE.md](../architecture/EVIDENCE_ARCHITECTURE.md).*
