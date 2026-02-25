@@ -89,10 +89,11 @@ class FilenameParser:
                 year = int(match.group(1))
                 # Validate year range (avoid matching resolutions like 1080, 2160)
                 if 1920 <= year <= 2029:
-                    # Remove the year from the name for cleaner title
-                    # Add space when joining to prevent title concatenation
-                    cleaned = name[:match.start()].strip() + ' ' + name[match.end():].strip()
-                    cleaned = cleaned.strip()
+                    # Return only the pre-year portion as the title candidate.
+                    # Scene-release filenames use Title.Year.TechSpecs — everything
+                    # after the year is codec/language/resolution metadata (JAPANESE,
+                    # VOSTFR, 576p, etc.) and must not appear in the extracted title.
+                    cleaned = name[:match.start()].strip()
                     return year, cleaned
 
         return None

@@ -42,7 +42,7 @@ class SatelliteClassifier:
             'American Exploitation': 80,
             'European Sexploitation': 25,
             'Blaxploitation': 20,
-            'Music Films': 20,
+            'Music Films': 35,
         }
         self.counts = defaultdict(int)  # Track category counts
         self.core_db = core_db  # Issue #16: optional CoreDirectorDatabase for defensive check

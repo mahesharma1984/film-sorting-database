@@ -491,7 +491,7 @@
 - Ms 45 (1981) → 1980s/Satellite/American Exploitation/
 - Savage Streets (1984) → 1980s/Satellite/American Exploitation/
 - Christmas Evil (1980) → 1980s/Satellite/American Exploitation/
-- Mixed Blood (1984) → 1980s/Satellite/American Exploitation/
+- Mixed Blood (1984) → Core/1980s/Paul Morrissey/
 - Turkey Shoot (1982) → 1980s/Satellite/American Exploitation/
 - Troma's War (1988) → 1980s/Satellite/American Exploitation/
 - Dr. Caligari (1989) → 1980s/Satellite/American Exploitation/
