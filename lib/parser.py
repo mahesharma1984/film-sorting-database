@@ -46,6 +46,10 @@ class FilenameParser:
 
     def _clean_title(self, title: str) -> str:
         """Clean and normalize title from various filename formats"""
+        # Strip leading collection/archive tags like [AS3 Archive], [HKL], etc.
+        # (Year-only brackets like [1969] are handled by PRIORITY 4 before we get here)
+        title = re.sub(r'^\[[^\]]+\]\s*', '', title)
+
         # Remove Plex/Emby edition tags like {edition-Uncut} or {tmdb-12345}
         title = re.sub(r'\s*\{[^}]+\}', '', title)
 
@@ -64,6 +68,21 @@ class FilenameParser:
                 title = title[:idx]
                 title_lower = title_lower[:idx]
 
+        # Strip long parenthetical blocks — AKA titles, format/quality metadata, etc.
+        # e.g. "The Eroticist (Nonostante le apparenze... e purchè...)" → "The Eroticist"
+        #      "Varsity Blues (1080p BluRay x265 10bit Tigole)" → "Varsity Blues"
+        # Heuristic: parenthetical content > 15 chars is metadata, not part of core title.
+        title = re.sub(r'\s*\([^)]{16,}\)', '', title)
+
+        # Strip trailing open parenthetical fragments — happen when _extract_year truncates
+        # a filename before the year inside a paren, e.g.:
+        # "Assim Te Quero Meu Amor (I Like It Like That -" → "Assim Te Quero Meu Amor"
+        title = re.sub(r'\s*\([^)]*$', '', title)
+
+        # Strip any trailing bracket fragment left by RELEASE_TAGS truncation
+        # e.g. "The Eroticist [" or "Title [720p" after tag match stripped content mid-bracket
+        title = re.sub(r'\s*\[[^\]]*$', '', title)
+
         # Clean up extra spaces
         title = ' '.join(title.split())
 
@@ -81,6 +100,7 @@ class FilenameParser:
             r'\((\d{4})\)',           # (1999)
             r'\[(\d{4})\]',           # [1969]
             r'[\.\s](\d{4})[\.\s]',   # .1984. or space-delimited
+            r'\-(\d{4})\-',                   # -1984- hyphen-delimited (YTS/scene format)
         ]
 
         for pattern in year_patterns:
@@ -315,10 +335,18 @@ class FilenameParser:
                 groups = match.groups()
                 if len(groups) == 3:  # (director, title, year)
                     director, title, year = groups
+                    year_int = int(year)
+                    # Validate year range — prevents resolution numbers like 1080 being
+                    # captured as year (e.g. "Title - 1994 - 1080p" → year=1080 bug)
+                    if not (1920 <= year_int <= 2029):
+                        continue
+                    # Validate director — collection tags like "[AS3 Archive]" are not directors
+                    if re.search(r'[\[\]]', director):
+                        continue
                     return FilmMetadata(
                         filename=filename,
                         title=self._clean_title(title),
-                        year=int(year),
+                        year=year_int,
                         director=director.strip(),
                         format_signals=format_signals,
                         language=language,
@@ -327,12 +355,13 @@ class FilenameParser:
                     )
 
         # === PRIORITY 4: Title + year patterns (bracket year) ===
-        # Check [YEAR] format
-        bracket_year_match = re.search(r'\[(\d{4})\]', name)
+        # Check [YEAR] and [YEAR, ...] formats (e.g. [AS3 Archive] Lady Snowblood [1973, 1920x816p...])
+        bracket_year_match = re.search(r'\[(\d{4})[\],]', name)
         if bracket_year_match:
             year = int(bracket_year_match.group(1))
             if 1920 <= year <= 2029:
-                title_without_year = re.sub(r'\s*\[\d{4}\]\s*', ' ', name)
+                # Remove the entire bracket block containing the year (handles [YYYY] and [YYYY, extra])
+                title_without_year = re.sub(r'\s*\[\d{4}[^\]]*\]\s*', ' ', name)
                 title = self._clean_title(title_without_year)
                 return FilmMetadata(
                     filename=filename,
@@ -349,6 +378,10 @@ class FilenameParser:
         if year_result:
             year, cleaned_name = year_result
             title = self._clean_title(cleaned_name)
+            # Hyphen-delimited filenames (YTS/scene): replace hyphens with spaces in title
+            # Safe here because PRIORITY 5 only fires after all structured patterns fail
+            if '-' in title:
+                title = ' '.join(title.replace('-', ' ').split())
             return FilmMetadata(
                 filename=filename,
                 title=title,

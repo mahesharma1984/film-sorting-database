@@ -351,6 +351,8 @@
 - Graveyard of Honor (1975) → Satellite/Japanese Exploitation/1970s/
 - Doberman Cop (1977) → Satellite/Japanese Exploitation/1970s/
 - Black Lizard (1968) → Satellite/Japanese Exploitation/1960s/
+- Lady Snowblood (1973) → Satellite/Japanese Exploitation/1970s/
+- Lady Snowblood Love Song of Vengeance (1974) → Satellite/Japanese Exploitation/1970s/
 
 ### Satellite - Brazilian Exploitation (TRIM TO 25 MAX)
 - Escola Penal de Meninas Violentadas (1977) → Satellite/Brazilian Exploitation/1970s/
@@ -420,9 +422,15 @@
 - Being There (1979) - Hal Ashby → Satellite/American New Hollywood/1970s/
 - Three Days of the Condor (1975) → Satellite/American New Hollywood/1970s/
 
+### Satellite - European Sexploitation
+- Une vraie jeune fille (1976) → Satellite/European Sexploitation/1970s/
+- The Eroticist (1972) → Satellite/European Sexploitation/1970s/
+- Virgin Witch (1972) → Satellite/European Sexploitation/1970s/
+
 ### Satellite - Indie Cinema
 - Going Places (1974) → Satellite/Indie Cinema/1970s/
 - La Grande Bouffe (1973) → Satellite/Indie Cinema/1970s/
+- Mourir d aimer (1971) → Satellite/Indie Cinema/1970s/
 
 ### Satellite - Indie Cinema
 - Picnic at Hanging Rock (1975) → Satellite/Indie Cinema/1970s/
@@ -499,6 +507,7 @@
 ### Satellite - Pinku Eiga
 - Manji (1983) → Satellite/Pinku Eiga/1980s/
 - Bedtime Eyes (1987) → Satellite/Pinku Eiga/1980s/
+- Pink Cut (1983) → Satellite/Pinku Eiga/1980s/
 
 ### Satellite - Brazilian Exploitation
 - O Olho Mágico do Amor (1982) → Satellite/Brazilian Exploitation/1980s/
@@ -602,6 +611,10 @@
 ### Popcorn - Horror
 (No entries - Re-Animator moved back to American Exploitation)
 
+### Popcorn
+- The Nude Bomb (1980) → Popcorn/1980s/
+- Thats Life (1986) → Popcorn/1980s/
+
 ---
 
 ## 1990s FILMS
@@ -663,12 +676,17 @@
 - Robotrix (1991) → Satellite/Hong Kong Category III/1990s/
 - Green Snake (1993) → Satellite/Hong Kong Category III/1990s/
 
+### Satellite - Pinku Eiga
+- Love Infinity Zero AKA Iyarashii hitozuma nureru (1994) → Satellite/Pinku Eiga/1990s/
+
 ### Satellite - Indie Cinema
 - House Party (1990) → Satellite/Indie Cinema/1990s/
 - High Art (1998) → Satellite/Indie Cinema/1990s/
 - In the Soup (1992) → Satellite/Indie Cinema/1990s/
 - Leaving Las Vegas (1995) → Satellite/Indie Cinema/1990s/
 - Braindead (1992) → Satellite/Indie Cinema/1990s/
+- C'est La Vie Mon Cherie Endless love (1993) → Satellite/Indie Cinema/1990s/
+- C'est La Vie Mon Cherie (1993) → Satellite/Indie Cinema/1990s/
 
 ### Satellite - Music Films
 - Paris Is Burning (1990) → Satellite/Music Films/1990s/
@@ -686,6 +704,13 @@
 - Bulworth (1998) → Popcorn/1990s/
 - Andrew Dice Clay For Ladies (1992) → Popcorn/1990s/
 - Red Shoe Diaries (1992) → Popcorn/1990s/
+- Point Break (1991) → Popcorn/1990s/
+- Cant Hardly Wait (1998) → Popcorn/1990s/
+- Drop Dead Gorgeous (1999) → Popcorn/1990s/
+- Surf Ninjas (1993) → Popcorn/1990s/
+- Switch (1991) → Popcorn/1990s/
+- Assim Te Quero Meu Amor (1994) → Popcorn/1990s/
+- Varsity Blues (1999) → Popcorn/1990s/
 
 ---
 
@@ -720,6 +745,8 @@
 
 ### Core - Tsai Ming-liang
 - Goodbye Dragon Inn (2003) → Core/2000s/Tsai Ming-liang/
+- The Wayward Cloud (2005) → Core/2000s/Tsai Ming-liang/
+- Wayward Cloud → Core/2000s/Tsai Ming-liang/
 
 ### Core - Pedro Almodóvar
 - Volver (2006) → Core/2000s/Pedro Almodóvar/
@@ -763,6 +790,10 @@
 ### Satellite - Indie Cinema
 - Eros (2004) → Satellite/Indie Cinema/2000s/
 
+### Popcorn
+- Once Upon A Time in Mexico (2003) → Popcorn/2000s/
+- Party Monster (2003) → Popcorn/2000s/
+
 ---
 
 ## 2010s FILMS
@@ -781,6 +812,9 @@
 
 ### Reference
 - The Complete Epic 1901–1959 - HBO Chronological Cut (2016) → Reference/2010s/
+
+### Popcorn
+- Space Cop (2016) → Popcorn/2010s/
 
 ---
 
