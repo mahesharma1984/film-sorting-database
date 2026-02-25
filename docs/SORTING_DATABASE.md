@@ -344,6 +344,7 @@
 - Tampopo (1985) → Satellite/Indie Cinema/1980s/
 - Akira (1988) → Satellite/Indie Cinema/1980s/
 - Twilight of the Cockroaches (1987) → Satellite/Indie Cinema/1980s/
+- Narcissus And Psyche (1980) → Satellite/Indie Cinema/1980s/
 
 ### Satellite - Japanese Exploitation
 - Battles Without Honor and Humanity (1973) → Satellite/Japanese Exploitation/1970s/
@@ -428,6 +429,7 @@
 - Virgin Witch (1972) → Satellite/European Sexploitation/1970s/
 
 ### Satellite - Indie Cinema
+- Fantastic Planet (1973) → Satellite/Indie Cinema/1970s/
 - Going Places (1974) → Satellite/Indie Cinema/1970s/
 - La Grande Bouffe (1973) → Satellite/Indie Cinema/1970s/
 - Mourir d aimer (1971) → Satellite/Indie Cinema/1970s/
@@ -778,6 +780,7 @@
 - Lords of Dogtown (2005) → Popcorn/2000s/
 
 ### Satellite - Hong Kong Action
+- Looking for Mister Perfect (2003) → Satellite/Hong Kong Action/2000s/
 - So Close (2002) → Satellite/Hong Kong Action/2000s/ [OR Popcorn - decide]
 - DOA - Dead Or Alive (2006) → Satellite/Hong Kong Action/2000s/
 
@@ -789,6 +792,7 @@
 
 ### Satellite - Indie Cinema
 - Eros (2004) → Satellite/Indie Cinema/2000s/
+- Linda Linda Linda (2005) → Satellite/Indie Cinema/2000s/
 
 ### Popcorn
 - Once Upon A Time in Mexico (2003) → Popcorn/2000s/

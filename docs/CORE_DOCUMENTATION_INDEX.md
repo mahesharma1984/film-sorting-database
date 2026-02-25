@@ -44,6 +44,9 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | How do I commit changes? | Use git commit workflow | `docs/DEVELOPER_GUIDE.md` |
 | How do I discover film threads? | Use thread_query.py CLI | `docs/THREAD_DISCOVERY_GUIDE.md` |
 | What are tentpole films? | Canonical films anchoring categories | `docs/THREAD_DISCOVERY_GUIDE.md` |
+| How do I rank films within a Satellite category? | Run rank_category_tentpoles.py → output/tentpole_rankings.md | `docs/AI_TENTPOLE_RANKING.md` |
+| Which films to cut when a category is over cap? | Run ranking, cut from Texture (0–4) bottom-up | `docs/theory/MARGINS_AND_TEXTURE.md` §9 |
+| What is Category Core vs Category Reference? | Recursive depth hierarchy within each Satellite | `docs/theory/SATELLITE_DEPTH.md` §3–4 |
 
 ---
 
@@ -69,6 +72,7 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Satellite depth** | `docs/theory/SATELLITE_DEPTH.md` | AUTHORITATIVE |
 | **Curator workflow** | `docs/CURATOR_WORKFLOW.md` | AUTHORITATIVE |
 | **Thread discovery** | `docs/THREAD_DISCOVERY_GUIDE.md` | AUTHORITATIVE |
+| **Tentpole ranking procedure** | `docs/AI_TENTPOLE_RANKING.md` | AUTHORITATIVE |
 | **Debug runbook** | `docs/DEBUG_RUNBOOK.md` | AUTHORITATIVE |
 | **Methodology** | `CLAUDE.md` | AUTHORITATIVE |
 | **Development skills** | `exports/skills/README.md` | STABLE |

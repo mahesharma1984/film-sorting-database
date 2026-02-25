@@ -225,7 +225,53 @@ This is not required for every category. It is appropriate when the Category Cor
 
 ---
 
-## 8. The Monthly Review as Vetting Practice
+## 8. AI-Assisted Tentpole Ranking
+
+The theoretical framework in §3 requires sustained personal engagement to apply — you must have watched enough films in a category, developed opinions, and tested them against the four criteria. For categories where that depth of engagement is in progress, an algorithmic proxy can identify candidates for review.
+
+The tentpole ranking script (`scripts/rank_category_tentpoles.py`) scores every film in a Satellite category on a 0–10 scale using six signal dimensions drawn from cached API data:
+
+| Signal | Maps to | Notes |
+|--------|---------|-------|
+| `director` (0–3) | Criterion 1 + 3 | Director in the category's routing directors list — a proxy for documented movement membership |
+| `decade` (0–2) | Historical bounds | Film's decade within the category's active period |
+| `keywords` (0–2) | Criterion 3 | TMDb keywords match category vocabulary — proxy for formal distinctiveness within the tradition |
+| `canonical` (0–1) | Criterion 3 | Film in SORTING_DATABASE or Reference canon — proxy for curatorial recognition |
+| `text` (0–1) | Criterion 3 | Plot summary mentions category vocabulary |
+| `external` (0–3) | Criterion 3 + 4 | Sight & Sound 2022 Top 250 or Criterion Collection — proxy for institutional recognition and personal engagement incentive |
+
+### Score Interpretation
+
+| Score | Role | Treatment |
+|-------|------|-----------|
+| 8–10 | Category Core candidate | Protect — "keep last" if over cap; consider SORTING_DATABASE pin |
+| 5–7 | Category Reference candidate | Protect — essential range; curator should confirm against §3 criteria |
+| 0–4 | Texture | Cut first when over cap; review if score is lower than expected |
+
+The 8–10 threshold deliberately requires an external signal (Sight & Sound or Criterion, +3 points). This operationalises Criterion 4 (personal engagement depth) as an institutional endorsement proxy: a Criterion film in your collection is, by definition, a film where the decision to acquire was influenced by curatorial recognition beyond the category alone. No current collection films reach this threshold — the bar is designed to be hard to reach without genuine archival weight.
+
+### What the Score Cannot Measure
+
+The score is a **heuristic for identifying candidates**, not a substitute for the four criteria. It cannot measure:
+
+- Criterion 2 (formal distinctiveness): two films by the same documented director score identically regardless of formal ambition
+- Personal connoisseurship (Criterion 4): you may have deeper engagement with a texture film than with a 6/10 Category Reference
+- Influence across the tradition (Criterion 3 fully): keyword matches are proxies for vocabulary, not for actual directorial influence
+
+A film scoring 3/10 from a director with no routing list entry may be more important to the category than a 5/10 film from a documented secondary director. The score tells you which films to look at first. The criteria in §3 determine what stays.
+
+### Integration with the Vetting Workflow
+
+Run the ranking script before a monthly review or before making deletion decisions (cap exceeded). The output identifies:
+1. Films to protect first (Category Reference candidates)
+2. Films to examine more closely (unexpected scores — high score with no director affiliation, or low score for a film you believe is important)
+3. Films to cut first (Texture tier, lowest scores, no director affiliation)
+
+See `docs/AI_TENTPOLE_RANKING.md` for the full practical procedure: running the script, interpreting output, making SORTING_DATABASE pins, and updating tentpole blocks in `docs/SATELLITE_CATEGORIES.md`.
+
+---
+
+## 9. The Monthly Review as Vetting Practice
 
 Within-category vetting is not a one-time operation. It is continuous. TIER_ARCHITECTURE.md describes the monthly review cycle:
 
@@ -240,7 +286,7 @@ The monthly review is also when new films entering a category are evaluated not 
 
 ---
 
-## 9. Relationship to the Refinement Process
+## 10. Relationship to the Refinement Process
 
 REFINEMENT_AND_EMERGENCE.md documents how macro categories split into micro categories. This document is about the complementary movement: how micro categories develop internal depth.
 

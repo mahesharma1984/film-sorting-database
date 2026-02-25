@@ -464,6 +464,8 @@ SATELLITE_ROUTING_RULES = {
             'lumet',        # Sidney Lumet — Category Reference
             'bogdanovich',  # Peter Bogdanovich — Category Reference
             'altman',       # Robert Altman — Category Reference
+            'hopper',       # Dennis Hopper — Easy Rider (1969), The Last Movie (1971)
+            'frank perry',  # Frank Perry — Play It As It Lays (1972), David and Lisa (1962)
             'coppola',      # Francis Ford Coppola — minor/indie work; prestige → Core when whitelisted
             'scorsese',     # Martin Scorsese — minor/indie work; prestige → Core when whitelisted
         ],

@@ -161,9 +161,61 @@ This is also why Wikipedia corpus integration (deferred, Issue #29) would have a
 
 ---
 
+## 9. Deletion Decision Workflow
+
+When a category exceeds its cap, the question is never "do I have too many films?" but "which film serves the archive's texture least?" The answer is systematic, not arbitrary.
+
+### Step 1: Run the ranking
+
+```bash
+python audit.py && python scripts/rank_category_tentpoles.py
+```
+
+This scores every film in the over-cap category. See `docs/AI_TENTPOLE_RANKING.md` for score interpretation.
+
+### Step 2: Start from the bottom of Texture
+
+The Texture tier (score 0–4) is always cut before Category Reference (5–7) or Category Core (8–10). Within the Texture tier, cut in ascending score order:
+
+1. **Score 0–1, no director affiliation (`director:0`):** Unidentifiable texture — no director signal, outside peak decade, no keyword match. Cut first.
+2. **Score 2, no director affiliation:** Generic period texture — year is right, but no other distinguishing signals. Cut next.
+3. **Score 3–4, weak director signal:** Director is adjacent to the category (score 1–2) but not a documented member. Cut if still over cap.
+
+### Step 3: Never cut without checking the pin list
+
+Before cutting any film, check `docs/SORTING_DATABASE.md`. A SORTING_DATABASE pin indicates prior curatorial attention — the film was placed deliberately. Do not cut a pinned film without reviewing the pin's rationale.
+
+### Step 4: Apply the relational test before cutting
+
+For any Texture film you are considering cutting, ask:
+
+> *Does this film reveal something about the category that no other film currently does?*
+
+This is the relational argument (§7): Satellite films are kept because of what they reveal about their era and the art cinema they orbit, not because of intrinsic quality. A generic film that duplicates what three other films already show → /Out. A film that illustrates a sub-tradition or period not otherwise represented → keep.
+
+Examples of films that pass the relational test despite low scores:
+- The earliest film in a category (even if score 1/10 — it marks the tradition's beginning)
+- The only film from a specific country variant of the tradition
+- A film that represents the tradition's decline or exhaustion (revealing what the tradition became)
+
+### Step 5: Prefer /Out to other tiers
+
+Do not move a film from Satellite/Giallo to Satellite/Cult Oddities because it doesn't fit Giallo well. That moves the problem, not solves it. If a film doesn't serve its assigned category's texture, it either belongs in another category (and should be reclassified) or it belongs in /Out.
+
+### When to upgrade before cutting
+
+Occasionally the ranking reveals a Category Reference candidate that is currently under-identified (score 4/10, but curator knows it's important). Before cutting anything, check whether any films deserve promotion to Category Reference. A SORTING_DATABASE pin at Category Reference protects it from future automated cuts.
+
+### Hard rule: Never cut the last director representative
+
+If a category has only one film by a Category Core director (e.g., the only Bava film in your Giallo collection), do not cut it regardless of score. Losing the last representative of a Category Core director removes the evidence that the tradition had a master. Keep it and cut texture instead.
+
+---
+
 ## Cross-References
 
 - [COLLECTION_THESIS.md](COLLECTION_THESIS.md) — Satellite as "interest" in the four-relationship model; satellite categories as wave-specific phenomena
 - [TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md) — Satellite caps and the tier ratio question; the auteur/genre-master boundary (Part II); the Satellite/Popcorn boundary (Part III)
-- [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) — Core/Reference vetting strategy within each Satellite category; how to identify the masters of each tradition and generate a seeking programme
+- [SATELLITE_DEPTH.md](SATELLITE_DEPTH.md) — Core/Reference vetting strategy within each Satellite category; how to identify the masters of each tradition and generate a seeking programme; §8 AI-Assisted Tentpole Ranking
 - [REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md) — How these categories were historically created and the three conditions for new category emergence
+- [AI_TENTPOLE_RANKING.md](../AI_TENTPOLE_RANKING.md) — Practical procedure for running the ranking script and acting on results

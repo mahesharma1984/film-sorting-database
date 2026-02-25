@@ -41,6 +41,11 @@
 - If director becomes auteur obsession (e.g., full Argento retrospective), promote to Core
 - Otherwise stays Satellite
 
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** A Bay of Blood (1971, Bava, 7/10) · Your Vice Is a Locked Room and Only I Have the Key (1972, Martino, 5/10)
+- **Cut first (0–4):** see `output/tentpole_rankings.md`
+
 ---
 
 ### 2. PINKU EIGA / JAPANESE PINK FILMS
@@ -73,6 +78,11 @@
 - Generic Roman Porno → Satellite
 - Wakamatsu, Takechi → promote to Core if collection expands
 
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** Go Go Second Time Virgin (1969, Wakamatsu, 5/10) · Woods Are Wet (1973, Kumashiro, 5/10)
+- **Cut first (0–4):** see `output/tentpole_rankings.md`
+
 ---
 
 ### 3. JAPANESE EXPLOITATION (NEW - Issue #6)
@@ -100,6 +110,8 @@
 - If director becomes auteur obsession (e.g., full Fukasaku retrospective), promote to Core
 - Otherwise stays Satellite
 - Focused on exploitation/genre works, not late career films
+
+**Tentpoles (2026-02):** *(no ranked films — category folder empty as of 2026-02)*
 
 ---
 
@@ -143,6 +155,11 @@
 **Boundary rule:**
 - If director becomes full auteur obsession (complete Oshima, complete Yoshida), promote to Core
 - Late/post-movement work by JNW directors → Indie Cinema via SORTING_DATABASE pin
+
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** *(insufficient director data in cache for current films — rescore after enrichment)*
+- **Cut first (0–4):** see `output/tentpole_rankings.md`
 
 ---
 
@@ -191,6 +208,11 @@
 - Carlos Reichenbach, Rogério Sganzerla, Júlio Bressane → Core auteurs
 - Generic pornochanchada → Satellite
 - Ozualdo Candeias → Core if collection expands
+
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** Jean Garret films (5/10 each): Noite em Chamas (1977) · Possuídas pelo Pecado (1976) · Mulher, Mulher (1979) · Excitação (1976) · Meliande films: Escola Penal (1977) · Liliam a Suja (1981) · Vadias pelo Prazer (1982)
+- **Cut first (0–4):** see `output/tentpole_rankings.md`
 
 ---
 
@@ -249,6 +271,11 @@
 - Jackie Chan → Satellite unless it's a Core auteur collaboration
 - Category III exploitation → Satellite
 
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** Drunken Master (1978, Yuen Woo-Ping, 6/10) · DOA Dead or Alive (2006, Corey Yuen, 5/10) · Peking Opera Blues (1986, Hark Tsui, 5/10) · Red Wolf (1995, Yuen Woo-Ping, 5/10) · Shanghai Blues (1984, Hark Tsui, 5/10) · The Heroic Trio (1993, Johnnie To, 5/10)
+- **Cut first (0–4):** see `output/tentpole_rankings.md`
+
 ---
 
 ### 6. AMERICAN NEW HOLLYWOOD (NEW - Issue #27)
@@ -300,6 +327,11 @@
 - All That Jazz (1979) — currently misclassified as Indie Cinema
 - Being There (1979) — currently misclassified as Indie Cinema
 - (Full audit of ~15–25 misfiled films to be completed as part of Issue #23 Stage 3)
+
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** Being There (1979, Hal Ashby, 5/10)
+- **Cut first (0–4):** All That Jazz (1979, Fosse, 4/10) — score reflects decade adjacency; see `output/tentpole_rankings.md`
 
 ---
 
@@ -361,6 +393,11 @@
 - John Waters → Core (if collection expands)
 - Troma → Satellite (always)
 
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** 9 Lives of a Wet Pussy (1976, Abel Ferrara, 5/10) · Vixen (1968, Russ Meyer, 5/10)
+- **Cut first (0–4):** see `output/tentpole_rankings.md`
+
 ---
 
 ### 8. NUNSPLOITATION / RELIGIOUS EXPLOITATION
@@ -376,6 +413,8 @@
 
 **Cap:**
 - **Total cap: 15 films** (niche subgenre, keep curated)
+
+**Tentpoles (2026-02):** *(no ranked films — category folder not yet in library_audit.csv)*
 
 ---
 
@@ -410,6 +449,11 @@
 - Radley Metzger, Roger Vadim → Satellite (genre specialists)
 - Generic eurotica → Satellite or cut
 
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** Her and She and Him (1970, Max Pécas, 5/10)
+- **Cut first (0–4):** see `output/tentpole_rankings.md`
+
 ---
 
 ### 10. BLAXPLOITATION
@@ -441,6 +485,11 @@
 - Ernest R. Dickerson → Satellite (extends tradition into 1990s)
 - Generic blaxploitation → Satellite
 
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** Coffy (1973, Jack Hill, 6/10) · Foxy Brown (1974, Jack Hill, 5/10) · Shaft (1971, 5/10 — Sight & Sound 2022)
+- **Cut first (0–4):** see `output/tentpole_rankings.md`
+
 ---
 
 ### 11. WOMEN IN PRISON / RAPE-REVENGE / FEMINIST EXPLOITATION
@@ -458,6 +507,8 @@
 
 **Cap:**
 - **Total cap: 15 films** (keep selective, avoid pure misery)
+
+**Tentpoles (2026-02):** *(no ranked films — category folder not yet in library_audit.csv)*
 
 ---
 
@@ -484,6 +535,11 @@
 **Cap:**
 - **Total cap: 20 music films**
 
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** Tommy (1975, Ken Russell, 5/10)
+- **Cut first (0–4):** see `output/tentpole_rankings.md`
+
 ---
 
 ### 13. MONDO / SHOCKUMENTARY
@@ -497,6 +553,8 @@
 
 **Cap:**
 - **Total cap: 10 films** (niche, keep tight)
+
+**Tentpoles (2026-02):** *(no ranked films — category folder not yet in library_audit.csv)*
 
 ---
 
@@ -526,6 +584,8 @@
 - Jodorowsky → Core
 - Pure oddities → Satellite
 - If film has cult following but no auteur claim → here
+
+**Tentpoles (2026-02):** *(no ranked films — category folder not yet in library_audit.csv)*
 
 ---
 
@@ -559,6 +619,11 @@
 - Godard, Varda → Core (already on whitelist)
 - Marker, Rohmer, Resnais → Satellite (unless promoted to Core)
 - Reference-level films (Hiroshima Mon Amour) → may override to Reference
+
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** La jetée (1962, Marker, 5/10) · Le joli mai (1963, Marker, 5/10) · Stolen Kisses (1968, Truffaut, 5/10)
+- **Cut first (0–4):** see `output/tentpole_rankings.md`
 
 ---
 
@@ -594,6 +659,11 @@ Indie Cinema is a **negative-space category** defined by what it is NOT (not exp
 - Mainstream studio films → Popcorn
 - Exploitation directors' post-category films → Indie Cinema (decade bounds respected)
 
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** Nouvelle Vague (2025, Linklater, 5/10) · Southland Tales (2006, Kelly, 5/10)
+- **Cut first (0–4):** see `output/tentpole_rankings.md` (81-film collection is significantly over cap of 40 — deletion decisions needed)
+
 ---
 
 ### 17. CLASSIC HOLLYWOOD (NEW - Issue #14)
@@ -620,6 +690,11 @@ Indie Cinema is a **negative-space category** defined by what it is NOT (not exp
 - Canonical classics → Reference (Casablanca, Citizen Kane)
 - Genre classics → Satellite (The Big Sleep, Out of the Past)
 
+**Tentpoles (2026-02):** *(run `python scripts/rank_category_tentpoles.py` to refresh)*
+- **Category Core (8–10):** *(none — requires Sight & Sound / Criterion + director + peak decade)*
+- **Category Reference (5–7):** Cry of the City (1948, Siodmak, 6/10) · Deported (1950, Siodmak, 6/10) · The Killers (1946, Siodmak, 6/10) · The Dark Mirror (1946, Siodmak, 6/10) · The Suspect (1944, Siodmak, 6/10) · Cobra Woman (1944, Siodmak, 5/10)
+- **Note:** Category is over cap (37 films vs cap 25) — deletion decisions needed; see `output/tentpole_rankings.md`
+
 ---
 
 ### 18. HONG KONG NEW WAVE (NEW - Issue #34)
@@ -637,6 +712,8 @@ Note: Wong Kar-wai and Johnnie To are Core directors — their films route to Co
 
 **Boundary with HK Action:** Action genre films (Tsui Hark, John Woo, Ringo Lam) → HK Action. Drama/romance/art films by the above directors → HK New Wave. Use SORTING_DATABASE pins to resolve per-film ambiguity.
 
+**Tentpoles (2026-02):** *(no ranked films — category not yet populated in library)*
+
 ---
 
 ### 19. HONG KONG CATEGORY III (NEW - Issue #34)
@@ -648,6 +725,8 @@ Note: Wong Kar-wai and Johnnie To are Core directors — their films route to Co
 **Cap:** 10 films. **Certainty tier:** 4 (manual only).
 
 **Boundary with HK Action:** Films like Green Snake (Tsui Hark) are Category III despite the director being in HK Action. SORTING_DATABASE pin overrides director routing.
+
+**Tentpoles (2026-02):** *(manual curation only — ranking script not applicable)*
 
 ---
 

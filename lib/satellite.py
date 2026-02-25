@@ -107,6 +107,7 @@ class SatelliteClassifier:
             SATELLITE_ROUTING_RULES,
             AMERICAN_EXPLOITATION_TITLE_KEYWORDS,
             BLAXPLOITATION_TITLE_KEYWORDS,
+            CATEGORY_CERTAINTY_TIERS,
         )
 
         # Check each category's rules (first match wins)
@@ -129,9 +130,14 @@ class SatelliteClassifier:
             if rules['country_codes'] is not None:
                 country_match = any(c in countries for c in rules['country_codes'])
 
+            # Issue #34: Three-valued genre gate — True / False / None (untestable)
+            # None means genres=[] (API returned no genre data) — not a negative match.
             genre_match = True  # Default to True if no genre restriction
             if rules['genres'] is not None:
-                genre_match = any(g in genres for g in rules['genres'])
+                if not genres:  # genres=[] → no data → untestable
+                    genre_match = None
+                else:
+                    genre_match = any(g in genres for g in rules['genres'])
 
             # Tighten fallback for categories that were producing mainstream false positives.
             # Director match above still takes priority and remains permissive.
@@ -142,16 +148,26 @@ class SatelliteClassifier:
                 if not self._title_matches_keywords(title, BLAXPLOITATION_TITLE_KEYWORDS):
                     continue
 
-            # Both must match
-            if country_match and genre_match:
+            # Both must match (positive genre evidence)
+            if country_match and genre_match is True:
                 return self._check_cap(category_name)
+
+            # Issue #34: genre_match is None (untestable) — apply certainty-tier routing.
+            # Tier 3 (negative-space/catch-all like Indie Cinema): route at R2-capped confidence.
+            # Tier 1–2 (positive-space exploitation/movement): require genre evidence — don't route.
+            # Guard: only apply when country was a POSITIVE match against a defined list.
+            # Categories with country_codes=None already match any country — no fallback needed.
+            if country_match and genre_match is None and rules['country_codes'] is not None:
+                tier = CATEGORY_CERTAINTY_TIERS.get(category_name, 2)
+                if tier >= 3:
+                    return self._check_cap(category_name)
 
             # Issue #29 Tier A: country + decade + keyword hit (genre gate waived)
             # Fires when structural country match succeeded but genre tag is absent/wrong —
             # e.g. an Italian Drama 1970s with a "giallo" TMDb tag routes to Giallo
             # despite TMDb not filing it under Horror/Thriller.
             keyword_signals = rules.get('keyword_signals')
-            if keyword_signals and country_match and not genre_match:
+            if keyword_signals and country_match and genre_match is not True:
                 hit, _ = self._keyword_hit(tmdb_data, keyword_signals)
                 if hit:
                     return self._check_cap(category_name)
