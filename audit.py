@@ -30,7 +30,10 @@ DECADE_RE = re.compile(r'^\d{4}s$')
 YEAR_RE = re.compile(r'\((\d{4})\)')
 
 # Folders to skip entirely (no films here)
-SKIP_FOLDERS = {'Out', '.Trash', '.Spotlight-V100', '.fseventsd', '.TemporaryItems'}
+SKIP_FOLDERS = {'Out', 'Non-Film', '.Trash', '.Spotlight-V100', '.fseventsd', '.TemporaryItems'}
+
+# Unsorted subfolders that are not films — excluded from counts
+UNSORTED_NON_FILM_SUBFOLDERS = {'no_year'}
 
 # Decision-pending curator folders → treat as Staging
 DECISION_PENDING = {'Core (Gallo) OR Popcorn?', 'Reference OR Popcorn?'}
@@ -115,6 +118,8 @@ def derive_row(file_path: Path, library_base: Path) -> dict | None:
     # --- Unsorted/file or Unsorted/{subfolder}/file ---
     if top == 'Unsorted':
         subfolder = parts[1] if len(parts) > 2 else ''
+        if subfolder in UNSORTED_NON_FILM_SUBFOLDERS:
+            return None
         destination = f'Unsorted/{subfolder}/' if subfolder else 'Unsorted/'
         return {
             'filename': filename,
