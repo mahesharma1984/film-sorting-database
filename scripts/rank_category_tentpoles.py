@@ -2,7 +2,7 @@
 """
 scripts/rank_category_tentpoles.py — Satellite category tentpole ranking (Issue #30)
 
-Scores every film in each Satellite category 0–10 across 6 dimensions and outputs
+Scores every film in each Satellite category 0–13 across 7 dimensions and outputs
 a ranked markdown report with Category Core / Reference / Texture tiers.
 
 NEVER moves files. Read-only tool.
@@ -30,6 +30,7 @@ from lib.parser import FilenameParser
 from lib.core_directors import CoreDirectorDatabase
 from lib.normalization import normalize_for_lookup, strip_release_tags
 from lib.constants import SATELLITE_ROUTING_RULES, SATELLITE_TENTPOLES
+from lib.corpus import CorpusLookup
 
 # ---------------------------------------------------------------------------
 # Sight & Sound 2022 — films plausibly in Satellite categories
@@ -415,6 +416,23 @@ def score_external_canonical(title: Optional[str], year: Optional[int],
     return min(score, 3)
 
 
+def score_corpus_tier(title: Optional[str], year: Optional[int],
+                      imdb_id: Optional[str], corpus_lookup: Optional[CorpusLookup]) -> int:
+    """
+    Score based on canonical tier in ground truth corpus (Issue #38).
+    tier 1 (core canon)       → 3 points
+    tier 2 (important ref)    → 2 points
+    tier 3 (genre texture)    → 1 point
+    not in corpus             → 0 points
+    """
+    if not corpus_lookup or not title or not year:
+        return 0
+    hit = corpus_lookup.lookup(title, year, imdb_id=imdb_id)
+    if not hit:
+        return 0
+    return {1: 3, 2: 2, 3: 1}.get(hit['canonical_tier'], 0)
+
+
 # ---------------------------------------------------------------------------
 # Wikipedia fetch (optional --wikipedia flag)
 # ---------------------------------------------------------------------------
@@ -474,7 +492,8 @@ def score_film(filename: str, title: Optional[str], year: Optional[int],
                director: Optional[str], decade: Optional[str], category: str,
                tmdb_cache: Dict, omdb_cache: Dict,
                core_db: CoreDirectorDatabase,
-               wikipedia_films: Optional[List[str]] = None) -> Optional[Dict]:
+               wikipedia_films: Optional[List[str]] = None,
+               corpus_lookup: Optional[CorpusLookup] = None) -> Optional[Dict]:
     """
     Score a single film. Returns None if no title/year (unscoreable).
     Returns dict with score breakdown.
@@ -509,8 +528,11 @@ def score_film(filename: str, title: Optional[str], year: Optional[int],
     cr = score_canonical_recognition(tmdb_data, omdb_data)
     ts = score_text_signal(tmdb_data, omdb_data, category)
     ec = score_external_canonical(title, year, filename, wikipedia_films)
+    # Corpus tier score (Issue #38) — 0 if corpus not loaded
+    imdb_id = omdb_data.get('imdb_id') if omdb_data else None
+    ct = score_corpus_tier(title, year, imdb_id, corpus_lookup)
 
-    total = dt + dm + ka + cr + ts + ec
+    total = dt + dm + ka + cr + ts + ec + ct
 
     # Keyword hits for annotation — use RANKING_TAGS (broader set)
     film_keywords = set(k.lower() for k in (tmdb_data or {}).get('keywords', []))
@@ -537,6 +559,7 @@ def score_film(filename: str, title: Optional[str], year: Optional[int],
         'canonical_recognition': cr,
         'text_signal': ts,
         'external_canonical': ec,
+        'corpus_tier': ct,
         'matched_keywords': matched_keywords,
         'has_api_data': has_api_data,
         'criterion': 'criterion' in filename.lower(),
@@ -569,9 +592,10 @@ def format_film_entry(rank: int, film: Dict) -> str:
     if film['matched_keywords']:
         keyword_str = f"\n   Keywords: {', '.join(film['matched_keywords'])}"
 
+    corpus_str = f" corpus:{film['corpus_tier']}" if film.get('corpus_tier', 0) > 0 else ''
     breakdown = (f"director:{film['director_tier']} decade:{film['decade_match']} "
                  f"keywords:{film['keyword_alignment']} canonical:{film['canonical_recognition']} "
-                 f"text:{film['text_signal']} external:{film['external_canonical']}")
+                 f"text:{film['text_signal']} external:{film['external_canonical']}{corpus_str}")
 
     lines = [
         f"{rank}. **{film['title']} ({film['year']})**{director_str} — **{film['score']}/10**{badge_str}",
@@ -650,7 +674,8 @@ def load_category_films(audit_path: Path, category: str) -> List[Dict]:
 def rank_category(category: str, audit_path: Path,
                   tmdb_cache: Dict, omdb_cache: Dict,
                   core_db: CoreDirectorDatabase,
-                  wikipedia_films: Optional[List[str]] = None) -> str:
+                  wikipedia_films: Optional[List[str]] = None,
+                  corpus_lookup: Optional[CorpusLookup] = None) -> str:
     """Rank all films in a Satellite category. Returns markdown string."""
     parser = FilenameParser()
     rows = load_category_films(audit_path, category)
@@ -682,6 +707,7 @@ def rank_category(category: str, audit_path: Path,
             omdb_cache=omdb_cache,
             core_db=core_db,
             wikipedia_films=wikipedia_films,
+            corpus_lookup=corpus_lookup,
         )
 
         if result is None:
@@ -763,13 +789,22 @@ def main():
         '',
     ]
 
+    # Load ground truth corpus for canonical_tier scoring (Issue #38)
+    corpora_dir = Path(__file__).parent.parent / 'data' / 'corpora'
+    corpus_lookup = CorpusLookup(corpora_dir) if corpora_dir.exists() else None
+    if corpus_lookup:
+        stats = corpus_lookup.get_stats()
+        if stats['total_entries'] > 0:
+            print(f"Corpus loaded: {stats['total_entries']} films across {len(stats['categories'])} categories",
+                  file=sys.stderr)
+
     for cat in categories:
         print(f"Ranking: {cat}...", file=sys.stderr)
         wikipedia_films = fetch_wikipedia_films(cat) if args.wikipedia else None
         if args.wikipedia and wikipedia_films:
             print(f"  Wikipedia: {len(wikipedia_films)} film mentions", file=sys.stderr)
         output_parts.append(rank_category(cat, audit_path, tmdb_cache, omdb_cache,
-                                          core_db, wikipedia_films))
+                                          core_db, wikipedia_films, corpus_lookup))
 
     output = '\n'.join(output_parts)
 

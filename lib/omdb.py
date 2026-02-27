@@ -168,6 +168,7 @@ class OMDbClient:
                 'vote_count': vote_count,
                 'original_language': None,  # OMDb doesn't provide original language
                 'plot': data.get('Plot', '') if data.get('Plot') != 'N/A' else '',
+                'imdb_id': data['imdbID'] if data.get('imdbID') and data['imdbID'] != 'N/A' else None,
             }
 
             logger.info(f"OMDb: '{title}' ({year}) → '{result['title']}' dir:{director} countries:{countries}")

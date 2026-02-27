@@ -30,6 +30,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from classify import FilmClassifier, ClassificationResult, load_config, get_decade
 from lib.parser import FilenameParser
+from lib.corpus import CorpusLookup
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -399,6 +400,100 @@ def print_summary(report_rows: List[Dict]):
 
 
 # ---------------------------------------------------------------------------
+# Corpus check (--corpus flag, Issue #38)
+# ---------------------------------------------------------------------------
+
+def run_corpus_check(audit_rows: List[Dict], corpus_lookup: CorpusLookup) -> List[Dict]:
+    """
+    Cross-reference each organized film against the ground truth corpus.
+
+    For each film:
+      corpus_confirmed  — in corpus AND in the correct Satellite category folder
+      corpus_mismatch   — in corpus BUT in a different category folder
+      corpus_unconfirmed — not in corpus (no external verdict available)
+
+    Returns list of dicts with: filename, current_category, corpus_category,
+    corpus_tier, corpus_verdict, corpus_source.
+    """
+    parser = FilenameParser()
+    rows = []
+
+    for row in audit_rows:
+        filename = row.get('filename', '')
+        current_tier = row.get('tier', row.get('current_tier', ''))
+        current_category = row.get('subdirectory', row.get('current_category', ''))
+
+        meta = parser.parse(filename)
+        corpus_hit = corpus_lookup.lookup(
+            meta.title, meta.year, imdb_id=getattr(meta, 'imdb_id', None)
+        )
+
+        if corpus_hit is None:
+            rows.append({
+                'filename': filename,
+                'current_tier': current_tier,
+                'current_category': current_category,
+                'corpus_category': '',
+                'corpus_tier': '',
+                'corpus_verdict': 'corpus_unconfirmed',
+                'corpus_source': '',
+            })
+            continue
+
+        corpus_category = corpus_hit['category']
+        corpus_tier = corpus_hit['canonical_tier']
+        corpus_source = corpus_hit.get('source', '')
+
+        # Check whether the film is in the right place
+        # Corpus categories are Satellite subcategories; compare against current_category
+        if current_tier == 'Satellite' and current_category == corpus_category:
+            verdict = 'corpus_confirmed'
+        else:
+            verdict = 'corpus_mismatch'
+
+        rows.append({
+            'filename': filename,
+            'current_tier': current_tier,
+            'current_category': current_category,
+            'corpus_category': corpus_category,
+            'corpus_tier': corpus_tier,
+            'corpus_verdict': verdict,
+            'corpus_source': corpus_source,
+        })
+
+    return rows
+
+
+def print_corpus_summary(corpus_rows: List[Dict]) -> None:
+    """Print corpus check summary to stdout."""
+    by_verdict: Dict[str, List] = defaultdict(list)
+    for r in corpus_rows:
+        by_verdict[r['corpus_verdict']].append(r)
+
+    total = len(corpus_rows)
+    confirmed = len(by_verdict.get('corpus_confirmed', []))
+    mismatch = len(by_verdict.get('corpus_mismatch', []))
+    unconfirmed = len(by_verdict.get('corpus_unconfirmed', []))
+
+    print(f"\n{'='*60}")
+    print(f"CORPUS CHECK (external standard, Issue #38)")
+    print(f"{'='*60}")
+    print(f"Total films in audit:          {total}")
+    print(f"In corpus + correct folder:    {confirmed}")
+    print(f"In corpus + WRONG folder:      {mismatch}  ← real misclassifications")
+    print(f"Not in corpus (no verdict):    {unconfirmed}")
+
+    if mismatch:
+        print(f"\nCORPUS MISMATCHES (films in wrong category):")
+        for r in by_verdict['corpus_mismatch']:
+            print(f"  {r['filename']}")
+            print(f"    Current:  {r['current_tier']}/{r['current_category']}")
+            print(f"    Corpus:   Satellite/{r['corpus_category']} (tier {r['corpus_tier']}, source: {r['corpus_source']})")
+
+    print(f"{'='*60}\n")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -425,6 +520,11 @@ def main():
         '--config',
         default='config.yaml',
         help='Path to config YAML (default: config.yaml)'
+    )
+    parser.add_argument(
+        '--corpus',
+        action='store_true',
+        help='Run corpus check against data/corpora/ CSVs (external standard, Issue #38)'
     )
     args = parser.parse_args()
 
@@ -457,6 +557,29 @@ def main():
     if args.review:
         logger.info("Stage 3: writing review report")
         write_review_report(report_rows, Path('output/reaudit_review.md'))
+
+    # Stage 4: corpus check (optional, Issue #38)
+    if args.corpus:
+        corpora_dir = Path(__file__).parent.parent / 'data' / 'corpora'
+        corpus_lookup = CorpusLookup(corpora_dir)
+        stats = corpus_lookup.get_stats()
+        if stats['total_entries'] == 0:
+            logger.warning("No corpus files found in %s — skipping corpus check", corpora_dir)
+        else:
+            logger.info("Stage 4: corpus check (%d films across %d categories)",
+                        stats['total_entries'], len(stats['categories']))
+            corpus_rows = run_corpus_check(audit_rows, corpus_lookup)
+            print_corpus_summary(corpus_rows)
+            # Write corpus report CSV
+            corpus_report_path = Path('output/corpus_check_report.csv')
+            corpus_report_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(corpus_report_path, 'w', newline='', encoding='utf-8') as f:
+                fieldnames = ['filename', 'current_tier', 'current_category',
+                              'corpus_category', 'corpus_tier', 'corpus_verdict', 'corpus_source']
+                writer = csv.DictWriter(f, fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
+                writer.writeheader()
+                writer.writerows(corpus_rows)
+            logger.info("Wrote corpus check report to %s", corpus_report_path)
 
 
 if __name__ == '__main__':

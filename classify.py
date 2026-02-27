@@ -11,6 +11,7 @@ Classification priority order:
    - Country: OMDb > TMDb (critical for Satellite routing)
    - Genres: TMDb > OMDb (TMDb has richer structured data)
 3. [PRECISION] Explicit lookup → SORTING_DATABASE.md (human-curated, highest trust)
+3.5 [PRECISION] Corpus lookup → data/corpora/*.csv (scholarship-sourced ground truth, Issue #38)
 4. [REASONING] Core director check → whitelist exact match
 5. [REASONING] Reference canon check → 50-film hardcoded list in constants.py
 6. [PRECISION] User tag recovery → trust previous human classification
@@ -47,6 +48,7 @@ from lib.constants import (
 )
 from lib.enrichment import ManualEnrichmentSource
 from lib.normalizer import FilenameNormalizer
+from lib.corpus import CorpusLookup
 
 # Configure logging
 logging.basicConfig(
@@ -159,6 +161,16 @@ class FilmClassifier:
         self.enrichment = ManualEnrichmentSource(enrichment_path)
         if len(self.enrichment) > 0:
             logger.info(f"Loaded manual enrichment: {len(self.enrichment)} entries")
+
+        # Layer 1 ground truth corpus (Issue #38) — optional; disabled if no corpora dir
+        corpora_dir = project_path / 'data' / 'corpora'
+        self.corpus_lookup = CorpusLookup(corpora_dir)
+        stats = self.corpus_lookup.get_stats()
+        if stats['total_entries'] > 0:
+            logger.info(
+                f"Loaded ground truth corpus: {stats['total_entries']} films "
+                f"across {len(stats['categories'])} categories"
+            )
 
     def _build_destination(self, tier: str, decade: Optional[str], subdirectory: Optional[str]) -> str:
         """Build destination path string from classification components (tier-first)"""
@@ -571,6 +583,35 @@ class FilmClassifier:
                     )
                     _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
                     return _result
+
+        # === Stage 2.5: Ground truth corpus lookup (Issue #38) ===
+        # Authoritative per-category CSVs sourced from published scholarship.
+        # Fires before heuristic routing — corpus hit = confidence 1.0.
+        # Disabled if data/corpora/ doesn't exist (fully backward-compatible).
+        if self.corpus_lookup and metadata.title and metadata.year:
+            corpus_hit = self.corpus_lookup.lookup(
+                metadata.title, metadata.year, imdb_id=getattr(metadata, 'imdb_id', None)
+            )
+            if corpus_hit:
+                category = corpus_hit['category']
+                decade_str = f"{(metadata.year // 10) * 10}s"
+                destination = f"Satellite/{category}/{decade_str}/"
+                self.stats['corpus_lookup'] += 1
+                if hasattr(self.satellite_classifier, 'increment_count'):
+                    self.satellite_classifier.increment_count(category)
+                _result = ClassificationResult(
+                    filename=metadata.filename, title=metadata.title,
+                    year=metadata.year, director=metadata.director,
+                    language=metadata.language, country=metadata.country,
+                    user_tag=metadata.user_tag,
+                    tier='Satellite', decade=decade_str, subdirectory=category,
+                    destination=destination,
+                    confidence=1.0, reason='corpus_lookup',
+                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                    data_readiness=_readiness,
+                )
+                _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
+                return _result
 
         # === Hard gate: no year = cannot route to decade ===
         if not metadata.year:

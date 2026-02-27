@@ -26,6 +26,7 @@ class FilmMetadata:
     language: Optional[str] = None  # ISO 639-1 code (e.g., 'pt', 'it', 'fr')
     country: Optional[str] = None   # ISO 3166-1 alpha-2 (e.g., 'BR', 'IT', 'FR')
     user_tag: Optional[str] = None  # Raw user tag content without brackets
+    imdb_id: Optional[str] = None   # IMDb ID extracted from {imdb-tt...} filename pattern
 
 
 class FilenameParser:
@@ -188,6 +189,12 @@ class FilenameParser:
         if user_tag:
             name = re.sub(r'\s*\[[^\]]+\]', '', name).strip()
 
+        # Extract IMDb ID from {imdb-tt...} filename pattern (Plex/Emby standard)
+        # Must happen BEFORE _clean_title() strips all {..} patterns (line 54)
+        imdb_match = re.search(r'\{imdb-(tt\d+)\}', name, re.IGNORECASE)
+        imdb_id = imdb_match.group(1) if imdb_match else None
+        name = re.sub(r'\s*\{imdb-tt\d+\}', '', name, flags=re.IGNORECASE)
+
         # === PRIORITY 0: Check for (Director, Year) pattern FIRST ===
         # Bug 3 fix: "A Bay of Blood (Mario Bava, 1971).mkv"
         # This must come before standard parenthetical year to extract both director and year
@@ -209,7 +216,8 @@ class FilenameParser:
                     format_signals=format_signals,
                     language=language,
                     country=country,
-                    user_tag=user_tag
+                    user_tag=user_tag,
+                    imdb_id=imdb_id
                 )
 
         # === PRIORITY 0.5: Check for (Director YYYY) pattern (no comma) ===
@@ -233,7 +241,8 @@ class FilenameParser:
                     format_signals=format_signals,
                     language=language,
                     country=country,
-                    user_tag=user_tag
+                    user_tag=user_tag,
+                    imdb_id=imdb_id
                 )
 
         # === PRIORITY 1: Check for parenthetical year FIRST ===
@@ -313,7 +322,8 @@ class FilenameParser:
                                 format_signals=format_signals,
                                 language=language,
                                 country=country,
-                                user_tag=user_tag
+                                user_tag=user_tag,
+                                imdb_id=imdb_id
                             )
 
                 return FilmMetadata(
@@ -323,7 +333,8 @@ class FilenameParser:
                     format_signals=format_signals,
                     language=language,
                     country=country,
-                    user_tag=user_tag
+                    user_tag=user_tag,
+                    imdb_id=imdb_id
                 )
 
         # === PRIORITY 2: Brazilian year-prefix format ===
@@ -341,7 +352,8 @@ class FilenameParser:
                     format_signals=format_signals,
                     language=language,
                     country=country,
-                    user_tag=user_tag
+                    user_tag=user_tag,
+                    imdb_id=imdb_id
                 )
 
         # === PRIORITY 3: Structured patterns with director ===
@@ -367,7 +379,8 @@ class FilenameParser:
                         format_signals=format_signals,
                         language=language,
                         country=country,
-                        user_tag=user_tag
+                        user_tag=user_tag,
+                        imdb_id=imdb_id
                     )
 
         # === PRIORITY 4: Title + year patterns (bracket year) ===
@@ -386,7 +399,8 @@ class FilenameParser:
                     format_signals=format_signals,
                     language=language,
                     country=country,
-                    user_tag=user_tag
+                    user_tag=user_tag,
+                    imdb_id=imdb_id
                 )
 
         # === PRIORITY 5: Fallback - extract year from anywhere ===
@@ -405,7 +419,8 @@ class FilenameParser:
                 format_signals=format_signals,
                 language=language,
                 country=country,
-                user_tag=user_tag
+                user_tag=user_tag,
+                imdb_id=imdb_id
             )
 
         # === LAST RESORT: No year found ===
@@ -415,5 +430,6 @@ class FilenameParser:
             format_signals=format_signals,
             language=language,
             country=country,
-            user_tag=user_tag
+            user_tag=user_tag,
+            imdb_id=imdb_id
         )
