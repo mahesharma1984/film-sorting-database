@@ -93,6 +93,7 @@ python classify.py /path/to/unsorted/films --no-api
 
 **Reason codes you'll see:**
 - `explicit_lookup` — matched SORTING_DATABASE.md (highest trust)
+- `corpus_lookup` — matched ground truth corpus entry (scholarship-sourced, confidence 1.0)
 - `reference_canon` — in the 50-film Reference canon
 - `country_satellite` — routed by country+decade+genre
 - `core_director` — matched Core director whitelist
@@ -300,6 +301,9 @@ python scripts/reaudit.py --review
 
 # Also try live API for films with no cached data
 python scripts/reaudit.py --enrich
+
+# Validate against ground truth corpora (Issue #38)
+python scripts/reaudit.py --corpus
 ```
 
 **Output:** `output/reaudit_review.md` — discrepancies grouped by type:
@@ -307,6 +311,11 @@ python scripts/reaudit.py --enrich
 - `wrong_category` — film is in Giallo but current rules say Indie Cinema
 - `wrong_decade` — correct tier and category but wrong decade folder
 - `unroutable` — rules return no destination for this film
+
+**Corpus validation (Issue #38):** The `--corpus` flag cross-references organised films against scholarship-sourced ground truth corpora (`data/corpora/*.csv`). Produces `output/corpus_check_report.csv` with three verdicts:
+- `corpus_confirmed` — film in corpus AND in correct category folder
+- `corpus_mismatch` — film in corpus BUT in different category (real misclassification)
+- `corpus_unconfirmed` — film not in any corpus (no external verdict)
 
 **What causes discrepancies:** Rules have changed since the film was last classified (new directors added, caps raised, SORTING_DATABASE entries added). This is expected and healthy — it means the system learned since the last move.
 
@@ -514,6 +523,7 @@ python scripts/invalidate_null_cache.py aggressive      # missing director OR co
 | `output/cohorts_report.md` | analyze_cohorts.py | Curator (Workflow B) | Regenerated on demand |
 | `output/failure_cohorts.json` | analyze_cohorts.py | Curator / tooling | Regenerated on demand |
 | `output/tentpole_rankings.md` | rank_category_tentpoles.py | Curator | Regenerated on demand |
+| `output/corpus_check_report.csv` | reaudit.py --corpus | Curator (Workflow B) | Regenerated on demand |
 | `output/curation_decisions.csv` | **Curator** (manual) | curate.py | Created by curator per cycle |
 | `output/confirmed_films.csv` | curate.py | move.py | Appended each curate run |
 | `output/sorting_database_additions.txt` | curate.py | Curator → SORTING_DATABASE.md | Appended each curate run |

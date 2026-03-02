@@ -33,10 +33,12 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | What are the cohort types? | cap_exceeded, director_gap, data_gap, gate_design_gap, taxonomy_gap | `docs/CURATOR_WORKFLOW.md` Phase B3 |
 | How do I find and fix systematic routing failures? | Run analyze_cohorts.py after classify; act on HIGH-confidence hypotheses | `docs/CURATOR_WORKFLOW.md` Phase B3–B4 |
 | What published research grounds the frameworks? | Deming, Ranganathan, Settles, Bourdieu, Bowker & Star, signal detection | `docs/theory/THEORETICAL_GROUNDING.md` |
-| Why does the pipeline keep hitting dead ends? | Information destruction at every stage; single-loop learning | `docs/architecture/EVIDENCE_ARCHITECTURE.md` §1 |
-| What is evidence architecture? | Per-film evidence trails, failure cohorts, hypothesis generation | `docs/architecture/EVIDENCE_ARCHITECTURE.md` §3 |
-| What is the accuracy of the organised library? | Two populations: SORTING_DATABASE (100%) vs pipeline heuristics (~91.2%) | `docs/architecture/CLASSIFICATION_ACCURACY.md` §4 |
-| How is classification accuracy measured? | Re-run classifier on organised films; compare to current location | `docs/architecture/CLASSIFICATION_ACCURACY.md` §3 |
+| Why does the pipeline keep hitting dead ends? | Information destruction at every stage; single-loop learning | `docs/architecture/VALIDATION_ARCHITECTURE.md` §2 |
+| What is evidence architecture? | Per-film evidence trails, failure cohorts, hypothesis generation | `docs/architecture/VALIDATION_ARCHITECTURE.md` §2 |
+| What are ground truth corpora? | Scholarship-sourced per-category CSV files for external validation | `docs/architecture/VALIDATION_ARCHITECTURE.md` §3 |
+| How do I add entries to a corpus? | `build_corpus.py --add TITLE YEAR --category CAT` | `docs/architecture/VALIDATION_ARCHITECTURE.md` §6 |
+| What is the accuracy of the organised library? | Three populations: lookup (100%), corpus (1.0), pipeline (~91.2%) | `docs/architecture/VALIDATION_ARCHITECTURE.md` §4 |
+| How is classification accuracy measured? | Re-run classifier on organised films; compare to current location | `docs/architecture/VALIDATION_ARCHITECTURE.md` §4 |
 | What is double-loop learning? | Questioning governing variables, not just fixing instances | `docs/theory/THEORETICAL_GROUNDING.md` §8 |
 | How do I re-audit existing library films? | Re-classification audit (Issue #31) | `docs/theory/REFINEMENT_AND_EMERGENCE.md` §4a |
 | How do I run tests? | pytest tests/ | `docs/DEVELOPER_GUIDE.md` |
@@ -47,6 +49,11 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | How do I rank films within a Satellite category? | Run rank_category_tentpoles.py → output/tentpole_rankings.md | `docs/AI_TENTPOLE_RANKING.md` |
 | Which films to cut when a category is over cap? | Run ranking, cut from Texture (0–4) bottom-up | `docs/theory/MARGINS_AND_TEXTURE.md` §9 |
 | What is Category Core vs Category Reference? | Recursive depth hierarchy within each Satellite | `docs/theory/SATELLITE_DEPTH.md` §3–4 |
+| I don't know what's wrong — how do I start investigating? | Problem classification decision tree + component lookup | `docs/WORK_ROUTER.md` §0.1–§0.2 |
+| How do I trace data flow through the pipeline? | Map reads/produces/ignores; check §0.5 | `docs/WORK_ROUTER.md` §0.5 |
+| How do I write an issue spec? | 10-section mandatory template (Type 1/2/3) | `docs/ISSUE_SPEC_TEMPLATE.md` |
+| How do I map an existing system before changing it? | Exploration-First: map→audit→probe→build | `exports/skills/exploration-first.md` |
+| Why does map-before-modify prevent regressions? | Structured investigation theory | `exports/knowledge-base/exploration-theory.md` |
 
 ---
 
@@ -67,8 +74,8 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Category refinement** | `docs/theory/REFINEMENT_AND_EMERGENCE.md` | AUTHORITATIVE |
 | **Recursive curation model** | `docs/architecture/RECURSIVE_CURATION_MODEL.md` | AUTHORITATIVE |
 | **Theoretical grounding** | `docs/theory/THEORETICAL_GROUNDING.md` | AUTHORITATIVE |
-| **Evidence architecture** | `docs/architecture/EVIDENCE_ARCHITECTURE.md` | AUTHORITATIVE |
-| **Classification accuracy** | `docs/architecture/CLASSIFICATION_ACCURACY.md` | AUTHORITATIVE |
+| **Validation architecture** | `docs/architecture/VALIDATION_ARCHITECTURE.md` | AUTHORITATIVE |
+| **Ground truth corpora** | `data/corpora/*.csv` | AUTHORITATIVE |
 | **Satellite depth** | `docs/theory/SATELLITE_DEPTH.md` | AUTHORITATIVE |
 | **Curator workflow** | `docs/CURATOR_WORKFLOW.md` | AUTHORITATIVE |
 | **Thread discovery** | `docs/THREAD_DISCOVERY_GUIDE.md` | AUTHORITATIVE |
@@ -77,6 +84,9 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Methodology** | `CLAUDE.md` | AUTHORITATIVE |
 | **Development skills** | `exports/skills/README.md` | STABLE |
 | **Theoretical foundations** | `exports/knowledge-base/` | STABLE |
+| **Exploration-First skill** | `exports/skills/exploration-first.md` | STABLE |
+| **Exploration theory** | `exports/knowledge-base/exploration-theory.md` | STABLE |
+| **Issue specification standard** | `docs/ISSUE_SPEC_TEMPLATE.md` | STABLE |
 | **RAG query guide** | `docs/RAG_QUERY_GUIDE.md` | STABLE |
 
 ---

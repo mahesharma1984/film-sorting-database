@@ -13,6 +13,7 @@ This repository's methodologies weren't designed in the abstract. They emerged f
 3. Fixing one case broke three others → discovery that quality has two axes → Measurement-Driven Development
 4. A "STRONG" quality score masked a broken process → discovery that metrics measure output, not process → Failure Gates
 5. Teams kept building the wrong thing → discovery that exploration must precede execution → Prototype Building
+6. A "fix" caused three regressions → discovery that modifying a system you haven't mapped produces drift → Exploration-First
 
 **Each skill encodes the fix. The knowledge base explains the failure that made the fix necessary.** If you only learn the fix, you'll apply it mechanically. If you understand the failure, you'll recognize when the same category of failure appears in a new form.
 
@@ -54,6 +55,10 @@ The knowledge base documents build on each other:
 8. Constraint Theory
    "When something's wrong, how do you find WHERE to fix?"
    ↓ establishes the constraint identification method
+
+9. Exploration Theory
+   "How do you investigate an existing system before changing it?"
+   ↓ establishes the investigation method (synthesizes 3, 6, 8)
 ```
 
 Each document follows the same structure:
@@ -77,6 +82,7 @@ Each document follows the same structure:
 | 6 | [Measurement Theory](measurement-theory.md) | How do you know something is actually working? | Measurement-Driven Dev |
 | 7 | [Failure Theory](failure-theory.md) | How do systems break silently? | Failure Gates |
 | 8 | [Constraint Theory](constraint-theory.md) | When a pipeline underperforms, how do you find *what* to fix? | Constraint Gates |
+| 9 | [Exploration Theory](exploration-theory.md) | How do you investigate an existing system before changing it? | Exploration-First |
 
 ---
 
@@ -91,7 +97,8 @@ LAYER 0: KNOWLEDGE BASE (understand)
 ├── System Boundary Theory    → understand pipeline boundaries
 ├── Measurement Theory        → understand verification
 ├── Failure Theory            → understand failure modes
-└── Constraint Theory         → understand bottleneck identification
+├── Constraint Theory         → understand bottleneck identification
+└── Exploration Theory        → understand structured investigation of existing systems
          │
          ▼
 LAYER 1: SKILLS (apply)
@@ -102,7 +109,8 @@ LAYER 1: SKILLS (apply)
 ├── Boundary-Aware Measurement → apply boundary principle to measurement scoping
 ├── Measurement-Driven Dev    → apply verification to development cycle
 ├── Failure Gates             → apply failure handling to pipeline design
-└── Constraint Gates          → apply bottleneck identification to pipeline boundaries
+├── Constraint Gates          → apply bottleneck identification to pipeline boundaries
+└── Exploration-First         → apply investigation method to existing system modification
          │
          ▼
 LAYER 2: TEMPLATES (implement)
@@ -128,7 +136,8 @@ LAYER 2: TEMPLATES (implement)
 | Set up quality tracking | Measurement Theory |
 | Build a robust system | Failure Theory |
 | Diagnose why fixing a stage doesn't help | Constraint Theory |
-| Apply everything together | Read all eight in order, then the skills |
+| Improve an existing system without regressions | Exploration Theory |
+| Apply everything together | Read all nine in order, then the skills |
 
 ---
 

@@ -6,6 +6,170 @@ Start here when you have a problem, question, or task. Find your symptom, follow
 
 ---
 
+## Quick Triage (30 seconds)
+
+```
+What are you doing?
+│
+├── Don't know what's wrong yet / investigating
+│   └── Category 0: Investigation & Problem Classification (below)
+│
+├── Something is broken (known symptom)
+│   └── Debugging: Something Is Wrong
+│
+├── Building or changing something
+│   └── Building: Adding or Changing Things
+│
+├── Running the system
+│   └── Operations: Running the System
+│
+└── New to the project
+    └── Understanding: New to This Project
+```
+
+---
+
+## Category 0: Investigation & Problem Classification
+
+Use this when you don't know what's wrong yet — or need to classify a problem before deciding how to fix it.
+
+### §0.1 Problem Classification Decision Tree
+
+```
+Start here: What kind of problem is this?
+│
+├── "The system does something, but the LOGIC is wrong"
+│   │  (wrong tier priority, wrong category, wrong decade bounds)
+│   └── THEORY PROBLEM
+│       → Check: Do CLAUDE.md Decision Rules or theory docs define the correct behavior?
+│       → Read: CLAUDE.md §3 Rules, docs/theory/*, exports/knowledge-base/
+│       → Fix: Update the rule/theory doc first, then align code
+│
+├── "The system does something, but the HANDOFF between stages is wrong"
+│   │  (data lost between stages, wrong format, contract violation)
+│   └── ARCHITECTURE PROBLEM
+│       → Check: Do stage contracts match actual data flow?
+│       → Read: docs/architecture/VALIDATION_ARCHITECTURE.md, docs/architecture/RECURSIVE_CURATION_MODEL.md
+│       → Fix: Update the contract, then fix the code
+│
+├── "A REASONING task is in code, or a PRECISION task went to the wrong place"
+│   │  (film title parsed by regex that requires judgment, or vice versa)
+│   └── R/P SPLIT PROBLEM
+│       → Check: Is the task allocation correct per CLAUDE.md Rule 1?
+│       → Read: CLAUDE.md §3 Rule 1, exports/skills/rp-split.md
+│       → Fix: Reassign the task to the correct executor
+│
+└── "The logic and architecture are right, but the CODE doesn't match"
+    │  (bug, missing implementation, wrong regex, bad constant)
+    └── IMPLEMENTATION PROBLEM
+        → Check: Does the code implement what CLAUDE.md / architecture docs specify?
+        → Read: The specific lib/ file + its CLAUDE.md rule
+        → Fix: Fix the code to match the declared contract
+```
+
+**Diagnostic signals:**
+
+| Signal | Likely Classification |
+|---|---|
+| "The output looks plausible but is wrong" | Theory or R/P Split |
+| "Film disappears between stages" | Architecture (handoff) |
+| "It worked before, now it doesn't" | Implementation (regression) |
+| "Metrics pass but classification is bad" | Theory (wrong metrics) |
+| "Works for one film, fails for others" | Architecture (contract too narrow) |
+| "Reason code says X but I expected Y" | Check §0.2 component for that reason code |
+
+### §0.2 Component Lookup Table
+
+| Component | Theory/Rule | Architecture Doc | Code Location | Validation Command | Reason Codes |
+|---|---|---|---|---|---|
+| Parser | CLAUDE.md Rule 1 (PRECISION) | RECURSIVE_CURATION_MODEL.md §1 | `lib/parser.py` | `pytest tests/test_parser.py -v` | `no_year` |
+| Explicit lookup | CLAUDE.md Rule 2 (priority 1) | VALIDATION_ARCHITECTURE.md §1 | `lib/lookup.py` | `pytest tests/test_lookup.py -v` | `explicit_lookup` |
+| Corpus lookup | CLAUDE.md Rule 2 (priority 2) | VALIDATION_ARCHITECTURE.md §3 | `lib/corpus.py` | `pytest tests/test_corpus_lookup.py -v` | `corpus_lookup` |
+| Reference canon | CLAUDE.md Rule 2 (priority 3) | RECURSIVE_CURATION_MODEL.md §3 | `lib/constants.py REFERENCE_CANON` | `pytest tests/ -k reference` | `reference_canon` |
+| Satellite routing | CLAUDE.md Rule 2 (priority 4) | RECURSIVE_CURATION_MODEL.md §4 | `lib/satellite.py` | `pytest tests/test_satellite.py -v` | `satellite_*` |
+| Core director | CLAUDE.md Rule 2 (priority 6) | RECURSIVE_CURATION_MODEL.md §3 | `lib/constants.py CORE_DIRECTORS` | `pytest tests/ -k core` | `core_director` |
+| Popcorn check | CLAUDE.md Rule 2 (priority 7) | RECURSIVE_CURATION_MODEL.md §6 | `classify.py _popcorn_check()` | `pytest tests/ -k popcorn` | `popcorn_*` |
+| API enrichment | CLAUDE.md §4 Dual-Source | VALIDATION_ARCHITECTURE.md §2 | `lib/tmdb.py`, `lib/omdb.py` | `python scripts/validate_handoffs.py` | (enrichment, not routing) |
+| Evidence trails | CLAUDE.md Rule 7 | VALIDATION_ARCHITECTURE.md §2 | `lib/constants.py GateResult` | `pytest tests/test_evidence_trails.py -v` | (diagnostic only) |
+
+### §0.3 Theory Check
+
+When classification points to a theory problem:
+
+1. Identify which CLAUDE.md Rule or theory doc governs this behavior
+2. Read the relevant section — does it define the correct behavior?
+3. If yes → the code drifted from the theory. Fix code to match.
+4. If no → the theory needs updating. Update theory first, then code.
+5. Check: is the theory grounded in scholarship? (Domain Grounding — CLAUDE.md Rule 4)
+
+### §0.4 Architecture Check
+
+When classification points to an architecture problem:
+
+1. Find the relevant stage in `docs/architecture/RECURSIVE_CURATION_MODEL.md`
+2. Verify: does the upstream stage output what the contract says?
+3. Verify: does the downstream stage read what the contract says?
+4. Run `python scripts/validate_handoffs.py` — checks all stage boundaries
+5. If mismatch → fix the stage that violates the contract
+
+### §0.5 Data Flow Trace
+
+When you need to understand how a film moves through the pipeline:
+
+1. Start at the stage where the problem is visible (check `reason` code)
+2. Trace backward: what does this stage consume? From where?
+3. Trace forward: what does this stage produce? Who consumes it?
+4. Document: reads / produces / ignores (the "ignores" dimension reveals drift)
+5. This is a PRECISION task — observe the code deterministically, don't interpret yet
+
+Key pipeline flow:
+```
+filename → Parser → [explicit_lookup → corpus_lookup → reference → satellite → user_tag → core → popcorn] → Unsorted
+                                                                ↑
+                                              API enrichment feeds satellite/popcorn
+```
+
+### §0.6 Drift Audit
+
+When a component hasn't been updated in a while, or a new upstream stage was added:
+
+1. Identify the component + the issue/commit it was designed for
+2. Map what it reads, produces, and ignores (§0.5)
+3. Check: did any upstream stages add data since this component was designed?
+4. Check: does the component consume that new data, or ignore it?
+5. If ignoring new upstream data → likely highest-leverage fix
+
+Common drift patterns in this project:
+- New API field added (e.g. keywords) but satellite routing doesn't check it
+- New corpus added but reaudit script doesn't check that category
+- SORTING_DATABASE entry format changed but lookup parser still uses old format
+
+### §0.7 Investigation → Spec Workflow
+
+Once investigation is complete, convert findings to an actionable spec:
+
+```
+Investigation complete
+    ↓
+1. Classify the problem (§0.1)
+    ↓
+2. Trace to root cause using appropriate check (§0.3–§0.6)
+    ↓
+3. Write Issue Spec using docs/ISSUE_SPEC_TEMPLATE.md
+   - §1 Manager Summary from your investigation findings
+   - §3 Root Cause from your trace (specific file + function)
+   - §4 Affected Handoffs from your data flow trace
+   - §7 Measurement Story from your reaudit baseline
+    ↓
+4. Validate spec completeness using Section Checklist
+    ↓
+5. Pin baseline: git tag pre-issue-NNN && python scripts/reaudit.py
+    ↓
+6. Begin implementation
+```
+
+---
+
 ## Debugging: Something Is Wrong
 
 ### "A film was classified to the wrong tier"
@@ -65,6 +229,18 @@ Start here when you have a problem, question, or task. Find your symptom, follow
 
 → See: `docs/DEBUG_RUNBOOK.md` Symptom #6
 
+### "Writing a fix spec before implementing"
+
+After diagnosing a problem, write an issue spec before touching code:
+
+1. Use `docs/ISSUE_SPEC_TEMPLATE.md` — all 10 sections are mandatory
+2. Pay special attention to §4 (Affected Handoffs) — list every downstream consumer
+3. §5 Execution Order — numbered steps with verify commands for each
+4. §7 Measurement Story — pin `python scripts/reaudit.py` baseline before starting
+5. Run Section Checklist at the bottom before handing to implementer
+
+→ See: `docs/ISSUE_SPEC_TEMPLATE.md`, `docs/WORK_ROUTER.md` §0.7
+
 ---
 
 ## Building: Adding or Changing Things
@@ -97,6 +273,33 @@ Start here when you have a problem, question, or task. Find your symptom, follow
 4. No code changes needed — the lookup parser reads the file dynamically
 
 → See: `docs/SORTING_DATABASE.md`
+
+### "Add a film to a ground truth corpus"
+
+1. Identify the Satellite category and find published scholarship that includes this film
+2. Run `python scripts/build_corpus.py --add "Title" YEAR --category "Category Name"`
+3. Provide canonical_tier (1=core canon, 2=reference, 3=texture), source citation, notes
+4. Validate: `python scripts/reaudit.py --corpus`
+
+→ See: `docs/architecture/VALIDATION_ARCHITECTURE.md` §3 and §6
+
+### "Audit a category against scholarship"
+
+1. Run `python scripts/build_corpus.py --audit "Category Name"`
+2. Review HARD anomalies (structural gate violations — likely misrouted)
+3. Review SOFT flags (director not in list — may be fine)
+4. For confirmed films, add to corpus with citations
+
+→ See: `docs/architecture/VALIDATION_ARCHITECTURE.md` §3
+
+### "Corpus says a film is in the wrong category"
+
+1. Run `python scripts/reaudit.py --corpus`
+2. Check `output/corpus_check_report.csv` for `corpus_mismatch` entries
+3. If the film is wrong: move it to the correct category (or add SORTING_DATABASE pin)
+4. If the corpus entry is wrong: update `data/corpora/{category}.csv` with corrected data
+
+→ See: `docs/architecture/VALIDATION_ARCHITECTURE.md` §3, `docs/DEBUG_RUNBOOK.md` Symptom #9
 
 ### "Add a film to the Reference canon"
 

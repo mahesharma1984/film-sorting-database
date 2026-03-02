@@ -40,7 +40,18 @@ Before any code change, read:
 
 **For task-specific routing:** Use [`docs/WORK_ROUTER.md`](docs/WORK_ROUTER.md) for symptom-based routing to specific documentation sections.
 
+**For investigation (don't know what's wrong yet):** Use [`docs/WORK_ROUTER.md`](docs/WORK_ROUTER.md) § Category 0 — classification decision tree, component lookup table, theory/architecture/data-flow checks.
+
 **For comprehensive index:** See [`docs/CORE_DOCUMENTATION_INDEX.md`](docs/CORE_DOCUMENTATION_INDEX.md) for Q&A-style quick reference.
+
+## Issue Specification Protocol
+
+When creating issue specs for implementation:
+
+1. **Use the mandatory template:** `docs/ISSUE_SPEC_TEMPLATE.md`
+2. **All 10 sections are required** — especially §4 (Affected Handoffs) and §8 (Validation Sequence)
+3. **Three document types:** Issue Spec (before), Session Handoff (between sessions), Completion Report (after)
+4. **Route:** See `docs/WORK_ROUTER.md` § Category 0 → §0.7 for the investigation-to-spec workflow
 
 <!--
   Optional: Add RAG semantic search if your docs exceed ~15 files.

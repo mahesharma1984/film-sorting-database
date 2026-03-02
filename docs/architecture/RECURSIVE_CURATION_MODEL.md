@@ -127,12 +127,13 @@ This allows each tier to be a separate Plex library: Core = complete auteur film
 The classification pipeline checks tiers in a specific priority order:
 
 1. **Explicit lookup** (SORTING_DATABASE.md) — human-curated, highest trust
-2. **Reference canon** — 50-film hardcoded list
-3. **Satellite routing** — country + decade + genre + director + keyword rules
-4. **User tag recovery** — trust previous human classification
-5. **Core director check** — whitelist match
-6. **Popcorn check** — popularity + format signals
-7. **Default** → Unsorted with reason code
+2. **Corpus lookup** (data/corpora/*.csv) — scholarship-sourced, confidence 1.0 (Issue #38)
+3. **Reference canon** — 50-film hardcoded list
+4. **Satellite routing** — country + decade + genre + director + keyword rules
+5. **User tag recovery** — trust previous human classification
+6. **Core director check** — whitelist match
+7. **Popcorn check** — popularity + format signals
+8. **Default** → Unsorted with reason code
 
 This order is a philosophical statement: **character determines tier, not director prestige alone**. A Godard film in his French New Wave period routes to Satellite/FNW. A Godard film from his post-movement period routes to Core. The decade gate does the heavy lifting.
 
@@ -208,12 +209,15 @@ Not all categories are equally automatable. A category with 4 independent corrob
 
 | Tier | Categories | Independent Gates | Auto-classify? |
 |------|-----------|-------------------|---------------|
+| **0** | Any category with a ground truth corpus | Scholarship-sourced external validation | Yes, confidence 1.0 (Issue #38) |
 | **1** | Giallo, Brazilian Exploitation, HK Action, Pinku Eiga, American Exploitation, European Sexploitation, Blaxploitation | country + genre + decade + directors (4) | Yes, confidence 0.7-0.8 |
 | **2** | Classic Hollywood, French New Wave, American New Hollywood | director/country + decade + keywords (3) | Yes, confidence 0.6-0.7 |
 | **3** | Music Films, Indie Cinema | genre/country + decade (2, negative-space) | Review-flagged, confidence 0.4-0.5 |
 | **4** | Japanese Exploitation, Cult Oddities | Manual only | No auto-classification |
 
-**Counting gates:** Country, genre, decade, and director are independent gates (each from independent data sources). Keywords are corroborating — they strengthen a match but do not count as a separate gate. Negative-space definitions receive a one-tier penalty because they catch whatever failed upstream checks.
+**Tier 0 (corpus):** A film matched by `lib/corpus.py` against a scholarship-sourced corpus (e.g., `data/corpora/giallo.csv`) is classified with confidence 1.0 at Stage 2.5 — before any heuristic gate fires. Corpus entries cite published film scholarship, not the system's own classifications. See `docs/architecture/VALIDATION_ARCHITECTURE.md` §3.
+
+**Counting gates (Tiers 1-4):** Country, genre, decade, and director are independent gates (each from independent data sources). Keywords are corroborating — they strengthen a match but do not count as a separate gate. Negative-space definitions receive a one-tier penalty because they catch whatever failed upstream checks.
 
 ### The Inverse Gate Rule
 
@@ -238,8 +242,8 @@ This prevents the failure mode that created the current dysfunction: defining 17
 
 ### The Anchor-Then-Expand Pattern
 
-1. **Establish anchors** — explicit lookups (SORTING_DATABASE, ~334 entries) + Reference canon (50 films) + SATELLITE_TENTPOLES = the known-good population
-2. **High-certainty routing** — Tier 1-2 categories auto-classify. These newly classified films expand the anchor population per category.
+1. **Establish anchors** — explicit lookups (SORTING_DATABASE, ~334 entries) + ground truth corpora (data/corpora/*.csv) + Reference canon (50 films) + SATELLITE_TENTPOLES = the known-good population
+2. **High-certainty routing** — Tier 0 (corpus) and Tier 1-2 categories auto-classify. These newly classified films expand the anchor population per category.
 3. **Fuzzy expansion (gated)** — for R2 films that do not match any rule, compare against established anchors. A film with partial Italian metadata from the 1970s near known Giallo tentpoles → SUGGEST for review queue, never auto-classify.
 
 *Deep-dive: [certainty-first.md](../../exports/skills/certainty-first.md) (Skill 11 — full framework).*
@@ -270,15 +274,16 @@ The same criteria that define global Core status apply within a category:
 
 ### Tentpole Ranking
 
-The `rank_category_tentpoles.py` script scores films across 6 dimensions (0-10):
+The `rank_category_tentpoles.py` script scores films across 7 dimensions (0-13):
 - Director tier within category
 - Keyword alignment with category vocabulary
 - Canonical recognition (awards, critical lists)
 - Text signal match (overview/plot proximity to category themes)
 - External validation (Wikipedia, scholarly mentions)
 - Collection depth (how many films by this director in this category)
+- **Canonical tier** (Issue #38) — scholarship-confirmed exemplar status from ground truth corpus (0-3 points: tier 1 = 3 pts, tier 2 = 2 pts, tier 3 = 1 pt, not in corpus = 0 pts)
 
-Films scoring highest become Category Core tentpoles. These anchor the category's identity and serve as reference points for fuzzy expansion (§5).
+Films scoring highest become Category Core tentpoles. These anchor the category's identity and serve as reference points for fuzzy expansion (§5). For categories with a ground truth corpus, canonical_tier provides the strongest signal — scholarship-confirmed exemplars rank above films known only from collection heuristics.
 
 **Critical dependency:** Tentpole ranking assumes clean categories. If American Exploitation contains Dead Poets Society, the ranking scores a film that does not belong. The curation loop (§7) must clean categories BEFORE ranking fires.
 
@@ -524,10 +529,11 @@ Route films into categories using available data.
 | Parse filename | lib/parser.py | R0 hard gate: no year → stop |
 | API enrichment | lib/tmdb.py, lib/omdb.py | R1 gate: no data → skip routing |
 | Explicit lookup | lib/lookup.py | Highest trust |
+| Corpus lookup | lib/corpus.py | Scholarship-sourced, confidence 1.0 (Issue #38) |
 | Heuristic routing | lib/satellite.py, lib/core_directors.py | Certainty-tier-aware confidence |
 | Output | sorting_manifest.csv + review_queue.csv | Confidence threshold gates manifest vs review |
 
-**Tooling:** `classify.py` (data readiness assessment, certainty-tier confidence, R1 early exit, review queue output), `move.py`, `lib/enrichment.py` (manual enrichment integration).
+**Tooling:** `classify.py` (data readiness assessment, certainty-tier confidence, R1 early exit, review queue output), `move.py`, `lib/enrichment.py` (manual enrichment integration), `lib/corpus.py` (ground truth corpus lookup).
 
 ### Stage 3: Refine
 
@@ -536,13 +542,16 @@ Compare each film's current placement against current routing rules. Flag discre
 | Input | Tool | Output |
 |-------|------|--------|
 | library_audit.csv | scripts/reaudit.py | reaudit_report.csv (discrepancies) |
+| library_audit.csv + corpora | scripts/reaudit.py --corpus | corpus_check_report.csv (external standard) |
 | review_queue.csv | Curator triage | curation_decisions.csv |
 
 **Curator actions:** Accept (confirm placement), Override (stage SORTING_DATABASE entry), Enrich (provide missing data), Defer (park for next cycle).
 
 **Gate:** reaudit.py requires fresh library_audit.csv (mtime check). Ranking (Stage 4) should not fire on stale audit data.
 
-**Tooling:** `scripts/reaudit.py` (diagnostic), `scripts/curate.py` (execution — reads `output/curation_decisions.csv`, executes accept/override/enrich/defer).
+**Corpus validation (Issue #38):** `reaudit.py --corpus` cross-references organised films against ground truth corpora. Produces three verdicts: `corpus_confirmed` (correct), `corpus_mismatch` (real misclassification), `corpus_unconfirmed` (no external data). See `VALIDATION_ARCHITECTURE.md` §3.
+
+**Tooling:** `scripts/reaudit.py` (diagnostic + corpus validation), `scripts/curate.py` (execution — reads `output/curation_decisions.csv`, executes accept/override/enrich/defer).
 
 ### Stage 4: Retain and Discard
 
@@ -647,10 +656,14 @@ Studio trailers (United Artists, Warner Brothers, 20th Century Fox) and compilat
 
 - `CLAUDE.md` §3 Rules 1-12 — operational summaries of all skills
 - `exports/skills/` — full skill framework documents
+- `docs/architecture/VALIDATION_ARCHITECTURE.md` — evidence trails, ground truth corpora, accuracy measurement (consolidates evidence + accuracy + corpus)
 - `docs/SATELLITE_CATEGORIES.md` — per-category specifications
 - `docs/CORE_DIRECTOR_WHITELIST_FINAL.md` — Core director list
 - `docs/SORTING_DATABASE.md` — human-curated overrides
+- `data/corpora/*.csv` — scholarship-sourced ground truth per Satellite category (Issue #38)
 - `lib/constants.py` — SATELLITE_ROUTING_RULES, SATELLITE_TENTPOLES, REFERENCE_CANON
+- `lib/corpus.py` — CorpusLookup (dual index: IMDb ID + normalized title+year)
 - Issue #30 — Phase 2: Structural architecture (largely complete — data readiness, confidence gating, review queue, manual enrichment, curation tool all implemented)
 - Issue #31 — Phase 3: Tactical wiring (partially complete — R1 early exit and confidence thresholds implemented; handoff gate wiring and category scale-back pending)
 - Issue #33 — Unsorted Protocol: non-film filtering, routing bug fixes, cache recovery, review queue population, reduction cycle automation
+- Issue #38 — Layer 1 ground truth corpora: taxonomy-first architecture, corpus lookup, anomaly detection

@@ -43,10 +43,11 @@ Layer 3: RAG VERIFICATION (verify)
 
 1. **Read** the [`knowledge-base/`](knowledge-base/) — understand the theory (1-2 hours)
 2. **Read** [`BOOTSTRAP.md`](BOOTSTRAP.md) — step-by-step setup guide
-3. **Pick skills** from [`skills/`](skills/) based on your project type
-4. **Copy templates** from [`templates/`](templates/) into your `docs/` directory
-5. **Customize** the CLAUDE.md template with your project specifics
-6. **Add RAG** from [`rag/`](rag/) when your docs grow beyond ~15 files (optional)
+3. **Set up issue spec workflow** — copy [`ISSUE_SPEC_TEMPLATE.md`](templates/ISSUE_SPEC_TEMPLATE.md) into your docs
+4. **Pick skills** from [`skills/`](skills/) based on your project type
+5. **Copy templates** from [`templates/`](templates/) into your `docs/` directory
+6. **Customize** the CLAUDE.md template with your project specifics
+7. **Add RAG** from [`rag/`](rag/) when your docs grow beyond ~15 files (optional)
 
 ## Directory Structure
 
@@ -63,7 +64,8 @@ exports/
 │   ├── system-boundary-theory.md  # Why multi-stage systems need explicit boundaries
 │   ├── measurement-theory.md      # How to know if something works
 │   ├── failure-theory.md          # How systems break silently
-│   └── constraint-theory.md       # How to find the real bottleneck
+│   ├── constraint-theory.md       # How to find the real bottleneck
+│   └── exploration-theory.md      # How to investigate before changing
 ├── skills/                    # Layer 1: Composable methodology modules
 │   ├── README.md              # Skills overview and composition guide
 │   ├── rp-split.md                # Reasoning/Precision task allocation
@@ -73,11 +75,13 @@ exports/
 │   ├── measurement-driven.md      # Depth/breadth quality cycles
 │   ├── failure-gates.md           # Hard vs soft failure semantics
 │   ├── constraint-gates.md        # TOC/Kanban bottleneck identification
-│   └── prototype-building.md      # Exploration → execution stages
+│   ├── prototype-building.md      # Exploration → execution stages
+│   └── exploration-first.md       # Map → audit → probe → build for existing systems
 ├── templates/                 # Layer 2: Documentation structure templates
 │   ├── CLAUDE.md.template     # AI assistant project instructions
 │   ├── CORE_DOCS_INDEX.md     # Documentation index template
-│   ├── WORK_ROUTER.md         # Symptom-based navigation template
+│   ├── WORK_ROUTER.md         # Symptom-based navigation (includes Category 0)
+│   ├── ISSUE_SPEC_TEMPLATE.md # Issue specification standard (10-section mandatory template)
 │   ├── DEBUG_RUNBOOK.md       # Diagnosis → action mapping template
 │   ├── WORKFLOW_REGISTRY.md   # Atomic + composed workflows template
 │   ├── DEVELOPER_GUIDE.md     # Change management guide template
@@ -113,6 +117,7 @@ Each knowledge base document provides the theory that underlies a specific skill
 | [Measurement Theory](knowledge-base/measurement-theory.md) | [Measurement-Driven Dev](skills/measurement-driven.md) |
 | [Failure Theory](knowledge-base/failure-theory.md) | [Failure Gates](skills/failure-gates.md) |
 | [Constraint Theory](knowledge-base/constraint-theory.md) | [Constraint Gates](skills/constraint-gates.md) |
+| [Exploration Theory](knowledge-base/exploration-theory.md) | [Exploration-First](skills/exploration-first.md) |
 
 ## Project Types and Recommended Skills
 
@@ -123,7 +128,8 @@ Each knowledge base document provides the theory that underlies a specific skill
 | Domain-specific classification system | Domain Grounding + Causality + Measurement | Domain Grounding + Pattern-First + Measurement-Driven |
 | Multi-stage system with expensive stages | System Boundary + Constraint + Measurement | Boundary-Aware Measurement + Constraint Gates + Measurement-Driven |
 | Any project with Claude Code | LLM Capability + Task Design | R/P Split + Prototype Building |
-| Complex multi-stage system | All eight theory docs | All eight skills |
+| Maintaining/improving existing systems | Exploration + Causality + Measurement | Exploration-First + Constraint Gates + Measurement-Driven |
+| Complex multi-stage system | All nine theory docs | All nine skills |
 
 ## Positioning
 

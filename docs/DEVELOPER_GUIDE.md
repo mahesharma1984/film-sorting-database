@@ -27,12 +27,14 @@ Key dependency chains:
 ```
 normalizer.py → normalize.py (FilenameNormalizer — pure PRECISION, Issue #18)
 normalize.py → classify.py (cleaned filenames via rename_manifest.csv)
-parser.py → classify.py (FilmMetadata)
+parser.py → classify.py (FilmMetadata, including imdb_id extraction)
 constants.py → parser.py, normalization.py, classify.py (FORMAT_SIGNALS, RELEASE_TAGS, etc.)
-normalization.py → lookup.py, classify.py (normalize_for_lookup — for LOOKUP symmetry)
+normalization.py → lookup.py, corpus.py, classify.py (normalize_for_lookup — for LOOKUP symmetry)
 lookup.py → classify.py (SORTING_DATABASE lookups)
+corpus.py → classify.py (ground truth corpus lookups — Issue #38)
 core_directors.py → classify.py (whitelist checks)
 classify.py → move.py (sorting_manifest.csv)
+data/corpora/*.csv → corpus.py (scholarship-sourced per-category ground truth)
 ```
 
 Note: `lib/normalizer.py` (filename cleaning) is separate from `lib/normalization.py`
@@ -158,6 +160,32 @@ As of Issue #6, ALL Satellite routing uses the `SATELLITE_ROUTING_RULES` structu
 
 6. **Verify classification:** Run classifier on films by this director and check manifest
 
+### Adding Ground Truth Corpus Entries
+
+Ground truth corpora provide scholarship-sourced external validation for Satellite categories. See `docs/architecture/VALIDATION_ARCHITECTURE.md` §3 and §6 for the full spec.
+
+1. **Audit the category first:**
+   ```bash
+   python scripts/build_corpus.py --audit "Category Name"
+   ```
+   This shows HARD anomalies (structural gate violations), SOFT flags (director not in list), and films already in the corpus.
+
+2. **Add entries with scholarly citations:**
+   ```bash
+   python scripts/build_corpus.py --add "Film Title" 1975 --category "Category Name"
+   ```
+   Interactive: prompts for canonical_tier (1=core canon, 2=reference, 3=texture), source citation, notes.
+
+3. **Validate:**
+   ```bash
+   python scripts/reaudit.py --corpus
+   ```
+   Check `output/corpus_check_report.csv` for corpus_confirmed/mismatch/unconfirmed verdicts.
+
+**Citation standard:** Every entry must cite published film scholarship (monograph, academic article, or authoritative filmography). Blog posts and user-generated lists are not acceptable.
+
+**Schema:** `data/corpora/{category-slug}.csv` — fields: title, year, imdb_id, director, country, canonical_tier, source, notes.
+
 ### Folder Structure: Category-First
 
 Since Issue #6, Satellite uses **category-first** organization:
@@ -255,8 +283,9 @@ When code changes require doc updates:
 2. **New satellite category** → Update `docs/SATELLITE_CATEGORIES.md` + `lib/constants.py`
 3. **New Core director** → Update `docs/CORE_DIRECTOR_WHITELIST_FINAL.md`
 4. **New known film** → Edit `docs/SORTING_DATABASE.md` (human only)
-5. **Bug fix** → Update relevant `issues/` file or create new one
-6. **Workflow change** → Update `docs/DEVELOPER_GUIDE.md` or `CLAUDE.md`
+5. **New corpus entry** → `python scripts/build_corpus.py --add` (with scholarly citation)
+6. **Bug fix** → Update relevant `issues/` file or create new one
+7. **Workflow change** → Update `docs/DEVELOPER_GUIDE.md` or `CLAUDE.md`
 
 **Critical rule:** Update docs in the same commit as code changes. Stale docs are worse than no docs.
 

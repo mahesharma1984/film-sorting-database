@@ -24,11 +24,14 @@ Primary skills: Prototype Building (Rule 8), Pattern-First (Rule 2), R/P Split (
 
 ### Debug / Regression Mode
 Read first:
+- `docs/WORK_ROUTER.md` §0 — classify the problem before debugging (don't know what's wrong? start here)
 - `docs/DEBUG_RUNBOOK.md` — symptom → diagnosis → fix
 - `issues/` — past bugs and their root causes
-- `docs/WORK_ROUTER.md` — route symptoms to the right doc
+- `docs/architecture/VALIDATION_ARCHITECTURE.md` — evidence trails, corpus validation, accuracy measurement
 
-Primary skills: Constraint Gates (Rule 5), Failure Gates (Rule 3), Measurement-Driven (Rule 7), Boundary-Aware Measurement (Rule 6)
+Primary skills: Exploration-First (`exports/skills/exploration-first.md`), Constraint Gates (Rule 5), Failure Gates (Rule 3), Measurement-Driven (Rule 7), Boundary-Aware Measurement (Rule 6)
+
+**Issue Spec Protocol:** Before implementing any non-trivial fix, write a spec using `docs/ISSUE_SPEC_TEMPLATE.md`. All 10 sections mandatory. See `docs/WORK_ROUTER.md` §0.7 for the investigation→spec workflow.
 
 ### Discovery / Curatorial Mode
 Use when exploring new categories, auditing director lists, or making taxonomy decisions.
@@ -59,6 +62,7 @@ Every operation is either REASONING or PRECISION. Never mix them in one step.
 | Parse filename → title, year, director | PRECISION | Code (regex) |
 | Normalize title for lookup | PRECISION | Code (`normalize_for_lookup()`) |
 | Look up known film in SORTING_DATABASE.md | PRECISION | Code (lookup table) |
+| Look up film in ground truth corpus | PRECISION | Code (corpus dual-index lookup) |
 | Check Core director whitelist | REASONING (structured rules) | Code (whitelist match) |
 | Check Reference canon | REASONING (structured rules) | Code (canon list match) |
 | Classify satellite category | REASONING (structured rules) | Code (country + decade rules) |
@@ -79,14 +83,15 @@ Reference (canon) → Satellite (movement match) → Core (prestige non-movement
 
 This priority order is a design decision, not an implementation detail. The classifier checks tiers in this order — first match wins. Never reorder without explicit redesign.
 
-The classification pipeline checks in this priority (Issue #25):
+The classification pipeline checks in this priority (Issue #25, updated Issue #38):
 1. Explicit lookup (SORTING_DATABASE.md) — human-curated, highest trust
-2. Reference canon check — 50-film hardcoded list
-3. Satellite routing — country + decade + director rules (decade-bounded, movement-first)
-4. User tag recovery — trust previous human classification (after Satellite, so stale Core tags don't block movement routing)
-5. Core director check — whitelist match (fallback for non-movement prestige work)
-6. Popcorn check — popularity + format signals
-7. Default → Unsorted with reason code
+2. Corpus lookup (data/corpora/*.csv) — scholarship-sourced, confidence 1.0 (Issue #38)
+3. Reference canon check — 50-film hardcoded list
+4. Satellite routing — country + decade + director rules (decade-bounded, movement-first)
+5. User tag recovery — trust previous human classification (after Satellite, so stale Core tags don't block movement routing)
+6. Core director check — whitelist match (fallback for non-movement prestige work)
+7. Popcorn check — popularity + format signals
+8. Default → Unsorted with reason code
 
 ### Rule 3: Failure Gates
 

@@ -27,6 +27,7 @@
 | 6 | Move script too slow | Check if source/dest on same filesystem (`os.stat().st_dev`) | Using byte copy instead of rename on same filesystem | Verify same-FS detection in move.py |
 | 7 | Satellite cap exceeded | Count per-category in manifest | Too many films routing to one satellite category | Review decade bounds, tighten routing rules, or add films to SORTING_DATABASE.md |
 | 8 | Manifest CSV has broken columns | Open in text editor, check quoting | Commas or quotes in filenames breaking CSV | Verify `csv.DictWriter` with proper `quoting=csv.QUOTE_ALL` |
+| 9 | Corpus mismatch — film in wrong category per scholarship | `reaudit.py --corpus` → check corpus_check_report.csv | Film physically in category X but corpus says category Y | Either move film to correct category, or review corpus entry if citation is wrong |
 
 ---
 

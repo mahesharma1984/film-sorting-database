@@ -19,7 +19,7 @@ For deep-dives into specific topics, read in this sequence:
 3. **[MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md)** — Why the archive contains exploitation cinema. Satellite as context for Core.
 4. **[REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md)** — How categories are built: the recursive refinement process, when a sub-category earns its name, and how new categories are applied retroactively.
 5. **[SATELLITE_DEPTH.md](SATELLITE_DEPTH.md)** — Applying Core/Reference logic within Satellite categories: vetting strategy, within-category masters, and the seeking programme that emerges from recognising them.
-6. **[THEORETICAL_GROUNDING.md](THEORETICAL_GROUNDING.md)** — Scholarly foundations for the system-level frameworks. §1-§7: recursive curation (Deming, Settles), data readiness (Wang & Strong, signal detection theory), certainty tiers (Bayesian reasoning), curation loop (Amershi et al., Hooper-Greenhill), country deepening (Higson, Hjort & Mackenzie). §8-§12: evidence architecture foundations — double-loop learning (Argyris), evidence under uncertainty (Dempster-Shafer), collective classification (stigmergy), shared workspace (blackboard architecture), requisite variety (Ashby). §8-§12 ground the architecture document [EVIDENCE_ARCHITECTURE.md](../architecture/EVIDENCE_ARCHITECTURE.md).
+6. **[THEORETICAL_GROUNDING.md](THEORETICAL_GROUNDING.md)** — Scholarly foundations for the system-level frameworks. §1-§7: recursive curation (Deming, Settles), data readiness (Wang & Strong, signal detection theory), certainty tiers (Bayesian reasoning), curation loop (Amershi et al., Hooper-Greenhill), country deepening (Higson, Hjort & Mackenzie). §8-§12: evidence architecture foundations — double-loop learning (Argyris), evidence under uncertainty (Dempster-Shafer), collective classification (stigmergy), shared workspace (blackboard architecture), requisite variety (Ashby). §8-§12 ground the validation architecture document [VALIDATION_ARCHITECTURE.md](../architecture/VALIDATION_ARCHITECTURE.md).
 
 ---
 
@@ -28,6 +28,7 @@ For deep-dives into specific topics, read in this sequence:
 ```
 docs/architecture/
   RECURSIVE_CURATION_MODEL (HOW — unified system architecture)
+  VALIDATION_ARCHITECTURE  (HOW — evidence trails, ground truth corpora, accuracy measurement)
 
 docs/theory/  (this directory)
   COLLECTION_THESIS (WHY — identity + decades + format)
@@ -38,7 +39,7 @@ docs/theory/  (this directory)
                 └── SATELLITE_DEPTH (outward splitting ↔ inward deepening)
   THEORETICAL_GROUNDING (WHY — scholarly foundations for architecture frameworks)
     └── grounds: data readiness, certainty tiers, curation loop, country deepening,
-                 evidence architecture (§8-§12), feedback loops, requisite variety
+                 validation architecture (§8-§12), feedback loops, requisite variety
 ```
 
 The architecture doc describes **how the system works**. The theory essays describe **why it works this way** — grounded in film-historical scholarship, auteur theory, and curatorial practice.

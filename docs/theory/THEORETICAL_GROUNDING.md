@@ -166,7 +166,7 @@ Higson's distinction between inward-looking and outward-looking national cinema 
 
 ## 8. Double-Loop Learning
 
-**Architecture claim:** The system should question its governing variables when failure patterns recur, not just correct individual instances (EVIDENCE_ARCHITECTURE.md §1).
+**Architecture claim:** The system should question its governing variables when failure patterns recur, not just correct individual instances (VALIDATION_ARCHITECTURE.md §1).
 
 ### Grounding: Argyris and Organisational Learning
 
@@ -188,7 +188,7 @@ Double-loop learning requires the system to *capture evidence about its own fail
 
 ## 9. Evidence Under Uncertainty
 
-**Architecture claim:** Binary gates (pass/fail) destroy information by conflating negative evidence with absent evidence. Evidence-preserving gates would retain what was tested, what matched, and what could not be evaluated (EVIDENCE_ARCHITECTURE.md §2).
+**Architecture claim:** Binary gates (pass/fail) destroy information by conflating negative evidence with absent evidence. Evidence-preserving gates would retain what was tested, what matched, and what could not be evaluated (VALIDATION_ARCHITECTURE.md §2).
 
 ### Grounding: Dempster-Shafer Evidence Theory
 
@@ -211,7 +211,7 @@ This extends §5 (Certainty Tiers): Bayesian evidence combination described ther
 
 ## 10. Collective Classification and Stigmergy
 
-**Architecture claim:** Films should not be classified in isolation. The accumulated results of previous classifications in a run constitute collective evidence that should inform ambiguous cases (EVIDENCE_ARCHITECTURE.md §2).
+**Architecture claim:** Films should not be classified in isolation. The accumulated results of previous classifications in a run constitute collective evidence that should inform ambiguous cases (VALIDATION_ARCHITECTURE.md §2).
 
 ### Grounding: Stigmergy (Grasse, 1959; Theraulaz and Bonabeau, 1999)
 
@@ -227,7 +227,7 @@ Stigmergy predicts that classification quality should improve with corpus size �
 
 ## 11. Shared Workspace vs Pipeline
 
-**Architecture claim:** The pipeline's sequential stage architecture prevents stages from seeing each other's evidence. A shared workspace would allow each stage to read the full accumulated context (EVIDENCE_ARCHITECTURE.md §2-3).
+**Architecture claim:** The pipeline's sequential stage architecture prevents stages from seeing each other's evidence. A shared workspace would allow each stage to read the full accumulated context (VALIDATION_ARCHITECTURE.md §2-3).
 
 ### Grounding: Blackboard Architecture (Erman et al., 1980)
 
@@ -245,7 +245,7 @@ The blackboard literature identifies **opportunistic problem-solving**: the most
 
 ## 12. Requisite Variety
 
-**Architecture claim:** The pipeline's response vocabulary (`unsorted_no_match`) is too impoverished to distinguish failure modes that require different remediation actions (EVIDENCE_ARCHITECTURE.md §3).
+**Architecture claim:** The pipeline's response vocabulary (`unsorted_no_match`) is too impoverished to distinguish failure modes that require different remediation actions (VALIDATION_ARCHITECTURE.md §3).
 
 ### Grounding: Ashby's Law of Requisite Variety (1956)
 
@@ -327,4 +327,4 @@ Theraulaz, G. & Bonabeau, E. (1999). A Brief History of Stigmergy. *Artificial L
 
 Wang, R.Y. & Strong, D.M. (1996). Beyond Accuracy: What Data Quality Means to Data Consumers. *Journal of Management Information Systems*, 12(4), 5-33.
 
-*§8-§12 ground the evidence architecture described in [EVIDENCE_ARCHITECTURE.md](../architecture/EVIDENCE_ARCHITECTURE.md).*
+*§8-§12 ground the validation architecture described in [VALIDATION_ARCHITECTURE.md](../architecture/VALIDATION_ARCHITECTURE.md).*

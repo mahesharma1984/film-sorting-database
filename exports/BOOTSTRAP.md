@@ -47,9 +47,10 @@ Not every project needs every skill. Choose based on your project type:
 | Has cheap + expensive stages | **Boundary-Aware Measurement** + **Constraint Gates** |
 | Needs quality tracking over time | **Measurement-Driven** |
 | Is new/unfamiliar territory | **Prototype Building** |
-| Is a complex system | All eight |
+| Has existing systems that evolve over time | **Exploration-First** + **Constraint Gates** |
+| Is a complex system | All nine |
 
-**Recommendation:** Start with **R/P Split** and **Prototype Building** — they provide the highest value with the lowest setup cost.
+**Recommendation:** Start with **R/P Split** and **Prototype Building** — they provide the highest value with the lowest setup cost. Add **Exploration-First** once your system has multiple components that evolve independently.
 
 ---
 
@@ -101,9 +102,52 @@ touch docs/CHANGELOG.md
 
 ---
 
-## Step 3: Add Skills to CLAUDE.md (10 minutes)
+## Step 3: Set Up Issue Spec Workflow (10 minutes)
+
+The Issue Spec Template bridges investigation and implementation. It ensures every change has a complete specification before code is touched.
+
+### Copy the template:
+
+```bash
+cp exports/templates/ISSUE_SPEC_TEMPLATE.md ./docs/ISSUE_SPEC_TEMPLATE.md
+```
+
+### Customize for your project:
+
+1. Replace `[YOUR MEASUREMENT COMMAND]` with your actual measurement command
+2. Replace `[YOUR TEST COMMAND]` with your actual test command
+3. Replace `[YOUR VALIDATION COMMAND]` with your handoff/boundary validation command (if applicable)
+4. Replace `[YOUR BASELINE COMMAND]` with how you pin baselines (e.g., `git tag`, run management, etc.)
+5. Review the Anti-Patterns table — remove any that don't apply, add project-specific ones
+
+### Add to CLAUDE.md:
+
+Add this to your CLAUDE.md after the Documentation Navigation section:
+
+```markdown
+## Issue Specification Protocol
+
+When creating issue specs for implementation:
+
+1. **Use the mandatory template:** `docs/ISSUE_SPEC_TEMPLATE.md`
+2. **All 10 sections are required** — especially §4 (Affected Handoffs) and §8 (Validation Sequence)
+3. **Three document types:** Issue Spec (before), Session Handoff (between sessions), Completion Report (after)
+4. **Route:** See `docs/WORK_ROUTER.md` § Category 0 → §0.7 for the investigation-to-spec workflow
+```
+
+### When to use:
+
+- **Every bug fix or feature** — Write a Type 1 Issue Spec before implementation
+- **Multi-session work** — Write a Type 2 Session Handoff at end of each session
+- **After completion** — Write a Type 3 Completion Report to capture lessons
+
+---
+
+## Step 4: Add Skills to CLAUDE.md (10 minutes)
 
 The key integration point is your `CLAUDE.md` file. Add the decision rules from each adopted skill to the "Decision Rules While Working" section.
+
+**Note:** Step numbering continues from Step 3 above.
 
 ### If adopting R/P Split:
 
@@ -178,9 +222,20 @@ Add to CLAUDE.md § 3:
    - LLM output is hypothesis until tested
 ```
 
+### If adopting Exploration-First:
+
+Add to CLAUDE.md § 3:
+```markdown
+8. **Map before modifying:**
+   - Before changing an existing process, document what it reads, produces, sends, and ignores
+   - Audit against declared design principles before theorizing improvements
+   - Separate observation from inference in every investigation step
+   - Stop at earliest upstream leverage point — don't patch downstream symptoms
+```
+
 ---
 
-## Step 4: Copy Knowledge Base and Skills Reference (Optional, 5 minutes)
+## Step 5: Copy Knowledge Base and Skills Reference (Optional, 5 minutes)
 
 If you want the theory and skill documents in your repo for reference:
 
@@ -196,6 +251,7 @@ cp exports/knowledge-base/system-boundary-theory.md ./docs/knowledge-base/
 cp exports/knowledge-base/measurement-theory.md ./docs/knowledge-base/
 cp exports/knowledge-base/failure-theory.md ./docs/knowledge-base/
 cp exports/knowledge-base/constraint-theory.md ./docs/knowledge-base/
+cp exports/knowledge-base/exploration-theory.md ./docs/knowledge-base/
 
 # Layer 1: Skills
 cp exports/skills/rp-split.md ./docs/methodology/
@@ -206,13 +262,14 @@ cp exports/skills/measurement-driven.md ./docs/methodology/
 cp exports/skills/failure-gates.md ./docs/methodology/
 cp exports/skills/constraint-gates.md ./docs/methodology/
 cp exports/skills/prototype-building.md ./docs/methodology/
+cp exports/skills/exploration-first.md ./docs/methodology/
 ```
 
 Then reference them from your CLAUDE.md work modes section. The knowledge base documents are especially valuable for onboarding new team members — they explain *why* the practices exist, not just *what* to do.
 
 ---
 
-## Step 5: Customize for Your Project (Varies)
+## Step 6: Customize for Your Project (Varies)
 
 ### Add Project-Specific Symptoms to Debug Runbook
 
@@ -239,7 +296,7 @@ Document your system's:
 
 ---
 
-## Step 6: Add RAG Verification (When Ready)
+## Step 7: Add RAG Verification (When Ready)
 
 When your `docs/` directory grows past ~15 files, add the RAG verification layer to turn your docs from passive reference into a queryable oracle.
 
@@ -267,7 +324,7 @@ See [`rag/INTEGRATION_GUIDE.md`](rag/INTEGRATION_GUIDE.md) for detailed setup in
 
 ---
 
-## Step 7: Evolve (Ongoing)
+## Step 8: Evolve (Ongoing)
 
 The documentation structure will grow with your project:
 
@@ -275,7 +332,7 @@ The documentation structure will grow with your project:
 2. **When you add a feature** → Update architecture docs and changelog
 3. **When you establish a workflow** → Add it to the workflow registry
 4. **When you learn something** → Add it to methodology docs
-5. **When docs grow past ~15 files** → Add RAG verification (Step 6)
+5. **When docs grow past ~15 files** → Add RAG verification (Step 7)
 
 The goal is that **every lesson learned is captured** so it doesn't have to be re-learned.
 
@@ -288,19 +345,20 @@ The goal is that **every lesson learned is captured** so it doesn't have to be r
 - [ ] `docs/DEVELOPER_GUIDE.md` — Change management
 - [ ] `docs/CI_RULES.md` — Safety guardrails
 
-### Standard (6 files)
+### Standard (7 files)
 - [ ] Everything in Minimal, plus:
 - [ ] `docs/CORE_DOCUMENTATION_INDEX.md` — Documentation index
-- [ ] `docs/WORK_ROUTER.md` — Symptom-based navigation
+- [ ] `docs/WORK_ROUTER.md` — Symptom-based navigation (includes Category 0)
 - [ ] `docs/DEBUG_RUNBOOK.md` — Triage and diagnosis
+- [ ] `docs/ISSUE_SPEC_TEMPLATE.md` — Issue specification standard
 
 ### Full (8+ files)
 - [ ] Everything in Standard, plus:
 - [ ] `docs/WORKFLOW_REGISTRY.md` — Named procedures
 - [ ] `docs/architecture/SYSTEM_ARCHITECTURE.md` — System design
 - [ ] `docs/CHANGELOG.md` — Change history
-- [ ] `docs/knowledge-base/*.md` — Theoretical foundations (8 docs recommended)
-- [ ] `docs/methodology/*.md` — Adopted skills (up to 8, optional)
+- [ ] `docs/knowledge-base/*.md` — Theoretical foundations (9 docs recommended)
+- [ ] `docs/methodology/*.md` — Adopted skills (up to 9, optional)
 
 ### With RAG (15+ doc files)
 - [ ] Everything in Full, plus:
