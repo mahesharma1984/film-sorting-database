@@ -9,7 +9,7 @@ Issue #6 Update: Decade-validated director-based routing
 """
 
 import logging
-from typing import Optional, Dict
+from typing import Dict, List, Optional, Tuple
 from collections import defaultdict
 
 logger = logging.getLogger(__name__)
@@ -448,6 +448,105 @@ class SatelliteClassifier:
             if term.lower() in text_blob:
                 return True, 'text_term'
         return False, None
+
+    def classify_structural(self, metadata, tmdb_data: Optional[Dict]) -> List[Tuple[str, str]]:
+        """Return all SATELLITE_ROUTING_RULES structural matches (director checks excluded).
+
+        Issue #42: Used by lib/signals.score_structure() to compute the structural
+        triangulation signal independently from the director identity signal.
+
+        Returns list of (category_name, match_type) tuples where match_type is one of:
+          'country_genre'  — country + genre (or Tier 3 untestable genre) match
+          'keyword_tier_a' — country + keyword hit (genre gate waived)
+          'keyword_tier_b' — TMDb tag alone for tier_b_eligible movement categories
+
+        Does NOT enforce caps (cap is applied by the caller after integration selects a winner).
+        Director checks are intentionally excluded — use score_director() for those.
+        """
+        from lib.constants import (
+            SATELLITE_ROUTING_RULES,
+            AMERICAN_EXPLOITATION_TITLE_KEYWORDS,
+            BLAXPLOITATION_TITLE_KEYWORDS,
+            CATEGORY_CERTAINTY_TIERS,
+        )
+
+        year = getattr(metadata, 'year', None)
+        title = (getattr(metadata, 'title', '') or '').lower()
+
+        # Build countries list (same merge logic as classify())
+        tmdb_data = tmdb_data or {}
+        countries = [c.upper() for c in (tmdb_data.get('countries') or [])]
+        metadata_country = getattr(metadata, 'country', None)
+        if metadata_country and metadata_country.upper() not in countries:
+            countries.append(metadata_country.upper())
+
+        genres = list(tmdb_data.get('genres') or [])
+
+        decade = None
+        if year:
+            decade = f"{(year // 10) * 10}s"
+
+        results: List[Tuple[str, str]] = []
+
+        for category_name, rules in SATELLITE_ROUTING_RULES.items():
+            # Skip if decade-bounded and outside valid decades
+            if rules['decades'] is not None and decade not in rules['decades']:
+                continue
+
+            # Country match
+            country_match = True
+            if rules['country_codes'] is not None:
+                country_match = any(c in countries for c in rules['country_codes'])
+
+            # Genre match (three-valued: True / False / None=untestable)
+            genre_match = True
+            if rules['genres'] is not None:
+                if not genres:
+                    genre_match = None  # data absent — untestable
+                else:
+                    genre_match = any(g in genres for g in rules['genres'])
+
+            # Title keyword gate (structural gate — same as classify())
+            if category_name == 'American Exploitation':
+                if not self._title_matches_keywords(title, AMERICAN_EXPLOITATION_TITLE_KEYWORDS):
+                    continue
+            if category_name == 'Blaxploitation':
+                if not self._title_matches_keywords(title, BLAXPLOITATION_TITLE_KEYWORDS):
+                    continue
+
+            # Country + genre structural match
+            if country_match and genre_match is True:
+                results.append((category_name, 'country_genre'))
+                continue
+
+            # Tier 3 catch-all: country match + untestable genre
+            if country_match and genre_match is None and rules['country_codes'] is not None:
+                tier = CATEGORY_CERTAINTY_TIERS.get(category_name, 2)
+                if tier >= 3:
+                    results.append((category_name, 'country_genre'))
+                    continue
+
+            # Keyword Tier A: country + keyword hit (genre gate waived)
+            keyword_signals = rules.get('keyword_signals')
+            if keyword_signals and country_match and genre_match is not True:
+                hit, _ = self._keyword_hit(tmdb_data, keyword_signals)
+                if hit:
+                    results.append((category_name, 'keyword_tier_a'))
+                    continue
+
+            # Keyword Tier B: TMDb tag alone for movement categories (no country needed)
+            if rules.get('tier_b_eligible') and keyword_signals:
+                tmdb_tags_lower = [k.lower() for k in tmdb_data.get('keywords', [])]
+                if any(tag in tmdb_tags_lower for tag in keyword_signals.get('tmdb_tags', [])):
+                    results.append((category_name, 'keyword_tier_b'))
+
+        return results
+
+    def is_capped(self, category: str) -> bool:
+        """Read-only cap check — does NOT increment. Used for pre-flight checks."""
+        if category not in self.caps:
+            return False
+        return self.counts[category] >= self.caps[category]
 
     def _check_cap(self, category: str) -> Optional[str]:
         """Check if category has reached cap"""

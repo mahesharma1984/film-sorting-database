@@ -86,9 +86,10 @@ Start here: What kind of problem is this?
 | Explicit lookup | CLAUDE.md Rule 2 (priority 1) | VALIDATION_ARCHITECTURE.md §1 | `lib/lookup.py` | `pytest tests/test_lookup.py -v` | `explicit_lookup` |
 | Corpus lookup | CLAUDE.md Rule 2 (priority 2) | VALIDATION_ARCHITECTURE.md §3 | `lib/corpus.py` | `pytest tests/test_corpus_lookup.py -v` | `corpus_lookup` |
 | Reference canon | CLAUDE.md Rule 2 (priority 3) | RECURSIVE_CURATION_MODEL.md §3 | `lib/constants.py REFERENCE_CANON` | `pytest tests/ -k reference` | `reference_canon` |
-| Satellite routing | CLAUDE.md Rule 2 (priority 4) | RECURSIVE_CURATION_MODEL.md §4 | `lib/satellite.py` | `pytest tests/test_satellite.py -v` | `satellite_*` |
-| Core director | CLAUDE.md Rule 2 (priority 6) | RECURSIVE_CURATION_MODEL.md §3 | `lib/constants.py CORE_DIRECTORS` | `pytest tests/ -k core` | `core_director` |
-| Popcorn check | CLAUDE.md Rule 2 (priority 7) | RECURSIVE_CURATION_MODEL.md §6 | `classify.py _popcorn_check()` | `pytest tests/ -k popcorn` | `popcorn_*` |
+| Satellite routing | CLAUDE.md Rule 2 (priority 4) | RECURSIVE_CURATION_MODEL.md §4 | `lib/satellite.py`, `lib/signals.py` | `pytest tests/test_satellite.py tests/test_signals.py -v` | `both_agree`, `director_signal`, `structural_signal`, `director_disambiguates`, `review_flagged` |
+| Core director | CLAUDE.md Rule 2 (priority 6) | RECURSIVE_CURATION_MODEL.md §3 | `lib/core_directors.py`, `lib/signals.py` | `pytest tests/ -k core` | `director_signal` (Core tier) |
+| Signal integration | CLAUDE.md Rule 2 (priorities 2–8) | Issue #42 | `lib/signals.py integrate_signals()` | `pytest tests/test_signals.py -v` | `both_agree`, `director_signal`, `structural_signal`, `director_disambiguates`, `review_flagged` |
+| Popcorn check | CLAUDE.md Rule 2 (priority 7) | RECURSIVE_CURATION_MODEL.md §6 | `lib/popcorn.py`, `lib/signals.py` | `pytest tests/ -k popcorn` | `popcorn_*` |
 | API enrichment | CLAUDE.md §4 Dual-Source | VALIDATION_ARCHITECTURE.md §2 | `lib/tmdb.py`, `lib/omdb.py` | `python scripts/validate_handoffs.py` | (enrichment, not routing) |
 | Evidence trails | CLAUDE.md Rule 7 | VALIDATION_ARCHITECTURE.md §2 | `lib/constants.py GateResult` | `pytest tests/test_evidence_trails.py -v` | (diagnostic only) |
 
@@ -176,10 +177,12 @@ Investigation complete
 
 1. Check the manifest `reason` column — what logic produced this classification?
 2. If reason = `explicit_lookup` → The film is in `docs/SORTING_DATABASE.md` with that destination. Edit the database entry (human decision).
-3. If reason = `core_director` → Check `docs/CORE_DIRECTOR_WHITELIST_FINAL.md`. Is the director actually on the whitelist for that decade?
-4. If reason = `reference_canon` → Check `REFERENCE_CANON` in `lib/constants.py`. Is it in the 50-film list?
-5. If reason = `satellite_country` → Check `COUNTRY_TO_WAVE` in `lib/constants.py`. Is the decade within the valid range for that country?
-6. If reason = `user_tag` → A previous human classification was recovered from the filename path. Override by adding to SORTING_DATABASE.md.
+3. If reason = `director_signal` (Core tier) → Check `docs/CORE_DIRECTOR_WHITELIST_FINAL.md`. Is the director on the whitelist?
+4. If reason = `director_signal` / `both_agree` / `director_disambiguates` (Satellite tier) → Check `DIRECTOR_REGISTRY` (built from `lib/constants.py SATELLITE_ROUTING_RULES`). Check `decade_valid` — is the film year within the movement's declared decades?
+5. If reason = `structural_signal` → Check `COUNTRY_TO_WAVE` and `SATELLITE_ROUTING_RULES` structural gates in `lib/constants.py`. Is the decade within valid range for that country/category?
+6. If reason = `review_flagged` → Multiple structural categories matched with no director signal; film goes to highest-priority match but flagged for review. Add a SORTING_DATABASE entry to resolve.
+7. If reason = `reference_canon` → Check `REFERENCE_CANON` in `lib/constants.py`. Is it in the 50-film list?
+8. If reason = `user_tag` → A previous human classification was recovered from the filename path. Override by adding to SORTING_DATABASE.md.
 
 → See: `docs/DEBUG_RUNBOOK.md` Symptom #1
 

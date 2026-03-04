@@ -36,17 +36,25 @@ TIER_COLORS = {
 
 # Maps reason code prefixes to confidence scores (for CSVs that lack a confidence column)
 REASON_CONFIDENCE = {
-    'explicit_lookup':        1.0,
-    'core_director':          1.0,
-    'core_director_exact':    1.0,
-    'reference_canon':        1.0,
-    'user_tag_recovery':      0.8,
-    'user_tag':               0.8,
-    'country_satellite':      0.7,
-    'country_decade_satellite': 0.7,
-    'tmdb_satellite':         0.7,
-    'satellite':              0.7,
-    'popcorn':                0.6,
+    # Current reason codes (Issue #42+)
+    'explicit_lookup':           1.0,
+    'corpus_lookup':             1.0,
+    'reference_canon':           1.0,
+    'both_agree':                0.85,
+    'director_disambiguates':    0.75,
+    'director_signal':           0.65,
+    'structural_signal':         0.65,
+    'review_flagged':            0.4,
+    'user_tag_recovery':         0.8,
+    'user_tag':                  0.8,
+    'popcorn':                   0.6,
+    # Legacy reason codes (pre-Issue #42, for old manifest CSVs)
+    'core_director':             1.0,
+    'core_director_exact':       1.0,
+    'country_satellite':         0.7,
+    'country_decade_satellite':  0.7,
+    'tmdb_satellite':            0.7,
+    'satellite':                 0.7,
 }
 
 # Fallback satellite caps (used if lib/ import fails)
@@ -405,6 +413,91 @@ def render_collection_overview(df: pd.DataFrame):
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.info("No satellite category data available.")
+
+    st.divider()
+
+    # --- Signal Quality Panel ---
+    st.subheader("Classification Signal Quality")
+    st.caption("How heuristic decisions were made — explicit lookups and corpus matches excluded")
+
+    _DIRECTOR_REASONS = {'director_signal', 'director_disambiguates'}
+    _ALL_SIGNAL_REASONS = {'both_agree', 'director_signal', 'director_disambiguates',
+                           'structural_signal', 'review_flagged'}
+    heuristic_df = df[df['reason'].str.strip().isin(_ALL_SIGNAL_REASONS)]
+
+    if len(heuristic_df):
+        director_led = len(heuristic_df[heuristic_df['reason'].isin(_DIRECTOR_REASONS)])
+        both_agree_n = len(heuristic_df[heuristic_df['reason'] == 'both_agree'])
+        structural_n = len(heuristic_df[heuristic_df['reason'] == 'structural_signal'])
+        ambiguous_n  = len(heuristic_df[heuristic_df['reason'] == 'review_flagged'])
+
+        sig_cols = st.columns(4)
+        sig_cols[0].metric(
+            "Both signals agree", both_agree_n,
+            help="director + structure independently matched same category — highest heuristic confidence (0.85)"
+        )
+        sig_cols[1].metric(
+            "Director-led", director_led,
+            help="director_signal: director matched, no structural; director_disambiguates: director broke tie"
+        )
+        sig_cols[2].metric(
+            "Structural only", structural_n,
+            help="structural_signal — country/genre/keywords matched, no director evidence"
+        )
+        sig_cols[3].metric(
+            "Ambiguous (review_flagged)", ambiguous_n,
+            help="Multiple structural categories matched, no director to resolve — routed to highest-priority but needs curator attention"
+        )
+
+        left_sig, right_sig = st.columns([1, 1])
+
+        with left_sig:
+            sig_data = pd.DataFrame([
+                {'signal': 'Both agree',      'count': both_agree_n, 'conf': 0.85},
+                {'signal': 'Director-led',    'count': director_led, 'conf': 0.70},
+                {'signal': 'Structural only', 'count': structural_n, 'conf': 0.65},
+                {'signal': 'Ambiguous',       'count': ambiguous_n,  'conf': 0.40},
+            ])
+            fig = px.bar(
+                sig_data, x='count', y='signal', orientation='h',
+                color='conf',
+                color_continuous_scale=[[0.0, '#CCCCCC'], [0.4, '#DD8452'], [1.0, '#55A868']],
+                range_color=[0.3, 1.0],
+                custom_data=['conf'],
+            )
+            fig.update_traces(
+                hovertemplate='%{y}: %{x} films (avg conf ~%{customdata[0]:.2f})<extra></extra>'
+            )
+            fig.update_layout(
+                height=220, margin=dict(t=10, b=20, l=10, r=10),
+                yaxis_title='', xaxis_title='Films',
+                coloraxis_showscale=False,
+                yaxis=dict(autorange='reversed'),
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+        with right_sig:
+            if ambiguous_n > 0:
+                flagged_df = heuristic_df[heuristic_df['reason'] == 'review_flagged']
+                st.caption(
+                    f"**{ambiguous_n} review-flagged films** — multiple structural categories matched, "
+                    "no director signal to resolve. Add a SORTING_DATABASE entry to pin each."
+                )
+                _fcols = [c for c in ['title', 'year', 'director', 'subdirectory', 'country', 'confidence']
+                          if c in flagged_df.columns]
+                st.dataframe(
+                    flagged_df[_fcols].sort_values('year').reset_index(drop=True),
+                    use_container_width=True, height=200,
+                    column_config={
+                        'confidence': st.column_config.ProgressColumn(
+                            'Conf', min_value=0.0, max_value=1.0, format='%.2f'),
+                        'year': st.column_config.NumberColumn('Year', format='%d'),
+                    },
+                )
+            else:
+                st.success("No ambiguous classifications — every heuristic film has a clear signal.")
+    else:
+        st.info("No heuristic classifications in this manifest (all films are via lookup, corpus, or unsorted).")
 
     st.divider()
 

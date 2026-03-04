@@ -957,3 +957,40 @@ class SatelliteEvidence:
     """
     matched_category: Optional[str]
     per_category: Dict[str, CategoryEvidence]
+
+
+# ---------------------------------------------------------------------------
+# Issue #42 — Unified Two-Signal Architecture: director registry
+# ---------------------------------------------------------------------------
+
+@dataclass
+class DirectorEntry:
+    """One entry in DIRECTOR_REGISTRY — a director's membership in a Satellite category."""
+    tier: str                        # always 'Satellite'
+    category: str                    # e.g. 'French New Wave'
+    decades: Optional[List[str]]     # None = no restriction (tradition); list = movement
+    is_tradition: bool               # True if country_codes populated in routing rules
+
+
+def _build_director_registry() -> Dict[str, List['DirectorEntry']]:
+    """Index all per-category director lists from SATELLITE_ROUTING_RULES into one lookup.
+
+    Keys are lowercased director name tokens as stored in each category's 'directors' list.
+    A director may appear in multiple categories (e.g. a director spanning two movements).
+    Core directors are NOT included — they live in CoreDirectorDatabase (markdown source).
+    """
+    registry: Dict[str, List[DirectorEntry]] = {}
+    for category_name, rules in SATELLITE_ROUTING_RULES.items():
+        is_tradition = bool(rules.get('country_codes'))
+        for director_name in (rules.get('directors') or []):
+            key = director_name.lower().strip()
+            registry.setdefault(key, []).append(DirectorEntry(
+                tier='Satellite',
+                category=category_name,
+                decades=rules.get('decades'),
+                is_tradition=is_tradition,
+            ))
+    return registry
+
+
+DIRECTOR_REGISTRY: Dict[str, List[DirectorEntry]] = _build_director_registry()

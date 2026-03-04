@@ -34,6 +34,11 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | How do I find and fix systematic routing failures? | Run analyze_cohorts.py after classify; act on HIGH-confidence hypotheses | `docs/CURATOR_WORKFLOW.md` Phase B3–B4 |
 | What published research grounds the frameworks? | Deming, Ranganathan, Settles, Bourdieu, Bowker & Star, signal detection | `docs/theory/THEORETICAL_GROUNDING.md` |
 | Why does the pipeline keep hitting dead ends? | Information destruction at every stage; single-loop learning | `docs/architecture/VALIDATION_ARCHITECTURE.md` §2 |
+| How does the classifier decide between director vs structural evidence? | Two-signal architecture: score_director + score_structure → integrate_signals priority table (P1–P10) | `lib/signals.py`, Issue #42 |
+| What are the heuristic reason codes? | `both_agree`, `director_signal`, `structural_signal`, `director_disambiguates`, `review_flagged`, `reference_canon`, `user_tag_recovery`, `popcorn_*` | `lib/signals.py` |
+| What does `review_flagged` mean? | Multiple structural categories matched, no director to resolve — routed to highest priority but flagged for curator review | `lib/signals.py integrate_signals()` P8 |
+| What does `both_agree` mean? | Director identity + structural triangulation independently matched same Satellite category — highest confidence heuristic classification | `lib/signals.py integrate_signals()` P2 |
+| What is the DIRECTOR_REGISTRY? | Single lookup index of all satellite directors built from SATELLITE_ROUTING_RULES at import time; keyed by normalized name | `lib/constants.py DIRECTOR_REGISTRY` |
 | What is evidence architecture? | Per-film evidence trails, failure cohorts, hypothesis generation | `docs/architecture/VALIDATION_ARCHITECTURE.md` §2 |
 | What are ground truth corpora? | Scholarship-sourced per-category CSV files for external validation | `docs/architecture/VALIDATION_ARCHITECTURE.md` §3 |
 | How do I add entries to a corpus? | `build_corpus.py --add TITLE YEAR --category CAT` | `docs/architecture/VALIDATION_ARCHITECTURE.md` §6 |
@@ -87,6 +92,7 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Exploration-First skill** | `exports/skills/exploration-first.md` | STABLE |
 | **Exploration theory** | `exports/knowledge-base/exploration-theory.md` | STABLE |
 | **Issue specification standard** | `docs/ISSUE_SPEC_TEMPLATE.md` | STABLE |
+| **Two-signal classification architecture** | `lib/signals.py` | AUTHORITATIVE |
 | **RAG query guide** | `docs/RAG_QUERY_GUIDE.md` | STABLE |
 
 ---

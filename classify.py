@@ -49,6 +49,7 @@ from lib.constants import (
 from lib.enrichment import ManualEnrichmentSource
 from lib.normalizer import FilenameNormalizer
 from lib.corpus import CorpusLookup
+from lib.signals import score_director, score_structure, integrate_signals
 
 # Configure logging
 logging.basicConfig(
@@ -632,89 +633,57 @@ class FilmClassifier:
 
         decade = get_decade(metadata.year)
 
-        # === Stage 3: Reference canon check (constants.py hardcoded list) ===
-        normalized_title = normalize_for_lookup(metadata.title, strip_format_signals=True)
-        ref_key = (normalized_title, metadata.year)
-        if ref_key in REFERENCE_CANON:
-            self.stats['reference_canon'] += 1
-            dest = f'Reference/{decade}/'
-            _result = ClassificationResult(
-                filename=metadata.filename, title=metadata.title,
-                year=metadata.year, director=metadata.director,
-                language=metadata.language, country=metadata.country,
-                user_tag=metadata.user_tag,
-                tier='Reference', decade=decade, subdirectory=None,
-                destination=dest,
-                confidence=1.0, reason='reference_canon',
-                tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                data_readiness=_readiness,
-            )
-            _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
-            return _result
+        # === Stages 3-8: Unified Two-Signal Classification (Issue #42) ===
+        # Compute director identity signal and structural triangulation signal independently,
+        # then integrate via priority decision table. Replaces the old sequential first-match-wins
+        # pipeline (reference_canon → country_satellite → tmdb_satellite → core_director → popcorn).
+        # New reason codes: both_agree, director_signal, structural_signal,
+        #   director_disambiguates, review_flagged (replacing core_director / tmdb_satellite /
+        #   country_satellite). reference_canon and user_tag_recovery are preserved.
 
-        # === Stage 4: Language/country → Satellite routing (from filename) ===
-        # Skipped for R1 films (no director AND no country — routing would be meaningless)
-        # Issue #25: Satellite fires before Core. Movement character takes priority over
-        # director identity. Core directors' movement-period films route here.
-        if _readiness != 'R1' and metadata.country and metadata.country in COUNTRY_TO_WAVE:
-            wave_config = COUNTRY_TO_WAVE[metadata.country]
-            if decade in wave_config['decades']:
-                category = wave_config['category']
-                self.stats['country_satellite'] += 1
-                dest = f'Satellite/{category}/{decade}/'  # Category-first (Issue #6)
-                _tier_num = CATEGORY_CERTAINTY_TIERS.get(category, 2)
-                _confidence = TIER_CONFIDENCE[_tier_num]
-                if _readiness == 'R2':
-                    _confidence = min(_confidence, 0.6)
+        _director_matches = score_director(metadata.director, metadata.year, self.core_db)
+        _structural_matches = score_structure(
+            metadata=metadata,
+            tmdb_data=tmdb_data,
+            satellite_classifier=self.satellite_classifier,
+            popcorn_classifier=self.popcorn_classifier,
+        )
+        _integration = integrate_signals(
+            director_matches=_director_matches,
+            structural_matches=_structural_matches,
+            decade=decade,
+            readiness=_readiness,
+        )
+
+        if _integration.tier != 'Unsorted':
+            # Apply satellite cap (read-write; enforced here after integration selects winner)
+            if _integration.tier == 'Satellite' and _integration.category:
+                _capped = self.satellite_classifier._check_cap(_integration.category)
+                if _capped is None:
+                    _integration = None  # cap exceeded — fall through to user_tag_recovery
+
+            if _integration is not None:
+                self.stats[_integration.reason] += 1
+                if _integration.tier == 'Popcorn':
+                    self.stats['popcorn_auto'] += 1
                 _result = ClassificationResult(
                     filename=metadata.filename, title=metadata.title,
                     year=metadata.year, director=metadata.director,
                     language=metadata.language, country=metadata.country,
                     user_tag=metadata.user_tag,
-                    tier='Satellite', decade=decade, subdirectory=category,
-                    destination=dest,
-                    confidence=_confidence, reason='country_satellite',
+                    tier=_integration.tier, decade=_integration.decade,
+                    subdirectory=_integration.category,
+                    destination=_integration.destination,
+                    confidence=_integration.confidence, reason=_integration.reason,
                     tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
                     data_readiness=_readiness,
                 )
                 _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
                 return _result
 
-        # === Stage 5: TMDb-based satellite classification ===
-        # Skipped for R1 films (no director AND no country — no basis for satellite routing).
-        # Also fires when tmdb_data is None but metadata.director is set (from filename).
-        # satellite.py constructs a minimal director-only dict in that case, enabling
-        # director-list routing rules (FNW, Indie Cinema directors) to fire without API data.
-        # Issue #25: Satellite fires before Core — Core directors in movement director lists
-        # (e.g. Godard in FNW, Scorsese in AmNH) route to Satellite for their movement period.
-        if _readiness != 'R1' and (tmdb_data or metadata.director):
-            satellite_cat = self.satellite_classifier.classify(metadata, tmdb_data)
-            if satellite_cat:
-                self.stats['tmdb_satellite'] += 1
-                dest = f'Satellite/{satellite_cat}/{decade}/'  # Category-first (Issue #6)
-                _tier_num = CATEGORY_CERTAINTY_TIERS.get(satellite_cat, 2)
-                _confidence = TIER_CONFIDENCE[_tier_num]
-                if _readiness == 'R2':
-                    _confidence = min(_confidence, 0.6)
-                _result = ClassificationResult(
-                    filename=metadata.filename, title=metadata.title,
-                    year=metadata.year, director=metadata.director,
-                    language=metadata.language, country=metadata.country,
-                    user_tag=metadata.user_tag,
-                    tier='Satellite', decade=decade, subdirectory=satellite_cat,
-                    destination=dest,
-                    confidence=_confidence, reason='tmdb_satellite',
-                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                    data_readiness=_readiness,
-                )
-                _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
-                return _result
-
-        # === Stage 6: User tag recovery ===
-        # Fires AFTER Satellite (Issue #25) so movement routing takes priority over stale
-        # [Core] user tags. A film previously tagged [Core] that now matches a movement
-        # is correctly routed to Satellite; the Core tag only applies when no movement
-        # match is found.
+        # === User tag recovery fallback ===
+        # Fires when integration returned Unsorted (or cap exceeded) — Issue #25:
+        # movement routing takes priority over stale [Core] user tags.
         if metadata.user_tag:
             parsed_tag = self._parse_user_tag(metadata.user_tag)
             if 'tier' in parsed_tag and 'decade' in parsed_tag:
@@ -763,53 +732,7 @@ class FilmClassifier:
                     )
                     _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
                     return _result
-                # dest is None — fall through to Stage 7 (Core director check)
-
-        # === Stage 7: Core director check (Issue #25: moved after Satellite) ===
-        # Skipped for R1 films (no director — cannot match whitelist).
-        # Fallback for prestige non-movement work. Movement-period films by Core directors
-        # are caught by Stages 4-5 (Satellite); this stage handles work outside movement
-        # decade bounds and any director not listed in a movement's director list.
-        if _readiness != 'R1' and metadata.director and self.core_db.is_core_director(metadata.director):
-            canonical = self.core_db.get_canonical_name(metadata.director)
-            director_decade = self.core_db.get_director_decade(metadata.director, metadata.year)
-
-            if canonical and director_decade:
-                self.stats['core_director'] += 1
-                dest = f'Core/{director_decade}/{canonical}/'
-                _result = ClassificationResult(
-                    filename=metadata.filename, title=metadata.title,
-                    year=metadata.year, director=canonical,
-                    language=metadata.language, country=metadata.country,
-                    user_tag=metadata.user_tag,
-                    tier='Core', decade=director_decade, subdirectory=canonical,
-                    destination=dest,
-                    confidence=1.0, reason='core_director',
-                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                    data_readiness=_readiness,
-                )
-                _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
-                return _result
-
-        # === Stage 8: Popcorn check (skipped for R1 — no popularity/API data) ===
-        popcorn_reason = None if _readiness == 'R1' else self.popcorn_classifier.classify_reason(metadata, tmdb_data)
-        if popcorn_reason:
-            self.stats['popcorn_auto'] += 1
-            self.stats[popcorn_reason] += 1
-            dest = f'Popcorn/{decade}/'
-            _result = ClassificationResult(
-                filename=metadata.filename, title=metadata.title,
-                year=metadata.year, director=metadata.director,
-                language=metadata.language, country=metadata.country,
-                user_tag=metadata.user_tag,
-                tier='Popcorn', decade=decade, subdirectory=None,
-                destination=dest,
-                confidence=0.65, reason=popcorn_reason,
-                tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                data_readiness=_readiness,
-            )
-            _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
-            return _result
+                # dest is None — fall through to Unsorted
 
         # === Stage 9: Unsorted (default) ===
         # R1: insufficient data (no director AND no country) — distinct from taxonomy gap

@@ -163,6 +163,10 @@ Example: She Killed in Ecstasy (1971) — physically in Giallo, but country=ES (
 | Category | File | Entries | Sources |
 |----------|------|---------|---------|
 | Giallo | `data/corpora/giallo.csv` | 41 | Koven (2006), Lucas (2007) |
+| Blaxploitation | `data/corpora/blaxploitation.csv` | 9 | Guerrero (1993), Bogle (2001) |
+| American Exploitation | `data/corpora/american-exploitation.csv` | 24 | Schaefer (1999), McCarthy & Flynn (1975) |
+| Hong Kong Action | `data/corpora/hong-kong-action.csv` | 18 | Teo (1997), Hunt (2003) |
+| Brazilian Exploitation | `data/corpora/brazilian-exploitation.csv` | 25 | Johnson (1987), Ramos (1987) |
 
 Additional corpora are built by running `build_corpus.py --audit CATEGORY` to generate a draft, then curating entries with scholarly citations via `build_corpus.py --add TITLE YEAR --category CATEGORY`.
 

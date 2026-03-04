@@ -70,7 +70,9 @@ class TestCoreDirectorPriority:
         assert result.tier == "Satellite", f"Expected Satellite, got {result.tier} ({result.reason})"
         assert "French New Wave" in result.destination, f"Expected FNW folder, got {result.destination}"
         assert "Sexploitation" not in result.destination
-        assert result.reason == "tmdb_satellite"
+        # Issue #42: reason code replaced — director signal disambiguates Indie Cinema structural match
+        assert result.reason in ("director_disambiguates", "director_signal", "both_agree"), \
+            f"Expected director-based signal, got {result.reason}"
 
     # =========================================================================
     # TEST GROUP 2: Multi-decade directors (Kubrick spanning 1960s-1990s)

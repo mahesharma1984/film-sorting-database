@@ -21,7 +21,9 @@ import json
 import argparse
 import logging
 import unicodedata
+import subprocess
 from collections import defaultdict
+from datetime import date
 from pathlib import Path
 from typing import Optional, Dict, List
 
@@ -214,6 +216,7 @@ def run_audit_pass(audit_rows: List[Dict], classifier: FilmClassifier) -> List[D
                 'classified_tier': 'Error',
                 'classified_category': '',
                 'classified_decade': '',
+                'classified_reason': '',
                 'match': 'false',
                 'discrepancy_type': 'error',
                 'confidence': 'none',
@@ -238,6 +241,7 @@ def run_audit_pass(audit_rows: List[Dict], classifier: FilmClassifier) -> List[D
             'classified_tier': classified_tier,
             'classified_category': classified_category,
             'classified_decade': classified_decade,
+            'classified_reason': result.reason,
             'match': match,
             'discrepancy_type': discrepancy,
             'confidence': confidence,
@@ -285,6 +289,7 @@ def enrich_no_data(report_rows: List[Dict], config_path: Path) -> int:
         row['classified_tier'] = result.tier
         row['classified_category'] = result.subdirectory or ''
         row['classified_decade'] = result.decade or ''
+        row['classified_reason'] = result.reason
         row['match'] = 'true' if discrepancy == '' else 'false'
         row['discrepancy_type'] = discrepancy
         row['confidence'] = _confidence_label(result.reason, result.tmdb_id)
@@ -295,6 +300,106 @@ def enrich_no_data(report_rows: List[Dict], config_path: Path) -> int:
 
     logger.info("Enrichment: %d/%d no_data rows resolved to a tier", resolved, len(no_data_rows))
     return resolved
+
+
+# ---------------------------------------------------------------------------
+# Accuracy summary (two-population model, Issue #41)
+# ---------------------------------------------------------------------------
+
+# Reason codes that belong to Population A (human-curated lookup)
+_POPULATION_A_REASONS = {'explicit_lookup', 'corpus_lookup'}
+
+# Stage groupings for Population C by-stage breakdown
+# Issue #42: new signal-based reason codes replace core_director / tmdb_satellite / country_satellite
+_STAGE_GROUPS = {
+    # Population A — human-curated (mapped for completeness, filtered by _POPULATION_A_REASONS)
+    'explicit_lookup':               'A_lookup',
+    'corpus_lookup':                 'A_lookup',
+    # Signal-based reason codes (Issue #42)
+    'reference_canon':               'reference_canon',
+    'both_agree':                    'both_agree',
+    'director_signal':               'director_signal',
+    'structural_signal':             'structural_signal',
+    'director_disambiguates':        'director_disambiguates',
+    'review_flagged':                'review_flagged',
+    # Preserved reason codes
+    'user_tag_recovery':             'user_tag_recovery',
+    # Popcorn sub-reasons (preserved, grouped under 'popcorn')
+    'popcorn_cast_popularity':       'popcorn',
+    'popcorn_format_mainstream':     'popcorn',
+    'popcorn_format_plus_popularity': 'popcorn',
+}
+
+
+def _compute_accuracy_summary(report_rows: List[Dict]) -> Dict:
+    """
+    Split report_rows into Population A (explicit_lookup / corpus_lookup) and
+    Population C (all other reason codes). Compute confirmed/total per population
+    and per-stage breakdown for Population C.
+
+    Returns a dict with keys: total, combined, lookup, pipeline, by_stage.
+    """
+    pop_a: List[Dict] = []
+    pop_c: List[Dict] = []
+
+    for row in report_rows:
+        reason = row.get('classified_reason', '')
+        if reason in _POPULATION_A_REASONS:
+            pop_a.append(row)
+        else:
+            pop_c.append(row)
+
+    def _score(rows: List[Dict]) -> Dict:
+        total = len(rows)
+        confirmed = sum(1 for r in rows if r.get('match') == 'true')
+        score = round(confirmed / total, 4) if total else 0.0
+        return {'confirmed': confirmed, 'total': total, 'score': score}
+
+    # Per-stage breakdown for Population C
+    by_stage: Dict[str, List[Dict]] = defaultdict(list)
+    for row in pop_c:
+        reason = row.get('classified_reason', '') or 'unknown'
+        stage = _STAGE_GROUPS.get(reason, reason)
+        by_stage[stage].append(row)
+
+    by_stage_scores = {stage: _score(rows) for stage, rows in sorted(by_stage.items())}
+
+    total = len(report_rows)
+    confirmed = sum(1 for r in report_rows if r.get('match') == 'true')
+
+    return {
+        'total': total,
+        'combined': {'confirmed': confirmed, 'total': total,
+                     'score': round(confirmed / total, 4) if total else 0.0},
+        'lookup': _score(pop_a),
+        'pipeline': _score(pop_c),
+        'by_stage': by_stage_scores,
+    }
+
+
+def write_accuracy_baseline(summary: Dict, output_path: Path) -> None:
+    """Write machine-readable accuracy_baseline.json for trend tracking."""
+    try:
+        commit = subprocess.check_output(
+            ['git', 'rev-parse', '--short', 'HEAD'],
+            stderr=subprocess.DEVNULL
+        ).decode().strip()
+    except Exception:
+        commit = 'unknown'
+
+    baseline = {
+        'date': date.today().isoformat(),
+        'commit': commit,
+        'total_films': summary['total'],
+        'combined_accuracy': summary['combined'],
+        'lookup_accuracy': summary['lookup'],
+        'pipeline_accuracy': summary['pipeline'],
+        'by_stage': summary['by_stage'],
+    }
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, 'w', encoding='utf-8') as f:
+        json.dump(baseline, f, indent=2)
+    logger.info("Wrote accuracy baseline to %s", output_path)
 
 
 # ---------------------------------------------------------------------------
@@ -322,6 +427,8 @@ def write_review_report(report_rows: List[Dict], output_path: Path):
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    summary = _compute_accuracy_summary(report_rows)
+
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write("# Library Re-Audit Review\n\n")
         f.write("Generated by `scripts/reaudit.py --review`\n\n")
@@ -329,6 +436,26 @@ def write_review_report(report_rows: List[Dict], output_path: Path):
         total = len(report_rows)
         matches = sum(1 for r in report_rows if r['match'] == 'true')
         f.write(f"**{total} films audited | {matches} confirmed | {total - matches} discrepancies**\n\n")
+
+        # Two-population accuracy summary (Issue #41)
+        f.write("## Accuracy Summary\n\n")
+        lk = summary['lookup']
+        pl = summary['pipeline']
+        co = summary['combined']
+        f.write(f"```\n")
+        f.write(f"Population A — explicit_lookup / corpus_lookup : "
+                f"{lk['confirmed']:>4}/{lk['total']:<4} = {lk['score']*100:5.1f}%\n")
+        f.write(f"Population C — pipeline heuristics            : "
+                f"{pl['confirmed']:>4}/{pl['total']:<4} = {pl['score']*100:5.1f}%\n")
+        if summary['by_stage']:
+            f.write(f"  by stage:\n")
+            for stage, s in summary['by_stage'].items():
+                if stage != 'A_lookup' and s['total'] > 0:
+                    f.write(f"    {stage:<28}: {s['confirmed']:>4}/{s['total']:<4} = {s['score']*100:5.1f}%\n")
+        f.write(f"Combined                                       : "
+                f"{co['confirmed']:>4}/{co['total']:<4} = {co['score']*100:5.1f}%\n")
+        f.write("```\n\n")
+
         f.write("---\n\n")
 
         for category in sorted(by_category.keys()):
@@ -367,7 +494,7 @@ def write_report_csv(report_rows: List[Dict], output_path: Path):
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = [
         'filename', 'current_tier', 'current_category', 'current_decade',
-        'classified_tier', 'classified_category', 'classified_decade',
+        'classified_tier', 'classified_category', 'classified_decade', 'classified_reason',
         'match', 'discrepancy_type', 'confidence', 'notes',
     ]
     with open(output_path, 'w', newline='', encoding='utf-8') as f:
@@ -552,6 +679,10 @@ def main():
     # Write CSV report
     write_report_csv(report_rows, Path('output/reaudit_report.csv'))
     print_summary(report_rows)
+
+    # Write accuracy baseline JSON (always, Issue #41)
+    accuracy_summary = _compute_accuracy_summary(report_rows)
+    write_accuracy_baseline(accuracy_summary, Path('output/accuracy_baseline.json'))
 
     # Stage 3: markdown review report (optional)
     if args.review:
