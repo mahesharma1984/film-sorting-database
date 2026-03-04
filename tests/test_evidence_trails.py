@@ -118,7 +118,13 @@ class TestGenreGateThreeValued:
         assert 'fukasaku' in jex.director_gate.value.lower()
 
     def test_decade_out_of_range_gives_fail_only(self):
-        """Film outside decade bounds → decade_gate=fail, all other gates not_applicable"""
+        """Film outside decade bounds, no director → decade_gate=fail, country/genre not_applicable
+
+        Issue #40 Phase 2: tradition categories (Giallo has country_codes=['IT']) now evaluate
+        the director gate BEFORE the decade gate. With no director provided, director_gate
+        is 'untestable' (not 'not_applicable'). After the director gate, the decade gate
+        fails (2010s not in 1960s-1980s) → early exit, leaving country/genre as not_applicable.
+        """
         classifier = SatelliteClassifier()
         meta = make_metadata(year=2010)
         tmdb = make_tmdb(year=2010, countries=['IT'], genres=['Horror'])
@@ -128,8 +134,9 @@ class TestGenreGateThreeValued:
         assert 'Giallo' in ev.per_category
         giallo = ev.per_category['Giallo']
         assert giallo.decade_gate.status == 'fail'
-        # When decade gate fails, other gates should be not_applicable (early exit)
-        assert giallo.director_gate.status == 'not_applicable'
+        # Phase 2: tradition director gate evaluated before decade gate
+        assert giallo.director_gate.status == 'untestable'  # no director provided
+        # Country/genre still not evaluated (decade gate failed → early exit)
         assert giallo.country_gate.status == 'not_applicable'
         assert giallo.genre_gate.status == 'not_applicable'
 

@@ -111,15 +111,27 @@ class SatelliteClassifier:
         )
 
         # Check each category's rules (first match wins)
+        # Issue #40 Phase 2: director_tokens computed once before loop (used in both director checks)
+        director_tokens = set(director_lower.split()) if director else set()
         for category_name, rules in SATELLITE_ROUTING_RULES.items():
+            # Issue #40 Phase 2: tradition categories (country_codes populated) check director
+            # BEFORE the decade gate. Director identity persists across eras — a 1998 Ferrara
+            # film routes to American Exploitation even though 1998 > 1980s decade bound.
+            # Movement categories (country_codes=[]) keep decade-first order (intentional):
+            # their decade gate ensures only era-appropriate films route to FNW/AmNH/JNW.
+            is_tradition = bool(rules['country_codes'])
+            if is_tradition and rules['directors'] and director:
+                if any(self._director_matches(director_lower, director_tokens, d)
+                       for d in rules['directors']):
+                    return self._check_cap(category_name)
+
             # Skip if decade-bounded and film is outside valid decades
             # Note: None means no decade restriction (e.g., Music Films)
             if rules['decades'] is not None and decade not in rules['decades']:
                 continue
 
-            # Check director match (highest confidence signal)
-            if rules['directors'] and director:
-                director_tokens = set(director_lower.split())
+            # Movement categories: director check AFTER decade gate (existing behavior)
+            if not is_tradition and rules['directors'] and director:
                 if any(self._director_matches(director_lower, director_tokens, d)
                        for d in rules['directors']):
                     return self._check_cap(category_name)
@@ -238,6 +250,32 @@ class SatelliteClassifier:
         for category_name, rules in SATELLITE_ROUTING_RULES.items():
             ev = CategoryEvidence()
 
+            # Issue #40 Phase 2: tradition categories evaluate director gate BEFORE the decade
+            # gate, mirroring the new logic in classify(). This makes evidence trails accurate —
+            # a Ferrara 1998 film now correctly shows director_gate=pass for American Exploitation
+            # instead of decade_gate=fail (which previously hid the director signal entirely).
+            is_tradition = bool(rules['country_codes'])
+
+            # --- Director gate (tradition categories: fires before decade gate) ---
+            if is_tradition and rules['directors']:
+                if director:
+                    matched_dir = next(
+                        (d for d in rules['directors']
+                         if self._director_matches(director_lower, director_tokens, d)),
+                        None,
+                    )
+                    if matched_dir:
+                        ev.director_gate = GateResult('pass', value=matched_dir)
+                        ev.matched = True
+                        per_category[category_name] = ev
+                        if matched_category is None:
+                            matched_category = category_name
+                        continue  # director match wins — skip decade/country/genre path
+                    else:
+                        ev.director_gate = GateResult('fail', reason=f'{director!r} not in directors list')
+                else:
+                    ev.director_gate = GateResult('untestable', reason='no director data')
+
             # --- Decade gate ---
             if rules['decades'] is not None:
                 if decade and decade in rules['decades']:
@@ -250,8 +288,8 @@ class SatelliteClassifier:
                     continue  # decade-bounded and out of range — skip remaining gates
             # else: no decade restriction → leave as 'not_applicable'
 
-            # --- Director gate ---
-            if rules['directors']:
+            # --- Director gate (movement categories: fires after decade gate) ---
+            if not is_tradition and rules['directors']:
                 if director:
                     matched_dir = next(
                         (d for d in rules['directors']

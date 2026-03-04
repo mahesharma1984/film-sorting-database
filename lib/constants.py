@@ -289,7 +289,18 @@ SATELLITE_ROUTING_RULES = {
         'country_codes': ['BR'],
         'decades': ['1960s', '1970s', '1980s', '1990s'],  # widened (Issue #20): pornochanchada peak 1970-1989, broader tradition 1960s-1990s
         'genres': ['Drama', 'Crime', 'Thriller', 'Horror', 'Romance'],
-        'directors': [],  # Country-driven, not director-driven
+        'directors': [
+            # Issue #40 Phase 1: director-identity routing for BrExploit tradition
+            # Source: Johnson (1987) "The Film Industry in Brazil", Ramos (1987) "Cinema Brasileiro"
+            'carlos reichenbach',  # O Signo do Caos, Garotas do ABC
+            'victor di mello',     # A Ilha dos Prazeres Proibidos, As Filhas do Fogo
+            'ody fraga',           # Seduzidas pelo Demônio, Escrava do Pecado
+            'roberto mauro',       # A Noite das Fêmeas, Mulher Objeto
+            'fauzi mansur',        # Sexo dos Diabos, A Noite da Deusa Cruel
+            'claudio cunha',       # As Gatas do Sexo Selvagem
+            'jose miziara',        # Mulher Abusada, Beijo nas Calçadas
+            'jean garret',         # As Brasileirinhas, Faça Amor, Faça Guerra
+        ],
         'keyword_signals': {
             'tmdb_tags': ['pornochanchada', 'boca do lixo', 'brazilian exploitation'],
             'text_terms': ['pornochanchada', 'chanchada', 'boca do lixo', 'embrafilme', 'erotic comedy'],
@@ -299,7 +310,18 @@ SATELLITE_ROUTING_RULES = {
         'country_codes': ['IT'],
         'decades': ['1960s', '1970s', '1980s'],
         'genres': ['Horror', 'Thriller', 'Mystery'],
-        'directors': ['bava', 'argento', 'fulci', 'martino', 'soavi', 'lenzi'],
+        'directors': [
+            'bava', 'argento', 'fulci', 'martino', 'soavi', 'lenzi',
+            # Issue #40 Phase 1: expanded director list
+            # Source: Koven (2006) "La Dolce Morte", Lucas (2007) "Italian Horror Film Directors"
+            'massimo dallamano',   # What Have You Done to Solange?, A Black Veil for Lisa
+            'ruggero deodato',     # Cannibal Holocaust, House on the Edge of the Park
+            'paolo cavara',        # The Black Belly of the Tarantula
+            'armando crispino',    # The Etruscan Kills Again, Autopsy
+            'fernando di leo',     # Slalom, Caliber 9 (crime-giallo crossover)
+            'lamberto bava',       # A Blade in the Dark, Demons
+            'enzo castellari',     # The Big Racket, Street Law (crime-giallo crossover)
+        ],
         'keyword_signals': {
             'tmdb_tags': ['giallo', 'italian horror', 'psychosexual thriller', 'black-gloved killer'],
             'text_terms': ['giallo', 'stylized violence', 'voyeurism', 'whodunit', 'fetishism',
@@ -353,7 +375,8 @@ SATELLITE_ROUTING_RULES = {
         'genres': ['Drama', 'Romance'],
         'directors': [
             'wakamatsu', 'kumashiro', 'tanaka',
-            'masumura',  # NEW: Yasuzō Masumura (Issue #6)
+            'masumura',      # NEW: Yasuzō Masumura (Issue #6)
+            'hisayasu sato', # Issue #40 Phase 1: Hisayasu Satō — Naked Blood, Riken
         ],
         'keyword_signals': {
             'tmdb_tags': ['pink film', 'roman porno', 'pinku eiga', 'nikkatsu', 'erotic drama'],
@@ -422,6 +445,15 @@ SATELLITE_ROUTING_RULES = {
         'directors': [
             'tsui hark', 'ringo lam', 'john woo',
             'lam nai-choi',  # NEW: Lam Nai-Choi (Issue #6)
+            # Issue #40 Phase 1: expanded director list
+            # Source: Bordwell (2000) "Planet Hong Kong", Teo (1997) "Hong Kong Cinema"
+            'king hu',       # A Touch of Zen, Dragon Inn, The Fate of Lee Khan
+            'chang cheh',    # The One-Armed Swordsman, Five Deadly Venoms (Shaw Brothers)
+            'sammo hung',    # Encounters of the Spooky Kind, Eastern Condors
+            'yuen woo-ping', # Drunken Master, Snake in the Eagle's Shadow
+            'jackie chan',   # Police Story, Project A (director credits)
+            'ching siu-tung', # A Chinese Ghost Story, Swordsman series
+            'corey yuen',    # Yes, Madam!, Righting Wrongs
         ],
         'keyword_signals': {
             'tmdb_tags': ['martial arts', 'wuxia', 'kung fu', 'triad', 'heroic bloodshed',
@@ -440,6 +472,14 @@ SATELLITE_ROUTING_RULES = {
         'directors': [
             'gordon parks', 'jack hill',
             'ernest dickerson', 'ernest r. dickerson',
+            # Issue #40 Phase 1: expanded director list (Group A disambiguators for US+1970s)
+            # Source: Guerrero (1993) "Framing Blackness", Sims (2006) "Escape from the Planet of the Apes"
+            'melvin van peebles',  # Sweet Sweetback's Baadasssss Song, Watermelon Man
+            'gordon parks jr.',    # Super Fly, Aaron Loves Angela
+            'michael schultz',     # Car Wash, Which Way Is Up?
+            'bill gunn',           # Ganja & Hess, Stop
+            'barry shear',         # Across 110th Street
+            'arthur marks',        # Friday Foster, Bucktown, J.D.'s Revenge
         ],
         'keyword_signals': {
             'tmdb_tags': ['blaxploitation', 'african american', 'inner city', 'black power'],
@@ -482,7 +522,16 @@ SATELLITE_ROUTING_RULES = {
         'genres': ['Horror', 'Thriller', 'Crime'],
         'directors': [
             'russ meyer', 'abel ferrara', 'larry cohen', 'herschell gordon lewis',
-            'larry clark',  # NEW: Larry Clark (Issue #6)
+            'larry clark',  # Issue #40 Phase 2: kept here; director identity routes all Clark films to AmExploit
+                            # (Phase 2 fires director check before decade gate for tradition categories).
+                            # Use SORTING_DATABASE pins to override specific films (Kids → Indie Cinema, etc.)
+            # Issue #40 Phase 1: expanded director list
+            # Source: Schaefer (1999) "Bold! Daring! Shocking! True!", McCarthy & Flynn (1975) "Kings of the Bs"
+            'roger corman',     # The Little Shop of Horrors, A Bucket of Blood, The Wild Angels
+            'andy milligan',    # The Ghastly Ones, Seeds of Sin
+            'david friedman',   # Blood Feast (producer/director), She-Freak
+            'michael findlay',  # Sloane trilogy, Shriek of the Mutilated
+            'doris wishman',    # Bad Girls Go to Hell, Nude on the Moon
         ],
         'keyword_signals': {
             'tmdb_tags': ['grindhouse', 'exploitation film', 'b-movie', 'troma', 'slasher',
@@ -499,6 +548,11 @@ SATELLITE_ROUTING_RULES = {
             'borowczyk', 'metzger', 'brass', 'vadim',
             'jaeckin',  # NEW: Just Jaeckin (Emmanuelle) (Issue #14)
             'p\u00e9cas',  # Max Pécas (FR) — TMDb genres Crime/Thriller, director match needed
+            # Issue #40 Phase 1: expanded director list
+            # Source: Sloan (2009) "Soft-Core Social Problem Film", Williams (1995) "Hard Core"
+            # Note: jess franco is ES (Spanish); director match bypasses country_codes gate (Phase 2 behavior)
+            "joe d'amato",   # Emanuelle and the Last Cannibals, Anthropophagus
+            'jess franco',   # Vampyros Lesbos, She Killed in Ecstasy (ES — bypasses country gate via director match)
         ],
         'keyword_signals': {
             'tmdb_tags': ['erotic film', 'softcore', 'sexploitation', 'european erotica'],
@@ -525,7 +579,19 @@ SATELLITE_ROUTING_RULES = {
         'country_codes': ['US'],
         'decades': ['1930s', '1940s', '1950s'],
         'genres': None,  # Issue #16: genre gate removed - decade (1930s-1950s) + US is sufficient gate
-        'directors': [],  # Country + decade driven, not director-specific
+        'directors': [
+            # Issue #40 Phase 1: director-identity routing for Classic Hollywood tradition
+            # Source: Bordwell & Thompson (2003) "Film History", Schatz (1989) "The Genius of the System"
+            # Note: Orson Welles excluded — he is in the Core director whitelist
+            'john ford',     # The Searchers, Stagecoach, The Grapes of Wrath
+            'howard hawks',  # His Girl Friday, The Big Sleep, Rio Bravo
+            'frank capra',   # It Happened One Night, Mr. Smith Goes to Washington
+            'michael curtiz', # Casablanca, Mildred Pierce, Yankee Doodle Dandy
+            'george cukor',  # The Philadelphia Story, Adam's Rib, Born Yesterday
+            'fred zinnemann', # High Noon, From Here to Eternity, A Member of the Wedding
+            'elia kazan',    # A Streetcar Named Desire, On the Waterfront, East of Eden
+            'john huston',   # The Maltese Falcon, The Treasure of the Sierra Madre, The African Queen
+        ],
         'keyword_signals': {
             'tmdb_tags': ['film noir', 'pre-code', 'golden age of hollywood', 'screwball comedy',
                           'classical hollywood'],
@@ -568,8 +634,9 @@ SATELLITE_ROUTING_RULES = {
         'directors': [
             # US indie (director match fires regardless of country_codes exclusion)
             'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',
-            # Larry Clark: 1980s work is American Exploitation; 1990s+ (Kids, Bully, Ken Park) is indie
-            'larry clark',
+            # Note: larry clark removed (Issue #40 Phase 2) — he's in AmExploit directors list;
+            # Phase 2 tradition director-before-decade means he always routes to AmExploit first.
+            # Use SORTING_DATABASE pins to override specific films to Indie Cinema (e.g. Kids, Bully).
             # International indie (add more as needed)
             'denis', 'assayas', 'desplechin', 'haneke', 'trier', 'winterbottom', 'loach'
         ],

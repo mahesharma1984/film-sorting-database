@@ -820,6 +820,10 @@
 ### Popcorn
 - Space Cop (2016) → Popcorn/2010s/
 
+### Satellite - Indie Cinema
+- Pasolini (2014) → Satellite/Indie Cinema/2010s/
+- Welcome to New York (2014) → Satellite/Indie Cinema/2010s/
+
 ---
 
 ## STAGING (Requires Manual Review)

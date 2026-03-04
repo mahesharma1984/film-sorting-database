@@ -33,8 +33,14 @@ def test_fukasaku_1970s_routes_to_japanese_exploitation(mock_metadata):
     assert result == 'Japanese Exploitation'
 
 
-def test_fukasaku_2000s_not_routed(mock_metadata):
-    """Kinji Fukasaku 2000s → None (outside decade bounds)"""
+def test_fukasaku_2000s_routes_to_japanese_exploitation(mock_metadata):
+    """Kinji Fukasaku 2000s → Japanese Exploitation via director identity (Issue #40 Phase 2)
+
+    Phase 2 change: tradition categories check director BEFORE decade gate.
+    Fukasaku is in Japanese Exploitation directors, so his 2000 film routes via
+    director identity regardless of decade. Use SORTING_DATABASE pins to override
+    specific films (e.g. Battle Royale 2000 → JNW).
+    """
     tmdb_data = {
         'director': 'Kinji Fukasaku',
         'year': 2000,
@@ -43,7 +49,7 @@ def test_fukasaku_2000s_not_routed(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result is None  # Outside 1970s-1980s
+    assert result == 'Japanese Exploitation'  # Director identity overrides decade bound (Phase 2)
 
 
 def test_all_six_new_directors_issue_6(mock_metadata):
@@ -83,8 +89,13 @@ def test_existing_director_argento_still_works(mock_metadata):
     assert result == 'Giallo'
 
 
-def test_argento_2010s_not_routed(mock_metadata):
-    """Dario Argento 2012 → None (outside Giallo decades)"""
+def test_argento_2010s_routes_to_giallo(mock_metadata):
+    """Dario Argento 2012 → Giallo via director identity (Issue #40 Phase 2)
+
+    Phase 2 change: tradition categories check director BEFORE decade gate.
+    Argento is a listed Giallo director; his 2012 film routes via director identity.
+    Use SORTING_DATABASE pins to override specific films if needed.
+    """
     tmdb_data = {
         'director': 'Dario Argento',
         'year': 2012,
@@ -93,7 +104,7 @@ def test_argento_2010s_not_routed(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result is None  # Outside 1960s-1980s
+    assert result == 'Giallo'  # Director identity overrides decade bound (Phase 2)
 
 
 def test_decade_validation_prevents_misclassification(mock_metadata):
@@ -222,11 +233,12 @@ def test_vadim_1960s_routes_to_european_sexploitation(mock_metadata):
     assert result == 'European Sexploitation'
 
 
-def test_vadim_1990s_routes_to_indie_cinema(mock_metadata):
-    """Roger Vadim 1990s → Indie Cinema (outside European Sexploitation 1960s-1980s bounds)
+def test_vadim_1990s_routes_to_european_sexploitation(mock_metadata):
+    """Roger Vadim 1990s → European Sexploitation via director identity (Issue #40 Phase 2)
 
-    Issue #20: FR + 1990s + Drama routes to Indie Cinema catch-all.
-    Decade check correctly prevents European Sexploitation routing.
+    Phase 2 change: tradition categories check director BEFORE decade gate.
+    Vadim is a listed EuroSex director; his 1995 film routes via director identity
+    regardless of decade bound.
     """
     tmdb_data = {
         'director': 'Roger Vadim',
@@ -236,7 +248,7 @@ def test_vadim_1990s_routes_to_indie_cinema(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result == 'Indie Cinema'  # Not European Sexploitation (outside 1960s-1980s); Indie Cinema catch-all applies
+    assert result == 'European Sexploitation'  # Director identity overrides decade bound (Phase 2)
 
 
 def test_larry_clark_1980s_routes_to_american_exploitation(mock_metadata):
@@ -252,12 +264,13 @@ def test_larry_clark_1980s_routes_to_american_exploitation(mock_metadata):
     assert result == 'American Exploitation'
 
 
-def test_larry_clark_1995_routes_to_indie_cinema(mock_metadata):
-    """Larry Clark 1995 (Kids) → Indie Cinema (outside AE 1960s-1980s bounds)
+def test_larry_clark_1995_routes_to_american_exploitation(mock_metadata):
+    """Larry Clark 1995 (Kids) → American Exploitation via director identity (Issue #40 Phase 2)
 
-    Issue #20: American Exploitation narrowed to 1960s-1980s (Issue #14).
-    1995 US Drama falls to Indie Cinema catch-all. Director match only fires
-    within decade bounds.
+    Phase 2 change: tradition categories check director BEFORE decade gate.
+    Clark is in AmExploit directors; his 1995 film routes via director identity.
+    To classify specific Clark films as Indie Cinema (Kids, Bully, Ken Park),
+    add SORTING_DATABASE pins — those fire at Stage 2 before Satellite routing.
     """
     tmdb_data = {
         'director': 'Larry Clark',
@@ -267,13 +280,15 @@ def test_larry_clark_1995_routes_to_indie_cinema(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result == 'Indie Cinema'
+    assert result == 'American Exploitation'  # Director identity overrides decade bound (Phase 2)
 
 
-def test_larry_clark_2000s_routes_to_indie_cinema(mock_metadata):
-    """Larry Clark 2000s (Bully, Ken Park) → Indie Cinema (outside AE decade bounds)
+def test_larry_clark_2000s_routes_to_american_exploitation(mock_metadata):
+    """Larry Clark 2000s (Bully, Ken Park) → American Exploitation via director identity (Issue #40 Phase 2)
 
-    Issue #20: AE decades are 1960s-1980s only (Issue #14 narrowing).
+    Phase 2 change: tradition categories check director BEFORE decade gate.
+    Clark is in AmExploit directors; director identity routes regardless of decade.
+    Use SORTING_DATABASE pins for specific films that should override to Indie Cinema.
     """
     tmdb_data = {
         'director': 'Larry Clark',
@@ -283,7 +298,7 @@ def test_larry_clark_2000s_routes_to_indie_cinema(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result == 'Indie Cinema'
+    assert result == 'American Exploitation'  # Director identity overrides decade bound (Phase 2)
 
 
 def test_ernest_dickerson_1992_routes_to_blaxploitation(mock_metadata):
@@ -299,8 +314,13 @@ def test_ernest_dickerson_1992_routes_to_blaxploitation(mock_metadata):
     assert result == 'Blaxploitation'
 
 
-def test_ernest_dickerson_1980s_not_routed(mock_metadata):
-    """Ernest Dickerson 1980s with no keyword fallback should not route."""
+def test_ernest_dickerson_1980s_routes_to_blaxploitation(mock_metadata):
+    """Ernest Dickerson 1985 → Blaxploitation via director identity (Issue #40 Phase 2)
+
+    Phase 2 change: tradition categories check director BEFORE decade gate.
+    Blaxploitation's 1980s decade exclusion no longer blocks director-identity routing.
+    Dickerson is a listed Blaxploitation director; his 1985 film routes via director identity.
+    """
     tmdb_data = {
         'director': 'Ernest Dickerson',
         'year': 1985,
@@ -309,7 +329,7 @@ def test_ernest_dickerson_1980s_not_routed(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result is None
+    assert result == 'Blaxploitation'  # Director identity overrides decade bound (Phase 2)
 
 
 def test_lam_nai_choi_1978_routes_to_hk_action(mock_metadata):
@@ -338,12 +358,11 @@ def test_masumura_1964_routes_to_pinku_eiga(mock_metadata):
     assert result == 'Pinku Eiga'
 
 
-def test_masumura_1990s_routes_to_indie_cinema(mock_metadata):
-    """Yasuzō Masumura 1990s → Indie Cinema (outside Pinku Eiga 1960s-1980s bounds)
+def test_masumura_1990s_routes_to_pinku_eiga(mock_metadata):
+    """Yasuzō Masumura 1990s → Pinku Eiga via director identity (Issue #40 Phase 2)
 
-    Issue #20: JP added to Indie Cinema country_codes. A 1990s Japanese drama by
-    any director (including known Pinku Eiga directors) routes to Indie Cinema.
-    Decade check correctly prevents Pinku Eiga routing.
+    Phase 2 change: tradition categories check director BEFORE decade gate.
+    Masumura is a listed Pinku Eiga director; his 1995 film routes via director identity.
     """
     tmdb_data = {
         'director': 'Yasuzō Masumura',
@@ -353,7 +372,7 @@ def test_masumura_1990s_routes_to_indie_cinema(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result == 'Indie Cinema'  # Not Pinku Eiga (outside 1960s-1980s); Indie Cinema catch-all applies
+    assert result == 'Pinku Eiga'  # Director identity overrides decade bound (Phase 2)
 
 
 def test_music_film_no_decade_restriction(mock_metadata):
@@ -610,3 +629,130 @@ def test_increment_count_no_warning_under_cap(caplog):
         for _ in range(cap):
             classifier.increment_count('Giallo')
     assert 'Giallo' not in caplog.text
+
+
+# =============================================================================
+# Issue #40 Phase 2: Tradition director fires before decade gate
+# =============================================================================
+
+def test_ferrara_1998_routes_to_american_exploitation(mock_metadata):
+    """Abel Ferrara 1998 → American Exploitation via director identity (Issue #40 Phase 2 core case)
+
+    The motivating example for Phase 2: Ferrara is in AmExploit directors but
+    1998 > 1980s decade bound. Old behavior: decade gate blocked, result None.
+    New behavior: director check fires before decade gate, returns AmExploit.
+    """
+    tmdb_data = {
+        'director': 'Abel Ferrara',
+        'year': 1998,
+        'countries': ['US'],
+        'genres': ['Drama', 'Thriller']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'American Exploitation'
+
+
+def test_tradition_director_fires_before_decade_gate(mock_metadata):
+    """Tradition category director match fires regardless of decade (Issue #40 Phase 2)
+
+    Generic principle test: a director listed in a tradition category (country_codes
+    populated) routes correctly even when the film's decade is outside the structural
+    window. Uses Ruggero Deodato 2000 (newly added Phase 1 director, Giallo).
+    """
+    tmdb_data = {
+        'director': 'Ruggero Deodato',
+        'year': 2000,
+        'countries': ['IT'],
+        'genres': ['Horror']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Giallo'  # Director identity fires before 1960s-1980s decade gate
+
+
+def test_movement_director_still_needs_decade_match(mock_metadata):
+    """Movement category director is still blocked by decade gate (Issue #40 Phase 2 unchanged)
+
+    FNW (country_codes=[]) is a movement category — decade gate fires BEFORE director check.
+    Godard 2014 should NOT route to FNW: year 2014 is outside 1950s-1970s decade bounds.
+    Movement categories are intentionally unchanged by Phase 2.
+    """
+    tmdb_data = {
+        'director': 'Jean-Luc Godard',
+        'year': 2014,
+        'countries': ['CH'],
+        'genres': ['Drama']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result != 'French New Wave'  # Decade gate blocks FNW for out-of-era Godard
+
+
+# =============================================================================
+# Issue #40 Phase 1: New directors regression tests
+# =============================================================================
+
+def test_van_peebles_1971_routes_to_blaxploitation(mock_metadata):
+    """Melvin Van Peebles 1971 → Blaxploitation (Phase 1 new director)"""
+    tmdb_data = {
+        'director': 'Melvin Van Peebles',
+        'year': 1971,
+        'countries': ['US'],
+        'genres': ['Drama', 'Action']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Blaxploitation'
+
+
+def test_john_ford_1940s_routes_to_classic_hollywood(mock_metadata):
+    """John Ford 1940s → Classic Hollywood (Phase 1 new director)"""
+    tmdb_data = {
+        'director': 'John Ford',
+        'year': 1946,
+        'countries': ['US'],
+        'genres': ['Western', 'Drama']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Classic Hollywood'
+
+
+def test_corman_1960s_routes_to_american_exploitation(mock_metadata):
+    """Roger Corman 1966 → American Exploitation (Phase 1 new director)"""
+    tmdb_data = {
+        'director': 'Roger Corman',
+        'year': 1966,
+        'countries': ['US'],
+        'genres': ['Horror', 'Drama']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'American Exploitation'
+
+
+def test_deodato_1980_routes_to_giallo(mock_metadata):
+    """Ruggero Deodato 1980 → Giallo (Phase 1 new director, within era)"""
+    tmdb_data = {
+        'director': 'Ruggero Deodato',
+        'year': 1980,
+        'countries': ['IT'],
+        'genres': ['Horror', 'Thriller']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Giallo'
+
+
+def test_king_hu_1979_routes_to_hk_action(mock_metadata):
+    """King Hu 1979 → Hong Kong Action (Phase 1 new director)"""
+    tmdb_data = {
+        'director': 'King Hu',
+        'year': 1979,
+        'countries': ['HK'],
+        'genres': ['Action', 'Drama']
+    }
+    classifier = SatelliteClassifier()
+    result = classifier.classify(mock_metadata, tmdb_data)
+    assert result == 'Hong Kong Action'
