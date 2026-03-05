@@ -1,6 +1,6 @@
 # Two-Signal Classification Architecture
 
-**Status:** Canonical (Issue #42 implemented, Issue #44 pending)
+**Status:** Canonical (Issue #42 implemented, Issue #44 implemented)
 **Implementation:** `lib/signals.py`
 **Date established:** 2026-03-05
 

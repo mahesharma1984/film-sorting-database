@@ -37,7 +37,8 @@ source bibliography per structural region.
 **Definition:**
 - Italian genre cinema (horror, thriller, erotic thriller)
 - 1960s-1980s peak
-- Directors: Mario Bava, Dario Argento, Lucio Fulci, Sergio Martino, Michele Soavi, Umberto Lenzi
+- Directors: Mario Bava, Dario Argento, Lucio Fulci, Sergio Martino, Michele Soavi, Umberto Lenzi, Massimo Dallamano, Ruggero Deodato, Paolo Cavara, Armando Crispino, Fernando Di Leo, Lamberto Bava, Enzo Castellari, Antonio Bido, Aldo Lado (15 total)
+- **Director sources:** Koven (2006) *La Dolce Morte*, Lucas (2007) *Italian Horror Film Directors*, Howarth (2002) *The Haunted World of Italian Horror*
 
 **Keyword signals (Issue #29):**
 - TMDb tags: `giallo`, `italian horror`, `psychosexual thriller`, `black-gloved killer`
@@ -76,7 +77,8 @@ source bibliography per structural region.
 - Japanese softcore/exploitation cinema
 - 1960s-1980s
 - Roman Porno, independent pink films
-- Directors: Kōji Wakamatsu, Tatsumi Kumashiro, Noboru Tanaka, Yasuzō Masumura (Issue #6)
+- Directors: Kōji Wakamatsu, Tatsumi Kumashiro, Noboru Tanaka, Yasuzō Masumura, Hisayasu Satō, Chūsei Sone, Genji Nakamura, Masaru Konuma, Shōgorō Nishimura (9 total)
+- **Director sources:** Sharp (2008) *Behind the Pink Curtain*, Weisser (1998) *Japanese Cinema Encyclopedia*
 
 **Keyword signals (Issue #29):**
 - TMDb tags: `pink film`, `roman porno`, `pinku eiga`, `nikkatsu`, `erotic drama`
@@ -113,7 +115,8 @@ source bibliography per structural region.
 - Japanese yakuza, action, and crime films
 - 1970s-1980s exploitation era
 - Distinct from Pinku Eiga (erotic) - focuses on violence/action
-- Directors: Kinji Fukasaku (Battle Royale, Battles Without Honor and Humanity series)
+- Directors: Kinji Fukasaku, Teruo Ishii, Norifumi Suzuki, Yasuharu Hasebe, Toshiya Fujita, Sadao Nakajima, Kazuhiko Yamaguchi, Shigehiro Ozawa (8 total)
+- **Director sources:** Desjardins (2005) *Outlaw Masters of Japanese Film*, Schilling (2003) *The Yakuza Movie Book*
 
 **Keyword signals (Issue #29):**
 - TMDb tags: `yakuza`, `jidaigeki`, `toei`, `chambara`, `japanese crime film`
@@ -197,6 +200,8 @@ source bibliography per structural region.
 - Boca do Lixo cinema tradition
 - Pornochanchada peak: 1970–1989; broader tradition: 1960s–1990s (WIDENED - Issue #20)
 - Pre-pornochanchada roots visible in mid-1960s genre films (e.g., O Padre e a Moça, 1966); tradition extends to early 1990s (e.g., Vai Trabalhar Vagabundo II, 1991)
+- Directors: Carlos Reichenbach, Victor Di Mello, Ody Fraga, Roberto Mauro, Fauzi Mansur, Claudio Cunha, José Miziara, Jean Garret, Osvaldo de Oliveira (9 total)
+- **Director sources:** Dennison/Shaw (2007) *Brazilian National Cinema*, Johnson (1987) *The Film Industry in Brazil*, Abreu (2015)
 
 **Films in Collection:**
 - Escola Penal de Meninas Violentadas (1977)
@@ -249,7 +254,8 @@ source bibliography per structural region.
 - HK genre cinema outside of Core auteurs (Wong Kar-wai, Johnnie To, Ann Hui)
 - Martial arts, action, Category III exploitation
 - 1970s-1990s
-- Directors: Tsui Hark, Ringo Lam, John Woo, Lam Nai-Choi (Issue #6)
+- Directors: Tsui Hark, Ringo Lam, John Woo, Lam Nai-Choi, King Hu, Chang Cheh, Sammo Hung, Yuen Woo-Ping, Jackie Chan, Ching Siu-Tung, Corey Yuen, Stanley Tong (12 total)
+- **Director sources:** Teo (1997) *Hong Kong Cinema: The Extra Dimensions*, Bordwell (2000) *Planet Hong Kong*
 
 **Films in Collection:**
 - Drunken Master (1978)
@@ -368,7 +374,8 @@ source bibliography per structural region.
 - American exploitation, grindhouse, direct-to-video cult
 - 1960s-2000s (extended to include Larry Clark's 1990s-2000s work)
 - Not auteur-driven, not rewatchable American entertainment (that's Popcorn)
-- Directors: Russ Meyer, Abel Ferrara, Larry Cohen, Herschell Gordon Lewis, Larry Clark (Issue #6)
+- Directors: Russ Meyer, Abel Ferrara, Larry Cohen, Herschell Gordon Lewis, Larry Clark, Roger Corman, Andy Milligan, David Friedman, Michael Findlay, Doris Wishman, Ted V. Mikels, Al Adamson, Ray Dennis Steckler (13 total)
+- **Director sources:** Vale/Juno (1986) *Incredibly Strange Films*, Schaefer (1999) *Bold! Daring! Shocking! True!*, McCarthy/Flynn (1975) *Kings of the Bs*
 
 **Films in Collection:**
 - Faster Pussycat! Kill! Kill! (1965) - Russ Meyer
@@ -450,7 +457,8 @@ source bibliography per structural region.
 **Definition:**
 - European erotic cinema that's not quite auteur, not quite pure exploitation
 - 1960s-1980s
-- Directors: Just Jaeckin, Walerian Borowczyk, Radley Metzger, Tinto Brass, Roger Vadim (Issue #6)
+- Directors: Just Jaeckin, Walerian Borowczyk, Radley Metzger, Tinto Brass, Roger Vadim, Max Pécas, Joe D'Amato, Jess Franco, Jean Rollin, Piero Schivazappa, Leon Klimovsky (11 total)
+- **Director sources:** Mathijs/Mendik (2004) *Alternative Europe*, Tohill/Tombs (1995) *Immoral Tales*
 
 **Films in Collection:**
 - Emanuelle series (likely)
@@ -488,7 +496,8 @@ source bibliography per structural region.
 **Definition:**
 - 1970s Black action/exploitation cinema (extended to 1990s for Ernest Dickerson - Issue #6)
 - Not auteur-driven (those would be Core)
-- Directors: Gordon Parks, Jack Hill, Ernest R. Dickerson (Juice, Tales from the Hood)
+- Directors: Gordon Parks, Jack Hill, Ernest R. Dickerson, Melvin Van Peebles, Gordon Parks Jr., Michael Schultz, Bill Gunn, Barry Shear, Arthur Marks, Ivan Dixon (11 total)
+- **Director sources:** Guerrero (1993) *Framing Blackness*, Lawrence (2008) *Blaxploitation Films of the 1970s*
 
 **Films in Collection:**
 - Coffy (1973)
@@ -699,6 +708,8 @@ Indie Cinema is a **negative-space category** defined by what it is NOT (not exp
 - American studio cinema from classical era
 - Pre-1960 (before New Hollywood rupture)
 - Genre cinema: Film Noir, Westerns, Musicals, Melodrama
+- Directors: John Ford, Howard Hawks, Frank Capra, Michael Curtiz, George Cukor, Fred Zinnemann, Elia Kazan, John Huston, Joseph L. Mankiewicz, Vincente Minnelli (10 total)
+- **Director sources:** Sarris (1968) *The American Cinema*, Schatz (1989) *The Genius of the System*, Bordwell/Thompson (2003) *Film History*
 
 **Cap:** 25 films
 
@@ -742,7 +753,9 @@ Note: Wong Kar-wai and Johnnie To are Core directors — their films route to Co
 
 **Classification:** MPIA Category III rating (1988+) — films made to exploit Hong Kong's adult-content rating, typically erotic horror or supernatural erotica. Real institutional classification system with distinct commercial identity.
 
-**Routing:** MANUAL CURATION ONLY via SORTING_DATABASE pins. No auto-routing — ratings system ≠ genre, and country+genre combos would produce false positives.
+**Routing:** Director-only routing (Issue #44). Directors: Herman Yau, Bosco Lam, Billy Tang, Clarence Fok, Andrew Lau, Taylor Wong (6 total).
+**Director sources:** Bordwell (2000) *Planet Hong Kong*, Williams (1997) *Structures of Desire*.
+SORTING_DATABASE pins continue to be the primary routing mechanism for this category.
 
 **Cap:** 10 films. **Certainty tier:** 4 (manual only).
 

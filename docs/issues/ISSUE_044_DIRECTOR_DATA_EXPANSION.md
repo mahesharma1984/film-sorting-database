@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | OPEN |
+| Status | IMPLEMENTED |
 | Priority | P2-High |
 | Date Opened | 2026-03-05 |
 | Component | Satellite Routing / Constants |

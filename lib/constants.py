@@ -300,6 +300,9 @@ SATELLITE_ROUTING_RULES = {
             'claudio cunha',       # As Gatas do Sexo Selvagem
             'jose miziara',        # Mulher Abusada, Beijo nas Calçadas
             'jean garret',         # As Brasileirinhas, Faça Amor, Faça Guerra
+            # Issue #44: additional director (literature review)
+            # Source: Dennison/Shaw (2007) "Brazilian National Cinema", Abreu (2015)
+            'osvaldo de oliveira', # A Pantera Nua, Contos Eróticos (Boca do Lixo)
         ],
         'keyword_signals': {
             'tmdb_tags': ['pornochanchada', 'boca do lixo', 'brazilian exploitation'],
@@ -321,6 +324,10 @@ SATELLITE_ROUTING_RULES = {
             'fernando di leo',     # Slalom, Caliber 9 (crime-giallo crossover)
             'lamberto bava',       # A Blade in the Dark, Demons
             'enzo castellari',     # The Big Racket, Street Law (crime-giallo crossover)
+            # Issue #44: additional directors (literature review)
+            # Source: Koven (2006) "La Dolce Morte", Howarth (2002) "The Haunted World of Italian Horror"
+            'antonio bido',        # The Cat's Victims, Watch Me When I Kill
+            'aldo lado',           # Short Night of Glass Dolls, Who Saw Her Die?
         ],
         'keyword_signals': {
             'tmdb_tags': ['giallo', 'italian horror', 'psychosexual thriller', 'black-gloved killer'],
@@ -377,6 +384,12 @@ SATELLITE_ROUTING_RULES = {
             'wakamatsu', 'kumashiro', 'tanaka',
             'masumura',      # NEW: Yasuzō Masumura (Issue #6)
             'hisayasu sato', # Issue #40 Phase 1: Hisayasu Satō — Naked Blood, Riken
+            # Issue #44: expanded director list (literature review)
+            # Source: Sharp (2008) "Behind the Pink Curtain", Weisser (1998) "Japanese Cinema Encyclopedia"
+            'chusei sone',          # Angel Guts series (Nikkatsu Roman Porno)
+            'genji nakamura',       # School of the Holy Beast (Nikkatsu)
+            'masaru konuma',        # Flower and Snake, Wife to Be Sacrificed (Nikkatsu)
+            'shogoro nishimura',    # Dan Oniroku adaptations (Nikkatsu Roman Porno)
         ],
         'keyword_signals': {
             'tmdb_tags': ['pink film', 'roman porno', 'pinku eiga', 'nikkatsu', 'erotic drama'],
@@ -390,6 +403,15 @@ SATELLITE_ROUTING_RULES = {
         'genres': ['Action', 'Crime', 'Thriller'],
         'directors': [
             'fukasaku',  # NEW: Kinji Fukasaku (Issue #6)
+            # Issue #44: expanded director list (literature review)
+            # Source: Desjardins (2005) "Outlaw Masters of Japanese Film", Schilling (2003) "The Yakuza Movie Book"
+            'teruo ishii',          # Orgies of Edo, Inferno of Torture, Blind Woman's Curse
+            'norifumi suzuki',      # School of the Holy Beast, Sex and Fury, Star of David
+            'yasuharu hasebe',      # Stray Cat Rock series, Rape! 13th Hour (also in JNW)
+            'toshiya fujita',       # Lady Snowblood, Stray Cat Rock: Sex Hunter (also in JNW)
+            'sadao nakajima',       # The Yakuza Graveyard, True Story of a Woman in Jail
+            'kazuhiko yamaguchi',   # Sister Street Fighter series, Delinquent Girl Boss
+            'shigehiro ozawa',      # The Street Fighter, Return of the Street Fighter
         ],
         'keyword_signals': {
             'tmdb_tags': ['yakuza', 'jidaigeki', 'toei', 'chambara', 'japanese crime film'],
@@ -431,7 +453,16 @@ SATELLITE_ROUTING_RULES = {
         'country_codes': [],   # No auto-routing — SORTING_DATABASE pins only
         'decades': ['1980s', '1990s'],
         'genres': [],
-        'directors': [],
+        'directors': [
+            # Issue #44: director-only routing (like FNW/AmNH pattern)
+            # Source: Bordwell (2000) "Planet Hong Kong", Williams (1997) "Structures of Desire"
+            'herman yau',       # The Untold Story, Ebola Syndrome
+            'bosco lam',        # Dr. Lamb
+            'billy tang',       # Run and Kill, Brother of Darkness
+            'clarence fok',     # Naked Killer, Robotrix
+            'andrew lau',       # Young and Dangerous series
+            'taylor wong',      # Sentenced to Hang
+        ],
         'keyword_signals': {
             'tmdb_tags': ['category iii', 'hong kong category iii', 'category 3'],
             'text_terms': ['category iii', 'category 3'],
@@ -454,6 +485,9 @@ SATELLITE_ROUTING_RULES = {
             'jackie chan',   # Police Story, Project A (director credits)
             'ching siu-tung', # A Chinese Ghost Story, Swordsman series
             'corey yuen',    # Yes, Madam!, Righting Wrongs
+            # Issue #44: additional director (literature review)
+            # Source: Teo (1997) "Hong Kong Cinema: The Extra Dimensions"
+            'stanley tong',  # Rumble in the Bronx, Police Story 3: Supercop
         ],
         'keyword_signals': {
             'tmdb_tags': ['martial arts', 'wuxia', 'kung fu', 'triad', 'heroic bloodshed',
@@ -480,6 +514,9 @@ SATELLITE_ROUTING_RULES = {
             'bill gunn',           # Ganja & Hess, Stop
             'barry shear',         # Across 110th Street
             'arthur marks',        # Friday Foster, Bucktown, J.D.'s Revenge
+            # Issue #44: additional director (literature review)
+            # Source: Lawrence (2008) "Blaxploitation Films of the 1970s"
+            'ivan dixon',          # The Spook Who Sat by the Door (1973)
         ],
         'keyword_signals': {
             'tmdb_tags': ['blaxploitation', 'african american', 'inner city', 'black power'],
@@ -532,6 +569,11 @@ SATELLITE_ROUTING_RULES = {
             'david friedman',   # Blood Feast (producer/director), She-Freak
             'michael findlay',  # Sloane trilogy, Shriek of the Mutilated
             'doris wishman',    # Bad Girls Go to Hell, Nude on the Moon
+            # Issue #44: additional directors (literature review)
+            # Source: Vale/Juno (1986) "Incredibly Strange Films", Schaefer (1999) "Bold! Daring! Shocking! True!"
+            'ted v. mikels',    # The Astro-Zombies, The Corpse Grinders
+            'al adamson',       # Dracula vs. Frankenstein, Blood of Ghastly Horror
+            'ray dennis steckler',  # The Incredibly Strange Creatures Who Stopped Living
         ],
         'keyword_signals': {
             'tmdb_tags': ['grindhouse', 'exploitation film', 'b-movie', 'troma', 'slasher',
@@ -553,6 +595,11 @@ SATELLITE_ROUTING_RULES = {
             # Note: jess franco is ES (Spanish); director match bypasses country_codes gate (Phase 2 behavior)
             "joe d'amato",   # Emanuelle and the Last Cannibals, Anthropophagus
             'jess franco',   # Vampyros Lesbos, She Killed in Ecstasy (ES — bypasses country gate via director match)
+            # Issue #44: additional directors (literature review)
+            # Source: Mathijs/Mendik (2004) "Alternative Europe", Tohill/Tombs (1995) "Immoral Tales"
+            'jean rollin',          # The Rape of the Vampire, Lips of Blood, Grapes of Death (FR)
+            'piero schivazappa',    # The Frightened Woman (IT)
+            'leon klimovsky',       # The Vampires' Night Orgy, Werewolf Shadow (ES — bypasses country gate)
         ],
         'keyword_signals': {
             'tmdb_tags': ['erotic film', 'softcore', 'sexploitation', 'european erotica'],
@@ -591,6 +638,10 @@ SATELLITE_ROUTING_RULES = {
             'fred zinnemann', # High Noon, From Here to Eternity, A Member of the Wedding
             'elia kazan',    # A Streetcar Named Desire, On the Waterfront, East of Eden
             'john huston',   # The Maltese Falcon, The Treasure of the Sierra Madre, The African Queen
+            # Issue #44: additional directors (literature review)
+            # Source: Sarris (1968) "The American Cinema", Schatz (1989) "The Genius of the System"
+            'joseph l. mankiewicz',  # All About Eve, A Letter to Three Wives
+            'vincente minnelli',     # An American in Paris, The Band Wagon, Meet Me in St. Louis
         ],
         'keyword_signals': {
             'tmdb_tags': ['film noir', 'pre-code', 'golden age of hollywood', 'screwball comedy',
