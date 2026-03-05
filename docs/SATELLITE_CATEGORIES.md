@@ -6,6 +6,28 @@
 - Texture, not spine
 - This is the margins of cinema, not the center
 
+## Two-Signal Structure
+
+Each category below encodes two independent classification signals
+(see `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md`):
+
+- **Director Identity** — the `Directors` list names practitioners verified in
+  published scholarship. These populate Signal 1 (`score_director()`).
+- **Structural Bounds** — country codes, decade range, and genre gates define
+  the historical coordinates. These populate Signal 2 (`score_structure()`).
+
+When both signals match the same category, classification confidence is highest
+(`both_agree`, 0.85). Director identity alone can route out-of-era films
+(`director_signal`, 0.65). Structural triangulation alone routes unknown-director
+films in distinctive regions (`structural_signal`, 0.65).
+
+**Director list sourcing methodology:** The structural bounds identify which
+published scholarship to consult (e.g., IT+1970s → Koven 2006 for Giallo).
+Director rosters are extracted from those sources and filtered through the
+SATELLITE_DEPTH §3 inclusion criteria (body of work, formal distinctiveness,
+scholarship citation). See `TWO_SIGNAL_ARCHITECTURE.md §4` for the full
+source bibliography per structural region.
+
 ---
 
 ## SATELLITE CATEGORIES (Identified from Collection)

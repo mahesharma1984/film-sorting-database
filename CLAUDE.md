@@ -71,7 +71,7 @@ Every operation is either REASONING or PRECISION. Never mix them in one step.
 
 **Test:** If a step requires both parsing AND judgment, split it into two steps.
 
-### Rule 2: Pattern-First
+### Rule 2: Pattern-First (Two-Signal Architecture)
 
 The 4-tier priority hierarchy is the PATTERN. All films are instances classified into it:
 
@@ -79,19 +79,26 @@ The 4-tier priority hierarchy is the PATTERN. All films are instances classified
 Reference (canon) → Satellite (movement match) → Core (prestige non-movement) → Popcorn (pleasure) → Unsorted
 ```
 
-(Explicit lookup always fires first — SORTING_DATABASE overrides everything. This describes the heuristic chain.)
+**Two independent signals determine classification** (see `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md`):
+- **Signal 1: Director Identity** — who made this? (from scholarship-sourced director rosters)
+- **Signal 2: Structural Triangulation** — where/when/what? (country + decade + genre coordinates)
 
-This priority order is a design decision, not an implementation detail. The classifier checks tiers in this order — first match wins. Never reorder without explicit redesign.
+Both signals fire for every film. Their agreement or disagreement determines confidence:
+- Both agree → `both_agree` (0.85) — highest-confidence heuristic classification
+- Director disambiguates structural ambiguity → `director_disambiguates` (0.75)
+- Director only (out-of-era) → `director_signal` (0.65)
+- Structure only (unknown director) → `structural_signal` (0.65)
+- Ambiguous structure, no director → `review_flagged` (0.4) — curator review needed
 
-The classification pipeline checks in this priority (Issue #25, updated Issue #38):
+**Implementation:** `score_director()` + `score_structure()` → `integrate_signals()` in `lib/signals.py`
+
+The full classification pipeline (Issue #42, updated from Issue #25/#38):
 1. Explicit lookup (SORTING_DATABASE.md) — human-curated, highest trust
 2. Corpus lookup (data/corpora/*.csv) — scholarship-sourced, confidence 1.0 (Issue #38)
-3. Reference canon check — 50-film hardcoded list
-4. Satellite routing — country + decade + director rules (decade-bounded, movement-first)
-5. User tag recovery — trust previous human classification (after Satellite, so stale Core tags don't block movement routing)
-6. Core director check — whitelist match (fallback for non-movement prestige work)
-7. Popcorn check — popularity + format signals
-8. Default → Unsorted with reason code
+3. Two-signal integration — both signals fire independently; `integrate_signals()` priority table (P1–P10) determines tier, category, confidence, and reason code
+4. Default → Unsorted with reason code
+
+Structural specificity takes priority over director prestige: when a Core director's film matches a Satellite movement, movement routing wins because it is a narrower, more historically grounded gate. Core routing exists as identity-only fallback. Resolution for specific films: SORTING_DATABASE pins (Issue #25).
 
 ### Rule 3: Failure Gates
 

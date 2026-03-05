@@ -189,15 +189,63 @@ each new entry does not accidentally shadow a known SORTING_DATABASE film title.
 
 ### Fix Description
 
-Expand the `directors` lists in `SATELLITE_ROUTING_RULES` (`lib/constants.py`) for each
-tradition Satellite category, sourced from published film-historical scholarship as required
-by CLAUDE.md Rule 4 (Domain Grounding). This is a pure data addition — no logic changes,
-no new files, no new functions. The existing `_build_director_registry()` and
-`score_director()` machinery handles new entries automatically.
+**This is a literature review task, not a manual curation task.**
 
-Each director must be verifiable in published filmographies of the relevant movement.
+The two-signal architecture (`docs/architecture/TWO_SIGNAL_ARCHITECTURE.md`) establishes
+that structural coordinates (country+decade+genre) identify which scholarly field to
+consult, and published scholarship within that field contains director rosters that
+populate Signal 1 (Director Identity). The methodology:
+
+1. For each tradition category, identify 1–2 authoritative published sources
+   (monograph, edited volume, or academic filmography)
+2. Extract the director roster from those sources
+3. Apply the SATELLITE_DEPTH §3 quality gates to each candidate
+4. Add verified entries to `SATELLITE_ROUTING_RULES[category]['directors']` in
+   `lib/constants.py`
+
+This is a pure data addition — no logic changes, no new files, no new functions.
+The existing `_build_director_registry()` and `score_director()` machinery handles
+new entries automatically.
+
+**Authoritative sources per structural region** (from TWO_SIGNAL_ARCHITECTURE.md §4):
+
+| Region | Source | Directors Available |
+|---|---|---|
+| IT+1960s-80s (Giallo) | Koven 2006 *La Dolce Morte* | ~25 |
+| US+1970s (Blaxploitation) | Guerrero 1993, Lawrence 2008 | ~15-20 |
+| US+1960s-80s (AmExploit) | Vale/Juno 1986 *Incredibly Strange Films* | ~13 |
+| US+1930s-50s (Classic HW) | Sarris 1968 *The American Cinema* | ~200 classified |
+| BR+1960s-90s (Pornochanchada) | Dennison/Shaw 2007, Abreu 2015 | ~12-15 |
+| HK+1970s-90s (HK Action) | Teo 1997 *HK Cinema: Extra Dimensions* | ~18+ |
+| JP+1960s-80s (Pinku) | Sharp 2008 *Behind the Pink Curtain* | ~20+ |
+| FR/IT/DE+1960s-80s (EuroSex) | Mathijs/Mendik 2004 *Alternative Europe* | ~14-18 |
+| JP+1970s-80s (JExploit) | Desjardins 2005/2013 *Gun and Sword* | ~14+ |
+| HK+1980s-90s (Cat III) | No monograph (censorship rating, not movement) | Manual only |
+| FR+1950s-70s (FNW) | Neupert 2007, Marie 2003 | ~15-20 |
+| US+1967-80 (AmNH) | Biskind 1998 *Easy Riders, Raging Bulls* | ~15-20 |
+
 Directors who are already in the Core whitelist (`CORE_DIRECTOR_WHITELIST_FINAL.md`) must
 NOT be added to Satellite lists (this would conflict with integrate_signals() Priority #5/#6).
+
+### Per-Director Inclusion Gate (SATELLITE_DEPTH §3)
+
+Every proposed director must pass ALL five checks before addition. This is the quality
+standard — not every director who worked in a country/decade qualifies.
+
+- [ ] **Sustained body of work** — Multiple films in the tradition across multiple years.
+  A director with 2–3 films is a practitioner; 8+ films across a career indicates commitment.
+  Minimum: 3 films in the tradition. (SATELLITE_DEPTH §3, Criterion 1)
+- [ ] **Formal distinctiveness** — A recognisable visual, narrative, or thematic language
+  specific to their work in this tradition. Not just "good at the genre" but "their way of
+  doing the genre is identifiable." (SATELLITE_DEPTH §3, Criterion 2)
+- [ ] **Scholarship citation** — Director appears in at least one published source documenting
+  the movement: monograph, Wikipedia category page, BFI list, or filmography collection.
+  (CLAUDE.md Rule 4 — Domain Grounding)
+- [ ] **Not in Core whitelist** — `CoreDirectorDatabase.is_core_director()` returns False.
+  Core directors route via Priority #6 in `integrate_signals()`. (Issue #25)
+- [ ] **Active period within decade bounds** — The director's work in this tradition falls
+  within the category's documented decade range. A 2010s director cannot be added to a
+  1960s–1980s category. (CLAUDE.md §4 — decade-bounding; MARGINS_AND_TEXTURE §2)
 
 ### Execution Order
 
@@ -289,6 +337,11 @@ requirement (CLAUDE.md Rule 4).
 
 All names as lowercase strings (matching `_director_matches()` normalisation logic).
 Cross-check each against `CORE_DIRECTOR_WHITELIST_FINAL.md` before adding.
+Each entry must pass the Per-Director Inclusion Gate (above) before addition.
+
+**IMPORTANT:** Issues #40 and #42 already added many directors to several categories.
+The lists below reflect the state as of 2026-03-05 (post-#42). Each section shows the
+current roster and the genuinely new additions still needed.
 
 **Sources are mandatory — each entry must cite one of:**
 - Wikipedia category/article for the movement
@@ -296,50 +349,43 @@ Cross-check each against `CORE_DIRECTOR_WHITELIST_FINAL.md` before adding.
 - BFI Sight & Sound lists
 - Published filmography collections
 
-#### Giallo (IT, 1960s–1980s) — add ~9
+#### Giallo (IT, 1960s–1980s) — 13 current, add ~2
 
 ```python
-# Currently: mario bava, dario argento, lucio fulci, umberto lenzi,
-#            sergio martino, andrea bido, + others from #40
+# Current (13): bava, argento, fulci, martino, soavi, lenzi, massimo dallamano,
+#   ruggero deodato, paolo cavara, armando crispino, fernando di leo,
+#   lamberto bava, enzo castellari
 # Add (Wikipedia "Giallo film", Koven 2006):
-'massimo dallamano',    # Death Occurred Last Night, What Have They Done to Solange?
-'ruggero deodato',      # Body Count, Cut and Run (giallo period)
-'paolo cavara',         # Plot of Fear
-'armando crispino',     # Autopsy
-'fernando di leo',      # Slaughter Hotel, Naked Violence
-'lamberto bava',        # A Blade in the Dark, Demons
-'enzo castellari',      # Cold Eyes of Fear
 'antonio bido',         # The Cat's Victims, Watch Me When I Kill
 'aldo lado',            # Short Night of Glass Dolls, Who Saw Her Die?
+# Further candidates (research needed — verify SATELLITE_DEPTH §3 criteria):
+# 'sergio pastore', 'andrea bianchi', 'pupi avati' (early work)
 ```
 
-#### Blaxploitation (US, 1970s) — add ~6
+#### Blaxploitation (US, 1970s) — 10 current, add ~1
 
 ```python
-# Currently: gordon parks, jack hill, ernest dickerson, ossie davis, + others
+# Current (10): gordon parks, jack hill, ernest dickerson, ernest r. dickerson,
+#   melvin van peebles, gordon parks jr., michael schultz, bill gunn,
+#   barry shear, arthur marks
 # Add (Wikipedia "Blaxploitation", BFI):
-'melvin van peebles',   # Sweet Sweetback's Baadasssss Song
-'gordon parks jr.',     # Super Fly
-'bill gunn',            # Ganja & Hess
-'barry shear',          # Across 110th Street
-'arthur marks',         # Friday Foster, Bucktown, J.D.'s Revenge
 'ivan dixon',           # The Spook Who Sat by the Door
+# Further candidates (research needed):
+# 'fred williamson' (actor-director), 'jamaa fanaka', 'ossie davis'
 ```
 
-#### American Exploitation (US, 1960s–1980s) — add ~8
+#### American Exploitation (US, 1960s–1980s) — 10 current, add ~3
 
 ```python
-# Currently: russ meyer, herschell gordon lewis, abel ferrara, larry cohen,
-#            larry clark, + others from #40
+# Current (10): russ meyer, abel ferrara, larry cohen, herschell gordon lewis,
+#   larry clark, roger corman, andy milligan, david friedman,
+#   michael findlay, doris wishman
 # Add (Wikipedia "Grindhouse", "Exploitation film"):
-'roger corman',         # Bucket of Blood, Little Shop of Horrors, etc.
-'andy milligan',        # The Ghastly Ones, Torture Dungeon
-'david friedman',       # 2000 Maniacs (produced), She-Freak
-'michael findlay',      # The Touch of Her Flesh trilogy
-'doris wishman',        # Bad Girls Go to Hell, Nude on the Moon
 'ted v. mikels',        # The Astro-Zombies, The Corpse Grinders
 'al adamson',           # Dracula vs. Frankenstein, Blood of Ghastly Horror
 'ray dennis steckler',  # The Incredibly Strange Creatures
+# Further candidates (research needed):
+# 'william girdler', 'matt cimber', 'bob clark' (early work)
 ```
 Note: `larry clark` (Kids, 1995) should be reviewed — his films post-1985 are outside
 the decade gate. If he causes false positives for 1990s films, remove from this list.
@@ -624,11 +670,17 @@ git tag pre-issue-044
 ## 10. Theory & Architecture Grounding
 
 **Methodology basis:**
-- `CLAUDE.md §3 Rule 4` — Domain Grounding: every director entry must be verifiable
-  in published film-historical scholarship. Directors must appear in documented
+- `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md` — canonical two-signal model.
+  §4 (Literature Review Bridge) defines the methodology this issue follows:
+  structural coordinates → published scholarship → director rosters → quality gates
+- `docs/theory/SATELLITE_DEPTH.md §3` — three director inclusion criteria:
+  sustained body of work, formal distinctiveness, influence/canonicity. These are
+  the quality gates applied to every candidate extracted from published sources.
+- `CLAUDE.md §3 Rule 4` — Domain Grounding: directors must appear in published
   filmographies of the movement, not just "seem to fit"
-- `CLAUDE.md §3 Rule 2` — Pattern-First: the 4-tier hierarchy and satellite category
-  definitions are the authoritative pattern. Director lists are instances that activate it.
+- `CLAUDE.md §3 Rule 2` — Two-Signal Architecture: director identity (Signal 1)
+  and structural triangulation (Signal 2) fire independently; this issue expands
+  Signal 1 coverage to reduce the 1:2.9 signal imbalance
 - `CLAUDE.md §3 Rule 11` — Certainty-First Classification: director identity is a
   Tier 1-2 signal (high certainty when present). This issue increases the reach of
   high-certainty routing.
@@ -636,6 +688,8 @@ git tag pre-issue-044
   is the measurable gap this issue addresses. Target ratio is 1:1.5 or better.
 
 **Architecture reference:**
+- `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md` §4 — source bibliography mapping
+  each structural region to its authoritative published scholarship
 - `docs/issues/INVESTIGATION_POST_042_DIRECTOR_SIGNAL_COVERAGE.md` — this issue's
   investigation document, data sources, and root cause analysis
 - `docs/issues/INVESTIGATION_DIRECTOR_FIRST_ROUTING.md` — pre-#42 investigation;
