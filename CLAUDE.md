@@ -445,8 +445,15 @@ python scripts/validate_handoffs.py                   # Self-test demonstration
 
 # Full library inventory — run after each batch of moves (Issue #17)
 python audit.py                                       # Walk all tier folders → output/library_audit.csv
-# Load library_audit.csv in dashboard for collection-wide classification rate
 # (sorting_manifest.csv = Unsorted work queue only; library_audit.csv = full library)
+
+# Two-signal health monitor dashboard (Issue #49)
+streamlit run dashboard.py
+# Sidebar: System Health (signal accuracy + reaudit discrepancies + failure cohorts + unsorted triage)
+#          Film Browser (read-only filterable table)
+# Manifest picker: primary = sorting_manifest.csv / library_audit.csv
+#                  diagnostic (read-only) = reaudit_report.csv / review_queue.csv
+# Note: Thread Discovery → scripts/thread_query.py | Tentpole Rankings → scripts/rank_category_tentpoles.py
 
 # RAG semantic search — cross-concept questions across all docs
 python3 -m lib.rag.query "How does Satellite routing work?"           # Top-5 results

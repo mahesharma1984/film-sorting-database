@@ -325,7 +325,11 @@ After diagnosing a problem, write an issue spec before touching code:
 
 ### "See the full library classification state / dashboard shows wrong percentage"
 
-The dashboard's "Classified" percentage depends on which manifest you load:
+The dashboard (`streamlit run dashboard.py`) is a two-signal health monitor with two views:
+- **System Health** — signal accuracy, reaudit discrepancies, failure cohorts, unsorted triage
+- **Film Browser** — read-only filterable table of all classified/unsorted films
+
+The "Classified" percentage depends on which manifest you load:
 - `sorting_manifest.csv` = Unsorted work queue only (shows ~0% when queue is all dirty filenames)
 - `library_audit.csv` = full library including all tier folders (shows true collection-wide rate)
 
@@ -337,6 +341,11 @@ python audit.py
 Then load `library_audit.csv` in the dashboard manifest picker.
 
 Run `audit.py` after each batch of `move.py --execute` to keep the picture current.
+
+**Removed from dashboard (Issue #49 — use CLI instead):**
+- Thread Discovery → `python scripts/thread_query.py`
+- Tentpole Rankings → `python scripts/rank_category_tentpoles.py`
+- Edit/Export curation → `python scripts/curate.py` (planned)
 
 → See: `audit.py`, `docs/CHANGELOG.md` v1.2
 
