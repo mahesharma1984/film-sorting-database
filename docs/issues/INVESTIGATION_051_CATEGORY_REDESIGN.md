@@ -166,8 +166,8 @@ The same chain works for Classic Hollywood (John Ford, Howard Hawks both produce
 ### C1: The confidence score machinery is correct
 `both_agree` (0.85), `structural_signal` (0.65), `review_flagged` (0.4) reflect genuine differences in classification certainty. The scores are not the problem.
 
-### C2: The categories are not aligned with the certainty tier framework
-`integrate_signals()` applies the same logic to all categories. Tier 3 categories (Indie Cinema, Music Films) produce `both_agree` at 0.85 — a confidence score that the framework explicitly says requires 4 independent gates, which these categories do not have.
+### C2: Three categories are not real film movements
+Indie Cinema, Music Films, and Cult Oddities are not named historical movements grounded in published scholarship. They are catch-alls — defined by exclusion (Indie Cinema), a single genre tag (Music Films), or nothing at all (Cult Oddities). The two-signal system produces meaningful results for positive-space categories (Giallo, FNW, HK Action) and noise for negative-space catch-alls. The fix is to remove them from `SATELLITE_ROUTING_RULES`, not to add a tier field that suppresses them — if they can't be structurally defined, they should not be in the structural routing table.
 
 ### C3: `director_disambiguates` should be removed
 P3 in `integrate_signals()` uses director to override conflicting structural evidence. 52.9% accuracy makes this statistically indistinguishable from a coin flip. When director and structure point to different categories, the correct output is `review_flagged`, not director-routing.
@@ -198,10 +198,17 @@ Everything else — currently ~212 `structural_signal` films and ~23 `both_agree
 
 ## 10. Feeds Into
 
-This investigation directly feeds **Issue #51: Category Certainty Enforcement and Vague Category Removal**. See `docs/issues/ISSUE_051_CATEGORY_CERTAINTY_ENFORCEMENT.md`.
+This investigation directly feeds **Issue #51: Clean Up Satellite Categories — Remove Catch-Alls, Hone Definitions**. See `docs/issues/ISSUE_051_CATEGORY_CERTAINTY_ENFORCEMENT.md`.
+
+**Issue #51 implements:**
+- Remove Indie Cinema, Music Films, Cult Oddities from `SATELLITE_ROUTING_RULES` (C2, C4)
+- Fix known bad SORTING_DATABASE pins — Cocteau, Lelouch, Wyler, Ho (C5)
+- Replace `director_disambiguates` with `review_flagged` for signal conflicts (C3)
+- SORTING_DATABASE pins to removed categories continue to work via `explicit_lookup` (C4)
 
 **Deferred to follow-up issues:**
-- Explicit_lookup review pass (correct misplacements identified in §7)
-- New category development: German New Cinema, Italian Art Cinema (Tier 4 → Tier 2 pathway)
-- Reference canon corpus migration (Issue #50, recommended path)
+- New category development: German New Cinema, Italian Art Cinema (Tier 4 → Tier 2 pathway) — Issue #52, requires clean baseline from #51
+- Full explicit_lookup review pass (correct remaining misplacements beyond the 6 identified in §7)
+- Reference canon corpus migration — Issue #50
 - Structural gate refinement for Tier 1 categories (keyword signals as required, not corroborating)
+- Honing remaining 15 categories: run API cache against confirmed films per category → derive empirical structural profiles → tighten gates where they diverge from reality
