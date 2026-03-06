@@ -1,0 +1,365 @@
+# Issue #49: Dashboard Refocus — Two-Signal Health Monitor
+
+| Field | Value |
+|---|---|
+| Status | OPEN |
+| Priority | P2-High |
+| Date Opened | 2026-03-06 |
+| Component | Dashboard / Developer Tooling |
+| Change Type | Refactor |
+| Estimated Effort | 1–2 days |
+| Blocked By | None |
+| Blocks | None |
+| Supersedes | #43 (manifest routing/workflow clarity — absorbed into this wider refocus) |
+
+---
+
+## 1. Manager Summary
+
+**Problem:** The dashboard (1,659 lines, 5 sections) grew organically by adding a panel for every new output type. It now surfaces collection inventory (Reference Canon tracker, Core director roster, Satellite fill rates), keyword exploration (Thread Discovery), and curation tools (Edit/Export modes, Tentpole Rankings) at equal weight to the only question that matters: *is the two-signal classification system working, and are its outputs good?* Roughly 78% of the section code serves goals other than system health.
+
+**Impact if unfixed:** Developer time spent navigating panels that don't answer the diagnostic question. The dashboard does not show per-signal accuracy (from `accuracy_baseline.json`), evidence trail gate status (from `evidence_trails.csv`), reaudit discrepancy rates (from `reaudit_report.csv`), or failure cohort summaries (from `failure_cohorts.json`) — all of which already exist on disk but aren't consumed. The manifest picker (Issue #43) still loads diagnostic CSVs as pseudo-manifests, producing misleading metrics.
+
+**Risk if fixed wrong:** Cutting panels that curators actually use for collection management. Over-engineering the health view with metrics nobody acts on. Breaking the Signal Quality panel and confidence histogram that already work well.
+
+**Estimated effort:** 1–2 days. Most work is deletion + 3 new panels consuming existing output files.
+
+---
+
+## 2. Evidence
+
+### Observation
+
+The dashboard has 5 sections. An audit against the question "is the two-signal system working?" shows most code serves other goals:
+
+| Section | Lines | System Health Lines | Bloat Lines | Bloat % |
+|---|---|---|---|---|
+| Collection Overview (line 275) | 300 | 82 (Signal Quality) | 218 (Canon, Directors, Caps, duplicate charts) | 73% |
+| Pipeline Health (line 575) | 135 | 65 (Confidence, Reasons, Triage) | 70 (Language/Country bars, layout) | 52% |
+| Film Browser (line 1031) | 129 | 47 (View mode) | 82 (Edit/Export modes, excess filters) | 64% |
+| Thread Discovery (line 1160) | 228 | 0 | 228 (keyword exploration — unrelated) | 100% |
+| Tentpole Rankings (line 1460) | 97 | 0 | 97 (curation retention — unrelated) | 100% |
+| **Total** | **889** | **194** | **695** | **78%** |
+
+### Data
+
+**Existing output files NOT consumed by dashboard:**
+
+| File | Rows | Columns | Contains |
+|---|---|---|---|
+| `output/accuracy_baseline.json` | — | — | Per-reason-code accuracy: `both_agree` 73.8%, `structural_signal` 67.4%, `director_disambiguates` 52.9% |
+| `output/evidence_trails.csv` | 1,161 | 108 | Per-film gate results (pass/fail/untestable) across 16 Satellite categories |
+| `output/reaudit_report.csv` | 796 | 12 | Organized library re-classification: match vs wrong_tier/wrong_category/unroutable |
+| `output/failure_cohorts.json` | — | — | Named failure patterns: cap_exceeded, director_gap, data_gap, gate_design_gap, taxonomy_gap |
+| `output/cohorts_report.md` | — | — | 2 actionable cohorts from 350 unsorted films |
+
+**Manifest picker (Issue #43 — absorbed here):**
+Current `find_manifests()` returns: `library_audit.csv`, `reaudit_report.csv`, `sorting_manifest.csv`, `lookup_coverage.csv`, `evidence_trails.csv`, `review_queue.csv`, `corpus_check_report.csv`, `corpus_draft_*.csv` — all treated as equivalent classification manifests.
+
+**Per-signal accuracy (from `accuracy_baseline.json`, scholarship_only contract):**
+
+| Reason Code | Confirmed | Total | Accuracy |
+|---|---|---|---|
+| `user_tag_recovery` | 25 | 29 | 86.2% |
+| `both_agree` | 31 | 42 | 73.8% |
+| `director_signal` | 27 | 37 | 73.0% |
+| `structural_signal` | 205 | 304 | 67.4% |
+| `popcorn` | 30 | 45 | 66.7% |
+| `review_flagged` | 82 | 125 | 65.6% |
+| `director_disambiguates` | 27 | 51 | 52.9% |
+
+This table is the single most important diagnostic in the project. The dashboard doesn't show it.
+
+---
+
+## 3. Root Cause Analysis
+
+### RC-1: Dashboard grew by accretion, not design
+**Location:** `dashboard.py` → `render_sidebar()` (line 1557) — flat radio button navigation
+**Mechanism:** Each new feature (Thread Discovery, Tentpole Rankings, Edit mode, Canon tracker, Fill rates) was added as an equal-weight section. No organizing principle filters panels by "system health" vs "curation" vs "exploration." The sidebar lists everything at one level.
+
+### RC-2: Existing health data files not consumed
+**Location:** `dashboard.py` → missing integration points for `accuracy_baseline.json`, `evidence_trails.csv`, `reaudit_report.csv`, `failure_cohorts.json`
+**Mechanism:** These files are generated by `classify.py`, `reaudit.py`, and `analyze_cohorts.py` but no `load_*` or `render_*` function reads them. The dashboard only consumes `sorting_manifest.csv` (or whichever CSV the picker selects) and `tentpole_rankings.md`.
+
+### RC-3: Manifest picker is schema-agnostic (Issue #43)
+**Location:** `dashboard.py` → `find_manifests()` (line 155), `load_manifest()` (line 209)
+**Mechanism:** All CSVs >1KB in `output/` are treated as classification manifests. Diagnostic artifacts (`reaudit_report.csv`, `evidence_trails.csv`) get coerced into classification schema with `tier` defaulting to `Unsorted`, producing misleading 0% classified views. Edit mode always saves to `sorting_manifest.csv` regardless of source.
+
+---
+
+## 4. Affected Handoffs
+
+| Boundary | Upstream Producer | Downstream Consumer | Contract Change? |
+|---|---|---|---|
+| Manifest picker → dashboard | `find_manifests()` | All render functions | Yes — typed discovery replaces raw glob |
+| classify.py → dashboard | `output/sorting_manifest.csv` | `load_manifest()` | No (same schema) |
+| classify.py → dashboard (NEW) | `output/accuracy_baseline.json` | New accuracy panel | Yes — new consumer |
+| classify.py → dashboard (NEW) | `output/evidence_trails.csv` | New evidence summary | Yes — new consumer |
+| reaudit.py → dashboard (NEW) | `output/reaudit_report.csv` | New discrepancy panel | Yes — new consumer |
+| analyze_cohorts.py → dashboard (NEW) | `output/failure_cohorts.json` | New cohort summary | Yes — new consumer |
+| Dashboard edit → manifest | `save_edited_csv()` | `move.py` | Yes — removed from health view |
+
+**Gate impact:** No classification logic changes. Dashboard is read-only consumer of pipeline outputs.
+
+**Downstream consumers of changed output:**
+- Users who currently navigate to Thread Discovery, Tentpole Rankings, Canon Tracker, or Film Browser Edit/Export mode will find those panels removed. Thread Discovery and Tentpole Rankings remain available via their CLI tools (`scripts/thread_query.py`, `scripts/rank_category_tentpoles.py`). Edit/Export functionality moves to `scripts/curate.py`.
+- `docs/WORK_ROUTER.md` references dashboard for "See the full library classification state" — needs update.
+- `docs/CURATOR_WORKFLOW.md` mentions dashboard for review queue triage — needs update to reflect health-only scope.
+
+---
+
+## 5. Proposed Fix
+
+### Fix Description
+
+Strip the dashboard to a single-purpose two-signal health monitor. Remove 5 non-health sections/panels. Add 3 new panels that consume existing output files (`accuracy_baseline.json`, `reaudit_report.csv`, `failure_cohorts.json`). Fix the manifest picker (Issue #43). Target: ~600 lines total (from 1,659).
+
+### Execution Order
+
+1. **Step 1:** Fix manifest picker — typed discovery + workflow context (Issue #43 core)
+   - **What to change:** Replace `find_manifests()` with typed discovery that separates:
+     - Primary: `sorting_manifest.csv`, `library_audit.csv`
+     - Diagnostic (read-only): `reaudit_report.csv`, `review_queue.csv`
+     - Excluded from picker: `evidence_trails.csv`, `corpus_check_report.csv`, `corpus_draft_*.csv`, `lookup_coverage.csv`
+   - **What to change:** Add workflow context banner showing which dataset type is loaded
+   - **What to change:** Remove edit/export save logic (`save_edited_csv()`, `validate_edits()`, `render_edit_mode()`, `render_export_mode()`, `generate_sorting_database_entries()`) — curation is out of scope for health monitor
+   - **Verify:** `streamlit run dashboard.py` — picker shows only primary + diagnostic CSVs; diagnostic CSVs show read-only banner
+
+2. **Step 2:** Remove non-health panels from Collection Overview
+   - **What to remove:**
+     - Tier donut chart (lines 295–313) — redundant with stacked bar
+     - Core Directors panel (lines 348–371) — curation, not health
+     - Satellite Category Fill Rates (lines 373–415) — inventory management, not health
+     - Reference Canon Tracker (lines 504–568) — collection completeness, not health
+   - **What to keep:**
+     - Hero metrics row (lines 278–288) — total, classified %, per-tier counts
+     - Classification Signal Quality panel (lines 419–500) — core two-signal health
+   - **Verify:** Collection Overview shows only hero metrics + signal quality panel
+
+3. **Step 3:** Strip Pipeline Health to essentials
+   - **What to remove:**
+     - Language & Country Distribution (lines 670–703) — metadata exploration
+   - **What to keep:**
+     - Confidence Distribution histogram (lines 595–603)
+     - Classification Reasons breakdown (lines 606–627)
+     - Unsorted Film Triage (lines 632–665)
+   - **Verify:** Pipeline Health section has 3 panels: confidence, reasons, triage
+
+4. **Step 4:** Remove Thread Discovery and Tentpole Rankings sections entirely
+   - **What to remove:**
+     - `render_thread_discovery()` (lines 1160–1387, 228 lines)
+     - `render_tentpole_rankings()` (lines 1460–1556, 97 lines)
+     - `_parse_rankings_md()` (lines 1388–1453)
+     - `load_rankings_data()` (lines 1455–1459)
+     - All thread/rankings supporting code
+   - **Verify:** Sidebar shows only: Collection Overview, Pipeline Health, Film Browser
+
+5. **Step 5:** Simplify Film Browser — view-only, fewer filters
+   - **What to change:** Remove Edit and Export mode radio buttons; keep View mode only
+   - **What to change:** Reduce filter controls to: tier, reason code, confidence range, title/director search. Remove language, country, decade filters.
+   - **Verify:** Film Browser shows filterable read-only table, no Edit/Export tabs
+
+6. **Step 6:** Add Signal Accuracy panel (NEW) — consumes `accuracy_baseline.json`
+   - **What to build:** New panel in Collection Overview (below Signal Quality) showing:
+     - Per-reason-code accuracy table (confirmed / total / %) from `output/accuracy_baseline.json`
+     - Colour-coded: ≥75% green, 60–74% amber, <60% red
+     - Baseline date and commit hash from the JSON
+     - Routing contract label (scholarship_only vs legacy)
+   - **Data source:** `output/accuracy_baseline.json` — already generated by reaudit workflow
+   - **Fallback:** If file doesn't exist, show "No accuracy baseline — run `python scripts/reaudit.py`" info box
+   - **Verify:** Panel shows per-signal accuracy; `both_agree` shows 73.8%, `director_disambiguates` shows 52.9% (matching baseline)
+
+7. **Step 7:** Add Reaudit Discrepancies panel (NEW) — consumes `reaudit_report.csv`
+   - **What to build:** New panel in Pipeline Health section showing:
+     - Discrepancy summary: confirmed / wrong_tier / wrong_category / unroutable / no_data counts
+     - Confirmed rate as primary metric (e.g. "744 / 796 confirmed = 93.5%")
+     - Expandable discrepancy table (filtered to non-confirmed rows) with current vs classified tier/category
+   - **Data source:** `output/reaudit_report.csv` — loaded directly (not through manifest picker)
+   - **Fallback:** If file doesn't exist, show "No reaudit data — run `python audit.py && python scripts/reaudit.py`" info box
+   - **Verify:** Panel shows discrepancy counts matching `output/reaudit_review.md` header
+
+8. **Step 8:** Add Failure Cohorts panel (NEW) — consumes `failure_cohorts.json`
+   - **What to build:** New panel in Pipeline Health section showing:
+     - Cohort count and top-3 actionable cohorts (HIGH confidence first)
+     - Per cohort: type (cap_exceeded / director_gap / data_gap / gate_design_gap / taxonomy_gap), film count, suggested action
+   - **Data source:** `output/failure_cohorts.json` — already generated by `scripts/analyze_cohorts.py`
+   - **Fallback:** If file doesn't exist or empty, show "No cohort data — run `python scripts/analyze_cohorts.py`" info box
+   - **Verify:** Panel shows cohort summary matching `output/cohorts_report.md` header ("2 actionable cohorts")
+
+9. **Step 9:** Add Data Readiness funnel (NEW) — derived from manifest `data_readiness` column
+   - **What to build:** In Unsorted Triage area, add readiness funnel showing R0/R1/R2/R3 counts for unsorted films
+     - R0 (no year) — non-film candidates
+     - R1 (year only, no API) — binding constraint population
+     - R2 (partial data) — enrichment candidates
+     - R3 (full data, no match) — routing gap candidates
+   - **Data source:** `sorting_manifest.csv` `data_readiness` column (already present)
+   - **Verify:** Funnel shows R0/R1/R2/R3 distribution for unsorted films
+
+10. **Step 10:** Update sidebar and cleanup dead code
+    - **What to change:** Sidebar radio options: "System Health" (combined Collection Overview + Pipeline Health), "Film Browser" (view-only). Remove Thread Discovery and Tentpole Rankings options.
+    - **What to remove:** All dead imports, fallback caps dict (if no longer needed), legacy reason code mappings (pre-Issue #42)
+    - **Verify:** `streamlit run dashboard.py` — two sidebar options, no errors, no dead code warnings
+
+11. **Step 11:** Update documentation references
+    - `docs/WORK_ROUTER.md` — "See the full library classification state" section: update to reflect health-focused dashboard, note that curation tools are CLI-only
+    - `docs/CURATOR_WORKFLOW.md` — Troubleshooting: update dashboard references, note Edit/Export removed (use `curate.py`)
+    - `CLAUDE.md` §5 Key Commands — update `streamlit run dashboard.py` description
+    - **Verify:** `grep -r "dashboard" docs/ CLAUDE.md` — all references accurate
+
+### Files to Modify
+
+| File | Change Type | What Changes |
+|---|---|---|
+| `dashboard.py` | Modify (major) | Remove 5 panels/sections, add 3 new panels, fix manifest picker, simplify Film Browser, clean dead code |
+| `docs/WORK_ROUTER.md` | Update | Dashboard usage section |
+| `docs/CURATOR_WORKFLOW.md` | Update | Troubleshooting dashboard references |
+| `CLAUDE.md` | Update | §5 Key Commands dashboard description |
+
+---
+
+## 6. Scope Boundaries
+
+**In scope:**
+- Remove non-health panels (Canon tracker, Core directors, Satellite fill rates, Language/Country, Thread Discovery, Tentpole Rankings, Edit/Export modes)
+- Add 3 new panels consuming existing output files (accuracy, reaudit discrepancies, failure cohorts)
+- Add data readiness funnel from existing manifest column
+- Fix manifest picker (Issue #43 — typed discovery, no more diagnostic-as-manifest confusion)
+- Simplify Film Browser to view-only with core filters
+- Documentation updates
+
+**NOT in scope:**
+- Changes to classification pipeline (`classify.py`, `lib/signals.py`, `lib/satellite.py`)
+- Changes to reaudit, cohort analysis, or tentpole ranking scripts
+- Per-film evidence trail deep-dive viewer (would be useful but adds complexity — defer)
+- Evidence trails CSV visualization (108-column matrix is too dense for a health panel)
+- Curation execution tools (Accept/Override/Enrich/Defer) — belongs in CLI (`curate.py`)
+- Run-to-run comparison (requires run management infrastructure that doesn't exist yet)
+
+**Deferred to:** Follow-up issue for evidence trail explorer if per-film gate inspection proves needed in the dashboard.
+
+---
+
+## 7. Measurement Story
+
+| Metric | Before (Current) | After (Target) | How to Measure |
+|---|---|---|---|
+| Dashboard line count | 1,659 | ~600 | `wc -l dashboard.py` |
+| Section count | 5 (sidebar options) | 2 (System Health, Film Browser) | Visual inspection |
+| Per-signal accuracy visible | No | Yes (from accuracy_baseline.json) | Visual inspection — `both_agree` 73.8% shown |
+| Reaudit discrepancy rate visible | No | Yes (from reaudit_report.csv) | Visual inspection — confirmed rate shown |
+| Failure cohort summary visible | No | Yes (from failure_cohorts.json) | Visual inspection — top cohorts shown |
+| Data readiness funnel visible | No | Yes (R0/R1/R2/R3 counts) | Visual inspection |
+| Manifest picker shows diagnostic CSVs as manifests | Yes (8 CSVs, all treated equally) | No (2 primary, 2 diagnostic, rest excluded) | Launch dashboard, check picker |
+| Edit/Export mode in dashboard | Yes (saves to sorting_manifest.csv) | No (removed — use curate.py) | Visual inspection |
+| "Is the system working?" answerable in <10 seconds | No (must navigate 5 sections) | Yes (System Health shows signal accuracy + discrepancy rate + cohorts on one screen) | Timed user test |
+
+**Pin baseline before implementing:**
+```bash
+git tag pre-issue-049
+wc -l dashboard.py
+```
+
+---
+
+## 8. Validation Sequence
+
+```bash
+# Step 1: Run full test suite (dashboard has no dedicated tests — verify nothing breaks)
+pytest tests/ -v
+
+# Step 2: Launch dashboard and verify System Health view
+streamlit run dashboard.py
+# Expected: Two sidebar options (System Health, Film Browser)
+# Expected: System Health shows:
+#   - Hero metrics (total, classified %, per-tier counts)
+#   - Signal Quality panel (both_agree, director-led, structural, ambiguous)
+#   - Signal Accuracy table (per-reason-code %, from accuracy_baseline.json)
+#   - Confidence histogram
+#   - Reason code breakdown
+#   - Reaudit discrepancy summary (confirmed rate, discrepancy counts)
+#   - Failure cohort summary (top actionable cohorts)
+#   - Unsorted triage with data readiness funnel
+
+# Step 3: Verify manifest picker behavior
+# Expected: Picker shows sorting_manifest.csv and library_audit.csv as primary
+# Expected: reaudit_report.csv and review_queue.csv available as diagnostic (read-only)
+# Expected: evidence_trails.csv, corpus_check_report.csv NOT in picker
+
+# Step 4: Verify Film Browser
+# Expected: View-only table with tier, reason, confidence, title/director filters
+# Expected: No Edit or Export tabs
+
+# Step 5: Verify removed panels are gone
+# Expected: No Thread Discovery, Tentpole Rankings, Canon Tracker, Core Directors,
+#           Satellite Fill Rates, Language/Country bars, Edit/Export modes
+
+# Step 6: Verify graceful degradation
+# Rename output/accuracy_baseline.json temporarily
+# Expected: "No accuracy baseline" info box appears, no crash
+# Rename output/failure_cohorts.json temporarily
+# Expected: "No cohort data" info box appears, no crash
+
+# Step 7: Documentation check
+grep -rn "Thread Discovery\|Tentpole Rankings\|Edit mode\|Export mode" docs/ CLAUDE.md
+# Expected: No stale references to removed features
+```
+
+**Expected results:**
+- Step 1: Tests pass (373+ passing, no new failures)
+- Steps 2–5: Dashboard shows two-signal health data on one screen; bloat panels gone
+- Step 6: Missing files produce info boxes, not errors
+- Step 7: No stale documentation references
+
+**If any step fails:** Stop. Do not proceed. Report the failure output.
+
+---
+
+## 9. Rollback Plan
+
+**Detection:** Dashboard doesn't render, or a critical panel is broken, or accuracy data is shown incorrectly.
+
+**Recovery:**
+```bash
+git revert [commit-hash]
+# Dashboard has no persistent state — revert restores previous behavior immediately
+```
+
+**Pre-implementation checkpoint:**
+```bash
+git tag pre-issue-049
+```
+
+---
+
+## 10. Theory & Architecture Grounding
+
+**Methodology basis:**
+- `CLAUDE.md` Rule 7 (Measurement-Driven Development) — the dashboard should surface measurement results (accuracy baseline, discrepancy rates) so the developer can identify what to fix next. Currently, measurement data exists on disk but isn't observable in the UI.
+- `CLAUDE.md` Rule 5 (Constraint Gates) — the dashboard should show the binding constraint (R1 films — have year but no API data) prominently, not buried in a generic unsorted list.
+- `CLAUDE.md` Rule 2 (Two-Signal Architecture) — the two signals (director identity + structural triangulation) and their agreement/disagreement patterns are THE diagnostic information. The dashboard should be organized around signal health, not collection inventory.
+
+**Architecture reference:**
+- `docs/architecture/VALIDATION_ARCHITECTURE.md` §4 (Accuracy Measurement) — three-population accuracy model (Lookup / Corpus / Pipeline) is the framework the Signal Accuracy panel should surface.
+- `docs/architecture/RECURSIVE_CURATION_MODEL.md` §Tooling Status — Stage 3 (Refine) and Stage 4 (Retain/Discard) are partially tooled; the failure cohort panel closes the observability gap for Stage 5 (Reinforce) patterns.
+- `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md` §3 (Integration) — the priority table (P1–P10) determines reason codes; per-reason-code accuracy is the direct measure of integration quality.
+
+**Related issues:**
+- #43 — Dashboard manifest routing and workflow clarity. **Superseded:** the manifest picker fix (Steps 1, 10) is absorbed into this broader refocus. The remaining #43 scope (edit safety, save target) is no longer applicable because Edit/Export modes are removed entirely.
+- #42 — Unified two-signal architecture. **Related:** #42 implemented the two-signal pipeline; this issue makes its health observable in the dashboard.
+- #48 — Scholarship-only routing contract. **Related:** the accuracy baseline consumed by Step 6 was generated under the scholarship_only contract.
+
+---
+
+### Section Checklist (for spec author)
+
+- [x] §1 Manager Summary is readable without code knowledge
+- [x] §3 Root causes reference specific files and functions
+- [x] §4 ALL downstream consumers are listed (not just the obvious ones)
+- [x] §5 Execution Order has verify commands for each step
+- [x] §5 Files to Modify is complete (no surprise files during implementation)
+- [x] §6 NOT in scope is populated (prevents scope creep)
+- [x] §7 Measurement Story has concrete before/after numbers
+- [x] §8 Validation Sequence commands are copy-pasteable
+- [x] §9 Baseline is pinned before implementation starts
+- [x] §10 Theory grounding exists (change is justified by documented principles)
