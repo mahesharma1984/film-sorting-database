@@ -1603,9 +1603,45 @@ def render_sidebar():
 # Main
 # ---------------------------------------------------------------------------
 
+def detect_routing_contract(csv_path: str, df: pd.DataFrame) -> str:
+    """Detect routing contract from filename convention or manifest data.
+
+    Returns 'scholarship_only' if:
+      - filename contains 'scholarship' (naming convention), OR
+      - manifest contains no explicit_lookup, Core, or Reference rows (data inspection).
+    Otherwise returns 'legacy'.
+    """
+    name = Path(csv_path).name.lower()
+    if 'scholarship' in name:
+        return 'scholarship_only'
+    # Data inspection: scholarship manifest has no Core/Reference tiers or explicit_lookup reason
+    has_core_ref = df['tier'].isin(['Core', 'Reference']).any()
+    has_explicit = (df['reason'] == 'explicit_lookup').any() if 'reason' in df.columns else False
+    if not has_core_ref and not has_explicit and len(df) > 0:
+        return 'scholarship_only'
+    return 'legacy'
+
+
+def render_contract_banner(contract: str):
+    """Show a contract context banner when viewing a scholarship-only manifest."""
+    if contract == 'scholarship_only':
+        st.info(
+            "**Contract: scholarship_only** — "
+            "This manifest uses the scholarship-only routing contract: "
+            "no `explicit_lookup`, no `Core` tier, no `Reference` tier. "
+            "Tier distribution reflects autonomous two-signal routing only. "
+            "Generate with: `python classify.py <src> --routing-contract scholarship_only`",
+            icon="ℹ️",
+        )
+
+
 def main():
     csv_path, section = render_sidebar()
     df = load_manifest(csv_path)
+
+    # Show contract banner if this is a scholarship-only manifest
+    contract = detect_routing_contract(csv_path, df)
+    render_contract_banner(contract)
 
     if section == "Collection Overview":
         render_collection_overview(df)

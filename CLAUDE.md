@@ -323,11 +323,12 @@ Country → satellite routing only applies within historically valid decades:
 - Brazil → Brazilian Exploitation: 1960s–1990s (pornochanchada peak 1970–1989; wider tradition extends to mid-1960s and early 1990s — WIDENED Issue #20)
 - Italy → Giallo: 1960s–1980s only
 - Japan → Pinku Eiga: 1960s–1980s only
-- France → French New Wave: 1950s-1970s only (Issue #14, audited Issue #22)
-  - Director-only routing. France ('FR') is intentionally excluded from COUNTRY_TO_WAVE — adding it would auto-route all French films in those decades to FNW regardless of movement membership.
+- France → French New Wave: 1950s-1970s only (Issue #14, audited Issue #22, updated Issue #45)
+  - France ('FR') is intentionally excluded from COUNTRY_TO_WAVE (would auto-route all French films). Instead, 'FR' is in FNW's `country_codes` in `SATELLITE_ROUTING_RULES` (Issue #45), enabling the structural signal in the two-signal pipeline without auto-routing.
+  - Under two-signal: structural match (FR + 1950s-1970s) fires as a candidate signal; director identity confirms or denies. No auto-routing without director confirmation.
   - Core directors (Godard, Varda, Chabrol, Demy, Duras, Resnais, Rivette) exit at Stage 3 and never reach this Satellite entry.
   - Non-Core FNW directors: Truffaut, Marker, Malle, Eustache, Robbe-Grillet, Rohmer (1960s-1970s), Resnais/Rivette (safety net; Core check fires first when core_db active).
-  - Unknown French film with no director match falls to European Sexploitation (FR + Drama/Romance + 1960s) then Unsorted — documented expected behaviour (Issue #22 Scenario B).
+  - Unknown French film with no director match: structural FNW + structural EuroSex → `review_flagged` (Issue #45; was Unsorted per Issue #22 Scenario B).
 - Hong Kong → HK Action: 1970s–1990s only
 - US → American Exploitation: 1960s-1980s only (NARROWED - Issue #14)
 - US → Classic Hollywood: 1930s-1950s only (NEW - Issue #14)
@@ -418,6 +419,7 @@ python normalize.py <source_directory> --nonfim-only  # show only TV/supplementa
 
 # Classify films (never moves files)
 python classify.py <source_directory>
+python classify.py <source_directory> --routing-contract scholarship_only --output output/scholarship_manifest.csv  # Issue #48: scholarship-only baseline
 
 # Dry-run moves (DEFAULT — safe to run)
 python move.py --dry-run

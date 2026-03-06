@@ -84,15 +84,20 @@ class CacheOnlyClient:
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _make_classifier(config_path: Path, live_api: bool = False) -> FilmClassifier:
+def _make_classifier(
+    config_path: Path, live_api: bool = False, routing_contract: str = 'legacy'
+) -> FilmClassifier:
     """
     Build a FilmClassifier.
 
     live_api=False (default): cache-only mode — FilmClassifier built with
         no_tmdb=True then cache clients swapped in.
     live_api=True: normal mode with real API clients (for --enrich).
+    routing_contract: 'legacy' (default) or 'scholarship_only'.
     """
-    classifier = FilmClassifier(config_path, no_tmdb=not live_api)
+    classifier = FilmClassifier(
+        config_path, no_tmdb=not live_api, routing_contract=routing_contract
+    )
 
     if not live_api:
         # Swap in cache-only clients so classify() reads caches without network calls
@@ -377,7 +382,9 @@ def _compute_accuracy_summary(report_rows: List[Dict]) -> Dict:
     }
 
 
-def write_accuracy_baseline(summary: Dict, output_path: Path) -> None:
+def write_accuracy_baseline(
+    summary: Dict, output_path: Path, routing_contract: str = 'legacy'
+) -> None:
     """Write machine-readable accuracy_baseline.json for trend tracking."""
     try:
         commit = subprocess.check_output(
@@ -390,6 +397,7 @@ def write_accuracy_baseline(summary: Dict, output_path: Path) -> None:
     baseline = {
         'date': date.today().isoformat(),
         'commit': commit,
+        'routing_contract': routing_contract,
         'total_films': summary['total'],
         'combined_accuracy': summary['combined'],
         'lookup_accuracy': summary['lookup'],
@@ -504,7 +512,7 @@ def write_report_csv(report_rows: List[Dict], output_path: Path):
     logger.info("Wrote reaudit report to %s", output_path)
 
 
-def print_summary(report_rows: List[Dict]):
+def print_summary(report_rows: List[Dict], routing_contract: str = 'legacy'):
     """Print summary statistics to stdout."""
     total = len(report_rows)
     matches = sum(1 for r in report_rows if r['match'] == 'true')
@@ -515,6 +523,8 @@ def print_summary(report_rows: List[Dict]):
     print(f"\n{'='*60}")
     print(f"REAUDIT SUMMARY")
     print(f"{'='*60}")
+    if routing_contract != 'legacy':
+        print(f"Contract                      : {routing_contract}")
     print(f"Total organized films audited : {total}")
     print(f"Confirmed (match)             : {matches}")
     print(f"Discrepancies                 : {total - matches}")
@@ -653,6 +663,16 @@ def main():
         action='store_true',
         help='Run corpus check against data/corpora/ CSVs (external standard, Issue #38)'
     )
+    parser.add_argument(
+        '--routing-contract',
+        choices=['legacy', 'scholarship_only'],
+        default='legacy',
+        dest='routing_contract',
+        help=(
+            'Routing contract used for re-classification: legacy (default) or '
+            'scholarship_only (corpus-first, no explicit_lookup / Core / Reference)'
+        )
+    )
     args = parser.parse_args()
 
     config_path = Path(args.config)
@@ -666,8 +686,15 @@ def main():
     audit_path = Path(args.audit)
 
     # Stage 1: cache-only classification pass
-    logger.info("Stage 1: cache-only classification pass")
-    classifier = _make_classifier(config_path, live_api=False)
+    if args.routing_contract != 'legacy':
+        logger.info(
+            "Stage 1: cache-only classification pass [contract: %s]", args.routing_contract
+        )
+    else:
+        logger.info("Stage 1: cache-only classification pass")
+    classifier = _make_classifier(
+        config_path, live_api=False, routing_contract=args.routing_contract
+    )
     audit_rows = _load_audit_csv(audit_path)
     report_rows = run_audit_pass(audit_rows, classifier)
 
@@ -678,11 +705,14 @@ def main():
 
     # Write CSV report
     write_report_csv(report_rows, Path('output/reaudit_report.csv'))
-    print_summary(report_rows)
+    print_summary(report_rows, routing_contract=args.routing_contract)
 
     # Write accuracy baseline JSON (always, Issue #41)
     accuracy_summary = _compute_accuracy_summary(report_rows)
-    write_accuracy_baseline(accuracy_summary, Path('output/accuracy_baseline.json'))
+    write_accuracy_baseline(
+        accuracy_summary, Path('output/accuracy_baseline.json'),
+        routing_contract=args.routing_contract,
+    )
 
     # Stage 3: markdown review report (optional)
     if args.review:

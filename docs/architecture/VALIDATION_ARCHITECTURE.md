@@ -248,6 +248,27 @@ Pipeline discrepancy breakdown:
 - 7 wrong_category — inter-Satellite routing disagreements
 - 5 no_data — API cache empty, cannot re-classify
 
+### Routing contract and baseline clarity (Issue #48)
+
+Under the `legacy` routing contract, Population A (`explicit_lookup`) pre-empts Population C before
+signals fire, and Core/Reference routing is active within `integrate_signals()`. This means
+combined accuracy metrics mix curated interventions with autonomous routing — the combined score
+appears higher than the scholarship pipeline actually performs.
+
+The `scholarship_only` contract isolates Population C:
+- Stage 2 (`explicit_lookup`) bypassed — no Population A rows in output
+- Core whitelist emission suppressed in `score_director()` — no `director_signal` (Core) rows
+- Reference canon emission suppressed in `score_structure()` — no `reference_canon` rows
+
+**Scholarship-only baseline workflow:**
+```bash
+python classify.py <src> --routing-contract scholarship_only --output output/scholarship_manifest.csv
+python scripts/reaudit.py --routing-contract scholarship_only --review
+```
+
+The scholarship baseline reflects autonomous pipeline performance on Population C only — the
+truthful measure for improving the two-signal system.
+
 ### Measurement cycle
 
 **When to run:** After any change to routing rules, SORTING_DATABASE, corpus files, or pipeline logic.

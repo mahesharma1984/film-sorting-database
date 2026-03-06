@@ -1,6 +1,6 @@
 # Two-Signal Classification Architecture
 
-**Status:** Canonical (Issue #42 implemented, Issue #44 implemented)
+**Status:** Canonical (Issue #42 implemented, Issue #44 implemented, Issue #45 implemented, Issue #48 implemented)
 **Implementation:** `lib/signals.py`
 **Date established:** 2026-03-05
 
@@ -68,6 +68,12 @@ owned by a single tradition (IT+1970s+Horror = Giallo). Some overlap
 
 **Data source:** `SATELLITE_ROUTING_RULES[category]` country_codes, decades, genres,
 keyword_signals in `lib/constants.py`
+
+**Tradition vs. movement structural matching (Issue #45):**
+- Tradition categories (Giallo, Brazilian Exploitation, etc.) use country + decade + genre coordinates — genre is a discriminator (IT+Horror→Giallo, not IT+Drama).
+- Movement categories (French New Wave, American New Hollywood, Japanese New Wave, Hong Kong New Wave, Hong Kong Category III) use country + decade only — no genre restriction (`genres: None`). Movements span all genres; genre does not identify a movement.
+- In `classify_structural()`: `genres: None` means genre_match=True (no restriction). In `classify()` (legacy path): `is_tradition=False` suppresses the structural country+genre path — movement structural matching is only available via `classify_structural()` in the two-signal pipeline.
+- Known structural overlaps: FR+1950s-1970s matches both FNW and European Sexploitation; US+1960s-1980s matches both AmNH and American Exploitation/Blaxploitation. These are handled by P3 `director_disambiguates` and P8 `review_flagged` in integration.
 
 ---
 
@@ -159,6 +165,36 @@ director to disambiguate).
 
 **Current signal ratio (2026-03-05):** Director-led 9.4%, Structural-only 27%.
 Target: Director-led 19%+, with `both_agree` as the largest director-led code.
+
+---
+
+## 5a. Routing Contracts (Issue #48)
+
+The classifier supports two routing contracts, selectable via `--routing-contract`:
+
+| Contract | Stages active | Populations in output |
+|---|---|---|
+| `legacy` (default) | All: explicit_lookup → corpus_lookup → signals | A + B + C |
+| `scholarship_only` | corpus_lookup → signals only (no explicit_lookup, no Core, no Reference) | B + C only |
+
+**What changes under `scholarship_only`:**
+- Stage 2 (`explicit_lookup`) is bypassed — SORTING_DATABASE.md is not consulted
+- `score_director()` does not emit Core whitelist matches → P6 (Core routing) never fires
+- `score_structure()` does not emit Reference canon matches → P1 (reference_canon) never fires
+- User tag recovery is suppressed for Core and Reference destinations
+- Output manifest contains only `corpus_lookup`, Satellite, Popcorn, and Unsorted rows
+
+**Why this matters:** Under `legacy` contract, ~389 films route via `explicit_lookup` and
+~138 via `Core` before the two-signal layer is reached. Accuracy metrics computed on the
+mixed population include curated interventions, which inflates the apparent performance of
+the autonomous pipeline. `scholarship_only` exposes Population C (the autonomous layer)
+directly, enabling truthful baseline measurement of the two-signal system.
+
+**Usage:**
+```bash
+python classify.py <src> --routing-contract scholarship_only --output output/scholarship_manifest.csv
+python scripts/reaudit.py --routing-contract scholarship_only --review
+```
 
 ---
 

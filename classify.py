@@ -99,10 +99,11 @@ def load_config(config_path: Path) -> dict:
 class FilmClassifier:
     """Main film classification engine — v1.0"""
 
-    def __init__(self, config_path: Path, no_tmdb: bool = False):
+    def __init__(self, config_path: Path, no_tmdb: bool = False, routing_contract: str = 'legacy'):
         self.config = load_config(config_path)
         self.stats = defaultdict(int)
         self.no_tmdb = no_tmdb
+        self.routing_contract = routing_contract
         self._setup_components()
 
     def _setup_components(self):
@@ -553,7 +554,9 @@ class FilmClassifier:
         _tmdb_title = tmdb_data.get('tmdb_title') if tmdb_data else None
 
         # === Stage 2: Explicit lookup (highest trust — human-curated) ===
-        if metadata.title:
+        # Bypassed under scholarship_only contract — corpus_lookup (Stage 2.5) is the
+        # first active layer under the scholarship contract.
+        if self.routing_contract != 'scholarship_only' and metadata.title:
             dest = self.lookup_db.lookup(metadata.title, metadata.year)
             if dest:
                 self.stats['explicit_lookup'] += 1
@@ -641,12 +644,16 @@ class FilmClassifier:
         #   director_disambiguates, review_flagged (replacing core_director / tmdb_satellite /
         #   country_satellite). reference_canon and user_tag_recovery are preserved.
 
-        _director_matches = score_director(metadata.director, metadata.year, self.core_db)
+        _director_matches = score_director(
+            metadata.director, metadata.year, self.core_db,
+            contract=self.routing_contract,
+        )
         _structural_matches = score_structure(
             metadata=metadata,
             tmdb_data=tmdb_data,
             satellite_classifier=self.satellite_classifier,
             popcorn_classifier=self.popcorn_classifier,
+            contract=self.routing_contract,
         )
         _integration = integrate_signals(
             director_matches=_director_matches,
@@ -684,6 +691,7 @@ class FilmClassifier:
         # === User tag recovery fallback ===
         # Fires when integration returned Unsorted (or cap exceeded) — Issue #25:
         # movement routing takes priority over stale [Core] user tags.
+        # Under scholarship_only contract, Core and Reference tag recovery is suppressed.
         if metadata.user_tag:
             parsed_tag = self._parse_user_tag(metadata.user_tag)
             if 'tier' in parsed_tag and 'decade' in parsed_tag:
@@ -693,8 +701,11 @@ class FilmClassifier:
                 dest = None  # Only set for valid, complete tags (Issue #23)
 
                 if tier == 'Core' and extra:
-                    # Cross-check against Core whitelist before trusting the tag (Issue #23 Bug 2)
-                    if self.core_db.is_core_director(extra):
+                    if self.routing_contract == 'scholarship_only':
+                        # Core tag recovery suppressed under scholarship_only contract
+                        pass
+                    elif self.core_db.is_core_director(extra):
+                        # Cross-check against Core whitelist before trusting the tag (Issue #23 Bug 2)
                         dest = f'Core/{tag_decade}/{extra}/'
                     else:
                         logger.warning(
@@ -712,8 +723,11 @@ class FilmClassifier:
                             "falling through to heuristics. File: %s",
                             tag_decade, metadata.filename
                         )
-                elif tier in ('Reference', 'Popcorn'):
-                    dest = f'{tier}/{tag_decade}/'
+                elif tier == 'Reference':
+                    if self.routing_contract != 'scholarship_only':
+                        dest = f'Reference/{tag_decade}/'
+                elif tier == 'Popcorn':
+                    dest = f'Popcorn/{tag_decade}/'
                 else:
                     dest = f'{tier}/'
 
@@ -1238,6 +1252,12 @@ Examples:
     parser.add_argument('--no-tmdb', '--no-api', action='store_true',
                        dest='no_tmdb',
                        help='Disable TMDb and OMDb API enrichment (offline classification)')
+    parser.add_argument('--routing-contract', choices=['legacy', 'scholarship_only'],
+                       default='legacy', dest='routing_contract',
+                       help=(
+                           'Routing contract: legacy (default, current behavior) or '
+                           'scholarship_only (corpus-first, no explicit_lookup / Core / Reference)'
+                       ))
 
     args = parser.parse_args()
 
@@ -1250,7 +1270,9 @@ Examples:
         sys.exit(1)
 
     # Initialize classifier
-    classifier = FilmClassifier(args.config, no_tmdb=args.no_tmdb)
+    classifier = FilmClassifier(
+        args.config, no_tmdb=args.no_tmdb, routing_contract=args.routing_contract
+    )
 
     # Process
     logger.info(f"Scanning: {args.source_dir}")

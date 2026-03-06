@@ -107,6 +107,7 @@ def score_director(
     director_name: Optional[str],
     year: Optional[int],
     core_db,
+    contract: str = 'legacy',
 ) -> List[DirectorMatch]:
     """Compute director identity signal for a film.
 
@@ -118,6 +119,10 @@ def score_director(
         Director identity persists across eras (Ferrara 1998 → American Exploitation).
       Movement categories (country_codes=[]): decade_valid only if film decade in declared list.
         Era-appropriate movement routing (Godard 1990 → FNW decade_valid=False).
+
+    contract='scholarship_only': Core whitelist emission suppressed.
+      Core directors still contribute their Satellite memberships (if any).
+      P6 (Core routing) is disabled because core_dir list will be empty.
     """
     from lib.constants import DIRECTOR_REGISTRY
 
@@ -150,8 +155,8 @@ def score_director(
                     decade_valid=decade_valid,
                 ))
 
-    # Check Core whitelist
-    if core_db and core_db.is_core_director(director_name):
+    # Check Core whitelist — suppressed under scholarship_only contract
+    if contract != 'scholarship_only' and core_db and core_db.is_core_director(director_name):
         canonical = core_db.get_canonical_name(director_name)
         results.append(DirectorMatch(
             tier='Core',
@@ -173,6 +178,7 @@ def score_structure(
     tmdb_data: Optional[dict],
     satellite_classifier,
     popcorn_classifier,
+    contract: str = 'legacy',
 ) -> List[StructuralMatch]:
     """Compute structural triangulation signal for a film.
 
@@ -180,6 +186,9 @@ def score_structure(
     structural gates (country+genre+keywords), and Popcorn threshold.
     Returns ALL matching StructuralMatch objects — never exits early.
     Does NOT enforce caps — caller applies cap after integration selects a winner.
+
+    contract='scholarship_only': Reference canon emission suppressed.
+      P1 (reference_canon routing) is disabled because ref_matches list will be empty.
     """
     from lib.constants import REFERENCE_CANON, COUNTRY_TO_WAVE
     from lib.normalization import normalize_for_lookup
@@ -188,9 +197,9 @@ def score_structure(
     year = getattr(metadata, 'year', None)
     decade = _decade_of(year)
 
-    # --- Reference canon (title + year lookup) ---
+    # --- Reference canon (title + year lookup) — suppressed under scholarship_only contract ---
     title = getattr(metadata, 'title', None)
-    if title and year:
+    if contract != 'scholarship_only' and title and year:
         normalized_title = normalize_for_lookup(title, strip_format_signals=True)
         if (normalized_title, year) in REFERENCE_CANON:
             results.append(StructuralMatch(

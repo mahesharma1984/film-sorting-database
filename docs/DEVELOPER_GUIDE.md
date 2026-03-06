@@ -273,6 +273,33 @@ Key metrics:
 - **Tier distribution:** Core/Reference/Satellite/Popcorn/Unsorted counts
 - **Changed classifications:** which films moved between tiers (review each one)
 
+### Scholarship-Only Baseline (Issue #48)
+
+To measure autonomous pipeline performance without curated intervention layers:
+```bash
+# Generate scholarship manifest (no explicit_lookup, Core, or Reference rows)
+python classify.py <src> --routing-contract scholarship_only --output output/scholarship_manifest.csv
+
+# Reaudit with scholarship contract
+python scripts/reaudit.py --routing-contract scholarship_only --review
+
+# Verify contract integrity
+python3 - <<'PY'
+import csv; from collections import Counter
+rows = list(csv.DictReader(open('output/scholarship_manifest.csv')))
+t = Counter(r['tier'] for r in rows); re = Counter(r['reason'] for r in rows)
+assert t['Core'] == 0 and t['Reference'] == 0
+assert re['explicit_lookup'] == 0 and re['reference_canon'] == 0
+print('scholarship contract verified')
+PY
+```
+
+The `--routing-contract` flag:
+- `legacy` (default): all stages active — SORTING_DATABASE, Core, Reference all route
+- `scholarship_only`: corpus_lookup is the first active layer; signals produce only Satellite/Popcorn/Unsorted
+
+See `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md` §5a for the full contract specification.
+
 ---
 
 ## Documentation Rules
