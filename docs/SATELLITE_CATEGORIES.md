@@ -545,6 +545,9 @@ source bibliography per structural region.
 
 ### 12. MUSIC / CONCERT FILMS (NON-CORE)
 
+> **⚠ Issue #51 — SORTING_DATABASE only, no auto-routing.**
+> Single genre gate (Music/Musical/Documentary), no country or decade constraints — not a coherent structural definition. Removed from `SATELLITE_ROUTING_RULES`. Films reach this destination only via explicit SORTING_DATABASE pins.
+
 **Keyword signals (Issue #29):**
 - TMDb tags: `concert film`, `rockumentary`, `musical performance`, `rock documentary`
 - Text terms: `concert film`, `rockumentary`, `music documentary`, `live performance`
@@ -590,6 +593,9 @@ source bibliography per structural region.
 ---
 
 ### 14. CULT ODDITIES / UNCATEGORIZABLE
+
+> **⚠ Issue #51 — SORTING_DATABASE only, no auto-routing.**
+> Not a named historical movement. Films reach this destination only via explicit SORTING_DATABASE pins. No structural or director auto-classification.
 
 **Definition:**
 - Films that don't fit other Satellite categories
@@ -659,6 +665,9 @@ source bibliography per structural region.
 ---
 
 ### 16. INDIE CINEMA (NEW - Issue #14, WIDENED - Issue #20)
+
+> **⚠ Issue #51 — SORTING_DATABASE only, no auto-routing.**
+> Negative-space catch-all removed from `SATELLITE_ROUTING_RULES`. Films previously auto-classified here now go to the review queue. SORTING_DATABASE pins to `Satellite/Indie Cinema/` continue to work via `explicit_lookup`.
 
 **Keyword signals (Issue #29):** NONE — no keyword routing.
 

@@ -50,20 +50,22 @@ def make_tmdb(director='', year=1975, countries=None, genres=None, keywords=None
 class TestGenreGateThreeValued:
 
     def test_genre_untestable_when_genres_empty(self):
-        """genres=[] → genre_gate.status == 'untestable' for Indie Cinema (Issue #35 root cause)"""
+        """genres=[] → genre_gate.status == 'untestable' for Giallo (Issue #35 root cause).
+        Issue #51: Indie Cinema removed from SATELLITE_ROUTING_RULES; test uses Giallo instead.
+        The principle is the same: absent genre data → 'untestable', not 'fail'."""
         classifier = SatelliteClassifier()
         meta = make_metadata(year=1973)
-        tmdb = make_tmdb(year=1973, countries=['FR'], genres=[])  # no genres
+        tmdb = make_tmdb(year=1973, countries=['IT'], genres=[])  # no genres — IT = Giallo territory
 
         ev = classifier.evidence_classify(meta, tmdb)
 
-        assert 'Indie Cinema' in ev.per_category
-        indie = ev.per_category['Indie Cinema']
-        assert indie.genre_gate.status == 'untestable', (
-            f"Expected 'untestable', got '{indie.genre_gate.status}'. "
+        assert 'Giallo' in ev.per_category
+        giallo = ev.per_category['Giallo']
+        assert giallo.genre_gate.status == 'untestable', (
+            f"Expected 'untestable', got '{giallo.genre_gate.status}'. "
             "genres=[] should distinguish absent data from a genre mismatch."
         )
-        assert 'no genre data' in indie.genre_gate.reason.lower()
+        assert 'no genre data' in giallo.genre_gate.reason.lower()
 
     def test_genre_fail_when_genres_present_no_match(self):
         """genres present but wrong → genre_gate.status == 'fail'"""

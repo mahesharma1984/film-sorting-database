@@ -119,7 +119,7 @@ class SatelliteClassifier:
             # film routes to American Exploitation even though 1998 > 1980s decade bound.
             # Movement categories (country_codes=[]) keep decade-first order (intentional):
             # their decade gate ensures only era-appropriate films route to FNW/AmNH/JNW.
-            is_tradition = bool(rules['country_codes'])
+            is_tradition = rules.get('is_tradition', bool(rules['country_codes']))
             if is_tradition and rules['directors'] and director:
                 if any(self._director_matches(director_lower, director_tokens, d)
                        for d in rules['directors']):
@@ -160,8 +160,12 @@ class SatelliteClassifier:
                 if not self._title_matches_keywords(title, BLAXPLOITATION_TITLE_KEYWORDS):
                     continue
 
-            # Both must match (positive genre evidence)
-            if country_match and genre_match is True:
+            # Both must match (positive genre evidence).
+            # Issue #45: movement categories (is_tradition=False) are director-only in this path;
+            # their structural matching happens via classify_structural() in the two-signal pipeline.
+            # genres=None on movement categories means "no genre restriction in classify_structural()",
+            # not "match any film structurally in classify()".
+            if is_tradition and country_match and genre_match is True:
                 return self._check_cap(category_name)
 
             # Issue #34: genre_match is None (untestable) — apply certainty-tier routing.
@@ -169,7 +173,8 @@ class SatelliteClassifier:
             # Tier 1–2 (positive-space exploitation/movement): require genre evidence — don't route.
             # Guard: only apply when country was a POSITIVE match against a defined list.
             # Categories with country_codes=None already match any country — no fallback needed.
-            if country_match and genre_match is None and rules['country_codes'] is not None:
+            # Issue #45: same is_tradition guard — movement structural path is in classify_structural().
+            if is_tradition and country_match and genre_match is None and rules['country_codes'] is not None:
                 tier = CATEGORY_CERTAINTY_TIERS.get(category_name, 2)
                 if tier >= 3:
                     return self._check_cap(category_name)
@@ -254,7 +259,7 @@ class SatelliteClassifier:
             # gate, mirroring the new logic in classify(). This makes evidence trails accurate —
             # a Ferrara 1998 film now correctly shows director_gate=pass for American Exploitation
             # instead of decade_gate=fail (which previously hid the director signal entirely).
-            is_tradition = bool(rules['country_codes'])
+            is_tradition = rules.get('is_tradition', bool(rules['country_codes']))
 
             # --- Director gate (tradition categories: fires before decade gate) ---
             if is_tradition and rules['directors']:

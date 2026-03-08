@@ -1,0 +1,40 @@
+2026-03-06 22:10:44,027 - INFO - Stage 1: cache-only classification pass
+2026-03-06 22:10:44,038 - INFO - API enrichment disabled (--no-api/--no-tmdb): TMDb and OMDb both offline
+2026-03-06 22:10:44,076 - WARNING - Conflict: 'reanimator' (1985) → Satellite/American Exploitation/1980s/ vs Satellite/American Exploitation [DECIDED]
+2026-03-06 22:10:44,076 - INFO - Loaded 483 explicit film mappings from SORTING_DATABASE.md
+2026-03-06 22:10:44,076 - WARNING - Found 1 films with conflicting destinations
+2026-03-06 22:10:44,076 - INFO - Loaded explicit lookup table: 483 films
+2026-03-06 22:10:44,077 - INFO - Loaded 108 core directors across 8 decades (exact match only)
+2026-03-06 22:10:44,078 - INFO - Loaded manual enrichment: 16 entries
+2026-03-06 22:10:44,078 - INFO - Corpora directory not found: /Users/mahesh/Downloads/film-sorting-database/docs/data/corpora — corpus lookup disabled
+2026-03-06 22:10:44,083 - INFO - Loaded cache tmdb_cache.json (971 entries)
+2026-03-06 22:10:44,088 - INFO - Loaded cache omdb_cache.json (974 entries)
+2026-03-06 22:10:44,091 - INFO - Loaded 796 organized-tier films from output/library_audit.csv
+2026-03-06 22:10:44,150 - INFO - Processed 100/796...
+2026-03-06 22:10:44,205 - INFO - Processed 200/796...
+2026-03-06 22:10:44,258 - INFO - Processed 300/796...
+2026-03-06 22:10:44,317 - INFO - Processed 400/796...
+2026-03-06 22:10:44,356 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 22:10:44,357 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 22:10:44,358 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 22:10:44,359 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 22:10:44,360 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 22:10:44,371 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 22:10:44,377 - INFO - Processed 500/796...
+2026-03-06 22:10:44,434 - INFO - Processed 600/796...
+2026-03-06 22:10:44,497 - INFO - Processed 700/796...
+2026-03-06 22:10:44,578 - INFO - Wrote reaudit report to output/reaudit_report.csv
+2026-03-06 22:10:44,603 - INFO - Wrote accuracy baseline to output/accuracy_baseline.json
+
+============================================================
+REAUDIT SUMMARY
+============================================================
+Total organized films audited : 796
+Confirmed (match)             : 574
+Discrepancies                 : 222
+
+  wrong_tier           : 33
+  wrong_category       : 19
+  unroutable           : 170
+============================================================
+

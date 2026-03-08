@@ -375,8 +375,11 @@ def test_masumura_1990s_routes_to_pinku_eiga(mock_metadata):
     assert result == 'Pinku Eiga'  # Director identity overrides decade bound (Phase 2)
 
 
-def test_music_film_no_decade_restriction(mock_metadata):
-    """Music Films have no decade restriction"""
+def test_music_film_no_longer_auto_routes(mock_metadata):
+    """Issue #51: Music Films removed from SATELLITE_ROUTING_RULES.
+    A film with Music/Documentary genres no longer auto-classifies to Music Films.
+    It falls to unsorted_no_match (or remains in review queue for manual curation).
+    SORTING_DATABASE pins to Music Films still work via explicit_lookup."""
     tmdb_data = {
         'director': 'Unknown',
         'year': 2020,
@@ -385,7 +388,7 @@ def test_music_film_no_decade_restriction(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result == 'Music Films'  # No decade bounds for Music Films
+    assert result != 'Music Films', "Music Films should no longer auto-classify (Issue #51)"
 
 
 def test_country_genre_match_still_works(mock_metadata):
@@ -501,11 +504,13 @@ def test_english_version_prefix_not_director():
 
 
 # =============================================================================
-# Issue #20: Indie Cinema expansion (Stage 2)
+# Issue #51: Indie Cinema removed from auto-routing
 # =============================================================================
 
-def test_cn_1990s_routes_to_indie_cinema(mock_metadata):
-    """Farewell My Concubine (CN, 1993, Drama) → Indie Cinema"""
+def test_cn_1990s_no_longer_routes_to_indie_cinema(mock_metadata):
+    """Issue #51: Farewell My Concubine (CN, 1993, Drama) → no auto-classification.
+    Previously routed to Indie Cinema. Now falls to unsorted_no_match.
+    SORTING_DATABASE pins still work via explicit_lookup."""
     tmdb_data = {
         'director': 'Kaige Chen',
         'year': 1993,
@@ -514,12 +519,13 @@ def test_cn_1990s_routes_to_indie_cinema(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result == 'Indie Cinema', \
-        f"Expected 'Indie Cinema', got {result!r}"
+    assert result != 'Indie Cinema', \
+        f"Indie Cinema should no longer auto-classify (Issue #51), got {result!r}"
 
 
-def test_jp_2000s_routes_to_indie_cinema(mock_metadata):
-    """Kamikaze Girls (JP, 2004, Drama) → Indie Cinema (outside Pinku Eiga 1960s-1980s)"""
+def test_jp_2000s_no_longer_routes_to_indie_cinema(mock_metadata):
+    """Issue #51: Kamikaze Girls (JP, 2004, Drama) → no auto-classification.
+    Previously routed to Indie Cinema. Now falls to unsorted_no_match."""
     tmdb_data = {
         'director': 'Tetsuya Nakashima',
         'year': 2004,
@@ -528,12 +534,13 @@ def test_jp_2000s_routes_to_indie_cinema(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result == 'Indie Cinema', \
-        f"Expected 'Indie Cinema', got {result!r}"
+    assert result != 'Indie Cinema', \
+        f"Indie Cinema should no longer auto-classify (Issue #51), got {result!r}"
 
 
-def test_au_1970s_routes_to_indie_cinema(mock_metadata):
-    """Wake in Fright (AU, 1971, Drama) → Indie Cinema"""
+def test_au_1970s_no_longer_routes_to_indie_cinema(mock_metadata):
+    """Issue #51: Wake in Fright (AU, 1971, Drama) → no auto-classification.
+    Previously routed to Indie Cinema. Now falls to unsorted_no_match."""
     tmdb_data = {
         'director': 'Ted Kotcheff',
         'year': 1971,
@@ -542,12 +549,12 @@ def test_au_1970s_routes_to_indie_cinema(mock_metadata):
     }
     classifier = SatelliteClassifier()
     result = classifier.classify(mock_metadata, tmdb_data)
-    assert result == 'Indie Cinema', \
-        f"Expected 'Indie Cinema', got {result!r}"
+    assert result != 'Indie Cinema', \
+        f"Indie Cinema should no longer auto-classify (Issue #51), got {result!r}"
 
 
-def test_jp_1975_still_routes_to_pinku_eiga_not_indie_cinema(mock_metadata):
-    """Regression: JP Drama 1970s still hits Pinku Eiga before Indie Cinema"""
+def test_jp_1975_still_routes_to_pinku_eiga(mock_metadata):
+    """Regression (Issue #51): JP Drama 1970s still hits Pinku Eiga correctly."""
     tmdb_data = {
         'director': 'Kōji Wakamatsu',
         'year': 1975,

@@ -62,7 +62,6 @@
 ### Satellite - Classic Hollywood
 - Invasion of the Body Snatchers (1956) → Satellite/Classic Hollywood/1950s/
 - Johnny Guitar (1954) → Satellite/Classic Hollywood/1950s/
-- Orpheus (1950) → Satellite/Classic Hollywood/1950s/
 
 ### Satellite - Indie Cinema
 - Les Mauvaises Rencontres (1955) → Satellite/Indie Cinema/1950s/
@@ -183,9 +182,8 @@
 - Who's that Knocking at My Door (1967) → Satellite/American New Hollywood/1960s/
 
 ### Satellite - Indie Cinema
-- The Fearless Vampire Killers (1967) → Satellite/Indie Cinema/1960s/
-- The Collector (1965) → Satellite/Indie Cinema/1960s/
-- A Man and a Woman (1966) → Satellite/Indie Cinema/1960s/
+- The Collector (1965) → Core/1960s/William Wyler/
+- A Man and a Woman (1966) → Satellite/French New Wave/1960s/
 
 ### Satellite - French New Wave
 - L'immortelle (1963) → Satellite/French New Wave/1960s/
@@ -399,7 +397,7 @@
 - Girl Slaves of Morgana Le Fay (1971) → Satellite/American Exploitation/1970s/
 - Twins of Evil (1971) → Satellite/American Exploitation/1970s/
 - Prime Cut (1972) → Satellite/American Exploitation/1970s/
-- the oily maniac (1976) → Satellite/American Exploitation/1970s/
+- the oily maniac (1976) → Satellite/Hong Kong Action/1970s/
 - Bone (1972) → Satellite/American Exploitation/1970s/
 - Dillinger (1973) → Satellite/American Exploitation/1970s/
 - The Incredible Melting Man (1977) → Satellite/American Exploitation/1970s/
@@ -686,7 +684,6 @@
 - High Art (1998) → Satellite/Indie Cinema/1990s/
 - In the Soup (1992) → Satellite/Indie Cinema/1990s/
 - Leaving Las Vegas (1995) → Satellite/Indie Cinema/1990s/
-- Braindead (1992) → Satellite/Indie Cinema/1990s/
 - C'est La Vie Mon Cherie Endless love (1993) → Satellite/Indie Cinema/1990s/
 - C'est La Vie Mon Cherie (1993) → Satellite/Indie Cinema/1990s/
 

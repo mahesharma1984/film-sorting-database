@@ -22,8 +22,9 @@ Reason codes produced (replaces core_director / tmdb_satellite / country_satelli
   both_agree          — director + structure both matched same Satellite category
   director_signal     — director identity matched (structure absent or different tier)
   structural_signal   — structural triangulation matched (director absent)
-  director_disambiguates — director resolved conflict between two structural matches
-  review_flagged      — ambiguous structural match, no director signal (low confidence)
+  review_flagged      — signals conflict or structural match is ambiguous (low confidence)
+  # Note: director_disambiguates removed (Issue #51) — conflicting signals produce
+  # review_flagged instead of forcing a director-wins resolution (52.9% accuracy).
 
 Preserved reason codes (unchanged):
   reference_canon     — structural match in Reference canon
@@ -250,7 +251,7 @@ def integrate_signals(
     Priority order (mirrors current stage ordering, preserves Issue #25):
       P1. Structure → Reference                    → reference_canon
       P2. Director Satellite + Structure same cat  → both_agree (Satellite)
-      P3. Director Satellite (decade_valid) + Structure different cat → director_disambiguates
+      P3. Director Satellite (decade_valid) + Structure different cat → review_flagged (conflict)
       P4. Director Satellite (decade_valid), no structural Satellite  → director_signal
       P5. Director Core + structural Satellite      → structural_signal (Issue #25: Satellite wins)
       P6. Director Core, no structural Satellite    → director_signal (Core)
@@ -306,12 +307,14 @@ def integrate_signals(
             conf = _cap(0.85)
             explanation = f'director + structure both matched {dm.category}'
         elif structural_diff:
-            # P3: director resolves conflict between structural candidates
-            reason = 'director_disambiguates'
-            conf = _cap(0.75)
+            # P3: director and structure conflict — flag for review (Issue #51)
+            # Previously director_disambiguates at 0.75, but accuracy was 52.9%.
+            # Conflicting signals are ambiguity, not a case for director override.
+            reason = 'review_flagged'
+            conf = _cap(0.4)
             explanation = (
                 f'director matched {dm.category}, '
-                f'structure matched {sat_struct_cats} (director wins)'
+                f'structure matched {sat_struct_cats} — signals conflict, needs review'
             )
         else:
             # P4: director signal only

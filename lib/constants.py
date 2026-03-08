@@ -607,18 +607,6 @@ SATELLITE_ROUTING_RULES = {
                            'adult film', 'european erotica'],
         },
     },
-    'Music Films': {
-        'country_codes': None,  # Any country
-        'decades': None,  # Any decade (no restriction)
-        'genres': ['Music', 'Musical', 'Documentary'],
-        'directors': [],
-        'keyword_signals': {
-            'tmdb_tags': ['concert film', 'rockumentary', 'musical performance', 'rock documentary'],
-            'text_terms': ['concert film', 'rockumentary', 'music documentary',
-                           'concert', 'live performance'],
-        },
-    },
-
     # CATCH-ALL CATEGORIES (Issue #14, Issue #16)
     # These MUST come LAST — they are broad and will match many films.
     # Exploitation categories above must have priority.
@@ -650,48 +638,12 @@ SATELLITE_ROUTING_RULES = {
                            'screwball comedy', 'hays code', 'classical hollywood'],
         },
     },
-    # Functional arthouse catch-all — NOT a historical wave category.
-    # Catches non-exploitation, non-Popcorn, non-Core films from any major film nation.
-    # Issue #16: moved to END so exploitation director films are caught first.
-    # Issue #20: extended to 1960s-1970s + added CN, TW, KR, IR, JP, HU, IN, RO.
-    # Note: unlike Giallo or Brazilian Exploitation (historical events with start/end
-    # dates), Indie Cinema is defined negatively — by what it is NOT. JP in 1970s-1980s
-    # still hits Pinku Eiga/Japanese Exploitation first; JP here only catches post-1980s
-    # Japanese films that fall through those categories.
-    #
-    # US is intentionally NOT in country_codes. US already has Classic Hollywood
-    # (1930s-1950s), American Exploitation (1960s-1980s), and Blaxploitation. US films
-    # that don't match those categories should fall to Unsorted — not Indie Cinema.
-    # US indie directors (Jarmusch, Hartley etc.) are covered by the directors list
-    # below, which fires before the country+genre check.
-    'Indie Cinema': {
-        'country_codes': [
-            # US intentionally excluded — US indie directors covered by directors list
-            'GB', 'FR', 'DE', 'IT', 'ES', 'CA', 'AU', 'NL', 'BE',
-            'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'AR', 'MX', 'BR', 'CL',
-            # Added (Issue #20): East/South Asian and underrepresented film nations
-            'CN', 'TW', 'KR', 'IR', 'JP', 'HU', 'IN', 'RO',
-            # Historical country codes: Czechoslovakia (pre-1993 split into CZ + SK)
-            'CS', 'XC',
-            # Additional European film nations
-            'RU', 'GR', 'BG',
-        ],
-        'decades': ['1960s', '1970s', '1980s', '1990s', '2000s', '2010s', '2020s'],  # extended back (Issue #20)
-        'genres': ['Drama', 'Romance', 'Thriller', 'Science Fiction', 'Comedy',
-                   'Fantasy', 'Mystery', 'History', 'War', 'Documentary', 'Music'],
-                   # Comedy added: OMDb labels many arthouse films Comedy that TMDb would call Drama.
-                   # Action/Crime/Horror intentionally excluded: block late-decade exploitation
-                   # directors (Argento 2010s Horror, Fukasaku 2000s Crime) from landing here.
-        'directors': [
-            # US indie (director match fires regardless of country_codes exclusion)
-            'jarmusch', 'hartley', 'linklater', 'reichardt', 'haynes', 'korine', 'araki', 'solondz',
-            # Note: larry clark removed (Issue #40 Phase 2) — he's in AmExploit directors list;
-            # Phase 2 tradition director-before-decade means he always routes to AmExploit first.
-            # Use SORTING_DATABASE pins to override specific films to Indie Cinema (e.g. Kids, Bully).
-            # International indie (add more as needed)
-            'denis', 'assayas', 'desplechin', 'haneke', 'trier', 'winterbottom', 'loach'
-        ],
-    },
+    # Issue #51: Indie Cinema removed from SATELLITE_ROUTING_RULES.
+    # It was a negative-space catch-all (30+ countries, 6 decades, 4 broad genres) —
+    # not a named historical movement. Films previously auto-classified here now go to
+    # the review queue. SORTING_DATABASE pins to Indie Cinema continue to work via
+    # explicit_lookup (destination strings are independent of routing rules).
+    # Same for Music Films (single genre gate, no structure) and Cult Oddities (no rules).
 }
 
 # =============================================================================
@@ -716,16 +668,14 @@ CATEGORY_CERTAINTY_TIERS: dict = {
     'Classic Hollywood': 2,
     'French New Wave': 2,
     'American New Hollywood': 2,
-    # Tier 3 — negative-space / catch-all categories (weak gates)
-    'Music Films': 3,
-    'Indie Cinema': 3,
     # Tier 2 — named historical movements, director-anchored
     'Japanese New Wave': 2,
     'Hong Kong New Wave': 2,
     # Tier 4 — manual curation only; auto-classification is strongly discouraged
     'Japanese Exploitation': 4,
-    'Cult Oddities': 4,
     'Hong Kong Category III': 4,
+    # Issue #51: Music Films, Indie Cinema, Cult Oddities removed — not named historical
+    # movements. Reachable only via SORTING_DATABASE pins (explicit_lookup).
 }
 
 # Confidence value assigned per certainty tier

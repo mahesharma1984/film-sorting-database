@@ -70,9 +70,11 @@ class TestCoreDirectorPriority:
         assert result.tier == "Satellite", f"Expected Satellite, got {result.tier} ({result.reason})"
         assert "French New Wave" in result.destination, f"Expected FNW folder, got {result.destination}"
         assert "Sexploitation" not in result.destination
-        # Issue #42: reason code replaced — director signal disambiguates Indie Cinema structural match
-        assert result.reason in ("director_disambiguates", "director_signal", "both_agree"), \
-            f"Expected director-based signal, got {result.reason}"
+        # Issue #51: director_disambiguates removed — conflicting signals now produce review_flagged.
+        # Accepted codes: both_agree (dir+struct agree on FNW), director_signal (dir only),
+        # review_flagged (dir→FNW conflicts with structural match from another category).
+        assert result.reason in ("review_flagged", "director_signal", "both_agree"), \
+            f"Expected director-based signal or review_flagged, got {result.reason}"
 
     # =========================================================================
     # TEST GROUP 2: Multi-decade directors (Kubrick spanning 1960s-1990s)

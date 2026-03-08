@@ -176,7 +176,7 @@ class TestScoreStructure:
         assert len(country_waves) == 0
 
     def test_returns_all_matches_not_first(self, satellite_classifier, popcorn_classifier):
-        """Brazilian Drama 1975 → multiple structural matches (BrazExpl + Indie Cinema)."""
+        """Brazilian Drama 1975 → structural match for Brazilian Exploitation (Indie Cinema removed Issue #51)."""
         meta = _meta('Test', 1975, country='BR')
         matches = score_structure(meta, {'genres': ['Drama'], 'countries': ['BR']},
                                   satellite_classifier, popcorn_classifier)
@@ -212,16 +212,17 @@ class TestIntegrateSignals:
         assert result.reason == 'both_agree'
         assert result.confidence == pytest.approx(0.85)
 
-    def test_director_disambiguates_different_structural(self):
-        """P3: Director says FNW, structure says Indie Cinema → director_disambiguates."""
+    def test_signal_conflict_produces_review_flagged(self):
+        """P3 (Issue #51): Director says FNW, structure says different category → review_flagged.
+        Previously director_disambiguates at 0.75 (52.9% accuracy). Now review_flagged at 0.4.
+        Conflicting signals are ambiguity, not a director-wins resolution."""
         dm = DirectorMatch(tier='Satellite', category='French New Wave', canonical_name=None,
                            source='satellite_rules', decade_valid=True)
-        sm = StructuralMatch(tier='Satellite', category='Indie Cinema', match_type='country_genre')
+        sm = StructuralMatch(tier='Satellite', category='Brazilian Exploitation', match_type='country_wave')
         result = integrate_signals([dm], [sm], '1960s', 'R3')
         assert result.tier == 'Satellite'
-        assert result.category == 'French New Wave'
-        assert result.reason == 'director_disambiguates'
-        assert result.confidence == pytest.approx(0.75)
+        assert result.reason == 'review_flagged'
+        assert result.confidence == pytest.approx(0.4)
 
     def test_director_signal_only_no_structural(self):
         """P4: Director says FNW, no structural → director_signal."""

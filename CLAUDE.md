@@ -85,7 +85,7 @@ Reference (canon) → Satellite (movement match) → Core (prestige non-movement
 
 Both signals fire for every film. Their agreement or disagreement determines confidence:
 - Both agree → `both_agree` (0.85) — highest-confidence heuristic classification
-- Director disambiguates structural ambiguity → `director_disambiguates` (0.75)
+- Director + Structure conflict → `review_flagged` (0.4) — conflicting signals are ambiguity, not a director-wins case (Issue #51; previously `director_disambiguates` at 0.75, 52.9% accuracy)
 - Director only (out-of-era) → `director_signal` (0.65)
 - Structure only (unknown director) → `structural_signal` (0.65)
 - Ambiguous structure, no director → `review_flagged` (0.4) — curator review needed
@@ -257,9 +257,11 @@ Classify what you can prove first. Use proven classifications as anchors. Expand
 | Tier | Categories | Gates | Auto? |
 |------|-----------|-------|-------|
 | 1 | Giallo, Brazilian Exploitation, HK Action, Pinku Eiga, American Exploitation, European Sexploitation, Blaxploitation | country + genre + decade + directors (4+) | Yes |
-| 2 | Classic Hollywood, French New Wave, American New Hollywood | director/country + decade + keywords (3) | Yes |
-| 3 | Music Films, Indie Cinema | genre/country + decade (2, negative-space) | Review-flagged |
-| 4 | Japanese Exploitation, Cult Oddities | Manual only | No |
+| 2 | Classic Hollywood, French New Wave, American New Hollywood, Japanese New Wave, Hong Kong New Wave | director/country + decade + keywords (3) | Yes |
+| 3 | *(removed — Issue #51)* Music Films, Indie Cinema were here; not named movements | — | SORTING_DATABASE pins only |
+| 4 | Japanese Exploitation, Hong Kong Category III, Cult Oddities | Manual only | SORTING_DATABASE pins only |
+
+**Rule:** Only named historical film movements grounded in published scholarship belong in `SATELLITE_ROUTING_RULES`. Tier 3 catch-alls (Indie Cinema, Music Films) and Tier 4 categories are reachable only via SORTING_DATABASE `explicit_lookup`, not auto-classified.
 
 **The anchor-then-expand pattern:**
 1. Establish anchors — explicit lookups (SORTING_DATABASE) + Reference canon + SATELLITE_TENTPOLES
@@ -332,10 +334,18 @@ Country → satellite routing only applies within historically valid decades:
 - Hong Kong → HK Action: 1970s–1990s only
 - US → American Exploitation: 1960s-1980s only (NARROWED - Issue #14)
 - US → Classic Hollywood: 1930s-1950s only (NEW - Issue #14)
-- International → Indie Cinema: 1960s-2020s, 30+ countries (WIDENED Issue #20 — functional catch-all, not a historical wave; see MARGINS_AND_TEXTURE.md §2)
-  - NOTE: US intentionally excluded from country_codes. US has Classic Hollywood (1930s-1950s), American Exploitation (1960s-1980s), Blaxploitation. Non-matching US films → Unsorted. US indie directors (Jarmusch, Hartley, Larry Clark etc.) still route via directors list.
-
 A 2010s Italian thriller is NOT Giallo. Decades are structural, not arbitrary.
+
+### Catch-All Categories Are SORTING_DATABASE-Only (Issue #51)
+**Indie Cinema, Music Films, and Cult Oddities are removed from `SATELLITE_ROUTING_RULES`.**
+They are not named historical movements and cannot be structurally defined:
+- **Indie Cinema**: negative-space (30+ countries, 6 decades, 4 broad genres) — too broad to be meaningful
+- **Music Films**: single genre gate (Music/Musical/Documentary), no country or decade constraint
+- **Cult Oddities**: no routing rules at all
+
+These three categories remain valid *destinations* — SORTING_DATABASE pins to `Satellite/Indie Cinema/`, `Satellite/Music Films/`, `Satellite/Cult Oddities/` continue to work via `explicit_lookup`. Films cannot *auto-classify* into them anymore. Films that previously landed here now go to `unsorted_no_match` and enter the review queue.
+
+**Rule:** Only named historical film movements grounded in published scholarship belong in `SATELLITE_ROUTING_RULES`. Catch-alls are not categories.
 
 ### Never Modify SORTING_DATABASE.md Programmatically
 `docs/SORTING_DATABASE.md` is human-curated. Code reads it; humans edit it. Never write to it from scripts.

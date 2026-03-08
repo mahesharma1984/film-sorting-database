@@ -1,0 +1,55 @@
+2026-03-06 19:45:17,926 - INFO - Stage 1: cache-only classification pass
+2026-03-06 19:45:17,929 - INFO - API enrichment disabled (--no-api/--no-tmdb): TMDb and OMDb both offline
+2026-03-06 19:45:17,953 - WARNING - Conflict: 'reanimator' (1985) → Satellite/American Exploitation/1980s/ vs Satellite/American Exploitation [DECIDED]
+2026-03-06 19:45:17,953 - INFO - Loaded 486 explicit film mappings from SORTING_DATABASE.md
+2026-03-06 19:45:17,953 - WARNING - Found 1 films with conflicting destinations
+2026-03-06 19:45:17,953 - INFO - Loaded explicit lookup table: 486 films
+2026-03-06 19:45:17,954 - INFO - Loaded 108 core directors across 8 decades (exact match only)
+2026-03-06 19:45:17,955 - INFO - Loaded manual enrichment: 16 entries
+2026-03-06 19:45:17,956 - INFO - Corpora directory not found: /Users/mahesh/Downloads/film-sorting-database/docs/data/corpora — corpus lookup disabled
+2026-03-06 19:45:17,961 - INFO - Loaded cache tmdb_cache.json (971 entries)
+2026-03-06 19:45:17,966 - INFO - Loaded cache omdb_cache.json (974 entries)
+2026-03-06 19:45:17,970 - INFO - Loaded 796 organized-tier films from output/library_audit.csv
+2026-03-06 19:45:18,030 - INFO - Processed 100/796...
+2026-03-06 19:45:18,086 - INFO - Processed 200/796...
+2026-03-06 19:45:18,139 - INFO - Processed 300/796...
+2026-03-06 19:45:18,196 - INFO - Processed 400/796...
+2026-03-06 19:45:18,237 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 19:45:18,238 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 19:45:18,239 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 19:45:18,239 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 19:45:18,241 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 19:45:18,252 - WARNING - Category 'European Sexploitation' at cap (25)
+2026-03-06 19:45:18,258 - INFO - Processed 500/796...
+2026-03-06 19:45:18,317 - INFO - Processed 600/796...
+2026-03-06 19:45:18,421 - INFO - Processed 700/796...
+2026-03-06 19:45:18,457 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,458 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,458 - WARNING - Satellite category 'Music Films' has 36 entries, exceeding auto-classification cap of 35. These are explicit lookup entries — not blocked, but worth auditing.
+2026-03-06 19:45:18,459 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,460 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,461 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,462 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,462 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,464 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,464 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,465 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,466 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,467 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,468 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,468 - WARNING - Category 'Music Films' at cap (35)
+2026-03-06 19:45:18,485 - INFO - Wrote reaudit report to output/reaudit_report.csv
+2026-03-06 19:45:18,499 - INFO - Wrote accuracy baseline to output/accuracy_baseline.json
+
+============================================================
+REAUDIT SUMMARY
+============================================================
+Total organized films audited : 796
+Confirmed (match)             : 718
+Discrepancies                 : 78
+
+  wrong_tier           : 24
+  wrong_category       : 20
+  unroutable           : 34
+============================================================
+
