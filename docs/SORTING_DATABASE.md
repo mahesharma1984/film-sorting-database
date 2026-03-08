@@ -425,6 +425,7 @@
 - Une vraie jeune fille (1976) → Satellite/European Sexploitation/1970s/
 - The Eroticist (1972) → Satellite/European Sexploitation/1970s/
 - Virgin Witch (1972) → Satellite/European Sexploitation/1970s/
+- Thriller A Cruel Picture (1973) → Satellite/European Sexploitation/1970s/
 
 ### Satellite - Indie Cinema
 - Fantastic Planet (1973) → Satellite/Indie Cinema/1970s/
@@ -440,6 +441,7 @@
 
 ### Popcorn
 - Young Frankenstein (1974) 16mm → Popcorn/1970s/
+- The Return Of The Pink Panther (1975) → Popcorn/1970s/
 - Up In Smoke (1978) → Popcorn/1970s/
 - The Wiz (1978) → Popcorn/1970s/
 - Cooley High (1975) → Popcorn/1970s/ [NOTE: Also in Blaxploitation - choose one]
@@ -692,6 +694,8 @@
 
 ### Popcorn
 - Dances with Wolves (1990) → Popcorn/1990s/
+- The Fantastic Four (1994) → Popcorn/1990s/
+- Bordello of Blood (1996) → Popcorn/1990s/
 - Serial Mom (1994) - John Waters → Popcorn/1990s/
 - Cry-Baby (1990) - John Waters → Popcorn/1990s/
 - Pecker (1998) - John Waters → Popcorn/1990s/
@@ -782,7 +786,7 @@
 - DOA - Dead Or Alive (2006) → Satellite/Hong Kong Action/2000s/
 
 ### Satellite - Music Films
-- The Smashing Machine (2002) → Satellite/Music Films/2000s/
+- Joy Division (2007) → Satellite/Music Films/2000s/
 
 ### Satellite - Japanese New Wave
 - Battle Royale (2000) → Satellite/Japanese New Wave/2000s/
