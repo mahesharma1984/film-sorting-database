@@ -47,6 +47,10 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | How is classification accuracy measured? | Re-run classifier on organised films; compare to current location | `docs/architecture/VALIDATION_ARCHITECTURE.md` §4 |
 | What is double-loop learning? | Questioning governing variables, not just fixing instances | `docs/theory/THEORETICAL_GROUNDING.md` §8 |
 | How do I re-audit existing library films? | Re-classification audit (Issue #31) | `docs/theory/REFINEMENT_AND_EMERGENCE.md` §4a |
+| How does filename normalisation work? | Three systems: normalizer (dot-separated), parser._clean_title (space-separated), normalization.py (lookup). Unified token lists in Issue #52. | `docs/architecture/RECURSIVE_CURATION_MODEL.md` §2a |
+| What are RELEASE_TAGS vs DOT_SEPARATOR_TAGS? | RELEASE_TAGS: parser-safe tokens for both systems. DOT_SEPARATOR_TAGS: normaliser-only tokens unsafe in space-separated titles. | `lib/constants.py`, `docs/DEVELOPER_GUIDE.md` |
+| What is Stage 0 normalisation? | classify.py calls normalizer.normalize() before parser.parse() — cleans filenames in memory, no disk renames | `docs/architecture/RECURSIVE_CURATION_MODEL.md` §2a |
+| What is R1 promotion? | Subtitle truncation: try shorter title prefixes as API queries for R1 films with 5+ word titles | `docs/architecture/RECURSIVE_CURATION_MODEL.md` §2a |
 | How do I run tests? | pytest tests/ | `docs/DEVELOPER_GUIDE.md` |
 | What is the R/P Split? | Reasoning vs Precision separation | `CLAUDE.md` |
 | How do I commit changes? | Use git commit workflow | `docs/DEVELOPER_GUIDE.md` |
@@ -95,6 +99,9 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Issue specification standard** | `docs/ISSUE_SPEC_TEMPLATE.md` | STABLE |
 | **Two-signal architecture** | `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md` | AUTHORITATIVE |
 | **Two-signal implementation** | `lib/signals.py` | AUTHORITATIVE |
+| **Filename normalisation** | `lib/normalizer.py` | AUTHORITATIVE |
+| **Lookup normalisation** | `lib/normalization.py` | AUTHORITATIVE |
+| **Token lists (RELEASE_TAGS, DOT_SEPARATOR_TAGS)** | `lib/constants.py` | AUTHORITATIVE |
 | **RAG query guide** | `docs/RAG_QUERY_GUIDE.md` | STABLE |
 
 ---

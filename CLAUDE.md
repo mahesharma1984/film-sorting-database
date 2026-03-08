@@ -422,10 +422,12 @@ Popcorn/1980s/
 # Run tests
 pytest tests/
 
-# Normalize filenames — Stage 0 pre-stage (Issue #18)
+# Normalize filenames — optional batch renames on disk (Issue #18, partially superseded by #52)
 python normalize.py <source_directory>              # dry-run, writes rename_manifest.csv
 python normalize.py <source_directory> --execute   # apply renames
 python normalize.py <source_directory> --nonfim-only  # show only TV/supplementary flags
+# Note: classify.py now calls normalizer.normalize() internally as Stage 0 (Issue #52)
+# Standalone normalize.py is optional — useful for readability renames, not required for classification
 
 # Classify films (never moves files)
 python classify.py <source_directory>

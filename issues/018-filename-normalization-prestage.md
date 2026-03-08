@@ -1,8 +1,10 @@
 # Issue #18: Filename Normalization Pre-Stage — Separate PRECISION Cleaning from REASONING Classification
 
-**Status:** Open
+**Status:** Partially Superseded by Issue #52
 **Branch:** feature/v03-filename-normalization
 **Priority:** High
+
+> **Note (2026-03-08):** Issue #52 integrates `lib/normalizer.py` as Stage 0 inside `classify.py`, calling `normalizer.normalize()` before `parser.parse()` in memory — no filesystem boundary, no rename_manifest.csv intermediary. The standalone `normalize.py` script and `--execute` rename workflow still exist for optional batch renames on disk but are no longer required before classification. Token lists are now unified: `RELEASE_TAGS` + `DOT_SEPARATOR_TAGS` in `lib/constants.py` replace the normaliser's hardcoded 78-token `_JUNK_TOKENS`. See `docs/architecture/RECURSIVE_CURATION_MODEL.md` §2a for the architectural rationale.
 
 ---
 

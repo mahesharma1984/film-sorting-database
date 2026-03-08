@@ -25,20 +25,31 @@ Before editing any module, trace:
 
 Key dependency chains:
 ```
-normalizer.py → normalize.py (FilenameNormalizer — pure PRECISION, Issue #18)
-normalize.py → classify.py (cleaned filenames via rename_manifest.csv)
+constants.py → normalizer.py, parser.py, normalization.py, classify.py, signals.py
+  RELEASE_TAGS → parser._clean_title() (token-boundary matching in space-separated titles)
+  RELEASE_TAGS + DOT_SEPARATOR_TAGS → normalizer._JUNK_TOKENS (whole-token matching in dot-separated filenames)
+  FORMAT_SIGNALS → normalization.py (lookup normalisation)
+
+normalizer.py → classify.py Stage 0 (FilenameNormalizer — called directly in memory, Issue #52)
+  (also available standalone: normalize.py → rename_manifest.csv, Issue #18)
 parser.py → classify.py (FilmMetadata, including imdb_id extraction)
-constants.py → parser.py, normalization.py, classify.py (FORMAT_SIGNALS, RELEASE_TAGS, etc.)
 normalization.py → lookup.py, corpus.py, classify.py (normalize_for_lookup — for LOOKUP symmetry)
 lookup.py → classify.py (SORTING_DATABASE lookups)
 corpus.py → classify.py (ground truth corpus lookups — Issue #38)
-core_directors.py → classify.py (whitelist checks)
+signals.py → classify.py (score_director + score_structure + integrate_signals — Issue #42)
+core_directors.py → signals.py (whitelist checks)
 classify.py → move.py (sorting_manifest.csv)
 data/corpora/*.csv → corpus.py (scholarship-sourced per-category ground truth)
 ```
 
-Note: `lib/normalizer.py` (filename cleaning) is separate from `lib/normalization.py`
-(lookup normalization). They have different purposes — do not merge.
+**Three normalisation modules** (different purposes — do not merge):
+- `lib/normalizer.py` — filename cleaning: strips dot-separated junk tokens, fixes years, detects non-films. Called by `classify.py` as Stage 0 (Issue #52) or by standalone `normalize.py` for batch renames.
+- `lib/parser.py` `_clean_title()` — title cleaning: strips release tags from space-separated parsed titles using token-boundary regex.
+- `lib/normalization.py` — lookup normalisation: `normalize_for_lookup()` produces symmetric keys for SORTING_DATABASE building and querying.
+
+**Token list split (Issue #52):** `RELEASE_TAGS` contains tokens safe for both systems. `DOT_SEPARATOR_TAGS` contains tokens safe only in dot-separated context (edition descriptors like `theatrical`, common words like `doc`/`web`, language codes like `por`/`ita`). The split exists because the parser uses `(?<![a-zA-Z0-9])tag(?![a-zA-Z0-9])` boundaries which are ASCII-only — 3-letter language codes match inside non-ASCII words (e.g., `por` inside `zápor`).
+
+**`classify.py._clean_title_for_api()`** is a safety-net that strips FORMAT_SIGNALS and any remaining release tags before API queries. It was simplified in Issue #52 (residual patterns absorbed into expanded RELEASE_TAGS) but still exists as a defensive layer.
 
 ### 2. Apply the R/P Split
 

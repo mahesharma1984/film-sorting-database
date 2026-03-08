@@ -38,54 +38,58 @@ FORMAT_SIGNALS = [
     'ib tech'
 ]
 
-# Release group tags to strip from titles
-# These are encoding/release metadata, not film metadata
+# Release group tags to strip from titles (Issue #52: unified canonical list)
+# Used by parser._clean_title() with token-boundary matching in SPACE-SEPARATED titles.
+# SAFETY: only tokens that NEVER appear as words in film titles belong here.
+# Edition descriptors (theatrical, extended) and common words (doc, web, metro)
+# go in DOT_SEPARATOR_TAGS below — they're safe for dot-separated matching only.
 RELEASE_TAGS = [
-    'bluray',
-    'bdrip',
-    'brrip',
-    'web-dl',
-    'webrip',
-    'dvdrip',
-    'hdrip',
-    'x264',
-    'x265',
-    'h264',
-    'h265',
-    'hevc',
-    'aac',
-    'ac3',
-    'dts',
-    'dts-hd',
-    'eac3',
-    'flac',
-    '1080p',
-    '720p',
-    '2160p',
-    '4k',  # Also in FORMAT_SIGNALS - intentional overlap
-    'uhd',  # Also in FORMAT_SIGNALS - intentional overlap
-    'hd',
-    'hdr',
-    'scan',
-    'fullscreen',
-    'hybrid',
-    'matte',  # Will also catch "open matte" via FORMAT_SIGNALS
-    'preview',
-    'yify',
-    'rarbg',
-    'vxt',
-    'tigole',
-    'sartre',
-    'nikt0',
-    'baggerinc',
-    'gypsy',
-    'amzn',
-    'nf',
-    'hulu',
-    'remastered',  # Also in FORMAT_SIGNALS - intentional overlap
-    'restored',  # Also in FORMAT_SIGNALS - intentional overlap
-    'anniversary',  # Also in FORMAT_SIGNALS - intentional overlap
-    'repack'
+    # --- Source / container ---
+    'bluray', 'blu-ray', 'bdrip', 'brrip',
+    'web-dl', 'webrip',
+    'dvdrip', 'dvdscr', 'hdrip', 'hdtv', 'pdtv', 'tvrip',
+    'vhsrip', 'satrip',
+    # --- Streaming platform ---
+    'amzn', 'nf', 'hulu', 'itunes',
+    # --- Resolution ---
+    '480p', '576p', '720p', '1080p', '2160p',
+    '4k', 'uhd', 'hd',
+    # --- Codec ---
+    'x264', 'x265', 'h264', 'h265', 'hevc', 'avc', 'xvid', 'divx',
+    # --- Audio ---
+    'aac', 'ac3', 'dts', 'dts-hd', 'eac3', 'flac', 'mp3',
+    'ddp', 'dd2', 'dd5', 'truehd', 'atmos', '2audio',
+    # --- HDR / colour ---
+    'hdr', 'hdr10',
+    # --- Modifiers (technical, not edition descriptors) ---
+    'repack', 'remux', 'upscale', 'uncensored',
+    'scan', 'fullscreen', 'hybrid', 'matte', 'preview',
+    'remastered', 'restored', 'anniversary',
+    # --- Release groups ---
+    'yify', 'rarbg', 'vxt', 'tigole', 'sartre', 'handjob',
+    'nikt0', 'baggerinc', 'gypsy',
+]
+
+# Additional tokens for DOT-SEPARATED filename junk detection only (Issue #52).
+# These tokens are common words or edition descriptors that would cause false
+# truncation if used in parser's token-boundary matching on space-separated titles
+# (e.g., "Theatrical Cut" → truncated to "" if 'theatrical' were in RELEASE_TAGS).
+# The normaliser uses these for whole-token matching in dot-separated filenames
+# where "Movie.2001.Theatrical.x264" → "theatrical" is clearly junk.
+DOT_SEPARATOR_TAGS = [
+    # --- Edition / cut descriptors (safe in dot-separated, unsafe in titles) ---
+    'theatrical', 'extended', 'proper',
+    # --- Common words that appear in titles ---
+    'web', 'doc', 'metro', 'internal', 'limited', 'multi', 'dual',
+    # --- Short abbreviations ---
+    'ma', 'vo', 'pc', 'sr', 'kl', 'moc',
+    # --- Language tags (safe for dot-separated only; 3-letter codes match inside
+    #     non-ASCII words like "zápor" because token-boundary regex uses ASCII
+    #     character classes; full names like "english" match in titles like
+    #     "An English Patient". Language detection uses LANGUAGE_PATTERNS.) ---
+    'ita', 'eng', 'fre', 'ger', 'spa', 'por', 'jap', 'rus',
+    'french', 'italian', 'german', 'spanish', 'japanese', 'portuguese',
+    'english', 'chinese', 'vostfr',
 ]
 
 # =============================================================================

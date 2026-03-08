@@ -23,6 +23,29 @@ determines the result.**
 
 ---
 
+## 1a. Data Quality Dependency
+
+Both signals depend entirely on upstream data quality. The two-signal architecture assumes that director names, country codes, and genres arrive correctly — but this is not guaranteed. The data passes through multiple normalisation and enrichment stages before signals fire:
+
+```
+raw filename → normaliser (Stage 0) → parser → API query → API result → merge → signals
+```
+
+Failure at any upstream stage degrades signal quality:
+
+| Upstream failure | Signal 1 (Director) impact | Signal 2 (Structure) impact |
+|---|---|---|
+| Dirty title → bad API query | Director not found → no director signal | Country/genres not found → no structural signal |
+| Parser extracts wrong year | Director match may fail decade validation | Structural decade gate misroutes |
+| API returns wrong film | Wrong director → false match or miss | Wrong country → wrong structural region |
+| Missing country data | No impact (director-only) | Country gate fails → structural signal absent |
+
+**Consequence:** A film classified as `unsorted_no_match` may not be genuinely unmatchable — it may have bad upstream data. The R1 population (106 films with title+year but no API data) enters the signal layer with empty inputs and produces guaranteed `unsorted_insufficient_data`, which looks like a routing failure but is actually a data quality failure.
+
+**Relationship to Data Readiness:** The readiness levels (R0–R3) in `RECURSIVE_CURATION_MODEL.md` §2 gate which signals can fire. R1 films skip the signal layer entirely. R2 films produce partial signals (one axis only). Only R3 films produce both signals at full strength. See §2a of that document for how normalisation quality determines readiness levels.
+
+---
+
 ## 2. Signal Definitions
 
 ### Signal 1: Director Identity

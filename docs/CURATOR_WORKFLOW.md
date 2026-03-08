@@ -44,7 +44,13 @@ Run these phases to process the Unsorted queue and move films into the organised
 
 ## Phase 0: Normalise Filenames
 
-Clean filenames before classification. Dirty filenames cause API lookup failures.
+**Automatic (Issue #52):** `classify.py` normalises filenames internally as Stage 0 before parsing. When `classify.py` processes a directory, it calls `normalizer.normalize()` on each filename before `parser.parse()`. This cleans dot-separated junk tokens (codec markers, release groups, streaming platform tags), fixes malformed years, and normalises edition markers — producing cleaner input for the parser without renaming files on disk. The original filename is preserved in the manifest for traceability.
+
+Token lists are defined in `lib/constants.py`:
+- `RELEASE_TAGS` — tokens stripped by both normaliser and parser (e.g., `bluray`, `x264`, `1080p`)
+- `DOT_SEPARATOR_TAGS` — tokens stripped only by the normaliser in dot-separated filenames (e.g., `theatrical`, `french`, `por`) — these are unsafe in space-separated titles where they match inside words
+
+**Optional — batch renames:** If you want to rename files on disk (for readability or to fix future re-runs), the standalone `normalize.py` still works:
 
 ```bash
 # Preview what would change (dry-run, safe)
@@ -61,7 +67,30 @@ python normalize.py /path/to/unsorted/films --nonfim-only
 
 **Output:** `output/rename_manifest.csv` — one row per file with `original_filename`, `cleaned_filename`, `change_type`, `notes`.
 
-**When to run:** Before every classification pass, especially after adding new films.
+---
+
+## Phase 0.5: Review Data Quality Feedback
+
+After each classify run, the staging report (`output/staging_report.txt`) includes a "DATA QUALITY FEEDBACK" section at the bottom. This connects classification output to data preparation actions for the next cycle.
+
+**What it shows:**
+
+- **Readiness distribution** — counts of R0, R1, R2, R3 films in this run
+- **R1 promotions** — films promoted from R1 (no data) to R2/R3 via subtitle truncation (e.g., "Alphaville une etrange aventure de Lemmy Caution" → queried as "Alphaville" → matched → promoted to R3)
+- **R1 remaining** — films where APIs returned nothing even after promotion attempts. These are candidates for `manual_enrichment.csv` — the curator provides director/country from personal knowledge
+- **unsorted_no_match** — films with full R2/R3 data but no routing rule matched. These need SORTING_DATABASE pins or new routing rules
+- **review_flagged** — films where director and structural signals conflicted. May indicate parser errors (wrong director extracted), ambiguous films (genuinely sit between two categories), or missing SORTING_DATABASE entries
+
+**How to act on it:**
+
+| Feedback line | Curator action |
+|---|---|
+| R1 remaining: 93 films | Pick recognisable titles → add to `manual_enrichment.csv` with director/country |
+| unsorted_no_match: 32 films | Check if director/country match an existing category → add SORTING_DATABASE pin |
+| review_flagged: 8 films | Look up each film → either add SORTING_DATABASE pin or investigate parser extraction |
+| R1 promotions: 13 | No action needed — these are wins. Verify the 4 new classifications are correct |
+
+Use this feedback to prioritise the next GATHER cycle. High R1 remaining → focus on manual enrichment. High unsorted_no_match → focus on SORTING_DATABASE pins. High review_flagged → investigate parser or signal issues.
 
 ---
 
@@ -95,9 +124,13 @@ python classify.py /path/to/unsorted/films --no-api
 - `explicit_lookup` — matched SORTING_DATABASE.md (highest trust)
 - `corpus_lookup` — matched ground truth corpus entry (scholarship-sourced, confidence 1.0)
 - `reference_canon` — in the 50-film Reference canon
-- `country_satellite` — routed by country+decade+genre
-- `core_director` — matched Core director whitelist
-- `popcorn` — popularity signals
+- `both_agree` — director identity + structural triangulation independently matched same category (0.85)
+- `director_signal` — director identity matched a category (0.65 Satellite, 1.0 Core)
+- `structural_signal` — country+decade+genre matched a category (0.65)
+- `director_disambiguates` — director resolved conflicting structural matches (0.75)
+- `review_flagged` — multiple structural matches, no director to resolve (0.4) — curator review needed
+- `user_tag_recovery` — recovered previous human classification from filename path
+- `popcorn_*` — popularity signals
 - `unsorted_no_year` — no year extracted (R0)
 - `unsorted_insufficient_data` — year only, no API data (R1)
 - `unsorted_no_match` — has data but no rule fits (R2/R3)

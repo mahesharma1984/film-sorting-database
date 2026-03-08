@@ -269,24 +269,15 @@ class FilmClassifier:
 
     def _clean_title_for_api(self, title: str) -> str:
         """
-        ENHANCED (Issue #16): Aggressive cleaning for API queries
+        Clean title for API queries (Issue #16, simplified Issue #52).
 
-        Removes RELEASE_TAGS tokens that survive parser._clean_title()
-        This fixes Layer 1 of the classification regression where tokens like
-        "Metro", "576p", "PC" survive into API queries and cause null results.
-
-        Removes:
-        - User tag brackets [...]
-        - Format signals (35mm, Criterion, etc.)
-        - RELEASE_TAGS that survived parser (second-pass truncation)
-        - Residual tokens not in RELEASE_TAGS (Metro, PC, SR, language tags)
-        - Empty parentheses artifacts
-        - Extra whitespace
-
-        Preserves:
-        - Punctuation (for proper title matching)
-        - Capitalization
-        - Special characters (é, ñ, etc.)
+        With Stage 0 normalisation (Issue #52) and expanded RELEASE_TAGS,
+        most junk tokens are stripped before the title reaches this method.
+        This handles two remaining concerns:
+        1. FORMAT_SIGNALS (35mm, Criterion, etc.) — edition/format metadata
+           not in RELEASE_TAGS because they serve a different purpose upstream.
+        2. Safety-net second-pass RELEASE_TAGS truncation — catches any survivors
+           (language tags, resolutions, codecs now in expanded RELEASE_TAGS).
 
         Returns:
             Cleaned title string ready for API query
@@ -299,23 +290,10 @@ class FilmClassifier:
         # Strip format signals (35mm, Criterion, etc.)
         clean_title = _strip_format_signals(clean_title)
 
-        # NEW (Issue #16): Second-pass RELEASE_TAGS truncation
-        # Parser's _clean_title() stops at FIRST tag, this catches survivors.
-        # Uses token-boundary matching so short tags like "hd"/"nf" do not
-        # truncate normal words (e.g. "Shadow", "Conformist").
+        # Safety-net: second-pass RELEASE_TAGS truncation.
+        # Parser's _clean_title() stops at FIRST tag; this catches any survivors.
+        # Uses token-boundary matching so short tags don't truncate real words.
         clean_title = strip_release_tags(clean_title)
-
-        # NEW (Issue #16): Strip common residual tokens not in RELEASE_TAGS
-        # These are tokens that appear mid-title after incomplete parser truncation
-        residual_patterns = [
-            r'\b(metro|pc|sr|moc|kl|doc|vo)\b',  # Source tags
-            r'\b\d{3,4}p\b',  # Resolution: 576p, 1080p
-            r'\b(spanish|french|italian|german|japanese|chinese|vostfr)\b',  # Language tags
-            r'\b(itunes|upscale|uncensored|satrip|vhsrip|xvid|mp3|2audio)\b',  # Format/codec
-        ]
-
-        for pattern in residual_patterns:
-            clean_title = re.sub(pattern, '', clean_title, flags=re.IGNORECASE)
 
         # Remove empty parentheses artifacts
         clean_title = re.sub(r'\s*\(\s*\)', '', clean_title)
@@ -324,6 +302,77 @@ class FilmClassifier:
         clean_title = ' '.join(clean_title.split())
 
         return clean_title.strip()
+
+    def _attempt_r1_promotion(self, metadata: FilmMetadata) -> Optional[Dict]:
+        """
+        Attempt to promote R1 films (title+year, no director/country) via
+        targeted API re-queries (Issue #52, Part 2).
+
+        Two strategies:
+        1. Subtitle truncation: If title has 5+ words, try first N words as
+           a shorter query. Catches subtitle contamination like
+           "Alphaville une etrange aventure de Lemmy Caution" → "Alphaville".
+        2. Cache-miss re-query: If the current clean title differs from the
+           cached query key (normaliser cleaned it differently), re-query.
+
+        Returns:
+            Merged API result dict if promotion succeeded, None otherwise.
+        """
+        if not metadata.title or not metadata.year:
+            return None
+
+        clean_title = self._clean_title_for_api(metadata.title)
+        words = clean_title.split()
+
+        # Strategy 1: subtitle truncation for long titles
+        if len(words) >= 5:
+            # Try progressively shorter prefixes: 3 words, 2 words, 1 word
+            for n in (3, 2, 1):
+                short_title = ' '.join(words[:n])
+                if not short_title:
+                    continue
+                # Skip overly generic queries: 1-word must be >= 6 chars
+                # to avoid "The", "Le", "A", "Plan" matching wrong films
+                if n == 1 and len(short_title) < 6:
+                    continue
+
+                # Try TMDb with shorter title
+                tmdb_result = None
+                omdb_result = None
+                if self.tmdb:
+                    tmdb_result = self.tmdb.search_film(short_title, metadata.year)
+                if self.omdb:
+                    omdb_result = self.omdb.search_film(short_title, metadata.year)
+
+                if tmdb_result or omdb_result:
+                    # Year validation: result year must be within ±2 of metadata year
+                    # to prevent false matches from generic queries
+                    result_year = None
+                    if tmdb_result and tmdb_result.get('year'):
+                        result_year = tmdb_result['year']
+                    elif omdb_result and omdb_result.get('year'):
+                        result_year = omdb_result['year']
+
+                    if result_year and metadata.year:
+                        if abs(int(result_year) - int(metadata.year)) > 2:
+                            continue  # Year mismatch — likely wrong film
+
+                    merged = self._merge_api_results(tmdb_result, omdb_result, metadata)
+                    if merged and (merged.get('director') or merged.get('countries')):
+                        self.stats['r1_promoted_subtitle'] += 1
+                        logger.info(
+                            f"R1 PROMOTED (subtitle truncation): "
+                            f"'{clean_title}' → '{short_title}' found match"
+                        )
+                        return merged
+
+        # Strategy 2: cache-miss detection (deferred)
+        # If the cached null entry was created with a dirtier title than what
+        # Stage 0 normalisation now produces, the null may be stale. This requires
+        # storing query keys in cache entries — deferred to a future issue.
+        # Subtitle truncation handles the main R1 promotion cases.
+
+        return None
 
     def _query_apis(self, metadata: FilmMetadata) -> Dict[str, Optional[Dict]]:
         """
@@ -548,6 +597,22 @@ class FilmClassifier:
         # === Data readiness assessment (Issue #30) ===
         # Assessed after API enrichment so enriched director/country are considered.
         _readiness = self._assess_readiness(metadata, tmdb_data)
+
+        # === Stage 1.5: R1 promotion attempt (Issue #52) ===
+        # If film is R1 (title+year, no director/country), try targeted re-queries
+        # with shorter title variants before giving up on enrichment.
+        if _readiness == 'R1' and metadata.title:
+            promoted_data = self._attempt_r1_promotion(metadata)
+            if promoted_data:
+                # Merge promoted data into existing tmdb_data
+                if tmdb_data is None:
+                    tmdb_data = promoted_data
+                else:
+                    for k, v in promoted_data.items():
+                        if v and not tmdb_data.get(k):
+                            tmdb_data[k] = v
+                # Re-assess readiness with new data
+                _readiness = self._assess_readiness(metadata, tmdb_data)
 
         # Audit trail: capture which TMDb film was used (Issue #21)
         _tmdb_id = tmdb_data.get('tmdb_id') if tmdb_data else None
@@ -859,6 +924,42 @@ class FilmClassifier:
                 f.write(f"Director: {film.director or 'UNKNOWN'}\n")
                 f.write(f"Reason: {film.reason}\n")
                 f.write("-" * 60 + "\n")
+
+            # === Data Quality Feedback (Issue #52) ===
+            f.write("\n\n")
+            f.write("=" * 60 + "\n")
+            f.write("DATA QUALITY FEEDBACK\n")
+            f.write("=" * 60 + "\n\n")
+
+            # Readiness distribution
+            readiness = {}
+            for r in results:
+                readiness[r.data_readiness] = readiness.get(r.data_readiness, 0) + 1
+            f.write("Data readiness distribution:\n")
+            for level in ('R0', 'R1', 'R2', 'R3'):
+                count = readiness.get(level, 0)
+                f.write(f"  {level}: {count:4d}\n")
+
+            # R1 promotions
+            promoted = self.stats.get('r1_promoted_subtitle', 0)
+            if promoted:
+                f.write(f"\nR1 promotions this run: {promoted} (subtitle truncation)\n")
+
+            # Actionable populations
+            r1_remaining = readiness.get('R1', 0)
+            no_match = sum(1 for r in results if r.reason == 'unsorted_no_match')
+            review_flagged = sum(1 for r in results if r.reason == 'review_flagged')
+
+            f.write(f"\nActionable next steps:\n")
+            if r1_remaining > 0:
+                f.write(f"  R1 remaining: {r1_remaining} films — API returned no data.\n")
+                f.write(f"    → Consider manual_enrichment.csv for known films.\n")
+            if no_match > 0:
+                f.write(f"  unsorted_no_match: {no_match} films — data present, no routing rule.\n")
+                f.write(f"    → Add SORTING_DATABASE pins or expand routing rules.\n")
+            if review_flagged > 0:
+                f.write(f"  review_flagged: {review_flagged} films — conflicting signals.\n")
+                f.write(f"    → Curator review needed (may be parser title/director swap).\n")
 
         logger.info(f"Wrote staging report to {output_path}")
 

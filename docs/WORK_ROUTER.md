@@ -82,6 +82,7 @@ Start here: What kind of problem is this?
 
 | Component | Theory/Rule | Architecture Doc | Code Location | Validation Command | Reason Codes |
 |---|---|---|---|---|---|
+| Normaliser (Stage 0) | CLAUDE.md Rule 1 (PRECISION) | RECURSIVE_CURATION_MODEL.md §2a | `lib/normalizer.py` | `pytest tests/test_normalizer.py -v` | (pre-parser, no reason codes) |
 | Parser | CLAUDE.md Rule 1 (PRECISION) | RECURSIVE_CURATION_MODEL.md §1 | `lib/parser.py` | `pytest tests/test_parser.py -v` | `no_year` |
 | Explicit lookup | CLAUDE.md Rule 2 (priority 1) | VALIDATION_ARCHITECTURE.md §1 | `lib/lookup.py` | `pytest tests/test_lookup.py -v` | `explicit_lookup` |
 | Corpus lookup | CLAUDE.md Rule 2 (priority 2) | VALIDATION_ARCHITECTURE.md §3 | `lib/corpus.py` | `pytest tests/test_corpus_lookup.py -v` | `corpus_lookup` |
@@ -125,10 +126,13 @@ When you need to understand how a film moves through the pipeline:
 
 Key pipeline flow:
 ```
-filename → Parser → [explicit_lookup → corpus_lookup → reference → satellite → user_tag → core → popcorn] → Unsorted
-                                                                ↑
-                                              API enrichment feeds satellite/popcorn
+filename → Normaliser (Stage 0) → Parser → API enrichment → R1 promotion (if needed)
+    → [explicit_lookup → corpus_lookup → two-signal integration → user_tag → popcorn] → Unsorted
+                                              ↑
+                                  score_director + score_structure → integrate_signals
 ```
+
+Stage 0 normalisation (`lib/normalizer.py`) cleans dot-separated junk tokens before the parser runs. Token lists: `RELEASE_TAGS` (shared with parser) + `DOT_SEPARATOR_TAGS` (normaliser-only) from `lib/constants.py`. R1 promotion (`_attempt_r1_promotion()`) tries shorter title variants as API queries for films where enrichment returned no data.
 
 ### §0.6 Drift Audit
 

@@ -94,6 +94,58 @@ Data readiness is not a static property. It is a progression. The system should 
 
 *Deep-dive: [data-readiness.md](../../exports/skills/data-readiness.md) (Skill 10 — full framework).*
 
+### 2a. Data Quality → Signal Quality → Route Quality (Issue #52)
+
+The binding constraint of the entire system is upstream data quality. Clean data produces strong signals; strong signals produce correct routes; incorrect routes reveal data gaps for the next GATHER cycle. This is the reciprocal relationship that makes the core loop (§1) self-improving:
+
+```
+GATHER (normalise) → data quality
+  → CLASSIFY (two signals) → signal quality
+    → ROUTE → route quality
+      → AUDIT (reaudit) → reveals data gaps
+        → GATHER (next cycle)
+```
+
+#### The Three Normalisation Systems
+
+The pipeline inherited three independent normalisation systems, each built at a different time for a different purpose, with no shared token list or coordination:
+
+| System | Location | Context | Purpose |
+|--------|----------|---------|---------|
+| **FilenameNormalizer** | `lib/normalizer.py` | Dot-separated scene-release filenames | Strip junk tokens, fix years, detect non-films. Built as standalone Stage 0 (Issue #18), predates two-signal architecture. |
+| **Parser title cleaning** | `lib/parser.py` `_clean_title()` | Space-separated human-readable titles | Strip release tags and format signals from parsed titles using token-boundary regex. |
+| **Lookup normalisation** | `lib/normalization.py` `normalize_for_lookup()` | SORTING_DATABASE keys and queries | Symmetric normalisation for lookup — must produce identical output when building the lookup table and when querying against it. |
+
+A fourth ad-hoc path existed in `classify.py._clean_title_for_api()`, which applied its own residual patterns before API queries.
+
+**The problem:** These systems shared no token list. Each maintained its own hardcoded set of "junk" tokens. When a token was added to one system, the others didn't know. When the parser learned to strip a new tag, the normaliser still passed it through (and vice versa). The normaliser predated the two-signal architecture entirely — it was designed for a sequential gate chain that no longer exists.
+
+**The handoff boundary:** Before Issue #52, the normaliser operated as an external script (`normalize.py`) that renamed files on disk, then `classify.py` read the renamed filenames. Information was lost at the filesystem boundary — the normaliser's analysis of what it stripped and why was discarded. The classifier re-derived everything from scratch using its own separate token lists.
+
+#### Why Three Frameworks Converge Here
+
+Normalisation is where three architectural frameworks meet:
+
+- **Data Readiness (§2)** — Normalisation determines data quality: a dirty filename produces a bad title, which produces a failed API query, which produces R1 (no data). The readiness level is not a property of the film — it's a property of how well the system cleaned the filename.
+- **Two-Signal Architecture (`TWO_SIGNAL_ARCHITECTURE.md`)** — Both signals depend on upstream data. Signal 1 (Director Identity) needs a correct director name from the API. Signal 2 (Structural Triangulation) needs correct country and decade from the API. Both require a clean title to produce a correct API match.
+- **Constraint Gates (CLAUDE.md Rule 5)** — The binding constraint of the pipeline is not routing complexity — it's the handoff between normalisation and API enrichment. Fix the title → fix the API query → fix the data → fix the signals.
+
+#### The Missing Feedback Loop
+
+Before Issue #52, the core loop (§1) had GATHER→CLASSIFY but not CLASSIFY→GATHER. The classifier could report "this film is R1" but could not act on it — it never tried to improve the data quality of R1 films before giving up. The feedback arrow from CLASSIFY back to GATHER was missing from the implementation.
+
+#### Implementation (Issue #52)
+
+1. **Stage 0 normalisation** — `classify.py` calls `normalizer.normalize()` before `parser.parse()` inside `process_directory()`, feeding the parser cleaner input without renaming files on disk. This eliminates the filesystem boundary — the normaliser's output feeds the parser directly in memory.
+
+2. **Unified token lists** — The normaliser and parser now share a canonical token list (`RELEASE_TAGS` in `lib/constants.py`). However, the two systems operate in different matching contexts: the normaliser matches whole tokens in dot-separated filenames (`film.1080p.bluray.mkv`), while the parser uses token-boundary regex in space-separated titles (`Film Title 1080p`). Tokens like `theatrical`, `extended`, `doc`, `web`, and language codes (`por`, `ita`, `eng`) are safe for dot-separated matching but dangerous for space-separated — they appear as words or word-fragments in film titles. These go in `DOT_SEPARATOR_TAGS` (normaliser-only). The split is a safety constraint, not arbitrary.
+
+3. **R1 promotion** — After API enrichment, films assessed as R1 (title+year, no director/country) get a second chance via subtitle truncation. For titles with 5+ words, the system tries progressively shorter prefixes (3 words → 2 words → 1 word) as API queries. Guards prevent false positives: single-word queries must be ≥6 characters, and year validation requires the API result to be within ±2 years of the filename year. This closes the CLASSIFY→GATHER feedback loop — the classifier actively promotes films up the readiness ladder.
+
+4. **Data quality feedback** — The staging report includes a "Data Quality Feedback" section connecting signal output to data preparation: R1 promotions achieved, remaining R1 population (API gaps → manual enrichment candidates), `unsorted_no_match` population (data present → needs routing rules or SORTING_DATABASE pins), `review_flagged` population (conflicting signals → possible parser errors or ambiguous films).
+
+**The key principle:** Data readiness (R0→R3) is a *progression*, not just a *measurement*. Each classify run should actively try to promote films up the readiness ladder before giving up.
+
 ---
 
 ## 3. The Four-Tier Hierarchy

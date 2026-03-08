@@ -22,6 +22,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional, Set, Tuple
 
+from lib.constants import RELEASE_TAGS, DOT_SEPARATOR_TAGS
+
 
 @dataclass
 class NormalizationResult:
@@ -192,28 +194,15 @@ class FilenameNormalizer:
 
     # ── cleaning rules ──────────────────────────────────────────────────────
 
-    # Tokens that identify a filename as torrent/rip-style (dot-separated junk)
-    _JUNK_TOKENS: Set[str] = {
-        # Resolution
-        '480p', '576p', '720p', '1080p', '2160p', '4k', 'uhd', 'hd',
-        # Source
-        'bluray', 'blu-ray', 'bdrip', 'brrip', 'web-dl', 'webrip', 'web',
-        'dvdrip', 'dvdscr', 'hdrip', 'hdtv', 'pdtv', 'tvrip', 'amzn', 'nf',
-        # Codec
-        'x264', 'x265', 'h264', 'h265', 'hevc', 'avc', 'xvid', 'divx',
-        # Audio
-        'aac', 'ac3', 'dts', 'flac', 'mp3', 'ddp', 'truehd', 'atmos',
-        'dd2', 'dd5', 'eac3', 'ma',
-        # Modifiers
-        'repack', 'proper', 'remastered', 'remux', 'extended', 'theatrical',
-        'internal', 'limited', 'multi', 'dual', 'hybrid', 'hdr', 'hdr10',
-        # Language/country tokens used as junk in filenames
-        'ita', 'eng', 'fre', 'ger', 'spa', 'por', 'jap', 'rus',
-        'french', 'italian', 'german', 'spanish', 'japanese', 'portuguese',
-        'english', 'usa',
-        # Release group indicators
-        'yify', 'rarbg', 'vxt', 'tigole', 'sartre', 'handjob',
-    }
+    # Tokens that identify a filename as torrent/rip-style (dot-separated junk).
+    # Derived from canonical constants (Issue #52): RELEASE_TAGS (parser-safe) +
+    # DOT_SEPARATOR_TAGS (safe only for dot-separated whole-token matching).
+    # 'usa' is added here only — it's a filename junk token but not a release tag.
+    _JUNK_TOKENS: Set[str] = (
+        set(t.lower() for t in RELEASE_TAGS) |
+        set(t.lower() for t in DOT_SEPARATOR_TAGS) |
+        {'usa'}
+    )
 
     def _is_junk_token(self, token: str) -> bool:
         """Return True if a dot-separated token is technical/release junk."""
