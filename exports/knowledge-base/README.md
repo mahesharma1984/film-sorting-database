@@ -59,6 +59,10 @@ The knowledge base documents build on each other:
 9. Exploration Theory
    "How do you investigate an existing system before changing it?"
    ↓ establishes the investigation method (synthesizes 3, 6, 8)
+
+10. Governance Chain Theory
+    "How do you prevent theory, architecture, and code from drifting apart?"
+    ↓ establishes the multi-level constraint method (synthesizes 3, 7, 8)
 ```
 
 Each document follows the same structure:
@@ -83,6 +87,7 @@ Each document follows the same structure:
 | 7 | [Failure Theory](failure-theory.md) | How do systems break silently? | Failure Gates |
 | 8 | [Constraint Theory](constraint-theory.md) | When a pipeline underperforms, how do you find *what* to fix? | Constraint Gates |
 | 9 | [Exploration Theory](exploration-theory.md) | How do you investigate an existing system before changing it? | Exploration-First |
+| 10 | [Governance Chain Theory](governance-chain-theory.md) | How do you prevent theory, architecture, and code from drifting apart? | Governance Chain |
 
 ---
 
@@ -98,7 +103,8 @@ LAYER 0: KNOWLEDGE BASE (understand)
 ├── Measurement Theory        → understand verification
 ├── Failure Theory            → understand failure modes
 ├── Constraint Theory         → understand bottleneck identification
-└── Exploration Theory        → understand structured investigation of existing systems
+├── Exploration Theory        → understand structured investigation of existing systems
+└── Governance Chain Theory   → understand multi-level constraint enforcement
          │
          ▼
 LAYER 1: SKILLS (apply)

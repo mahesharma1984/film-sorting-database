@@ -188,6 +188,15 @@ Read in order:
    Example: "Domain grounding: every taxonomy cites a published framework"
    Example: "Boundary-aware measurement: scope metrics to analysis vs delivery"
    Example: "Always run linter before committing"
+
+   If adopting Governance Chain:
+   10. **Enforce governance chain for generator work:**
+       - Before modifying any generator, read the chain from Level 1 (theory) down to working level
+       - Import proven practices from component contracts — never reimplement inline
+       - Every output declares a complexity ceiling and enforces it through component constraints
+       - Complexity from handoff composition between outputs, not individual output complexity
+       - Start with MVP — add complexity only after end-user validation
+       - See GOVERNANCE_CHAIN_REFERENCE.md and DEVELOPER_GUIDE.md for rules
 -->
 
 ---

@@ -86,7 +86,7 @@
 
 ## Boundary-Aware Extension
 
-When your pipeline has an explicit boundary (see System Boundary Theory, Boundary-Aware Measurement skill), scope your measurement to the affected subsystem:
+When your pipeline has an explicit boundary (see System Boundary Theory and the Boundary-Aware Measurement skill), scope measurement to the affected subsystem:
 
 | What Changed | Measure Depth On | Measure Breadth On |
 |---|---|---|
@@ -95,9 +95,9 @@ When your pipeline has an explicit boundary (see System Boundary Theory, Boundar
 | Boundary contract | Both sides | Full corpus |
 | Infrastructure | Both sides | Full corpus |
 
-**Why scope matters:** If only analysis changed, running expensive delivery measurement ($$ API calls) provides no information — the delivery code hasn't changed. Validate the handoff ($0), measure analysis ($), and skip delivery entirely.
+**Why scope matters:** If only analysis changed, running expensive delivery measurement ($$ API calls) provides no signal because delivery code did not change. Validate the handoff ($0), measure analysis ($), and skip delivery.
 
-For the full boundary-aware measurement protocol, see [Boundary-Aware Measurement](boundary-aware-measurement.md).
+For the full boundary-aware protocol, see [Boundary-Aware Measurement](boundary-aware-measurement.md).
 
 ---
 
@@ -265,7 +265,7 @@ When a depth cycle fails, check:
 
 ### After Making a Change
 1. Validate handoffs ($0 — did data survive stage boundaries?)
-2. Measure depth (did target improve? Scope to affected subsystem if boundary exists)
+2. Measure depth (did target improve? Scope to affected subsystem if a boundary exists)
 3. Rebalance if needed
 4. Measure breadth (did anything else regress?)
 5. Stabilize when both axes aligned

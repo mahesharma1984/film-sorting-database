@@ -26,10 +26,11 @@ Add these based on what you're building:
 5. **[System Boundary Theory](knowledge-base/system-boundary-theory.md)** — If your pipeline has cheap analysis stages and expensive delivery stages.
 6. **[Measurement Theory](knowledge-base/measurement-theory.md)** — If you need to track quality over time or across cases.
 7. **[Failure Theory](knowledge-base/failure-theory.md)** — If your system processes data through a pipeline where errors can compound.
+8. **[Governance Chain Theory](knowledge-base/governance-chain-theory.md)** — If your system has documented best practices that code implementations keep drifting from.
 
 ### Full Reading (2-3 hours)
 
-Read all eight in order. Each builds on the previous.
+Read all ten in order. Each builds on the previous.
 
 **Why this matters:** The skills (Step 1) are procedures that implement these theories. Without the theory, you'll follow the procedures mechanically and won't recognize when to adapt them to your specific situation. With the theory, the procedures become obvious consequences of the mental models.
 
@@ -48,7 +49,8 @@ Not every project needs every skill. Choose based on your project type:
 | Needs quality tracking over time | **Measurement-Driven** |
 | Is new/unfamiliar territory | **Prototype Building** |
 | Has existing systems that evolve over time | **Exploration-First** + **Constraint Gates** |
-| Is a complex system | All nine |
+| Has documented practices that code keeps drifting from | **Governance Chain** + **Exploration-First** |
+| Is a complex system | All ten |
 
 **Recommendation:** Start with **R/P Split** and **Prototype Building** — they provide the highest value with the lowest setup cost. Add **Exploration-First** once your system has multiple components that evolve independently.
 
@@ -233,6 +235,18 @@ Add to CLAUDE.md § 3:
    - Stop at earliest upstream leverage point — don't patch downstream symptoms
 ```
 
+### If adopting Governance Chain:
+
+Add to CLAUDE.md § 3:
+```markdown
+9. **Enforce governance chain:**
+   - Before modifying any generator, read the chain from Level 1 (theory) down to your working level
+   - Import proven practices from component contracts — never reimplement inline
+   - Every output declares a complexity ceiling and enforces it through component constraints
+   - Complexity from handoff composition between outputs, not from individual output complexity
+   - Start with MVP (minimum functional version) — add complexity only after end-user validation
+```
+
 ---
 
 ## Step 5: Copy Knowledge Base and Skills Reference (Optional, 5 minutes)
@@ -252,6 +266,7 @@ cp exports/knowledge-base/measurement-theory.md ./docs/knowledge-base/
 cp exports/knowledge-base/failure-theory.md ./docs/knowledge-base/
 cp exports/knowledge-base/constraint-theory.md ./docs/knowledge-base/
 cp exports/knowledge-base/exploration-theory.md ./docs/knowledge-base/
+cp exports/knowledge-base/governance-chain-theory.md ./docs/knowledge-base/
 
 # Layer 1: Skills
 cp exports/skills/rp-split.md ./docs/methodology/
@@ -263,6 +278,7 @@ cp exports/skills/failure-gates.md ./docs/methodology/
 cp exports/skills/constraint-gates.md ./docs/methodology/
 cp exports/skills/prototype-building.md ./docs/methodology/
 cp exports/skills/exploration-first.md ./docs/methodology/
+cp exports/skills/governance-chain.md ./docs/methodology/
 ```
 
 Then reference them from your CLAUDE.md work modes section. The knowledge base documents are especially valuable for onboarding new team members — they explain *why* the practices exist, not just *what* to do.
@@ -357,8 +373,8 @@ The goal is that **every lesson learned is captured** so it doesn't have to be r
 - [ ] `docs/WORKFLOW_REGISTRY.md` — Named procedures
 - [ ] `docs/architecture/SYSTEM_ARCHITECTURE.md` — System design
 - [ ] `docs/CHANGELOG.md` — Change history
-- [ ] `docs/knowledge-base/*.md` — Theoretical foundations (9 docs recommended)
-- [ ] `docs/methodology/*.md` — Adopted skills (up to 9, optional)
+- [ ] `docs/knowledge-base/*.md` — Theoretical foundations (10 docs recommended)
+- [ ] `docs/methodology/*.md` — Adopted skills (up to 10, optional)
 
 ### With RAG (15+ doc files)
 - [ ] Everything in Full, plus:

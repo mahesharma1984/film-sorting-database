@@ -20,7 +20,7 @@ Read first:
 - `docs/theory/TIER_ARCHITECTURE.md` — why tiers work this way
 - `docs/theory/MARGINS_AND_TEXTURE.md` — satellite logic rationale
 
-Primary skills: Prototype Building (Rule 8), Pattern-First (Rule 2), R/P Split (Rule 1), Domain Grounding (Rule 4)
+Primary skills: Prototype Building (Rule 8), Pattern-First (Rule 2), R/P Split (Rule 1), Domain Grounding (Rule 4), Governance Chain (Rule 13)
 
 ### Debug / Regression Mode
 Read first:
@@ -51,7 +51,9 @@ Read first:
 
 ## §3 Decision Rules
 
-Rules 1–9 below are operational summaries of the full methodology in `exports/skills/`. For detailed theory, examples, and checklists, see individual skill docs.
+Rules 1–13 below are operational summaries of the full methodology in `exports/skills/`. For detailed theory, examples, and checklists, see individual skill docs.
+
+For development methodology theory: `exports/knowledge-base/governance-chain-theory.md` — why multi-level constraints prevent drift between theory and code.
 
 ### Rule 1: R/P Split (Reasoning vs Precision)
 
@@ -288,6 +290,36 @@ Every classification is a suggestion until a curator confirms it. Curatorial dec
 **Lifecycle completion:** Accept = Stage 3 execution. Override = Stage 5 reinforcement. Enrich = Stage 3 input quality improvement. This closes the lifecycle gap where Stages 3-5 produce reports but have no execution tools.
 
 **Enrich before Override:** Prefer enrichment (systemic improvement — helps all films by that director) over override (point fix — helps only this specific film).
+
+---
+
+### Rule 13: Governance Chain
+
+Proven practices must be importable and mechanically enforced, not just documented. Five constraint levels stack downward:
+
+```
+Level 1 — THEORY           Why this principle exists
+    ↓ constrains
+Level 2 — ARCHITECTURE     What the interface looks like
+    ↓ constrains
+Level 3 — COMPONENTS       How it's mechanically enforced (function signatures, typed boundaries)
+    ↓ constrains
+Level 4 — DEV RULES        Rules governing how code is written
+    ↓ constrains
+Level 5 — CODE             Implementation operating within all four layers
+```
+
+**Key principles:**
+- **Components are the enforcement layer** — function signatures with required parameters make theory mechanical. If L3 is missing, theory and code will drift no matter how good the docs are.
+- **Fix at the highest divergent level** — if L5 code contradicts L3 component contract, the code is wrong. If L3 contradicts L2 architecture, the component is wrong.
+- **Import-Don't-Rebuild** — if a proven practice has a component contract, import it. Do not reimplement inline.
+- **MVP-First** — start with minimum functional version. Add complexity through composition, not individual component complexity.
+- **Handoff composition > individual complexity** — build simple pieces that compose. Complexity emerges from composition, not from mega-components.
+
+**Diagnostic:** If multiple implementations of the same concept exist with subtle differences → L3 (Components) is missing. If documentation is excellent but code diverges → L3 enforcement gap.
+
+**Full theory:** `exports/knowledge-base/governance-chain-theory.md`
+**Skill procedure:** `exports/skills/governance-chain.md`
 
 ---
 

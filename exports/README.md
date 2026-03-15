@@ -65,7 +65,8 @@ exports/
 │   ├── measurement-theory.md      # How to know if something works
 │   ├── failure-theory.md          # How systems break silently
 │   ├── constraint-theory.md       # How to find the real bottleneck
-│   └── exploration-theory.md      # How to investigate before changing
+│   ├── exploration-theory.md      # How to investigate before changing
+│   └── governance-chain-theory.md # How to prevent theory-code drift
 ├── skills/                    # Layer 1: Composable methodology modules
 │   ├── README.md              # Skills overview and composition guide
 │   ├── rp-split.md                # Reasoning/Precision task allocation
@@ -76,7 +77,8 @@ exports/
 │   ├── failure-gates.md           # Hard vs soft failure semantics
 │   ├── constraint-gates.md        # TOC/Kanban bottleneck identification
 │   ├── prototype-building.md      # Exploration → execution stages
-│   └── exploration-first.md       # Map → audit → probe → build for existing systems
+│   ├── exploration-first.md       # Map → audit → probe → build for existing systems
+│   └── governance-chain.md       # Multi-level constraint enforcement
 ├── templates/                 # Layer 2: Documentation structure templates
 │   ├── CLAUDE.md.template     # AI assistant project instructions
 │   ├── CORE_DOCS_INDEX.md     # Documentation index template
@@ -118,6 +120,7 @@ Each knowledge base document provides the theory that underlies a specific skill
 | [Failure Theory](knowledge-base/failure-theory.md) | [Failure Gates](skills/failure-gates.md) |
 | [Constraint Theory](knowledge-base/constraint-theory.md) | [Constraint Gates](skills/constraint-gates.md) |
 | [Exploration Theory](knowledge-base/exploration-theory.md) | [Exploration-First](skills/exploration-first.md) |
+| [Governance Chain Theory](knowledge-base/governance-chain-theory.md) | [Governance Chain](skills/governance-chain.md) |
 
 ## Project Types and Recommended Skills
 
@@ -129,7 +132,8 @@ Each knowledge base document provides the theory that underlies a specific skill
 | Multi-stage system with expensive stages | System Boundary + Constraint + Measurement | Boundary-Aware Measurement + Constraint Gates + Measurement-Driven |
 | Any project with Claude Code | LLM Capability + Task Design | R/P Split + Prototype Building |
 | Maintaining/improving existing systems | Exploration + Causality + Measurement | Exploration-First + Constraint Gates + Measurement-Driven |
-| Complex multi-stage system | All nine theory docs | All nine skills |
+| System with documented practices that drift in code | Governance Chain + Constraint + Exploration | Governance Chain + Exploration-First + Constraint Gates |
+| Complex multi-stage system | All ten theory docs | All ten skills |
 
 ## Positioning
 

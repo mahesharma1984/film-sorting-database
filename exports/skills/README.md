@@ -17,6 +17,7 @@ Skills are self-contained methodology modules that you can adopt independently o
 | [Constraint Gates](constraint-gates.md) | Bottleneck identification and pull-based quality | "Am I fixing the right stage, or just patching symptoms?" |
 | [Prototype Building](prototype-building.md) | Exploration → execution methodology | "Am I building the right thing before building it right?" |
 | [Exploration-First](exploration-first.md) | Structured investigation before modification | "Have I mapped and audited this system before changing it?" |
+| [Governance Chain](governance-chain.md) | Multi-level constraint enforcement | "Are my proven practices importable and enforced, or just documented?" |
 
 ## Composition Guide
 
@@ -42,8 +43,13 @@ Skills are self-contained methodology modules that you can adopt independently o
 - **Measurement-Driven** — Tracks quality across depth (single case) and breadth (all cases)
 - **Exploration-First** — Maps existing stages before modifying; detects architectural drift proactively
 
+### Systems with Proven Practices That Must Stay Aligned
+- **Governance Chain** — Enforces multi-level constraints: theory → architecture → components → rules → code
+- **Pattern-First** — Ensures patterns are defined before instances are populated
+- **Exploration-First** — Audits existing levels before modifying any
+
 ### Full Stack (Complex Systems)
-All nine skills compose into a complete methodology:
+All ten skills compose into a complete methodology:
 
 ```
 Prototype Building (exploration for new work)
@@ -64,6 +70,8 @@ Boundary-Aware Measurement (scoped quality)
     ↓ measures subsystems independently
 Measurement-Driven (quality cycles)
     ↓ validates changes across depth and breadth
+Governance Chain (multi-level enforcement)
+    ↓ prevents drift between theory and code
 STABLE SYSTEM
 ```
 
@@ -115,6 +123,7 @@ STABLE SYSTEM
 - **Constraint Gates** is the diagnostic layer — it tells you *where* to fix (which handoff is the bottleneck)
 - **Prototype Building** is the foundation for new work — it ensures you understand the *problem* before you build
 - **Exploration-First** is the foundation for existing systems — it ensures you understand the *current state* before you modify
+- **Governance Chain** is the alignment layer — it ensures proven practices are mechanically enforced, not just documented
 
 ## Adopting Skills
 
