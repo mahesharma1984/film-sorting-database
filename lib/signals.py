@@ -177,34 +177,26 @@ def score_structure(
     metadata,
     tmdb_data: Optional[dict],
     satellite_classifier,
-    popcorn_classifier,
     contract: str = 'legacy',
 ) -> List[StructuralMatch]:
-    """Compute structural triangulation signal for a film.
+    """Compute structural triangulation signal for a film (Issue #55 — narrowed scope).
 
-    Checks (in order): Reference canon, COUNTRY_TO_WAVE, SATELLITE_ROUTING_RULES
-    structural gates (country+genre+keywords), and Popcorn threshold.
-    Returns ALL matching StructuralMatch objects — never exits early.
-    Does NOT enforce caps — caller applies cap after integration selects a winner.
+    Checks COUNTRY_TO_WAVE and SATELLITE_ROUTING_RULES structural gates
+    (country+genre+keywords). Returns ALL matching StructuralMatch objects.
+    Never exits early. Does NOT enforce caps.
 
-    contract='scholarship_only': Reference canon emission suppressed.
-      P1 (reference_canon routing) is disabled because ref_matches list will be empty.
+    Reference canon and Popcorn are no longer handled here — they are
+    standalone resolvers (_resolve_reference, _resolve_popcorn) in the
+    classify.py resolve chain (Issue #55).
+
+    contract='scholarship_only': no effect on structural matching (Reference
+      suppression is now handled by _resolve_reference in the caller).
     """
-    from lib.constants import REFERENCE_CANON, COUNTRY_TO_WAVE
-    from lib.normalization import normalize_for_lookup
+    from lib.constants import COUNTRY_TO_WAVE
 
     results: List[StructuralMatch] = []
     year = getattr(metadata, 'year', None)
     decade = _decade_of(year)
-
-    # --- Reference canon (title + year lookup) — suppressed under scholarship_only contract ---
-    title = getattr(metadata, 'title', None)
-    if contract != 'scholarship_only' and title and year:
-        normalized_title = normalize_for_lookup(title, strip_format_signals=True)
-        if (normalized_title, year) in REFERENCE_CANON:
-            results.append(StructuralMatch(
-                tier='Reference', category=None, match_type='reference_canon'
-            ))
 
     # --- COUNTRY_TO_WAVE (simple country + decade structural match) ---
     country = getattr(metadata, 'country', None)
@@ -225,13 +217,6 @@ def score_structure(
             match_type=match_type,
         ))
 
-    # --- Popcorn threshold ---
-    popcorn_reason = popcorn_classifier.classify_reason(metadata, tmdb_data)
-    if popcorn_reason:
-        results.append(StructuralMatch(
-            tier='Popcorn', category=None, match_type=popcorn_reason
-        ))
-
     return results
 
 
@@ -247,17 +232,19 @@ def integrate_signals(
 ) -> IntegrationResult:
     """Integrate director and structural signals into a single classification decision.
 
-    Priority order (mirrors current stage ordering, preserves Issue #25):
-      P1. Structure → Reference                    → reference_canon
-      P2. Director Satellite + Structure same cat  → both_agree (Satellite)
-      P3. Director Satellite (decade_valid) + Structure different cat → review_flagged (conflict)
-      P4. Director Satellite (decade_valid), no structural Satellite  → director_signal
-      P5. Director Core + structural Satellite      → structural_signal (Issue #25: Satellite wins)
-      P6. Director Core, no structural Satellite    → director_signal (Core)
-      P7. Structural Satellite (unique)             → structural_signal
-      P8. Structural Satellite (ambiguous/multiple) → review_flagged
-      P9. Structural Popcorn, no Satellite/Core     → structural_signal (popcorn sub-reason)
-      P10. No signal                                → Unsorted
+    Issue #55: narrowed to actual two-signal combinations only.
+    Reference canon → _resolve_reference() in classify.py (fires at P3, before here).
+    Popcorn → _resolve_popcorn() in classify.py (fires at P5, after here).
+
+    Priority order (director × structure combinations only):
+      P1. Director Satellite + Structure same cat  → both_agree (Satellite)
+      P2. Director Satellite (decade_valid) + Structure different cat → review_flagged (conflict)
+      P3. Director Satellite (decade_valid), no structural Satellite  → director_signal
+      P4. Director Core + structural Satellite      → structural_signal (Issue #25: Satellite wins)
+      P5. Director Core, no structural Satellite    → director_signal (Core)
+      P6. Structural Satellite (unique)             → structural_signal
+      P7. Structural Satellite (ambiguous/multiple) → review_flagged
+      P8. No signal                                → Unsorted (caller falls through to _resolve_popcorn)
 
     R2 readiness cap: confidence capped at 0.6 when readiness == 'R2'.
     """
@@ -273,9 +260,7 @@ def integrate_signals(
         )
 
     # Partition matches by tier and validity
-    ref_matches = [m for m in structural_matches if m.tier == 'Reference']
     sat_struct   = [m for m in structural_matches if m.tier == 'Satellite']
-    pop_matches  = [m for m in structural_matches if m.tier == 'Popcorn']
 
     sat_dir_valid   = [m for m in director_matches if m.tier == 'Satellite' and m.decade_valid]
     core_dir        = [m for m in director_matches if m.tier == 'Core']
@@ -285,28 +270,19 @@ def integrate_signals(
         m.category for m in sat_struct if m.category
     ))
 
-    # === P1: Reference canon (structural wins unconditionally) ===
-    if ref_matches:
-        return IntegrationResult(
-            tier='Reference', category=None, decade=decade,
-            destination=f'Reference/{decade}/',
-            confidence=_cap(1.0), reason='reference_canon',
-            explanation='Reference canon title+year match',
-        )
-
-    # === P2 + P3 + P4: Director Satellite with decade_valid ===
+    # === P1 + P2 + P3: Director Satellite with decade_valid ===
     if sat_dir_valid:
         dm = sat_dir_valid[0]  # first match (SATELLITE_ROUTING_RULES order preserved)
         structural_same = any(sm.category == dm.category for sm in sat_struct)
         structural_diff = sat_struct_cats and not structural_same
 
         if structural_same:
-            # P2: both signals agree
+            # P1: both signals agree
             reason = 'both_agree'
             conf = _cap(0.85)
             explanation = f'director + structure both matched {dm.category}'
         elif structural_diff:
-            # P3: director and structure conflict — flag for review (Issue #51)
+            # P2: director and structure conflict — flag for review (Issue #51)
             # Previously director_disambiguates at 0.75, but accuracy was 52.9%.
             # Conflicting signals are ambiguity, not a case for director override.
             reason = 'review_flagged'
@@ -316,7 +292,7 @@ def integrate_signals(
                 f'structure matched {sat_struct_cats} — signals conflict, needs review'
             )
         else:
-            # P4: director signal only
+            # P3: director signal only
             reason = 'director_signal'
             conf = _cap(0.65)
             explanation = f'director identity matched {dm.category} ({dm.source})'
@@ -327,7 +303,7 @@ def integrate_signals(
             confidence=conf, reason=reason, explanation=explanation,
         )
 
-    # === P5: Director Core + structural Satellite → Satellite wins (Issue #25) ===
+    # === P4: Director Core + structural Satellite → Satellite wins (Issue #25) ===
     if core_dir and sat_struct_cats:
         sat_cat = sat_struct_cats[0]
         return IntegrationResult(
@@ -340,7 +316,7 @@ def integrate_signals(
             ),
         )
 
-    # === P6: Director Core, no structural Satellite ===
+    # === P5: Director Core, no structural Satellite ===
     if core_dir:
         dm = core_dir[0]
         canonical = dm.canonical_name or dm.category
@@ -351,7 +327,7 @@ def integrate_signals(
             explanation='Core director whitelist match',
         )
 
-    # === P7: Structural Satellite, unique category ===
+    # === P6: Structural Satellite, unique category ===
     if len(sat_struct_cats) == 1:
         sat_cat = sat_struct_cats[0]
         return IntegrationResult(
@@ -361,7 +337,7 @@ def integrate_signals(
             explanation=f'structural match {sat_cat}',
         )
 
-    # === P8: Structural Satellite, multiple ambiguous categories ===
+    # === P7: Structural Satellite, multiple ambiguous categories ===
     if len(sat_struct_cats) > 1:
         sat_cat = sat_struct_cats[0]  # highest-priority by SATELLITE_ROUTING_RULES order
         return IntegrationResult(
@@ -371,15 +347,5 @@ def integrate_signals(
             explanation=f'ambiguous structural match: {sat_struct_cats} — routed to {sat_cat}',
         )
 
-    # === P9: Popcorn ===
-    if pop_matches:
-        popcorn_reason = pop_matches[0].match_type  # 'popcorn_cast_popularity' etc.
-        return IntegrationResult(
-            tier='Popcorn', category=None, decade=decade,
-            destination=f'Popcorn/{decade}/',
-            confidence=_cap(0.65), reason=popcorn_reason,
-            explanation='Popcorn structural signal',
-        )
-
-    # === P10: No signal ===
+    # === P8: No signal — caller falls through to _resolve_popcorn ===
     return _unsorted()

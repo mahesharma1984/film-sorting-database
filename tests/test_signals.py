@@ -1,10 +1,14 @@
 """
 tests/test_signals.py — Tests for Issue #42 unified two-signal architecture.
 
+Updated for Issue #55: score_structure() narrowed to Satellite structural only.
+Reference canon → _resolve_reference() in classify.py (P3 resolver).
+Popcorn → _resolve_popcorn() in classify.py (P5 resolver).
+
 Covers:
   - score_director(): Satellite and Core matches, decade validity, tradition vs movement
-  - score_structure(): Reference canon, COUNTRY_TO_WAVE, satellite structural, Popcorn
-  - integrate_signals(): All priority cases from the decision table
+  - score_structure(): COUNTRY_TO_WAVE and satellite structural only (no Reference/Popcorn)
+  - integrate_signals(): Director × structure combinations only (P1-P8)
 """
 
 import pytest
@@ -133,55 +137,63 @@ class TestScoreDirector:
 
 class TestScoreStructure:
 
-    def test_reference_canon_match(self, satellite_classifier, popcorn_classifier):
-        """Citizen Kane (1941) should match Reference canon."""
+    def test_reference_canon_no_longer_in_score_structure(self, satellite_classifier):
+        """Issue #55: Reference canon was extracted to _resolve_reference() in classify.py.
+        score_structure() no longer emits Reference matches."""
         meta = _meta('Citizen Kane', 1941, country='US')
-        matches = score_structure(meta, {}, satellite_classifier, popcorn_classifier)
+        matches = score_structure(meta, {}, satellite_classifier)
         ref = [m for m in matches if m.tier == 'Reference']
-        assert len(ref) == 1
-        assert ref[0].match_type == 'reference_canon'
+        assert len(ref) == 0, "score_structure should not emit Reference matches (Issue #55)"
 
-    def test_country_wave_match(self, satellite_classifier, popcorn_classifier):
+    def test_country_wave_match(self, satellite_classifier):
         """Italian film 1971 → COUNTRY_TO_WAVE → Giallo country_wave match."""
         meta = _meta('Unknown Italian Film', 1971, country='IT')
         matches = score_structure(meta, {'genres': [], 'countries': ['IT']},
-                                  satellite_classifier, popcorn_classifier)
+                                  satellite_classifier)
         giallo = [m for m in matches if m.tier == 'Satellite' and m.category == 'Giallo']
         assert any(m.match_type == 'country_wave' for m in giallo), \
             "Expected country_wave match for Italian 1970s film"
 
-    def test_satellite_structural_country_genre(self, satellite_classifier, popcorn_classifier):
+    def test_satellite_structural_country_genre(self, satellite_classifier):
         """Italian Horror 1971 → Giallo via country+genre."""
         meta = _meta('Test', 1971, country='IT')
         matches = score_structure(meta, {'genres': ['Horror'], 'countries': ['IT']},
-                                  satellite_classifier, popcorn_classifier)
+                                  satellite_classifier)
         giallo = [m for m in matches if m.category == 'Giallo']
         assert any(m.match_type == 'country_genre' for m in giallo), \
             "Expected country_genre match for Italian Horror 1971"
 
-    def test_no_country_no_structural_satellite(self, satellite_classifier, popcorn_classifier):
+    def test_no_country_no_structural_satellite(self, satellite_classifier):
         """Film with no country and no genres → no structural Satellite matches."""
         meta = _meta('Unknown', 1970, country=None)
-        matches = score_structure(meta, {}, satellite_classifier, popcorn_classifier)
+        matches = score_structure(meta, {}, satellite_classifier)
         sat = [m for m in matches if m.tier == 'Satellite']
         assert len(sat) == 0
 
-    def test_no_structural_match_for_country_outside_wave(
-            self, satellite_classifier, popcorn_classifier):
+    def test_no_structural_match_for_country_outside_wave(self, satellite_classifier):
         """US film 2000 → not in COUNTRY_TO_WAVE, no country_wave match."""
         meta = _meta('Modern Film', 2000, country='US')
         matches = score_structure(meta, {'genres': ['Drama'], 'countries': ['US']},
-                                  satellite_classifier, popcorn_classifier)
+                                  satellite_classifier)
         country_waves = [m for m in matches if m.match_type == 'country_wave']
         assert len(country_waves) == 0
 
-    def test_returns_all_matches_not_first(self, satellite_classifier, popcorn_classifier):
+    def test_returns_all_matches_not_first(self, satellite_classifier):
         """Brazilian Drama 1975 → structural match for Brazilian Exploitation (Indie Cinema removed Issue #51)."""
         meta = _meta('Test', 1975, country='BR')
         matches = score_structure(meta, {'genres': ['Drama'], 'countries': ['BR']},
-                                  satellite_classifier, popcorn_classifier)
+                                  satellite_classifier)
         categories = {m.category for m in matches if m.tier == 'Satellite'}
         assert len(categories) >= 1  # at least Brazilian Exploitation
+
+    def test_popcorn_no_longer_in_score_structure(self, satellite_classifier):
+        """Issue #55: Popcorn was extracted to _resolve_popcorn() in classify.py.
+        score_structure() no longer emits Popcorn matches."""
+        meta = _meta('Test', 2000, country='US')
+        matches = score_structure(meta, {'genres': ['Action'], 'popularity': 100.0},
+                                  satellite_classifier)
+        pop = [m for m in matches if m.tier == 'Popcorn']
+        assert len(pop) == 0, "score_structure should not emit Popcorn matches (Issue #55)"
 
 
 # ---------------------------------------------------------------------------
@@ -190,19 +202,23 @@ class TestScoreStructure:
 
 class TestIntegrateSignals:
 
-    def test_reference_canon_wins_unconditionally(self):
-        """P1: Reference structural match → reference_canon, even if director says Core."""
+    def test_reference_match_in_structural_ignored_by_integrate(self):
+        """Issue #55: integrate_signals() no longer handles Reference structural matches.
+        Reference routing moved to _resolve_reference() in classify.py (P3 resolver).
+        If a Reference StructuralMatch is passed here, it is ignored (not Satellite tier).
+        With a Core director and no Satellite structural, result is director_signal/Core."""
         core_match = DirectorMatch(
             tier='Core', category='Core', canonical_name='Stanley Kubrick',
             source='core_whitelist', decade_valid=True
         )
         ref_match = StructuralMatch(tier='Reference', category=None, match_type='reference_canon')
         result = integrate_signals([core_match], [ref_match], '1940s', 'R3')
-        assert result.tier == 'Reference'
-        assert result.reason == 'reference_canon'
+        # Reference match ignored; Core director with no Satellite structural → director_signal
+        assert result.tier == 'Core'
+        assert result.reason == 'director_signal'
 
     def test_both_agree_director_and_structural(self):
-        """P2: Director + structural both say Giallo → both_agree."""
+        """P1: Director + structural both say Giallo → both_agree."""
         dm = DirectorMatch(tier='Satellite', category='Giallo', canonical_name=None,
                            source='satellite_rules', decade_valid=True)
         sm = StructuralMatch(tier='Satellite', category='Giallo', match_type='country_genre')
@@ -213,7 +229,7 @@ class TestIntegrateSignals:
         assert result.confidence == pytest.approx(0.85)
 
     def test_signal_conflict_produces_review_flagged(self):
-        """P3 (Issue #51): Director says FNW, structure says different category → review_flagged.
+        """P2 (Issue #51): Director says FNW, structure says different category → review_flagged.
         Previously director_disambiguates at 0.75 (52.9% accuracy). Now review_flagged at 0.4.
         Conflicting signals are ambiguity, not a director-wins resolution."""
         dm = DirectorMatch(tier='Satellite', category='French New Wave', canonical_name=None,
@@ -225,7 +241,7 @@ class TestIntegrateSignals:
         assert result.confidence == pytest.approx(0.4)
 
     def test_director_signal_only_no_structural(self):
-        """P4: Director says FNW, no structural → director_signal."""
+        """P3: Director says FNW, no structural → director_signal."""
         dm = DirectorMatch(tier='Satellite', category='French New Wave', canonical_name=None,
                            source='satellite_rules', decade_valid=True)
         result = integrate_signals([dm], [], '1965s', 'R3')
@@ -234,7 +250,7 @@ class TestIntegrateSignals:
         assert result.confidence == pytest.approx(0.65)
 
     def test_core_director_alone_is_director_signal(self):
-        """P6: Core director, no structural Satellite → director_signal, Core tier."""
+        """P5: Core director, no structural Satellite → director_signal, Core tier."""
         dm = DirectorMatch(tier='Core', category='Core', canonical_name='Stanley Kubrick',
                            source='core_whitelist', decade_valid=True)
         result = integrate_signals([dm], [], '1960s', 'R3')
@@ -244,7 +260,7 @@ class TestIntegrateSignals:
         assert 'Stanley Kubrick' in result.destination
 
     def test_core_director_plus_satellite_structural_satellite_wins(self):
-        """P5: Core director + structural Satellite → Satellite wins (Issue #25)."""
+        """P4: Core director + structural Satellite → Satellite wins (Issue #25)."""
         core_dm = DirectorMatch(tier='Core', category='Core', canonical_name='Some Director',
                                 source='core_whitelist', decade_valid=True)
         sm = StructuralMatch(tier='Satellite', category='Giallo', match_type='country_wave')
@@ -254,7 +270,7 @@ class TestIntegrateSignals:
         assert result.reason == 'structural_signal'
 
     def test_structural_signal_unique_category(self):
-        """P7: No director, structural says one Satellite category → structural_signal."""
+        """P6: No director, structural says one Satellite category → structural_signal."""
         sm = StructuralMatch(tier='Satellite', category='Giallo', match_type='country_genre')
         result = integrate_signals([], [sm], '1970s', 'R3')
         assert result.tier == 'Satellite'
@@ -262,7 +278,7 @@ class TestIntegrateSignals:
         assert result.confidence == pytest.approx(0.65)
 
     def test_review_flagged_ambiguous_structural(self):
-        """P8: Structural says multiple categories, no director → review_flagged."""
+        """P7: Structural says multiple categories, no director → review_flagged."""
         sm1 = StructuralMatch(tier='Satellite', category='Brazilian Exploitation',
                               match_type='country_wave')
         sm2 = StructuralMatch(tier='Satellite', category='Indie Cinema',
@@ -273,15 +289,16 @@ class TestIntegrateSignals:
         assert result.confidence == pytest.approx(0.4)
         assert result.category == 'Brazilian Exploitation'  # highest priority wins
 
-    def test_popcorn_structural_signal(self):
-        """P9: No Satellite/Core signal, Popcorn structural → popcorn sub-reason."""
+    def test_popcorn_match_in_structural_ignored_by_integrate(self):
+        """Issue #55: integrate_signals() no longer handles Popcorn structural matches.
+        Popcorn routing moved to _resolve_popcorn() in classify.py (P5 resolver).
+        If a Popcorn StructuralMatch is passed here, it is ignored → Unsorted."""
         pm = StructuralMatch(tier='Popcorn', category=None, match_type='popcorn_cast_popularity')
         result = integrate_signals([], [pm], '1990s', 'R3')
-        assert result.tier == 'Popcorn'
-        assert result.reason == 'popcorn_cast_popularity'
+        assert result.tier == 'Unsorted'
 
     def test_no_signal_returns_unsorted(self):
-        """P10: No signals → Unsorted."""
+        """P8: No signals → Unsorted."""
         result = integrate_signals([], [], '1980s', 'R3')
         assert result.tier == 'Unsorted'
         assert 'unsorted' in result.reason
@@ -307,7 +324,7 @@ class TestIntegrateSignals:
         dm = DirectorMatch(tier='Satellite', category='French New Wave', canonical_name=None,
                            source='satellite_rules', decade_valid=False)
         result = integrate_signals([dm], [], '1990s', 'R3')
-        # sat_dir_valid is empty → falls through to P7/P8/P9/P10
+        # sat_dir_valid is empty → falls through to P6/P7/P8
         assert result.tier == 'Unsorted'
 
     def test_destination_path_format_satellite(self):
@@ -318,10 +335,12 @@ class TestIntegrateSignals:
         assert result.destination == 'Satellite/Giallo/1970s/'
 
     def test_destination_path_format_reference(self):
-        """Reference destination: Reference/{decade}/."""
+        """Issue #55: Reference routing is now _resolve_reference() in classify.py.
+        integrate_signals() no longer produces Reference destinations.
+        Passing a Reference StructuralMatch yields Unsorted (ignored by integrate_signals)."""
         sm = StructuralMatch(tier='Reference', category=None, match_type='reference_canon')
         result = integrate_signals([], [sm], '1960s', 'R3')
-        assert result.destination == 'Reference/1960s/'
+        assert result.tier == 'Unsorted'
 
     def test_destination_path_format_core(self):
         """Core destination: Core/{decade}/{canonical}/."""

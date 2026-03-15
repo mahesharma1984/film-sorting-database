@@ -4,21 +4,23 @@ classify.py - Film Classification Pipeline (v1.0)
 
 NEVER moves files. Only reads filenames and writes CSV.
 
-Classification priority order:
-1. [PRECISION] Parse filename → FilmMetadata
-2. [PRECISION] API Enrichment → TMDb + OMDb parallel query with smart merge
-   - Director: OMDb > TMDb (OMDb = IMDb = authoritative)
-   - Country: OMDb > TMDb (critical for Satellite routing)
-   - Genres: TMDb > OMDb (TMDb has richer structured data)
-3. [PRECISION] Explicit lookup → SORTING_DATABASE.md (human-curated, highest trust)
-3.5 [PRECISION] Corpus lookup → data/corpora/*.csv (scholarship-sourced ground truth, Issue #38)
-4. [REASONING] Core director check → whitelist exact match
-5. [REASONING] Reference canon check → 50-film hardcoded list in constants.py
-6. [PRECISION] User tag recovery → trust previous human classification
-7. [REASONING] Popcorn classification → mainstream/curation signals (Issue #14: moved before Satellite)
-8. [REASONING] Language/country → Satellite routing (decade-bounded)
-9. [REASONING] Satellite classification → merged API data (country + genre + decade)
-10. [PRECISION] Default → Unsorted with detailed reason code
+Classification priority order (Issue #55 — governance chain refactor):
+P0  Non-film detection
+P1  Explicit lookup → SORTING_DATABASE.md (human-curated, highest trust)
+P2  Corpus lookup → data/corpora/*.csv (scholarship-sourced ground truth, Issue #38)
+    [Hard gate: no year → unsorted_no_year]
+P3  Reference canon → 50-film hardcoded list in constants.py
+P4  Two-signal integration → score_director + score_structure + integrate_signals
+      Signal 1: Director identity (DIRECTOR_REGISTRY + Core whitelist)
+      Signal 2: Structural triangulation (COUNTRY_TO_WAVE + SATELLITE_ROUTING_RULES)
+P5  Popcorn threshold → mainstream/curation signals
+P6  User tag recovery → trust previous human classification
+P7  Default → Unsorted with detailed reason code
+
+API Enrichment (before resolve chain):
+   Director: OMDb > TMDb (OMDb = IMDb = authoritative)
+   Country: OMDb > TMDb (critical for Satellite routing)
+   Genres: TMDb > OMDb (TMDb has richer structured data)
 """
 
 import sys
@@ -658,6 +660,35 @@ class FilmClassifier:
             source_name='corpus_lookup',
         )
 
+    def _resolve_reference(
+        self,
+        metadata: FilmMetadata,
+        decade: str,
+        readiness: str,
+        tmdb_id: Optional[int],
+        tmdb_title: Optional[str],
+    ) -> 'Optional[Resolution]':
+        """P3: Reference canon lookup (Issue #55 — extracted from score_structure).
+
+        Checks REFERENCE_CANON title+year index.
+        Suppressed under scholarship_only contract (same guard as score_structure had).
+        """
+        from lib.pipeline_types import Resolution
+        if self.routing_contract == 'scholarship_only':
+            return None
+        if not (metadata.title and metadata.year):
+            return None
+        normalized_title = normalize_for_lookup(metadata.title, strip_format_signals=True)
+        if (normalized_title, metadata.year) not in REFERENCE_CANON:
+            return None
+        self.stats['reference_canon'] += 1
+        return Resolution(
+            tier='Reference', decade=decade, subdirectory=None,
+            destination=f'Reference/{decade}/',
+            confidence=1.0, reason='reference_canon',
+            source_name='reference_canon',
+        )
+
     def _resolve_two_signal(
         self,
         metadata: FilmMetadata,
@@ -667,7 +698,7 @@ class FilmClassifier:
         tmdb_id: Optional[int],
         tmdb_title: Optional[str],
     ) -> 'Optional[Resolution]':
-        """P3: Unified two-signal classification (Issue #42)."""
+        """P4: Unified two-signal classification (Issue #42, updated P-number Issue #55)."""
         from lib.pipeline_types import Resolution
         _director_matches = score_director(
             metadata.director, metadata.year, self.core_db,
@@ -677,7 +708,6 @@ class FilmClassifier:
             metadata=metadata,
             tmdb_data=tmdb_data,
             satellite_classifier=self.satellite_classifier,
-            popcorn_classifier=self.popcorn_classifier,
             contract=self.routing_contract,
         )
         _integration = integrate_signals(
@@ -691,10 +721,8 @@ class FilmClassifier:
         # Apply satellite cap (read-write; enforced after integration selects winner)
         if _integration.tier == 'Satellite' and _integration.category:
             if self.satellite_classifier._check_cap(_integration.category) is None:
-                return None  # cap exceeded — fall through to user_tag_recovery
+                return None  # cap exceeded — fall through to _resolve_popcorn
         self.stats[_integration.reason] += 1
-        if _integration.tier == 'Popcorn':
-            self.stats['popcorn_auto'] += 1
         return Resolution(
             tier=_integration.tier, decade=_integration.decade,
             subdirectory=_integration.category,
@@ -702,6 +730,33 @@ class FilmClassifier:
             confidence=_integration.confidence, reason=_integration.reason,
             source_name='two_signal',
             explanation=_integration.explanation,
+        )
+
+    def _resolve_popcorn(
+        self,
+        metadata: FilmMetadata,
+        tmdb_data: Optional[Dict],
+        decade: str,
+        readiness: str,
+        tmdb_id: Optional[int],
+        tmdb_title: Optional[str],
+    ) -> 'Optional[Resolution]':
+        """P5: Popcorn threshold check (Issue #55 — extracted from score_structure).
+
+        Fires after two-signal so that Satellite and Core routing take priority.
+        """
+        from lib.pipeline_types import Resolution
+        popcorn_reason = self.popcorn_classifier.classify_reason(metadata, tmdb_data)
+        if not popcorn_reason:
+            return None
+        self.stats[popcorn_reason] += 1
+        self.stats['popcorn_auto'] += 1
+        conf = min(0.65, 0.6) if readiness == 'R2' else 0.65
+        return Resolution(
+            tier='Popcorn', decade=decade, subdirectory=None,
+            destination=f'Popcorn/{decade}/',
+            confidence=conf, reason=popcorn_reason,
+            source_name='popcorn',
         )
 
     def _resolve_user_tag(
@@ -712,7 +767,7 @@ class FilmClassifier:
         tmdb_id: Optional[int],
         tmdb_title: Optional[str],
     ) -> 'Optional[Resolution]':
-        """P4: User tag filename recovery fallback (Issue #25)."""
+        """P6: User tag filename recovery fallback (Issue #25, updated P-number Issue #55)."""
         from lib.pipeline_types import Resolution
         if not metadata.user_tag:
             return None
@@ -791,7 +846,7 @@ class FilmClassifier:
         )
 
     def classify(self, metadata: FilmMetadata) -> ClassificationResult:
-        """Main classification pipeline — priority chain (Issue #54).
+        """Main classification pipeline — priority chain (Issues #54, #55).
 
         PARSE → ENRICH → RESOLVE → BUILD_RESULT
 
@@ -800,13 +855,14 @@ class FilmClassifier:
           P1  Explicit lookup (SORTING_DATABASE — human-curated, confidence 1.0)
           P2  Corpus lookup (scholarship-sourced ground truth, confidence 1.0)
           [Hard gate: no year → unsorted_no_year]
-          P3  Two-signal integration (director + structural, confidence 0.4–1.0)
-          P4  User tag recovery (filename tag fallback, confidence 0.8)
-          P5  Unsorted default (always fires, confidence 0.0)
+          P3  Reference canon (50-film hardcoded list, confidence 1.0)
+          P4  Two-signal integration (Satellite + Core director, confidence 0.4–1.0)
+          P5  Popcorn threshold (mainstream signals, confidence 0.65)
+          P6  User tag recovery (filename tag fallback, confidence 0.8)
+          P7  Unsorted default (always fires, confidence 0.0)
 
         Each source returns Optional[Resolution]; first non-None wins.
-        Evidence trail (still via _gather_evidence shadow pass until Step 6) is attached
-        to all results.
+        Evidence trail (still via _gather_evidence shadow pass) is attached to all results.
         """
 
         # === P0: Non-film detection ===
@@ -865,7 +921,7 @@ class FilmClassifier:
         _tmdb_id = tmdb_data.get('tmdb_id') if tmdb_data else None
         _tmdb_title = tmdb_data.get('tmdb_title') if tmdb_data else None
 
-        # === RESOLVE: Priority chain P1–P5 ===
+        # === RESOLVE: Priority chain P1–P7 (Issue #55) ===
 
         # P1: Explicit lookup
         resolution = self._resolve_explicit_lookup(metadata, _readiness, _tmdb_id, _tmdb_title)
@@ -890,17 +946,27 @@ class FilmClassifier:
 
         decade = get_decade(metadata.year) if metadata.year else None
 
-        # P3: Two-signal integration
+        # P3: Reference canon
+        if resolution is None:
+            resolution = self._resolve_reference(metadata, decade, _readiness, _tmdb_id, _tmdb_title)
+
+        # P4: Two-signal integration (Satellite + Core director)
         if resolution is None:
             resolution = self._resolve_two_signal(
                 metadata, tmdb_data, decade, _readiness, _tmdb_id, _tmdb_title
             )
 
-        # P4: User tag recovery
+        # P5: Popcorn threshold
+        if resolution is None:
+            resolution = self._resolve_popcorn(
+                metadata, tmdb_data, decade, _readiness, _tmdb_id, _tmdb_title
+            )
+
+        # P6: User tag recovery
         if resolution is None:
             resolution = self._resolve_user_tag(metadata, decade, _readiness, _tmdb_id, _tmdb_title)
 
-        # P5: Unsorted default (always non-None)
+        # P7: Unsorted default (always non-None)
         if resolution is None:
             resolution = self._resolve_unsorted(metadata, decade, _readiness, _tmdb_id, _tmdb_title)
 
