@@ -50,6 +50,7 @@ from lib.enrichment import ManualEnrichmentSource
 from lib.normalizer import FilenameNormalizer
 from lib.corpus import CorpusLookup
 from lib.signals import score_director, score_structure, integrate_signals
+from lib.pipeline_types import EnrichedFilm
 
 # Configure logging
 logging.basicConfig(
@@ -391,14 +392,19 @@ class FilmClassifier:
                         if abs(int(result_year) - int(metadata.year)) > 2:
                             continue  # Year mismatch — likely wrong film
 
-                    merged = self._merge_api_results(tmdb_result, omdb_result, metadata)
-                    if merged and (merged.get('director') or merged.get('countries')):
+                    enriched = self._merge_api_results(tmdb_result, omdb_result, metadata)
+                    if enriched and (enriched.director or enriched.countries):
+                        # Update metadata from enriched data (explicit mutation — Issue #54)
+                        if enriched.director and not metadata.director:
+                            metadata.director = enriched.director
+                        if enriched.countries and not metadata.country:
+                            metadata.country = enriched.countries[0]
                         self.stats['r1_promoted_subtitle'] += 1
                         logger.info(
                             f"R1 PROMOTED (subtitle truncation): "
                             f"'{clean_title}' → '{short_title}' found match"
                         )
-                        return merged
+                        return enriched.raw
 
         # Strategy 2: cache-miss detection (deferred)
         # If the cached null entry was created with a dirtier title than what
@@ -447,74 +453,85 @@ class FilmClassifier:
 
         return results
 
-    def _merge_api_results(self, tmdb_data: Optional[Dict], omdb_data: Optional[Dict],
-                           metadata: FilmMetadata) -> Optional[Dict]:
-        """
-        Merge TMDb and OMDb results with field-specific priority
+    def _merge_api_results(
+        self,
+        tmdb_data: Optional[Dict],
+        omdb_data: Optional[Dict],
+        metadata: FilmMetadata,
+    ) -> Optional[EnrichedFilm]:
+        """Merge TMDb + OMDb results with field-specific priority (Issue #54).
 
-        Priority rules:
-        - Director: OMDb > TMDb (OMDb = IMDb = most authoritative)
-        - Country: OMDb > TMDb (OMDb country data superior)
-        - Genres: TMDb > OMDb (TMDb has richer genre data)
-        - Cast/popularity: TMDb > OMDb (TMDb has richer popularity metadata)
-        - Year: filename > OMDb > TMDb (trust human-curated filenames)
-        - Title: TMDb > OMDb > filename (canonical names)
+        Returns typed EnrichedFilm instead of raw dict. EnrichedFilm.raw carries
+        the merged dict for components that still consume it directly during transition.
 
-        Updates metadata.director and metadata.country as side effect
+        Field priority rules:
+          Director: OMDb > TMDb > filename (OMDb = IMDb = authoritative)
+          Country:  OMDb > TMDb > filename (OMDb fixes TMDb's empty-countries weakness)
+          Genres:   TMDb > OMDb (TMDb has richer structured data)
+          Cast/popularity: TMDb > OMDb
+          Year:     filename > OMDb > TMDb (filename = human-curated)
+          Title:    TMDb > OMDb > filename (canonical names)
 
-        Args:
-            tmdb_data: TMDb API result or None
-            omdb_data: OMDb API result or None
-            metadata: FilmMetadata to enrich (mutated)
-
-        Returns:
-            Merged dict for downstream satellite classification, or None if no data
+        Does NOT mutate metadata — side effects (metadata.director, metadata.country
+        updates) are the caller's responsibility (explicit in classify()).
         """
         if not tmdb_data and not omdb_data:
             return None
 
-        merged = {}
+        merged: Dict = {}
+        sources: Dict[str, str] = {}
 
-        # Director: OMDb > TMDb
+        # Director: OMDb > TMDb > filename
+        director: Optional[str] = None
         if omdb_data and omdb_data.get('director'):
-            merged['director'] = omdb_data['director']
+            director = omdb_data['director']
+            merged['director'] = director
+            sources['director'] = 'omdb'
             self.stats['director_from_omdb'] += 1
-            if not metadata.director:
-                metadata.director = omdb_data['director']
         elif tmdb_data and tmdb_data.get('director'):
-            merged['director'] = tmdb_data['director']
+            director = tmdb_data['director']
+            merged['director'] = director
+            sources['director'] = 'tmdb'
             self.stats['director_from_tmdb'] += 1
-            if not metadata.director:
-                metadata.director = tmdb_data['director']
         elif metadata.director:
-            merged['director'] = metadata.director
+            director = metadata.director
+            merged['director'] = director
+            sources['director'] = 'filename'
 
-        # Country: OMDb > TMDb (critical fix for Satellite routing)
+        # Country: OMDb > TMDb > filename
+        countries: List[str] = []
         if omdb_data and omdb_data.get('countries'):
-            merged['countries'] = omdb_data['countries']
+            countries = omdb_data['countries']
+            merged['countries'] = countries
+            sources['countries'] = 'omdb'
             self.stats['country_from_omdb'] += 1
-            if not metadata.country:
-                metadata.country = omdb_data['countries'][0]
         elif tmdb_data and tmdb_data.get('countries'):
-            merged['countries'] = tmdb_data['countries']
+            countries = tmdb_data['countries']
+            merged['countries'] = countries
+            sources['countries'] = 'tmdb'
             self.stats['country_from_tmdb'] += 1
-            if not metadata.country:
-                metadata.country = tmdb_data['countries'][0]
         elif metadata.country:
-            merged['countries'] = [metadata.country]
+            countries = [metadata.country]
+            merged['countries'] = countries
+            sources['countries'] = 'filename'
         else:
             merged['countries'] = []
 
-        # Genres: TMDb > OMDb (TMDb has richer structured data)
+        # Genres: TMDb > OMDb
+        genres: List[str] = []
         if tmdb_data and tmdb_data.get('genres'):
-            merged['genres'] = tmdb_data['genres']
+            genres = tmdb_data['genres']
+            merged['genres'] = genres
+            sources['genres'] = 'tmdb'
             self.stats['genres_from_tmdb'] += 1
         elif omdb_data and omdb_data.get('genres'):
-            merged['genres'] = omdb_data['genres']
+            genres = omdb_data['genres']
+            merged['genres'] = genres
+            sources['genres'] = 'omdb'
         else:
             merged['genres'] = []
 
-        # Cast: TMDb > OMDb (used by Popcorn differentiator)
+        # Cast, popularity, votes: TMDb preferred
         if tmdb_data and tmdb_data.get('cast'):
             merged['cast'] = tmdb_data['cast']
         elif omdb_data and omdb_data.get('cast'):
@@ -522,7 +539,6 @@ class FilmClassifier:
         else:
             merged['cast'] = []
 
-        # Popularity/votes: TMDb preferred, OMDb vote count as fallback
         if tmdb_data and tmdb_data.get('popularity') is not None:
             merged['popularity'] = tmdb_data['popularity']
         if tmdb_data and tmdb_data.get('vote_count') is not None:
@@ -538,7 +554,7 @@ class FilmClassifier:
         elif tmdb_data and tmdb_data.get('year'):
             merged['year'] = tmdb_data['year']
 
-        # Title: TMDb > OMDb > filename (canonical names)
+        # Title: TMDb > OMDb > filename
         if tmdb_data and tmdb_data.get('title'):
             merged['title'] = tmdb_data['title']
         elif omdb_data and omdb_data.get('title'):
@@ -546,194 +562,113 @@ class FilmClassifier:
         else:
             merged['title'] = metadata.title
 
-        # Original language (only TMDb provides this)
         if tmdb_data and tmdb_data.get('original_language'):
             merged['original_language'] = tmdb_data['original_language']
 
-        # TMDb audit trail: pass through film ID and canonical title (Issue #21)
+        # TMDb audit trail (Issue #21)
+        tmdb_id: Optional[int] = None
+        tmdb_title: Optional[str] = None
         if tmdb_data and tmdb_data.get('tmdb_id'):
-            merged['tmdb_id'] = tmdb_data['tmdb_id']
-            merged['tmdb_title'] = tmdb_data.get('tmdb_title')
+            tmdb_id = tmdb_data['tmdb_id']
+            tmdb_title = tmdb_data.get('tmdb_title')
+            merged['tmdb_id'] = tmdb_id
+            merged['tmdb_title'] = tmdb_title
 
         # Keywords: TMDb only (Issue #29)
-        merged['keywords'] = tmdb_data.get('keywords', []) if tmdb_data else []
+        keywords: List[str] = tmdb_data.get('keywords', []) if tmdb_data else []
+        merged['keywords'] = keywords
 
-        # Text fields: longer source wins — encyclopedic preferred (Issue #29)
+        # Text fields: longer source wins (Issue #29)
         tmdb_overview = (tmdb_data.get('overview', '') or '') if tmdb_data else ''
         tmdb_tagline = (tmdb_data.get('tagline', '') or '') if tmdb_data else ''
         omdb_plot = (omdb_data.get('plot', '') or '') if omdb_data else ''
         merged['overview'] = tmdb_overview
         merged['tagline'] = tmdb_tagline
-        # plot: longer of OMDb plot vs TMDb overview (encyclopedic preferred)
         merged['plot'] = omdb_plot if len(omdb_plot) >= len(tmdb_overview) else tmdb_overview
 
-        return merged
-
-    def classify(self, metadata: FilmMetadata) -> ClassificationResult:
-        """
-        Main classification pipeline — priority-ordered checks.
-
-        Priority order (Issue #14 - Popcorn/Indie before Satellite):
-        1. Explicit lookup (SORTING_DATABASE.md)
-        2. Core director check
-        3. Reference canon check
-        4. User tag recovery
-        5. Popcorn check (MOVED UP - prevents mainstream films from Satellite)
-        6. Country/decade satellite routing
-        7. TMDb satellite classification
-        8. Unsorted (default)
-
-        Each check is a soft gate (no match → continue) except:
-        - No year: hard gate (cannot route to decade → Unsorted)
-        """
-
-        # === Pre-Stage: Non-film detection (Issue #33) ===
-        # Supplements, trailers, and TV episodes are identified by filename pattern.
-        # These skip all routing stages and are excluded from the classification rate.
-        _stem = Path(metadata.filename).stem
-        _nonfim = self.normalizer._detect_nonfim(_stem)
-        if _nonfim:
-            self.stats['non_film_supplement'] += 1
-            return ClassificationResult(
-                filename=metadata.filename, title=metadata.filename,
-                year=None, director=None, language=None, country=None,
-                user_tag=None, tier='Non-Film', decade=None, subdirectory=None,
-                destination='Non-Film/',
-                confidence=0.0, reason='non_film_supplement',
-                data_readiness='R0',
-            )
-
-        # === Manual enrichment: fill empty metadata fields before API query (Issue #30) ===
-        # Enrichment fills gaps; API data takes priority (metadata fields only update if None).
-        _enrichment = self.enrichment.get(metadata.filename)
-        if _enrichment:
-            if _enrichment.get('director') and not metadata.director:
-                metadata.director = _enrichment['director']
-            if _enrichment.get('country') and not metadata.country:
-                metadata.country = _enrichment['country']
-
-        # === Stage 1: API Enrichment (TMDb + OMDb parallel query with smart merge) ===
-        api_results = self._query_apis(metadata)
-        tmdb_data = self._merge_api_results(
-            api_results['tmdb'],
-            api_results['omdb'],
-            metadata
+        return EnrichedFilm(
+            director=director,
+            countries=countries,
+            genres=genres,
+            keywords=keywords,
+            tmdb_id=tmdb_id,
+            tmdb_title=tmdb_title,
+            readiness='',  # filled by _assess_readiness after this call
+            sources=sources,
+            raw=merged,
         )
-        # Note: metadata.director and metadata.country updated as side effect
 
-        # Inject enrichment genres if API returned none (Issue #30)
-        if _enrichment and _enrichment.get('genres'):
-            if tmdb_data is None:
-                tmdb_data = {'genres': _enrichment['genres'], 'countries': [], 'keywords': []}
-            elif not tmdb_data.get('genres'):
-                tmdb_data['genres'] = _enrichment['genres']
+    # -----------------------------------------------------------------------
+    # Resolution sources — P1 through P5 (Issue #54 Phase 2)
+    # Each returns Optional[Resolution]; None means "not applicable, try next".
+    # The priority chain in classify() calls these in order and stops on first hit.
+    # -----------------------------------------------------------------------
 
-        # === Data readiness assessment (Issue #30) ===
-        # Assessed after API enrichment so enriched director/country are considered.
-        _readiness = self._assess_readiness(metadata, tmdb_data)
-
-        # === Stage 1.5: R1 promotion attempt (Issue #52) ===
-        # If film is R1 (title+year, no director/country), try targeted re-queries
-        # with shorter title variants before giving up on enrichment.
-        if _readiness == 'R1' and metadata.title:
-            promoted_data = self._attempt_r1_promotion(metadata)
-            if promoted_data:
-                # Merge promoted data into existing tmdb_data
-                if tmdb_data is None:
-                    tmdb_data = promoted_data
-                else:
-                    for k, v in promoted_data.items():
-                        if v and not tmdb_data.get(k):
-                            tmdb_data[k] = v
-                # Re-assess readiness with new data
-                _readiness = self._assess_readiness(metadata, tmdb_data)
-
-        # Audit trail: capture which TMDb film was used (Issue #21)
-        _tmdb_id = tmdb_data.get('tmdb_id') if tmdb_data else None
-        _tmdb_title = tmdb_data.get('tmdb_title') if tmdb_data else None
-
-        # === Stage 2: Explicit lookup (highest trust — human-curated) ===
-        # Bypassed under scholarship_only contract — corpus_lookup (Stage 2.5) is the
-        # first active layer under the scholarship contract.
-        if self.routing_contract != 'scholarship_only' and metadata.title:
-            dest = self.lookup_db.lookup(metadata.title, metadata.year)
-            if dest:
-                self.stats['explicit_lookup'] += 1
-                parsed = self._parse_destination_path(dest)
-
-                if parsed['tier'] == 'Unknown':
-                    self.stats['lookup_invalid_destination'] += 1
-                    logger.warning(
-                        "Skipping invalid explicit lookup destination '%s' for '%s'",
-                        dest, metadata.title
-                    )
-                else:
-                    # Track satellite counts for cap enforcement
-                    if parsed['tier'] == 'Satellite' and parsed.get('subdirectory'):
-                        self.satellite_classifier.increment_count(parsed['subdirectory'])
-
-                    _result = self._build_result(
-                        metadata,
-                        tier=parsed['tier'], decade=parsed['decade'],
-                        subdirectory=parsed.get('subdirectory'),
-                        destination=dest,
-                        confidence=1.0, reason='explicit_lookup',
-                        tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                        readiness=_readiness,
-                    )
-                    _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
-                    return _result
-
-        # === Stage 2.5: Ground truth corpus lookup (Issue #38) ===
-        # Authoritative per-category CSVs sourced from published scholarship.
-        # Fires before heuristic routing — corpus hit = confidence 1.0.
-        # Disabled if data/corpora/ doesn't exist (fully backward-compatible).
-        if self.corpus_lookup and metadata.title and metadata.year:
-            corpus_hit = self.corpus_lookup.lookup(
-                metadata.title, metadata.year, imdb_id=getattr(metadata, 'imdb_id', None)
+    def _resolve_explicit_lookup(
+        self, metadata: FilmMetadata, readiness: str, tmdb_id: Optional[int], tmdb_title: Optional[str]
+    ) -> 'Optional[Resolution]':
+        """P1: Human-curated SORTING_DATABASE lookup (highest trust)."""
+        from lib.pipeline_types import Resolution
+        if self.routing_contract == 'scholarship_only' or not metadata.title:
+            return None
+        dest = self.lookup_db.lookup(metadata.title, metadata.year)
+        if not dest:
+            return None
+        parsed = self._parse_destination_path(dest)
+        if parsed['tier'] == 'Unknown':
+            self.stats['lookup_invalid_destination'] += 1
+            logger.warning(
+                "Skipping invalid explicit lookup destination '%s' for '%s'",
+                dest, metadata.title
             )
-            if corpus_hit:
-                category = corpus_hit['category']
-                decade_str = f"{(metadata.year // 10) * 10}s"
-                destination = f"Satellite/{category}/{decade_str}/"
-                self.stats['corpus_lookup'] += 1
-                if hasattr(self.satellite_classifier, 'increment_count'):
-                    self.satellite_classifier.increment_count(category)
-                _result = self._build_result(
-                    metadata,
-                    tier='Satellite', decade=decade_str, subdirectory=category,
-                    destination=destination,
-                    confidence=1.0, reason='corpus_lookup',
-                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                    readiness=_readiness,
-                )
-                _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
-                return _result
+            return None
+        if parsed['tier'] == 'Satellite' and parsed.get('subdirectory'):
+            self.satellite_classifier.increment_count(parsed['subdirectory'])
+        self.stats['explicit_lookup'] += 1
+        return Resolution(
+            tier=parsed['tier'], decade=parsed['decade'],
+            subdirectory=parsed.get('subdirectory'),
+            destination=dest,
+            confidence=1.0, reason='explicit_lookup',
+            source_name='explicit_lookup',
+        )
 
-        # === Hard gate: no year = cannot route to decade ===
-        if not metadata.year:
-            self.stats['unsorted_no_year'] += 1
-            _result = self._build_result(
-                metadata,
-                tier='Unsorted', decade=None, subdirectory=None,
-                destination='Unsorted/',
-                confidence=0.0, reason='unsorted_no_year',
-                tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                readiness='R0',
-            )
-            _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, 'R0')
-            return _result
+    def _resolve_corpus(
+        self, metadata: FilmMetadata, readiness: str, tmdb_id: Optional[int], tmdb_title: Optional[str]
+    ) -> 'Optional[Resolution]':
+        """P2: Scholarship-sourced ground truth corpus (Issue #38)."""
+        from lib.pipeline_types import Resolution
+        if not (self.corpus_lookup and metadata.title and metadata.year):
+            return None
+        corpus_hit = self.corpus_lookup.lookup(
+            metadata.title, metadata.year, imdb_id=getattr(metadata, 'imdb_id', None)
+        )
+        if not corpus_hit:
+            return None
+        category = corpus_hit['category']
+        decade_str = f"{(metadata.year // 10) * 10}s"
+        destination = f"Satellite/{category}/{decade_str}/"
+        self.stats['corpus_lookup'] += 1
+        if hasattr(self.satellite_classifier, 'increment_count'):
+            self.satellite_classifier.increment_count(category)
+        return Resolution(
+            tier='Satellite', decade=decade_str, subdirectory=category,
+            destination=destination,
+            confidence=1.0, reason='corpus_lookup',
+            source_name='corpus_lookup',
+        )
 
-        decade = get_decade(metadata.year)
-
-        # === Stages 3-8: Unified Two-Signal Classification (Issue #42) ===
-        # Compute director identity signal and structural triangulation signal independently,
-        # then integrate via priority decision table. Replaces the old sequential first-match-wins
-        # pipeline (reference_canon → country_satellite → tmdb_satellite → core_director → popcorn).
-        # New reason codes: both_agree, director_signal, structural_signal,
-        #   director_disambiguates, review_flagged (replacing core_director / tmdb_satellite /
-        #   country_satellite). reference_canon and user_tag_recovery are preserved.
-
+    def _resolve_two_signal(
+        self,
+        metadata: FilmMetadata,
+        tmdb_data: Optional[Dict],
+        decade: str,
+        readiness: str,
+        tmdb_id: Optional[int],
+        tmdb_title: Optional[str],
+    ) -> 'Optional[Resolution]':
+        """P3: Unified two-signal classification (Issue #42)."""
+        from lib.pipeline_types import Resolution
         _director_matches = score_director(
             metadata.director, metadata.year, self.core_db,
             contract=self.routing_contract,
@@ -749,92 +684,95 @@ class FilmClassifier:
             director_matches=_director_matches,
             structural_matches=_structural_matches,
             decade=decade,
-            readiness=_readiness,
+            readiness=readiness,
+        )
+        if _integration.tier == 'Unsorted':
+            return None
+        # Apply satellite cap (read-write; enforced after integration selects winner)
+        if _integration.tier == 'Satellite' and _integration.category:
+            if self.satellite_classifier._check_cap(_integration.category) is None:
+                return None  # cap exceeded — fall through to user_tag_recovery
+        self.stats[_integration.reason] += 1
+        if _integration.tier == 'Popcorn':
+            self.stats['popcorn_auto'] += 1
+        return Resolution(
+            tier=_integration.tier, decade=_integration.decade,
+            subdirectory=_integration.category,
+            destination=_integration.destination,
+            confidence=_integration.confidence, reason=_integration.reason,
+            source_name='two_signal',
+            explanation=_integration.explanation,
         )
 
-        if _integration.tier != 'Unsorted':
-            # Apply satellite cap (read-write; enforced here after integration selects winner)
-            if _integration.tier == 'Satellite' and _integration.category:
-                _capped = self.satellite_classifier._check_cap(_integration.category)
-                if _capped is None:
-                    _integration = None  # cap exceeded — fall through to user_tag_recovery
+    def _resolve_user_tag(
+        self,
+        metadata: FilmMetadata,
+        decade: str,
+        readiness: str,
+        tmdb_id: Optional[int],
+        tmdb_title: Optional[str],
+    ) -> 'Optional[Resolution]':
+        """P4: User tag filename recovery fallback (Issue #25)."""
+        from lib.pipeline_types import Resolution
+        if not metadata.user_tag:
+            return None
+        parsed_tag = self._parse_user_tag(metadata.user_tag)
+        if 'tier' not in parsed_tag or 'decade' not in parsed_tag:
+            return None
+        tier = parsed_tag['tier']
+        tag_decade = parsed_tag['decade']
+        extra = parsed_tag.get('extra', '')
+        dest = None
 
-            if _integration is not None:
-                self.stats[_integration.reason] += 1
-                if _integration.tier == 'Popcorn':
-                    self.stats['popcorn_auto'] += 1
-                _result = self._build_result(
-                    metadata,
-                    tier=_integration.tier, decade=_integration.decade,
-                    subdirectory=_integration.category,
-                    destination=_integration.destination,
-                    confidence=_integration.confidence, reason=_integration.reason,
-                    tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                    readiness=_readiness,
+        if tier == 'Core' and extra:
+            if self.routing_contract == 'scholarship_only':
+                pass  # Core tag recovery suppressed under scholarship_only
+            elif self.core_db.is_core_director(extra):
+                dest = f'Core/{tag_decade}/{extra}/'
+            else:
+                logger.warning(
+                    "User tag '[Core-%s-%s]' — '%s' not in Core whitelist. "
+                    "Falling through to heuristics. File: %s",
+                    tag_decade, extra, extra, metadata.filename
                 )
-                _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
-                return _result
+        elif tier == 'Satellite':
+            if extra:
+                dest = f'Satellite/{extra}/{tag_decade}/'  # Category-first (Issue #6)
+            else:
+                logger.warning(
+                    "User tag '[Satellite-%s]' has no category subdirectory — "
+                    "falling through to heuristics. File: %s",
+                    tag_decade, metadata.filename
+                )
+        elif tier == 'Reference':
+            if self.routing_contract != 'scholarship_only':
+                dest = f'Reference/{tag_decade}/'
+        elif tier == 'Popcorn':
+            dest = f'Popcorn/{tag_decade}/'
+        else:
+            dest = f'{tier}/'
 
-        # === User tag recovery fallback ===
-        # Fires when integration returned Unsorted (or cap exceeded) — Issue #25:
-        # movement routing takes priority over stale [Core] user tags.
-        # Under scholarship_only contract, Core and Reference tag recovery is suppressed.
-        if metadata.user_tag:
-            parsed_tag = self._parse_user_tag(metadata.user_tag)
-            if 'tier' in parsed_tag and 'decade' in parsed_tag:
-                tier = parsed_tag['tier']
-                tag_decade = parsed_tag['decade']
-                extra = parsed_tag.get('extra', '')
-                dest = None  # Only set for valid, complete tags (Issue #23)
+        if dest is None:
+            return None
+        self.stats['user_tag_recovery'] += 1
+        return Resolution(
+            tier=tier, decade=tag_decade, subdirectory=extra or None,
+            destination=dest,
+            confidence=0.8, reason='user_tag_recovery',
+            source_name='user_tag_recovery',
+        )
 
-                if tier == 'Core' and extra:
-                    if self.routing_contract == 'scholarship_only':
-                        # Core tag recovery suppressed under scholarship_only contract
-                        pass
-                    elif self.core_db.is_core_director(extra):
-                        # Cross-check against Core whitelist before trusting the tag (Issue #23 Bug 2)
-                        dest = f'Core/{tag_decade}/{extra}/'
-                    else:
-                        logger.warning(
-                            "User tag '[Core-%s-%s]' — '%s' not in Core whitelist. "
-                            "Falling through to heuristics. File: %s",
-                            tag_decade, extra, extra, metadata.filename
-                        )
-                elif tier == 'Satellite':
-                    if extra:
-                        dest = f'Satellite/{extra}/{tag_decade}/'  # Category-first (Issue #6)
-                    else:
-                        # Bare [Satellite-1970s] tag has no category — cannot build valid path (Issue #23 Bug 1)
-                        logger.warning(
-                            "User tag '[Satellite-%s]' has no category subdirectory — "
-                            "falling through to heuristics. File: %s",
-                            tag_decade, metadata.filename
-                        )
-                elif tier == 'Reference':
-                    if self.routing_contract != 'scholarship_only':
-                        dest = f'Reference/{tag_decade}/'
-                elif tier == 'Popcorn':
-                    dest = f'Popcorn/{tag_decade}/'
-                else:
-                    dest = f'{tier}/'
-
-                if dest is not None:
-                    self.stats['user_tag_recovery'] += 1
-                    _result = self._build_result(
-                        metadata,
-                        tier=tier, decade=tag_decade, subdirectory=extra or None,
-                        destination=dest,
-                        confidence=0.8, reason='user_tag_recovery',
-                        tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                        readiness=_readiness,
-                    )
-                    _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
-                    return _result
-                # dest is None — fall through to Unsorted
-
-        # === Stage 9: Unsorted (default) ===
-        # R1: insufficient data (no director AND no country) — distinct from taxonomy gap
-        if _readiness == 'R1':
+    def _resolve_unsorted(
+        self,
+        metadata: FilmMetadata,
+        decade: Optional[str],
+        readiness: str,
+        tmdb_id: Optional[int],
+        tmdb_title: Optional[str],
+    ) -> 'Resolution':
+        """P5: Unsorted default — always returns a Resolution (the final fallback)."""
+        from lib.pipeline_types import Resolution
+        if readiness == 'R1':
             reason = 'unsorted_insufficient_data'
             self.stats['unsorted_insufficient_data'] += 1
         else:
@@ -845,11 +783,134 @@ class FilmClassifier:
                 reason_parts.append('no_match')
             reason = f"unsorted_{'_'.join(reason_parts)}" if reason_parts else 'unsorted_unknown'
             self.stats[reason] += 1
-        _result = self._build_result(
-            metadata,
+        return Resolution(
             tier='Unsorted', decade=decade, subdirectory=None,
             destination='Unsorted/',
             confidence=0.0, reason=reason,
+            source_name='unsorted',
+        )
+
+    def classify(self, metadata: FilmMetadata) -> ClassificationResult:
+        """Main classification pipeline — priority chain (Issue #54).
+
+        PARSE → ENRICH → RESOLVE → BUILD_RESULT
+
+        Priority order:
+          P0  Non-film detection (pre-chain hard exit)
+          P1  Explicit lookup (SORTING_DATABASE — human-curated, confidence 1.0)
+          P2  Corpus lookup (scholarship-sourced ground truth, confidence 1.0)
+          [Hard gate: no year → unsorted_no_year]
+          P3  Two-signal integration (director + structural, confidence 0.4–1.0)
+          P4  User tag recovery (filename tag fallback, confidence 0.8)
+          P5  Unsorted default (always fires, confidence 0.0)
+
+        Each source returns Optional[Resolution]; first non-None wins.
+        Evidence trail (still via _gather_evidence shadow pass until Step 6) is attached
+        to all results.
+        """
+
+        # === P0: Non-film detection ===
+        _stem = Path(metadata.filename).stem
+        _nonfim = self.normalizer._detect_nonfim(_stem)
+        if _nonfim:
+            self.stats['non_film_supplement'] += 1
+            return ClassificationResult(
+                filename=metadata.filename, title=metadata.filename,
+                year=None, director=None, language=None, country=None,
+                user_tag=None, tier='Non-Film', decade=None, subdirectory=None,
+                destination='Non-Film/',
+                confidence=0.0, reason='non_film_supplement',
+                data_readiness='R0',
+            )
+
+        # === ENRICH: Manual enrichment + API query + smart merge ===
+        _enrichment = self.enrichment.get(metadata.filename)
+        if _enrichment:
+            if _enrichment.get('director') and not metadata.director:
+                metadata.director = _enrichment['director']
+            if _enrichment.get('country') and not metadata.country:
+                metadata.country = _enrichment['country']
+
+        api_results = self._query_apis(metadata)
+        _enriched = self._merge_api_results(api_results['tmdb'], api_results['omdb'], metadata)
+        tmdb_data = _enriched.raw if _enriched is not None else None
+
+        # Explicit metadata update from enriched data (no longer a side effect of _merge — Issue #54)
+        if _enriched:
+            if _enriched.director and not metadata.director:
+                metadata.director = _enriched.director
+            if _enriched.countries and not metadata.country:
+                metadata.country = _enriched.countries[0]
+
+        if _enrichment and _enrichment.get('genres'):
+            if tmdb_data is None:
+                tmdb_data = {'genres': _enrichment['genres'], 'countries': [], 'keywords': []}
+            elif not tmdb_data.get('genres'):
+                tmdb_data['genres'] = _enrichment['genres']
+
+        _readiness = self._assess_readiness(metadata, tmdb_data)
+
+        # R1 promotion: try shorter title variants before giving up (Issue #52)
+        if _readiness == 'R1' and metadata.title:
+            promoted_data = self._attempt_r1_promotion(metadata)
+            if promoted_data:
+                if tmdb_data is None:
+                    tmdb_data = promoted_data
+                else:
+                    for k, v in promoted_data.items():
+                        if v and not tmdb_data.get(k):
+                            tmdb_data[k] = v
+                _readiness = self._assess_readiness(metadata, tmdb_data)
+
+        _tmdb_id = tmdb_data.get('tmdb_id') if tmdb_data else None
+        _tmdb_title = tmdb_data.get('tmdb_title') if tmdb_data else None
+
+        # === RESOLVE: Priority chain P1–P5 ===
+
+        # P1: Explicit lookup
+        resolution = self._resolve_explicit_lookup(metadata, _readiness, _tmdb_id, _tmdb_title)
+
+        # P2: Corpus lookup
+        if resolution is None:
+            resolution = self._resolve_corpus(metadata, _readiness, _tmdb_id, _tmdb_title)
+
+        # Hard gate: no year → cannot route to decade
+        if resolution is None and not metadata.year:
+            self.stats['unsorted_no_year'] += 1
+            _result = self._build_result(
+                metadata,
+                tier='Unsorted', decade=None, subdirectory=None,
+                destination='Unsorted/',
+                confidence=0.0, reason='unsorted_no_year',
+                tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
+                readiness='R0',
+            )
+            _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, 'R0')
+            return _result
+
+        decade = get_decade(metadata.year) if metadata.year else None
+
+        # P3: Two-signal integration
+        if resolution is None:
+            resolution = self._resolve_two_signal(
+                metadata, tmdb_data, decade, _readiness, _tmdb_id, _tmdb_title
+            )
+
+        # P4: User tag recovery
+        if resolution is None:
+            resolution = self._resolve_user_tag(metadata, decade, _readiness, _tmdb_id, _tmdb_title)
+
+        # P5: Unsorted default (always non-None)
+        if resolution is None:
+            resolution = self._resolve_unsorted(metadata, decade, _readiness, _tmdb_id, _tmdb_title)
+
+        # === BUILD_RESULT ===
+        _result = self._build_result(
+            metadata,
+            tier=resolution.tier, decade=resolution.decade,
+            subdirectory=resolution.subdirectory,
+            destination=resolution.destination,
+            confidence=resolution.confidence, reason=resolution.reason,
             tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
             readiness=_readiness,
         )
