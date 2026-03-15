@@ -1,6 +1,6 @@
 # Two-Signal Classification Architecture
 
-**Status:** Canonical (Issue #42 implemented, Issue #44 implemented, Issue #45 implemented, Issue #48 implemented)
+**Status:** Canonical (Issue #42 implemented, Issue #44 implemented, Issue #45 implemented, Issue #48 implemented, Issue #51 implemented, Issue #54 implemented)
 **Implementation:** `lib/signals.py`
 **Date established:** 2026-03-05
 
@@ -108,7 +108,7 @@ keyword_signals in `lib/constants.py`
 |---|---|---|---|---|
 | P1 | — | Reference canon | `reference_canon` | 1.0 |
 | P2 | Satellite A | Satellite A (same) | `both_agree` | 0.85 |
-| P3 | Satellite A | Satellite B (different) | `director_disambiguates` | 0.75 |
+| P3 | Satellite A | Satellite B (different) | `review_flagged` | 0.4 |
 | P4 | Satellite A | nothing | `director_signal` | 0.65 |
 | P5 | Core | Satellite B | `structural_signal` | 0.65 |
 | P6 | Core only | nothing | `director_signal` (Core) | 1.0 |
@@ -117,9 +117,11 @@ keyword_signals in `lib/constants.py`
 | P9 | nothing | Popcorn | `structural_signal` | 0.65 |
 | P10 | nothing | nothing | `unsorted_no_match` | — |
 
+Note: P3 previously used `director_disambiguates` at 0.75 — removed in Issue #51 because conflicting signals are ambiguity, not evidence for director-wins resolution (measured accuracy was 52.9% on conflict cases). Conflicting signals now produce `review_flagged` at 0.4 for curator resolution.
+
 **Key design principles:**
-- **Disagreement is information.** Director says A, structure says B → director
-  disambiguates (the director is the expert on which tradition their film belongs to)
+- **Disagreement is information.** Director says A, structure says B → flag for review.
+  Conflicting signals indicate genuine ambiguity; neither signal overrides the other.
 - **Confidence is evidence-dependent, not category-dependent.** A Giallo match with
   both signals = 0.85; with structure only = 0.65. Same category, different confidence.
 - **Structural specificity takes priority over director prestige.** When a Core
@@ -166,6 +168,27 @@ distinctiveness, scholarship citation), and add verified entries to
 
 **Methodology:** See `docs/SATELLITE_CATEGORIES.md` for per-category scholarly
 anchoring. See `SATELLITE_DEPTH.md §3` for director inclusion criteria.
+
+---
+
+## 4b. Pipeline Position (Issue #54)
+
+The two-signal integration is **P3 in the full classify() priority chain**:
+
+```
+P1: explicit_lookup     — SORTING_DATABASE.md (human-curated, confidence 1.0)
+P2: corpus_lookup       — data/corpora/*.csv  (scholarship ground truth, confidence 1.0)
+P3: two_signal          — score_director() + score_structure() + integrate_signals()
+P4: user_tag_recovery   — [NNNs-Tier-Director] user tag fallback
+P5: unsorted            — no signal matched
+```
+
+Each stage is a `_resolve_*()` method in `classify.py` returning `Optional[Resolution]`.
+The first non-None resolution wins. Two-signal integration is skipped entirely when P1
+or P2 already resolved the film.
+
+**Implementation:** `_resolve_two_signal()` in `classify.py` wraps `score_director()`,
+`score_structure()`, and `integrate_signals()` from `lib/signals.py`.
 
 ---
 

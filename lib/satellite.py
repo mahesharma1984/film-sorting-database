@@ -12,6 +12,8 @@ import logging
 from typing import Dict, List, Optional, Tuple
 from collections import defaultdict
 
+from lib.director_matching import match_director
+
 logger = logging.getLogger(__name__)
 
 
@@ -48,24 +50,15 @@ class SatelliteClassifier:
         self.core_db = core_db  # Issue #16: optional CoreDirectorDatabase for defensive check
 
     def classify(self, metadata, tmdb_data: Optional[Dict]) -> Optional[str]:
+        """Thin wrapper around evaluate_category() — director-inclusive routing (Issue #54).
+
+        Iterates SATELLITE_ROUTING_RULES with include_director=True (classify() mode).
+        Returns the first matching category name after cap enforcement, or None.
+
+        When tmdb_data is absent but metadata has a director, constructs a minimal dict
+        so director-only routing rules (FNW, JNW, etc.) can still fire.
+        Country/genre-based rules won't fire because countries=[] and genres=[] give no match.
         """
-        Classify using TMDb structured data + decade-bounded director rules
-
-        CRITICAL FIX (Issue #6): Director routing now respects decade bounds
-        NEW (Issue #16): Core director defensive check prevents Satellite misrouting
-        Uses unified SATELLITE_ROUTING_RULES from constants.py
-
-        Args:
-            metadata: FilmMetadata object
-            tmdb_data: TMDb data dict with keys: title, year, director, genres, countries
-
-        Returns:
-            Category name if classified, None otherwise
-        """
-        # When tmdb_data is absent but metadata has a director (parsed from filename),
-        # construct a minimal dict for director-only routing rules (FNW, Indie Cinema
-        # directors list, etc.).  Country/genre-based rules still won't fire because
-        # countries=[] and genres=[] give no match — only director-match paths run.
         if not tmdb_data:
             if not (hasattr(metadata, 'director') and metadata.director):
                 return None
@@ -81,124 +74,25 @@ class SatelliteClassifier:
                 'plot': '',
             }
 
-        # Issue #25: Core director guard removed. With Satellite routing before Core in the
-        # pipeline (classify.py), Core directors now intentionally route to Satellite for
-        # their movement-period films. The movement's decade gate is the natural boundary:
-        # a director in the FNW list (1950s-1970s) routes to FNW for those decades, then
-        # falls through to the Core director check for work outside the movement period.
-        # Prestige films are pinned to Core via SORTING_DATABASE.md entries (Stage 2),
-        # which fire before Satellite routing is ever reached.
+        from lib.constants import SATELLITE_ROUTING_RULES
 
-        # Extract structured data
-        countries = tmdb_data.get('countries', [])
-        genres = tmdb_data.get('genres', [])
         director = tmdb_data.get('director', '') or ''
         year = tmdb_data.get('year')
-        title = (tmdb_data.get('title') or getattr(metadata, 'title', '') or '').lower()
         director_lower = director.lower()
+        film_data = {
+            'director_lower': director_lower,
+            'director_tokens': set(director_lower.split()) if director else set(),
+            'decade': f"{(year // 10) * 10}s" if year else None,
+            'countries': tmdb_data.get('countries', []),
+            'genres': tmdb_data.get('genres', []),
+            'title': (tmdb_data.get('title') or getattr(metadata, 'title', '') or '').lower(),
+            'tmdb_data': tmdb_data,
+        }
 
-        # Calculate decade for validation
-        decade = None
-        if year:
-            decade = f"{(year // 10) * 10}s"
-
-        # Import routing rules (lazy import to avoid circular dependencies)
-        from lib.constants import (
-            SATELLITE_ROUTING_RULES,
-            AMERICAN_EXPLOITATION_TITLE_KEYWORDS,
-            BLAXPLOITATION_TITLE_KEYWORDS,
-            CATEGORY_CERTAINTY_TIERS,
-        )
-
-        # Check each category's rules (first match wins)
-        # Issue #40 Phase 2: director_tokens computed once before loop (used in both director checks)
-        director_tokens = set(director_lower.split()) if director else set()
         for category_name, rules in SATELLITE_ROUTING_RULES.items():
-            # Issue #40 Phase 2: tradition categories (country_codes populated) check director
-            # BEFORE the decade gate. Director identity persists across eras — a 1998 Ferrara
-            # film routes to American Exploitation even though 1998 > 1980s decade bound.
-            # Movement categories (country_codes=[]) keep decade-first order (intentional):
-            # their decade gate ensures only era-appropriate films route to FNW/AmNH/JNW.
-            is_tradition = rules.get('is_tradition', bool(rules['country_codes']))
-            if is_tradition and rules['directors'] and director:
-                if any(self._director_matches(director_lower, director_tokens, d)
-                       for d in rules['directors']):
-                    return self._check_cap(category_name)
-
-            # Skip if decade-bounded and film is outside valid decades
-            # Note: None means no decade restriction (e.g., Music Films)
-            if rules['decades'] is not None and decade not in rules['decades']:
-                continue
-
-            # Movement categories: director check AFTER decade gate (existing behavior)
-            if not is_tradition and rules['directors'] and director:
-                if any(self._director_matches(director_lower, director_tokens, d)
-                       for d in rules['directors']):
-                    return self._check_cap(category_name)
-
-            # Check country + genre match (fallback)
-            # Handle None for country_codes or genres (means no restriction)
-            country_match = True  # Default to True if no country restriction
-            if rules['country_codes'] is not None:
-                country_match = any(c in countries for c in rules['country_codes'])
-
-            # Issue #34: Three-valued genre gate — True / False / None (untestable)
-            # None means genres=[] (API returned no genre data) — not a negative match.
-            genre_match = True  # Default to True if no genre restriction
-            if rules['genres'] is not None:
-                if not genres:  # genres=[] → no data → untestable
-                    genre_match = None
-                else:
-                    genre_match = any(g in genres for g in rules['genres'])
-
-            # Tighten fallback for categories that were producing mainstream false positives.
-            # Director match above still takes priority and remains permissive.
-            if category_name == 'American Exploitation':
-                if not self._title_matches_keywords(title, AMERICAN_EXPLOITATION_TITLE_KEYWORDS):
-                    continue
-            if category_name == 'Blaxploitation':
-                if not self._title_matches_keywords(title, BLAXPLOITATION_TITLE_KEYWORDS):
-                    continue
-
-            # Both must match (positive genre evidence).
-            # Issue #45: movement categories (is_tradition=False) are director-only in this path;
-            # their structural matching happens via classify_structural() in the two-signal pipeline.
-            # genres=None on movement categories means "no genre restriction in classify_structural()",
-            # not "match any film structurally in classify()".
-            if is_tradition and country_match and genre_match is True:
+            match_type = self.evaluate_category(film_data, category_name, rules, include_director=True)
+            if match_type is not None:
                 return self._check_cap(category_name)
-
-            # Issue #34: genre_match is None (untestable) — apply certainty-tier routing.
-            # Tier 3 (negative-space/catch-all like Indie Cinema): route at R2-capped confidence.
-            # Tier 1–2 (positive-space exploitation/movement): require genre evidence — don't route.
-            # Guard: only apply when country was a POSITIVE match against a defined list.
-            # Categories with country_codes=None already match any country — no fallback needed.
-            # Issue #45: same is_tradition guard — movement structural path is in classify_structural().
-            if is_tradition and country_match and genre_match is None and rules['country_codes'] is not None:
-                tier = CATEGORY_CERTAINTY_TIERS.get(category_name, 2)
-                if tier >= 3:
-                    return self._check_cap(category_name)
-
-            # Issue #29 Tier A: country + decade + keyword hit (genre gate waived)
-            # Fires when structural country match succeeded but genre tag is absent/wrong —
-            # e.g. an Italian Drama 1970s with a "giallo" TMDb tag routes to Giallo
-            # despite TMDb not filing it under Horror/Thriller.
-            keyword_signals = rules.get('keyword_signals')
-            if keyword_signals and country_match and genre_match is not True:
-                hit, _ = self._keyword_hit(tmdb_data, keyword_signals)
-                if hit:
-                    return self._check_cap(category_name)
-
-            # Issue #29 Tier B: TMDb keyword tag alone for movement categories.
-            # Fires for director-only categories (French New Wave, American New Hollywood)
-            # when no director match was found but a movement-specific TMDb tag is present.
-            # Restricted to tmdb_tags only — text_terms are not precise enough without
-            # structural corroboration.
-            if rules.get('tier_b_eligible') and keyword_signals:
-                tmdb_tags_lower = [k.lower() for k in tmdb_data.get('keywords', [])]
-                if any(tag in tmdb_tags_lower
-                       for tag in keyword_signals.get('tmdb_tags', [])):
-                    return self._check_cap(category_name)
 
         return None
 
@@ -407,23 +301,12 @@ class SatelliteClassifier:
 
     @staticmethod
     def _director_matches(director_lower: str, director_tokens: set, entry: str) -> bool:
-        """Whole-word match for single-word entries; substring for multi-word entries.
+        """Thin wrapper — delegates to lib.director_matching.match_director (Issue #54).
 
-        Single-word entries (e.g. 'bava', 'malle', 'lenzi') require the entry to be a
-        complete whitespace-delimited token in the director name. This prevents
-        'malle' from matching a director called 'Pierre Mallette', for example.
-
-        Multi-word entries (e.g. 'tsui hark', 'john woo', 'gordon parks') use substring
-        matching, which is safe because an exact phrase won't produce false positives.
-        Hyphenated surnames (e.g. 'robbe-grillet') are treated as single tokens by
-        str.split() and therefore use whole-word matching.
-
-        Issue #25 D1: replaces the previous `any(d in director_lower ...)` substring
-        check, which violated the R/P split by allowing ambiguous partial matches.
+        Signature preserved for call-site compatibility. director_tokens is unused
+        (match_director splits internally), retained to avoid changing all callers.
         """
-        if ' ' not in entry:
-            return entry in director_tokens
-        return entry in director_lower
+        return match_director(director_lower, entry)
 
     @staticmethod
     def _title_matches_keywords(title: str, keywords) -> bool:
@@ -454,8 +337,127 @@ class SatelliteClassifier:
                 return True, 'text_term'
         return False, None
 
+    def evaluate_category(
+        self,
+        film_data: Dict,
+        category_name: str,
+        rules: Dict,
+        include_director: bool = True,
+    ) -> Optional[str]:
+        """Evaluate one category rule against pre-extracted film data (Issue #54).
+
+        Single shared implementation of the per-category evaluation loop — replaces
+        duplicate logic in classify() and classify_structural().
+
+        Returns match_type string if category matches:
+          'director'        — director identity match (tradition or movement)
+          'country_genre'   — country + genre structural match (including Tier 3 untestable)
+          'keyword_tier_a'  — country + keyword hit (genre gate waived)
+          'keyword_tier_b'  — TMDb tag alone for tier_b_eligible movement categories
+        Returns None if no match.
+
+        Does NOT enforce caps — caller is responsible for _check_cap().
+
+        Args:
+            film_data: pre-extracted dict with keys:
+                director_lower (str), director_tokens (set), decade (Optional[str]),
+                countries (List[str]), genres (List[str]), title (str), tmdb_data (Dict)
+            include_director: True = classify() mode (director checks active,
+                structural match limited to tradition categories);
+                False = classify_structural() mode (no director checks,
+                structural match for all categories).
+        """
+        from lib.constants import (
+            AMERICAN_EXPLOITATION_TITLE_KEYWORDS,
+            BLAXPLOITATION_TITLE_KEYWORDS,
+            CATEGORY_CERTAINTY_TIERS,
+        )
+
+        is_tradition = rules.get('is_tradition', bool(rules['country_codes']))
+        director_lower = film_data.get('director_lower', '')
+        director_tokens = film_data.get('director_tokens', set())
+        decade = film_data.get('decade')
+        countries = film_data.get('countries', [])
+        genres = film_data.get('genres', [])
+        title = film_data.get('title', '')
+        tmdb_data = film_data.get('tmdb_data', {})
+
+        # --- Director check: tradition categories fire BEFORE decade gate ---
+        # (Issue #40 Phase 2: director identity persists across eras for tradition categories)
+        if include_director and is_tradition and rules['directors'] and director_lower:
+            if any(self._director_matches(director_lower, director_tokens, d)
+                   for d in rules['directors']):
+                return 'director'
+
+        # --- Decade gate ---
+        if rules['decades'] is not None and decade not in rules['decades']:
+            return None
+
+        # --- Director check: movement categories fire AFTER decade gate ---
+        # (ensures only era-appropriate films route to FNW/AmNH/JNW via director)
+        if include_director and not is_tradition and rules['directors'] and director_lower:
+            if any(self._director_matches(director_lower, director_tokens, d)
+                   for d in rules['directors']):
+                return 'director'
+
+        # --- Structural match path ---
+        # classify() mode (include_director=True): only tradition categories (Issue #45).
+        # classify_structural() mode (include_director=False): all categories.
+        structural_enabled = is_tradition or not include_director
+
+        # Country match
+        country_match = True  # default: no restriction
+        if rules['country_codes'] is not None:
+            country_match = any(c in countries for c in rules['country_codes'])
+
+        # Genre match — three-valued: True / False / None (untestable when genres=[])
+        genre_match = True  # default: no restriction
+        if rules['genres'] is not None:
+            if not genres:
+                genre_match = None  # data absent — untestable
+            else:
+                genre_match = any(g in genres for g in rules['genres'])
+
+        # Title keyword gates (high-false-positive categories)
+        if category_name == 'American Exploitation':
+            if not self._title_matches_keywords(title, AMERICAN_EXPLOITATION_TITLE_KEYWORDS):
+                return None
+        if category_name == 'Blaxploitation':
+            if not self._title_matches_keywords(title, BLAXPLOITATION_TITLE_KEYWORDS):
+                return None
+
+        # Country + genre structural match (positive genre evidence required)
+        if structural_enabled and country_match and genre_match is True:
+            return 'country_genre'
+
+        # Tier 3 untestable genre: genre data absent but country matched
+        # (Issue #34: Tier 1-2 categories require genre evidence; Tier 3+ can route on country alone)
+        if structural_enabled and country_match and genre_match is None and rules['country_codes'] is not None:
+            tier = CATEGORY_CERTAINTY_TIERS.get(category_name, 2)
+            if tier >= 3:
+                return 'country_genre'
+
+        # Keyword Tier A: country match + keyword hit waives the genre gate (Issue #29)
+        keyword_signals = rules.get('keyword_signals')
+        if keyword_signals and country_match and genre_match is not True:
+            hit, _ = self._keyword_hit(tmdb_data, keyword_signals)
+            if hit:
+                return 'keyword_tier_a'
+
+        # Keyword Tier B: TMDb tag alone for tier_b_eligible movement categories (Issue #29)
+        if rules.get('tier_b_eligible') and keyword_signals:
+            tmdb_tags_lower = [k.lower() for k in tmdb_data.get('keywords', [])]
+            if any(tag in tmdb_tags_lower for tag in keyword_signals.get('tmdb_tags', [])):
+                return 'keyword_tier_b'
+
+        return None
+
     def classify_structural(self, metadata, tmdb_data: Optional[Dict]) -> List[Tuple[str, str]]:
-        """Return all SATELLITE_ROUTING_RULES structural matches (director checks excluded).
+        """Thin wrapper around evaluate_category() — structural-only routing (Issue #54).
+
+        Iterates SATELLITE_ROUTING_RULES with include_director=False (classify_structural() mode).
+        Returns ALL matching (category_name, match_type) pairs — no short-circuit, no cap.
+        Director checks are intentionally excluded — use score_director() for those.
 
         Issue #42: Used by lib/signals.score_structure() to compute the structural
         triangulation signal independently from the director identity signal.
@@ -464,86 +466,33 @@ class SatelliteClassifier:
           'country_genre'  — country + genre (or Tier 3 untestable genre) match
           'keyword_tier_a' — country + keyword hit (genre gate waived)
           'keyword_tier_b' — TMDb tag alone for tier_b_eligible movement categories
-
-        Does NOT enforce caps (cap is applied by the caller after integration selects a winner).
-        Director checks are intentionally excluded — use score_director() for those.
         """
-        from lib.constants import (
-            SATELLITE_ROUTING_RULES,
-            AMERICAN_EXPLOITATION_TITLE_KEYWORDS,
-            BLAXPLOITATION_TITLE_KEYWORDS,
-            CATEGORY_CERTAINTY_TIERS,
-        )
+        from lib.constants import SATELLITE_ROUTING_RULES
 
         year = getattr(metadata, 'year', None)
-        title = (getattr(metadata, 'title', '') or '').lower()
-
-        # Build countries list (same merge logic as classify())
         tmdb_data = tmdb_data or {}
+
+        # Merge metadata.country + tmdb countries (with uppercase normalization)
         countries = [c.upper() for c in (tmdb_data.get('countries') or [])]
         metadata_country = getattr(metadata, 'country', None)
         if metadata_country and metadata_country.upper() not in countries:
             countries.append(metadata_country.upper())
 
-        genres = list(tmdb_data.get('genres') or [])
-
-        decade = None
-        if year:
-            decade = f"{(year // 10) * 10}s"
+        film_data = {
+            'director_lower': '',  # structural signal: no director
+            'director_tokens': set(),
+            'decade': f"{(year // 10) * 10}s" if year else None,
+            'countries': countries,
+            'genres': list(tmdb_data.get('genres') or []),
+            'title': (getattr(metadata, 'title', '') or '').lower(),
+            'tmdb_data': tmdb_data,
+        }
 
         results: List[Tuple[str, str]] = []
-
         for category_name, rules in SATELLITE_ROUTING_RULES.items():
-            # Skip if decade-bounded and outside valid decades
-            if rules['decades'] is not None and decade not in rules['decades']:
-                continue
-
-            # Country match
-            country_match = True
-            if rules['country_codes'] is not None:
-                country_match = any(c in countries for c in rules['country_codes'])
-
-            # Genre match (three-valued: True / False / None=untestable)
-            genre_match = True
-            if rules['genres'] is not None:
-                if not genres:
-                    genre_match = None  # data absent — untestable
-                else:
-                    genre_match = any(g in genres for g in rules['genres'])
-
-            # Title keyword gate (structural gate — same as classify())
-            if category_name == 'American Exploitation':
-                if not self._title_matches_keywords(title, AMERICAN_EXPLOITATION_TITLE_KEYWORDS):
-                    continue
-            if category_name == 'Blaxploitation':
-                if not self._title_matches_keywords(title, BLAXPLOITATION_TITLE_KEYWORDS):
-                    continue
-
-            # Country + genre structural match
-            if country_match and genre_match is True:
-                results.append((category_name, 'country_genre'))
-                continue
-
-            # Tier 3 catch-all: country match + untestable genre
-            if country_match and genre_match is None and rules['country_codes'] is not None:
-                tier = CATEGORY_CERTAINTY_TIERS.get(category_name, 2)
-                if tier >= 3:
-                    results.append((category_name, 'country_genre'))
-                    continue
-
-            # Keyword Tier A: country + keyword hit (genre gate waived)
-            keyword_signals = rules.get('keyword_signals')
-            if keyword_signals and country_match and genre_match is not True:
-                hit, _ = self._keyword_hit(tmdb_data, keyword_signals)
-                if hit:
-                    results.append((category_name, 'keyword_tier_a'))
-                    continue
-
-            # Keyword Tier B: TMDb tag alone for movement categories (no country needed)
-            if rules.get('tier_b_eligible') and keyword_signals:
-                tmdb_tags_lower = [k.lower() for k in tmdb_data.get('keywords', [])]
-                if any(tag in tmdb_tags_lower for tag in keyword_signals.get('tmdb_tags', [])):
-                    results.append((category_name, 'keyword_tier_b'))
+            match_type = self.evaluate_category(film_data, category_name, rules, include_director=False)
+            if match_type is not None:
+                results.append((category_name, match_type))
 
         return results
 

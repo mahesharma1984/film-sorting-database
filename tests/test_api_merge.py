@@ -154,10 +154,13 @@ class TestSmartMerge:
 
         metadata = FilmMetadata(filename="test.mkv", title="Test", year=1975)
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['director'] == 'OMDb Director'
-        assert metadata.director == 'OMDb Director'
+        # Issue #54: returns EnrichedFilm — check typed fields and raw dict
+        assert enriched.director == 'OMDb Director'
+        assert enriched.raw['director'] == 'OMDb Director'
+        # Metadata mutation moved to classify() caller — not a side effect of _merge
+        assert metadata.director is None
         assert classifier.stats['director_from_omdb'] == 1
 
     def test_director_tmdb_fallback(self, classifier):
@@ -167,10 +170,11 @@ class TestSmartMerge:
 
         metadata = FilmMetadata(filename="test.mkv", title="Test", year=1975)
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['director'] == 'TMDb Director'
-        assert metadata.director == 'TMDb Director'
+        assert enriched.director == 'TMDb Director'
+        assert enriched.raw['director'] == 'TMDb Director'
+        assert metadata.director is None  # mutation moved to classify()
         assert classifier.stats['director_from_tmdb'] == 1
 
     def test_country_omdb_wins(self, classifier):
@@ -180,10 +184,11 @@ class TestSmartMerge:
 
         metadata = FilmMetadata(filename="test.mkv", title="Test", year=1975)
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['countries'] == ['IT']
-        assert metadata.country == 'IT'
+        assert enriched.countries == ['IT']
+        assert enriched.raw['countries'] == ['IT']
+        assert metadata.country is None  # mutation moved to classify()
         assert classifier.stats['country_from_omdb'] == 1
 
     def test_country_tmdb_fallback(self, classifier):
@@ -193,10 +198,11 @@ class TestSmartMerge:
 
         metadata = FilmMetadata(filename="test.mkv", title="Test", year=1975)
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['countries'] == ['IT']
-        assert metadata.country == 'IT'
+        assert enriched.countries == ['IT']
+        assert enriched.raw['countries'] == ['IT']
+        assert metadata.country is None  # mutation moved to classify()
         assert classifier.stats['country_from_tmdb'] == 1
 
     def test_genres_tmdb_wins(self, classifier):
@@ -206,9 +212,9 @@ class TestSmartMerge:
 
         metadata = FilmMetadata(filename="test.mkv", title="Test", year=1975)
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['genres'] == ['Horror', 'Thriller']
+        assert enriched.genres == ['Horror', 'Thriller']
         assert classifier.stats['genres_from_tmdb'] == 1
 
     def test_year_filename_wins(self, classifier):
@@ -218,12 +224,17 @@ class TestSmartMerge:
 
         metadata = FilmMetadata(filename="test.mkv", title="Test", year=1975)
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['year'] == 1975  # Filename wins
+        assert enriched.raw['year'] == 1975  # Filename wins
 
     def test_respects_existing_metadata_director(self, classifier):
-        """Should not overwrite metadata.director if already set"""
+        """EnrichedFilm.director uses OMDb; metadata.director stays when caller respects it.
+
+        Issue #54: mutation moved to classify(), which guards `if not metadata.director`.
+        When called directly (as in this test), metadata.director stays unchanged because
+        _merge_api_results() no longer mutates metadata.
+        """
         tmdb_data = {'director': 'TMDb Director'}
         omdb_data = {'director': 'OMDb Director'}
 
@@ -234,13 +245,13 @@ class TestSmartMerge:
             director="Filename Director"  # Already set
         )
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['director'] == 'OMDb Director'  # Merge uses OMDb
-        assert metadata.director == "Filename Director"  # But metadata unchanged
+        assert enriched.director == 'OMDb Director'  # Merge uses OMDb
+        assert metadata.director == "Filename Director"  # _merge no longer mutates
 
     def test_respects_existing_metadata_country(self, classifier):
-        """Should not overwrite metadata.country if already set"""
+        """EnrichedFilm.countries uses OMDb; metadata.country stays when caller respects it."""
         tmdb_data = {'countries': ['US']}
         omdb_data = {'countries': ['IT']}
 
@@ -251,18 +262,18 @@ class TestSmartMerge:
             country="BR"  # Already set
         )
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['countries'] == ['IT']  # Merge uses OMDb
-        assert metadata.country == "BR"  # But metadata unchanged
+        assert enriched.countries == ['IT']  # Merge uses OMDb
+        assert metadata.country == "BR"  # _merge no longer mutates
 
     def test_both_apis_none(self, classifier):
         """Should return None if both APIs fail"""
         metadata = FilmMetadata(filename="test.mkv", title="Test", year=1975)
 
-        merged = classifier._merge_api_results(None, None, metadata)
+        enriched = classifier._merge_api_results(None, None, metadata)
 
-        assert merged is None
+        assert enriched is None
 
     def test_title_tmdb_wins(self, classifier):
         """TMDb title should take priority (canonical names)"""
@@ -271,9 +282,9 @@ class TestSmartMerge:
 
         metadata = FilmMetadata(filename="test.mkv", title="Seventh Seal", year=1957)
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['title'] == 'The Seventh Seal'
+        assert enriched.raw['title'] == 'The Seventh Seal'
 
     def test_original_language_from_tmdb_only(self, classifier):
         """Only TMDb provides original_language"""
@@ -282,9 +293,9 @@ class TestSmartMerge:
 
         metadata = FilmMetadata(filename="test.mkv", title="Test", year=1957)
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['original_language'] == 'sv'
+        assert enriched.raw['original_language'] == 'sv'
 
     def test_empty_countries_handling(self, classifier):
         """Should handle empty country lists gracefully"""
@@ -293,10 +304,10 @@ class TestSmartMerge:
 
         metadata = FilmMetadata(filename="test.mkv", title="Test", year=1975)
 
-        merged = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
+        enriched = classifier._merge_api_results(tmdb_data, omdb_data, metadata)
 
-        assert merged['countries'] == []
-        assert metadata.country is None
+        assert enriched.countries == []
+        assert metadata.country is None  # mutation moved to classify()
 
 
 class TestIntegration:
@@ -329,20 +340,20 @@ class TestIntegration:
         api_results = classifier._query_apis(metadata)
 
         # Merge results
-        merged = classifier._merge_api_results(
+        enriched = classifier._merge_api_results(
             api_results['tmdb'],
             api_results['omdb'],
             metadata
         )
 
-        # Verify merge
-        assert merged['director'] == 'Dario Argento'
-        assert merged['countries'] == ['IT']  # OMDb provided this
-        assert merged['genres'] == ['Horror', 'Mystery']  # TMDb provided this
+        # Verify merge (typed fields)
+        assert enriched.director == 'Dario Argento'
+        assert enriched.countries == ['IT']  # OMDb provided this
+        assert enriched.genres == ['Horror', 'Mystery']  # TMDb provided this
 
-        # Verify metadata was enriched
-        assert metadata.director == 'Dario Argento'
-        assert metadata.country == 'IT'
+        # metadata mutation moved to classify() — not populated by _merge_api_results()
+        assert metadata.director is None
+        assert metadata.country is None
 
         # Verify statistics
         assert classifier.stats['tmdb_success'] == 1

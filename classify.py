@@ -267,6 +267,40 @@ class FilmClassifier:
 
         return result
 
+    def _build_result(
+        self,
+        metadata: 'FilmMetadata',
+        *,
+        tier: str,
+        decade: Optional[str],
+        subdirectory: Optional[str],
+        destination: str,
+        confidence: float,
+        reason: str,
+        tmdb_id: Optional[int] = None,
+        tmdb_title: Optional[str] = None,
+        readiness: str = 'R3',
+    ) -> 'ClassificationResult':
+        """Single result construction site (Issue #54 L3 component extraction).
+
+        All classification sources call this instead of building ClassificationResult
+        inline. Adding a new field to ClassificationResult requires one change here.
+        """
+        return ClassificationResult(
+            filename=metadata.filename,
+            title=metadata.title,
+            year=metadata.year,
+            director=metadata.director,
+            language=metadata.language,
+            country=metadata.country,
+            user_tag=metadata.user_tag,
+            tier=tier, decade=decade, subdirectory=subdirectory,
+            destination=destination,
+            confidence=confidence, reason=reason,
+            tmdb_id=tmdb_id, tmdb_title=tmdb_title,
+            data_readiness=readiness,
+        )
+
     def _clean_title_for_api(self, title: str) -> str:
         """
         Clean title for API queries (Issue #16, simplified Issue #52).
@@ -638,17 +672,14 @@ class FilmClassifier:
                     if parsed['tier'] == 'Satellite' and parsed.get('subdirectory'):
                         self.satellite_classifier.increment_count(parsed['subdirectory'])
 
-                    _result = ClassificationResult(
-                        filename=metadata.filename, title=metadata.title,
-                        year=metadata.year, director=metadata.director,
-                        language=metadata.language, country=metadata.country,
-                        user_tag=metadata.user_tag,
+                    _result = self._build_result(
+                        metadata,
                         tier=parsed['tier'], decade=parsed['decade'],
                         subdirectory=parsed.get('subdirectory'),
                         destination=dest,
                         confidence=1.0, reason='explicit_lookup',
                         tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                        data_readiness=_readiness,
+                        readiness=_readiness,
                     )
                     _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
                     return _result
@@ -668,16 +699,13 @@ class FilmClassifier:
                 self.stats['corpus_lookup'] += 1
                 if hasattr(self.satellite_classifier, 'increment_count'):
                     self.satellite_classifier.increment_count(category)
-                _result = ClassificationResult(
-                    filename=metadata.filename, title=metadata.title,
-                    year=metadata.year, director=metadata.director,
-                    language=metadata.language, country=metadata.country,
-                    user_tag=metadata.user_tag,
+                _result = self._build_result(
+                    metadata,
                     tier='Satellite', decade=decade_str, subdirectory=category,
                     destination=destination,
                     confidence=1.0, reason='corpus_lookup',
                     tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                    data_readiness=_readiness,
+                    readiness=_readiness,
                 )
                 _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
                 return _result
@@ -685,16 +713,13 @@ class FilmClassifier:
         # === Hard gate: no year = cannot route to decade ===
         if not metadata.year:
             self.stats['unsorted_no_year'] += 1
-            _result = ClassificationResult(
-                filename=metadata.filename, title=metadata.title,
-                year=None, director=metadata.director,
-                language=metadata.language, country=metadata.country,
-                user_tag=metadata.user_tag,
+            _result = self._build_result(
+                metadata,
                 tier='Unsorted', decade=None, subdirectory=None,
                 destination='Unsorted/',
                 confidence=0.0, reason='unsorted_no_year',
                 tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                data_readiness='R0',
+                readiness='R0',
             )
             _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, 'R0')
             return _result
@@ -738,17 +763,14 @@ class FilmClassifier:
                 self.stats[_integration.reason] += 1
                 if _integration.tier == 'Popcorn':
                     self.stats['popcorn_auto'] += 1
-                _result = ClassificationResult(
-                    filename=metadata.filename, title=metadata.title,
-                    year=metadata.year, director=metadata.director,
-                    language=metadata.language, country=metadata.country,
-                    user_tag=metadata.user_tag,
+                _result = self._build_result(
+                    metadata,
                     tier=_integration.tier, decade=_integration.decade,
                     subdirectory=_integration.category,
                     destination=_integration.destination,
                     confidence=_integration.confidence, reason=_integration.reason,
                     tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                    data_readiness=_readiness,
+                    readiness=_readiness,
                 )
                 _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
                 return _result
@@ -798,16 +820,13 @@ class FilmClassifier:
 
                 if dest is not None:
                     self.stats['user_tag_recovery'] += 1
-                    _result = ClassificationResult(
-                        filename=metadata.filename, title=metadata.title,
-                        year=metadata.year, director=metadata.director,
-                        language=metadata.language, country=metadata.country,
-                        user_tag=metadata.user_tag,
+                    _result = self._build_result(
+                        metadata,
                         tier=tier, decade=tag_decade, subdirectory=extra or None,
                         destination=dest,
                         confidence=0.8, reason='user_tag_recovery',
                         tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-                        data_readiness=_readiness,
+                        readiness=_readiness,
                     )
                     _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
                     return _result
@@ -826,16 +845,13 @@ class FilmClassifier:
                 reason_parts.append('no_match')
             reason = f"unsorted_{'_'.join(reason_parts)}" if reason_parts else 'unsorted_unknown'
             self.stats[reason] += 1
-        _result = ClassificationResult(
-            filename=metadata.filename, title=metadata.title,
-            year=metadata.year, director=metadata.director,
-            language=metadata.language, country=metadata.country,
-            user_tag=metadata.user_tag,
+        _result = self._build_result(
+            metadata,
             tier='Unsorted', decade=decade, subdirectory=None,
             destination='Unsorted/',
             confidence=0.0, reason=reason,
             tmdb_id=_tmdb_id, tmdb_title=_tmdb_title,
-            data_readiness=_readiness,
+            readiness=_readiness,
         )
         _result.evidence_trail = self._gather_evidence(metadata, tmdb_data, _readiness)
         return _result

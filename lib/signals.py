@@ -39,6 +39,8 @@ import logging
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
+from lib.director_matching import match_director
+
 logger = logging.getLogger(__name__)
 
 
@@ -83,15 +85,12 @@ class IntegrationResult:
 # ---------------------------------------------------------------------------
 
 def _director_key_matches(director_lower: str, director_tokens: set, key: str) -> bool:
-    """Match a DIRECTOR_REGISTRY key against a normalized director name.
+    """Thin wrapper — delegates to lib.director_matching.match_director (Issue #54).
 
-    Mirrors satellite.py._director_matches() exactly:
-      Single-word keys: whole-word token match (prevents 'bava' matching 'lamberto bava jr.')
-      Multi-word keys:  substring match (e.g. 'abel ferrara' in 'abel ferrara')
+    Signature preserved for call-site compatibility. director_tokens is unused
+    (match_director splits internally), retained to avoid changing all callers.
     """
-    if ' ' not in key:
-        return key in director_tokens
-    return key in director_lower
+    return match_director(director_lower, key)
 
 
 def _decade_of(year: Optional[int]) -> Optional[str]:

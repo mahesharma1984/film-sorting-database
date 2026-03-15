@@ -15,6 +15,7 @@ This directory contains six essays that articulate the theoretical foundation of
 For deep-dives into specific topics, read in this sequence:
 
 1. **[COLLECTION_THESIS.md](COLLECTION_THESIS.md)** — What this archive is, why decades are the organizing unit, and why format curation matters.
+0. **[GOVERNANCE_CHAIN_THEORY.md](GOVERNANCE_CHAIN_THEORY.md)** — Why multi-level constraints prevent pipeline drift. L1–L5 chain for this project. Read before making structural changes to `classify.py`, `lib/signals.py`, or any stage boundary. (Issue #54)
 2. **[TIER_ARCHITECTURE.md](TIER_ARCHITECTURE.md)** — Why exactly four tiers, what makes a director Core, and how Popcorn constitutes a parallel cinema history.
 3. **[MARGINS_AND_TEXTURE.md](MARGINS_AND_TEXTURE.md)** — Why the archive contains exploitation cinema. Satellite as context for Core.
 4. **[REFINEMENT_AND_EMERGENCE.md](REFINEMENT_AND_EMERGENCE.md)** — How categories are built: the recursive refinement process, when a sub-category earns its name, and how new categories are applied retroactively.
@@ -40,6 +41,8 @@ docs/theory/  (this directory)
   THEORETICAL_GROUNDING (WHY — scholarly foundations for architecture frameworks)
     └── grounds: data readiness, certainty tiers, curation loop, country deepening,
                  validation architecture (§8-§12), feedback loops, requisite variety
+  GOVERNANCE_CHAIN_THEORY (WHY — why L3 enforcement prevents multi-level drift)
+    └── grounds: lib/pipeline_types.py (L3), DEVELOPER_GUIDE §Governance Chain (L4)
 ```
 
 The architecture doc describes **how the system works**. The theory essays describe **why it works this way** — grounded in film-historical scholarship, auteur theory, and curatorial practice.

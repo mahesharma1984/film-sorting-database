@@ -65,9 +65,10 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | How do I run named engineering workflows? | Use atomic/composed procedures in workflow registry | `docs/WORKFLOW_REGISTRY.md` |
 | How do I map an existing system before changing it? | Exploration-First: map→audit→probe→build | `exports/skills/exploration-first.md` |
 | Why does map-before-modify prevent regressions? | Structured investigation theory | `exports/knowledge-base/exploration-theory.md` |
-| How do I prevent theory and code from drifting apart? | Governance Chain: 5-level constraint architecture (Theory→Architecture→Components→Dev Rules→Code) | `exports/skills/governance-chain.md` |
-| Why doesn't good documentation alone prevent code divergence? | L3 (Components) is the enforcement layer; without it, docs and code drift | `exports/knowledge-base/governance-chain-theory.md` |
-| How do I audit governance levels in my codebase? | Traceability matrix: map each practice across 5 levels as Faithful/Partial/Divergent/Missing | `exports/skills/governance-chain.md` §Step 1 |
+| How do I prevent theory and code from drifting apart? | Governance Chain: 5-level constraint architecture (Theory→Architecture→Components→Dev Rules→Code) | `docs/theory/GOVERNANCE_CHAIN_THEORY.md` |
+| Why doesn't good documentation alone prevent code divergence? | L3 (Components) is the enforcement layer; without it, docs and code drift | `docs/theory/GOVERNANCE_CHAIN_THEORY.md` |
+| How do I audit governance levels in this pipeline? | L3 = lib/pipeline_types.py; L4 = DEVELOPER_GUIDE §Governance Chain | `docs/DEVELOPER_GUIDE.md` §Governance Chain Architecture |
+| What are the L4 dev rules for the governance chain? | GC-1 through GC-6: one result site, resolvers return Resolution, no metadata mutation in merge, etc. | `docs/DEVELOPER_GUIDE.md` §Governance Chain Architecture |
 
 ---
 
@@ -102,7 +103,10 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Exploration-First skill** | `exports/skills/exploration-first.md` | STABLE |
 | **Exploration theory** | `exports/knowledge-base/exploration-theory.md` | STABLE |
 | **Governance Chain skill** | `exports/skills/governance-chain.md` | STABLE |
-| **Governance Chain theory** | `exports/knowledge-base/governance-chain-theory.md` | STABLE |
+| **Governance Chain theory (project)** | `docs/theory/GOVERNANCE_CHAIN_THEORY.md` | AUTHORITATIVE |
+| **Governance Chain theory (general)** | `exports/knowledge-base/governance-chain-theory.md` | STABLE |
+| **Pipeline types (L3 enforcement)** | `lib/pipeline_types.py` | AUTHORITATIVE |
+| **Director matching (L3 enforcement)** | `lib/director_matching.py` | AUTHORITATIVE |
 | **Issue specification standard** | `docs/ISSUE_SPEC_TEMPLATE.md` | STABLE |
 | **Two-signal architecture** | `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md` | AUTHORITATIVE |
 | **Two-signal implementation** | `lib/signals.py` | AUTHORITATIVE |

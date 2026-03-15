@@ -95,11 +95,14 @@ Both signals fire for every film. Their agreement or disagreement determines con
 
 **Implementation:** `score_director()` + `score_structure()` → `integrate_signals()` in `lib/signals.py`
 
-The full classification pipeline (Issue #42, updated from Issue #25/#38):
+**Governance Chain (Issue #54):** L3 enforcement layer — `lib/pipeline_types.py` provides typed `EnrichedFilm` (ENRICH stage output) and `Resolution` (any resolver output) dataclasses. Each classification source is a `_resolve_*()` method in `classify.py` returning `Optional[Resolution]`. `_build_result()` is the single `ClassificationResult` construction site. See `docs/DEVELOPER_GUIDE.md` §Governance Chain Architecture for L4 dev rules.
+
+The full classification pipeline (Issue #42/#54, updated from Issue #25/#38):
 1. Explicit lookup (SORTING_DATABASE.md) — human-curated, highest trust
 2. Corpus lookup (data/corpora/*.csv) — scholarship-sourced, confidence 1.0 (Issue #38)
 3. Two-signal integration — both signals fire independently; `integrate_signals()` priority table (P1–P10) determines tier, category, confidence, and reason code
-4. Default → Unsorted with reason code
+4. User tag recovery — `[NNNs-Tier-Director]` fallback
+5. Default → Unsorted with reason code
 
 Structural specificity takes priority over director prestige: when a Core director's film matches a Satellite movement, movement routing wins because it is a narrower, more historically grounded gate. Core routing exists as identity-only fallback. Resolution for specific films: SORTING_DATABASE pins (Issue #25).
 

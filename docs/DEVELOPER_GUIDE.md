@@ -102,6 +102,67 @@ Use the Pattern-First audit:
 
 ---
 
+## Governance Chain Architecture (Issue #54)
+
+The classification pipeline enforces a 5-level governance chain: theory constrains architecture, architecture constrains components, components enforce contracts in code.
+
+```
+L1 Theory       docs/theory/GOVERNANCE_CHAIN_THEORY.md   — why the tiers exist
+L2 Architecture docs/architecture/TWO_SIGNAL_ARCHITECTURE.md — two signals + priority chain
+L3 Components   lib/pipeline_types.py                   — typed stage boundaries (enforcement)
+L4 Dev Rules    (this section)                          — rules for writing new code
+L5 Code         classify.py, lib/signals.py, lib/satellite.py
+```
+
+**L3 is the enforcement layer.** Typed function signatures in `lib/pipeline_types.py` mechanically enforce the contracts that L1-L2 can only describe.
+
+### Key L3 Types
+
+**`EnrichedFilm`** (`lib/pipeline_types.py`) — typed output of the ENRICH stage:
+- Fields: `director`, `countries`, `genres`, `keywords`, `tmdb_id`, `tmdb_title`, `readiness`, `sources`, `raw`
+- Produced by: `_merge_api_results()` in `classify.py`
+- Consumed by: `classify()` in `classify.py` (metadata update + routing)
+- `raw` dict preserved for backward compatibility; prefer typed fields
+
+**`Resolution`** (`lib/pipeline_types.py`) — typed output of any resolver:
+- Fields: `tier`, `decade`, `subdirectory`, `destination`, `confidence`, `reason`, `source_name`, `explanation`
+- Produced by: `_resolve_explicit_lookup()`, `_resolve_corpus()`, `_resolve_two_signal()`, `_resolve_user_tag()`, `_resolve_unsorted()`
+- Consumed by: `_build_result()` in `classify.py`
+
+### L4 Dev Rules for Governance Chain
+
+**Rule GC-1: One result construction site.**
+All `ClassificationResult` objects must be created via `_build_result()` in `classify.py`.
+Never construct `ClassificationResult(...)` inline in resolvers or other methods.
+
+**Rule GC-2: Resolvers return `Optional[Resolution]`, not `ClassificationResult`.**
+Each `_resolve_*()` method returns `None` (no match) or a `Resolution` (match found).
+The priority chain in `classify()` tries each resolver in order; first non-None wins.
+Don't embed routing logic in `_build_result()` — resolvers own the logic, builder owns the construction.
+
+**Rule GC-3: `_merge_api_results()` does not mutate metadata.**
+Metadata enrichment (setting `metadata.director`, `metadata.country`) happens explicitly
+in the caller (`classify()` or `_attempt_r1_promotion()`), not inside `_merge_api_results()`.
+This makes data flow explicit and testable.
+
+**Rule GC-4: Director matching through `lib/director_matching.match_director()`.**
+All director name matching (satellite, signals, classify) uses this single function.
+Never reimplement the whole-word vs. substring logic in a new location.
+
+**Rule GC-5: Satellite per-category evaluation through `evaluate_category()`.**
+`SatelliteClassifier.evaluate_category()` in `lib/satellite.py` is the single per-category
+evaluation function. Both `classify()` and `classify_structural()` are thin wrappers.
+New matching logic belongs inside `evaluate_category()`, not in duplicate code paths.
+
+**Rule GC-6: Adding a new resolver.**
+To add a new classification source (e.g., IMDb corpus, user-uploaded list):
+1. Write a `_resolve_newname()` method returning `Optional[Resolution]`
+2. Insert it at the correct priority position in `classify()`'s chain
+3. Update `TWO_SIGNAL_ARCHITECTURE.md` §4b priority chain table
+4. Do NOT add a new inline `ClassificationResult()` construction
+
+---
+
 ## Satellite Routing Architecture (Issue #6 Update)
 
 ### Unified Decade-Validated Routing
