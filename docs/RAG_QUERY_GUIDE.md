@@ -4,7 +4,7 @@
 
 **Status:** Stage 1 Complete (Research Assistant)
 **Version:** 0.2
-**Last Updated:** 2026-02-16
+**Last Updated:** 2026-03-15
 
 ---
 
@@ -22,6 +22,9 @@ python -m lib.rag.query "Films by Jean-Luc Godard" --top 10
 
 # Filter by authority level
 python -m lib.rag.query "Satellite decade boundaries" --filter AUTHORITATIVE
+
+# Filter by governance-chain level (L1 theory, L2 architecture, etc.)
+python -m lib.rag.query "governance chain routing" --level 1 2 4
 ```
 
 ---
@@ -129,6 +132,9 @@ Options:
   --top N                 Number of results (default: 5)
   --filter STATUS [...]   Filter by document authority level
                           Options: AUTHORITATIVE, STABLE, unmarked, ARCHIVED
+  --level N [...]         Filter by governance chain level
+                          Options: 1 (Theory), 2 (Architecture), 3 (Components),
+                                   4 (Dev Rules), 5 (Implementation Records)
   --json                  Output as JSON for scripting
   -h, --help             Show help message
 ```
@@ -151,6 +157,27 @@ python -m lib.rag.query "Classification workflow" --filter AUTHORITATIVE
 
 # Exclude archived docs
 python -m lib.rag.query "Satellite categories" --filter AUTHORITATIVE STABLE unmarked
+```
+
+### Governance Levels
+
+Chunks are tagged with `governance_level` metadata inferred from source paths:
+
+| Level | Meaning | Typical sources |
+|---|---|---|
+| **L1** | Theory | `docs/theory/*`, `exports/knowledge-base/*` |
+| **L2** | Architecture | `docs/architecture/*`, `REFACTOR_PLAN.md` |
+| **L3** | Components/contracts | category/lookup/curation contract docs |
+| **L4** | Dev rules/workflows | `CLAUDE.md`, `docs/DEVELOPER_GUIDE.md`, `docs/WORK_ROUTER.md`, `docs/WORKFLOW_REGISTRY.md`, `exports/skills/*` |
+| **L5** | Implementation records | `issues/*`, `docs/issues/*` |
+
+**Examples:**
+```bash
+# Theory + architecture only
+python -m lib.rag.query "signal integration rationale" --level 1 2
+
+# Dev-rule lookup only
+python -m lib.rag.query "baseline pinning workflow" --level 4
 ```
 
 ---

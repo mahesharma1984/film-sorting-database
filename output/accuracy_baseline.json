@@ -1,0 +1,68 @@
+{
+  "date": "2026-03-08",
+  "commit": "4f90fcf",
+  "routing_contract": "legacy",
+  "total_films": 796,
+  "combined_accuracy": {
+    "confirmed": 576,
+    "total": 796,
+    "score": 0.7236
+  },
+  "lookup_accuracy": {
+    "confirmed": 367,
+    "total": 394,
+    "score": 0.9315
+  },
+  "pipeline_accuracy": {
+    "confirmed": 209,
+    "total": 402,
+    "score": 0.5199
+  },
+  "by_stage": {
+    "both_agree": {
+      "confirmed": 16,
+      "total": 18,
+      "score": 0.8889
+    },
+    "director_signal": {
+      "confirmed": 45,
+      "total": 52,
+      "score": 0.8654
+    },
+    "popcorn": {
+      "confirmed": 17,
+      "total": 25,
+      "score": 0.68
+    },
+    "reference_canon": {
+      "confirmed": 10,
+      "total": 10,
+      "score": 1.0
+    },
+    "review_flagged": {
+      "confirmed": 19,
+      "total": 19,
+      "score": 1.0
+    },
+    "structural_signal": {
+      "confirmed": 86,
+      "total": 97,
+      "score": 0.8866
+    },
+    "unsorted_no_director": {
+      "confirmed": 0,
+      "total": 1,
+      "score": 0.0
+    },
+    "unsorted_no_match": {
+      "confirmed": 0,
+      "total": 162,
+      "score": 0.0
+    },
+    "user_tag_recovery": {
+      "confirmed": 16,
+      "total": 18,
+      "score": 0.8889
+    }
+  }
+}

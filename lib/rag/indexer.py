@@ -7,7 +7,12 @@ from pathlib import Path
 from typing import Dict, Any, List
 
 from . import config
-from .metadata import parse_core_doc_index, extract_file_metadata, parse_quick_reference_table
+from .metadata import (
+    parse_core_doc_index,
+    extract_file_metadata,
+    parse_quick_reference_table,
+    infer_governance_level,
+)
 from .chunker import chunk_file, Chunk  # Use chunk_file dispatcher for film-specific routing
 
 # Optional dependencies (graceful fallback)
@@ -114,6 +119,10 @@ def build_index(
             file_meta = extract_file_metadata(md_file)
             if not file_meta.get("status"):
                 file_meta["status"] = "unmarked"
+
+        governance_level = infer_governance_level(rel_path)
+        if governance_level is not None and "governance_level" not in file_meta:
+            file_meta["governance_level"] = governance_level
 
         try:
             chunks = chunk_file(md_file, file_meta)  # Routes to film-specific chunkers

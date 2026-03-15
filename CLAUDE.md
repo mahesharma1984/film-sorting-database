@@ -5,6 +5,7 @@
 On every interaction, read:
 1. `docs/CORE_DOCUMENTATION_INDEX.md` — find any doc quickly
 2. `docs/DEVELOPER_GUIDE.md` — how to make changes safely
+3. `docs/WORKFLOW_REGISTRY.md` — named atomic/composed procedures
 
 For curatorial context, read `docs/theory/README.md` → individual essays as needed.
 

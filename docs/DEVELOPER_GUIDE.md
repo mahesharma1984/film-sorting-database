@@ -323,7 +323,7 @@ When code changes require doc updates:
 4. **New known film** → Edit `docs/SORTING_DATABASE.md` (human only)
 5. **New corpus entry** → `python scripts/build_corpus.py --add` (with scholarly citation)
 6. **Bug fix** → Update relevant `issues/` file or create new one
-7. **Workflow change** → Update `docs/DEVELOPER_GUIDE.md` or `CLAUDE.md`
+7. **Workflow change** → Update `docs/WORKFLOW_REGISTRY.md` (+ `docs/WORK_ROUTER.md` if route entry changed)
 
 **Critical rule:** Update docs in the same commit as code changes. Stale docs are worse than no docs.
 
@@ -349,10 +349,11 @@ For cross-concept questions across all documentation (including skills and knowl
 ```bash
 python3 -m lib.rag.query "your question"                              # Top-5 results
 python3 -m lib.rag.query "query" --filter AUTHORITATIVE               # Authority-filtered
+python3 -m lib.rag.query "governance chain routing" --level 1 2 3 4   # Governance-level filtered
 python3 -m lib.rag.indexer --force                                     # Rebuild after doc changes
 ```
 
-The index covers `docs/`, `exports/skills/`, and `exports/knowledge-base/`. See `docs/RAG_QUERY_GUIDE.md` for query patterns.
+The index covers `docs/`, `exports/skills/`, and `exports/knowledge-base/`. Chunks include `governance_level` metadata for level-aware retrieval. See `docs/RAG_QUERY_GUIDE.md` for query patterns.
 
 ---
 

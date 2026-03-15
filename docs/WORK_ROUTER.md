@@ -173,6 +173,26 @@ Investigation complete
 6. Begin implementation
 ```
 
+### §0.8 Governance Chain Preflight (Before Generator Changes)
+
+Use this before modifying any output generator logic (classification, routing, validation, report generation).
+
+1. **L1 Theory:** Read the governing principle first
+   - `exports/knowledge-base/governance-chain-theory.md`
+   - Relevant theory doc in `docs/theory/` for the behavior you are changing
+2. **L2 Architecture:** Read the contract boundary
+   - `docs/architecture/RECURSIVE_CURATION_MODEL.md`
+   - `docs/architecture/VALIDATION_ARCHITECTURE.md`
+3. **L3 Components:** Identify component contracts and concrete touch points
+   - `docs/WORK_ROUTER.md` §0.2 (component lookup table)
+   - Target `lib/*.py` modules that implement the contract
+4. **L4 Dev Rules:** Apply implementation guardrails before editing
+   - `CLAUDE.md` Rule 13 (Governance Chain)
+   - `docs/DEVELOPER_GUIDE.md`
+   - `docs/WORKFLOW_REGISTRY.md`
+
+If L1-L4 conflict, fix at the highest divergent level before changing code.
+
 ---
 
 ## Debugging: Something Is Wrong
@@ -319,11 +339,12 @@ After diagnosing a problem, write an issue spec before touching code:
 
 ### "Change the classification pipeline"
 
-1. Read `REFACTOR_PLAN.md` — understand the current architecture
-2. Read `CLAUDE.md § 3` — understand the decision rules (R/P Split, Pattern-First, Failure Gates)
-3. Follow the Large Changes procedure in `docs/DEVELOPER_GUIDE.md`
-4. Pin baseline before making changes
-5. Test depth (target case) then breadth (all cases)
+1. Run governance preflight: `docs/WORK_ROUTER.md` §0.8
+2. Read `REFACTOR_PLAN.md` — understand the current architecture
+3. Read `CLAUDE.md § 3` — understand the decision rules (R/P Split, Pattern-First, Failure Gates)
+4. Follow the Large Changes procedure in `docs/DEVELOPER_GUIDE.md`
+5. Pin baseline before making changes
+6. Test depth (target case) then breadth (all cases)
 
 → See: `REFACTOR_PLAN.md`, `docs/DEVELOPER_GUIDE.md`
 
@@ -356,6 +377,8 @@ Run `audit.py` after each batch of `move.py --execute` to keep the picture curre
 ---
 
 ## Operations: Running the System
+
+For named repeatable procedures (baseline pinning, full-cycle validation, governance preflight), use `docs/WORKFLOW_REGISTRY.md`.
 
 ### "Classify new films"
 

@@ -64,6 +64,9 @@ def parse_core_doc_index(index_path: Path = config.CORE_DOC_INDEX) -> Dict[str, 
                 "version": version,
                 "canonical": False
             }
+            governance_level = infer_governance_level(file_path)
+            if governance_level is not None:
+                metadata[file_path]["governance_level"] = governance_level
 
         # Pattern 2: Simpler table format (3 columns)
         # Format: | `docs/path/file.md` | Purpose | STATUS |
@@ -82,6 +85,9 @@ def parse_core_doc_index(index_path: Path = config.CORE_DOC_INDEX) -> Dict[str, 
                     "version": None,
                     "canonical": False
                 }
+                governance_level = infer_governance_level(file_path)
+                if governance_level is not None:
+                    metadata[file_path]["governance_level"] = governance_level
 
         # Mark canonical sources
         canonical_pattern = r'\|\s*\*\*[^|]+\*\*\s*\|\s*`/?([^`]+\.md)`\s*\|'
@@ -105,6 +111,50 @@ def _extract_status(field: str) -> str:
         if known_status in field_upper:
             return known_status
     return "unmarked"
+
+
+def infer_governance_level(file_path: str) -> Optional[int]:
+    """
+    Infer governance chain level from repository path.
+
+    Levels:
+        1: Theory
+        2: Architecture
+        3: Components/contracts
+        4: Dev rules/workflows
+        5: Implementation records
+    """
+    path = file_path.strip().lstrip("./").replace("\\", "/")
+
+    if path.startswith(("docs/theory/", "exports/knowledge-base/")):
+        return 1
+
+    if path.startswith("docs/architecture/") or path in {"REFACTOR_PLAN.md"}:
+        return 2
+
+    if path in {
+        "docs/SATELLITE_CATEGORIES.md",
+        "docs/SORTING_DATABASE.md",
+        "docs/CORE_DIRECTOR_WHITELIST_FINAL.md",
+        "docs/REFERENCE_CANON_LIST.md",
+        "docs/CURATOR_WORKFLOW.md",
+    }:
+        return 3
+
+    if path.startswith("exports/skills/") or path in {
+        "CLAUDE.md",
+        "docs/DEVELOPER_GUIDE.md",
+        "docs/WORK_ROUTER.md",
+        "docs/WORKFLOW_REGISTRY.md",
+        "docs/DEBUG_RUNBOOK.md",
+        "docs/ISSUE_SPEC_TEMPLATE.md",
+    }:
+        return 4
+
+    if path.startswith(("issues/", "docs/issues/")):
+        return 5
+
+    return None
 
 
 def get_authority_boost(

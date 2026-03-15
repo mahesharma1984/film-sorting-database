@@ -1,0 +1,188 @@
+[
+  {
+    "cohort_type": "data_gap",
+    "name": "Missing country + genres → nearest: French New Wave (6 films)",
+    "key": "data_gap/country,genres/French New Wave",
+    "count": 6,
+    "confidence": "MEDIUM",
+    "binding_constraint": "API fields absent: country,genres",
+    "hypothesis": "These 6 films are blocked by missing country + genres data. Nearest match is French New Wave — enriching country + genres would likely resolve routing. Add known data to output/manual_enrichment.csv and re-run classify.",
+    "category": "French New Wave",
+    "director": "",
+    "country": "",
+    "films": [
+      {
+        "filename": "unroutable/Cherry Harry e Raquel - Russ Meyer 1970 [DvdRip XviD Eng].avi",
+        "title": "Russ Meyer",
+        "year": "1970",
+        "director": "Cherry Harry e Raquel",
+        "country": "",
+        "nearest_miss": "French New Wave",
+        "gates_missing_for_nearest": "director_gate,country_gate,genre_gate",
+        "fields_absent": "country,genres"
+      },
+      {
+        "filename": "unroutable/L'astragale (Guy Casaril, 1968).mkv",
+        "title": "L'astragale",
+        "year": "1968",
+        "director": "Guy Casaril",
+        "country": "",
+        "nearest_miss": "French New Wave",
+        "gates_missing_for_nearest": "director_gate,country_gate,genre_gate",
+        "fields_absent": "country,genres"
+      },
+      {
+        "filename": "unroutable/Kurotokage (Umetsugu Inoue, 1962).mkv",
+        "title": "Kurotokage",
+        "year": "1962",
+        "director": "Umetsugu Inoue",
+        "country": "",
+        "nearest_miss": "French New Wave",
+        "gates_missing_for_nearest": "director_gate,country_gate,genre_gate",
+        "fields_absent": "country,genres"
+      },
+      {
+        "filename": "no_match/Lilford Hall (1969) 1080p.mp4",
+        "title": "Lilford Hall",
+        "year": "1969",
+        "director": "Peter Whitehead",
+        "country": "",
+        "nearest_miss": "French New Wave",
+        "gates_missing_for_nearest": "director_gate,country_gate,genre_gate",
+        "fields_absent": "country,genres"
+      },
+      {
+        "filename": "no_match/Les amants de Montparnasse (Montparnasse 19) (Jacques Becker, 1958).m4v",
+        "title": "Les amants de Montparnasse (Montparnasse 19)",
+        "year": "1958",
+        "director": "Jacques Becker",
+        "country": "",
+        "nearest_miss": "French New Wave",
+        "gates_missing_for_nearest": "director_gate,country_gate,genre_gate",
+        "fields_absent": "country,genres"
+      },
+      {
+        "filename": "no_match/Ophelia—The Cat Lady (Tom Chomont, 1969).mkv",
+        "title": "Ophelia—The Cat Lady",
+        "year": "1969",
+        "director": "Tom Chomont",
+        "country": "",
+        "nearest_miss": "French New Wave",
+        "gates_missing_for_nearest": "director_gate,country_gate,genre_gate",
+        "fields_absent": "country,genres"
+      }
+    ]
+  },
+  {
+    "cohort_type": "director_gap",
+    "name": "Joe Dante — Blaxploitation (2 films)",
+    "key": "director/dante/Blaxploitation",
+    "count": 2,
+    "confidence": "MEDIUM",
+    "binding_constraint": "Director \"Joe Dante\" not in Blaxploitation directors list",
+    "hypothesis": "Add \"dante\" (or the full name \"Joe Dante\") to SATELLITE_ROUTING_RULES['Blaxploitation']['directors'] in lib/constants.py. This would immediately route 2 films to Blaxploitation. Verify director membership in the Blaxploitation movement before adding.",
+    "category": "Blaxploitation",
+    "director": "Joe Dante",
+    "country": "",
+    "films": [
+      {
+        "filename": "Matinee 1993 1080p BluRay x264-OFT.mkv",
+        "title": "Matinee",
+        "year": "1993",
+        "director": "Joe Dante",
+        "country": "US",
+        "nearest_miss": "Blaxploitation",
+        "gates_missing_for_nearest": "director_gate,title_kw_gate",
+        "fields_absent": ""
+      },
+      {
+        "filename": "The.Second.Civil.War.1997.WEB-DL.1080p.mkv",
+        "title": "The Second Civil War",
+        "year": "1997",
+        "director": "Joe Dante",
+        "country": "US",
+        "nearest_miss": "Blaxploitation",
+        "gates_missing_for_nearest": "director_gate,title_kw_gate",
+        "fields_absent": ""
+      }
+    ]
+  },
+  {
+    "cohort_type": "data_gap",
+    "name": "Missing country + genres → nearest: Classic Hollywood (3 films)",
+    "key": "data_gap/country,genres/Classic Hollywood",
+    "count": 3,
+    "confidence": "LOW",
+    "binding_constraint": "API fields absent: country,genres",
+    "hypothesis": "These 3 films are blocked by missing country + genres data. Nearest match is Classic Hollywood — enriching country + genres would likely resolve routing. Add known data to output/manual_enrichment.csv and re-run classify.",
+    "category": "Classic Hollywood",
+    "director": "",
+    "country": "",
+    "films": [
+      {
+        "filename": "no_match/Gypsy Wildcat (Roy William Neill, 1944).mp4",
+        "title": "",
+        "year": "1944",
+        "director": "Roy William Neill",
+        "country": "",
+        "nearest_miss": "Classic Hollywood",
+        "gates_missing_for_nearest": "director_gate,country_gate",
+        "fields_absent": "country,genres"
+      },
+      {
+        "filename": "no_match/Tavaszi zápor (Fejős Pál, 1932).mp4",
+        "title": "Tavaszi zápor",
+        "year": "1932",
+        "director": "Fejős Pál",
+        "country": "",
+        "nearest_miss": "Classic Hollywood",
+        "gates_missing_for_nearest": "director_gate,country_gate",
+        "fields_absent": "country,genres"
+      },
+      {
+        "filename": "no_match/Señor Droopy (Tex Avery, 1949).mkv",
+        "title": "Señor Droopy",
+        "year": "1949",
+        "director": "Tex Avery",
+        "country": "",
+        "nearest_miss": "Classic Hollywood",
+        "gates_missing_for_nearest": "director_gate,country_gate",
+        "fields_absent": "country,genres"
+      }
+    ]
+  },
+  {
+    "cohort_type": "data_gap",
+    "name": "Missing country + genres → nearest: Brazilian Exploitation (2 films)",
+    "key": "data_gap/country,genres/Brazilian Exploitation",
+    "count": 2,
+    "confidence": "LOW",
+    "binding_constraint": "API fields absent: country,genres",
+    "hypothesis": "These 2 films are blocked by missing country + genres data. Nearest match is Brazilian Exploitation — enriching country + genres would likely resolve routing. Add known data to output/manual_enrichment.csv and re-run classify.",
+    "category": "Brazilian Exploitation",
+    "director": "",
+    "country": "",
+    "films": [
+      {
+        "filename": "unroutable/Le livre de Marie (Anne-Marie Miéville, 1985).mkv",
+        "title": "Le livre de Marie",
+        "year": "1985",
+        "director": "Anne-Marie Miéville",
+        "country": "",
+        "nearest_miss": "Brazilian Exploitation",
+        "gates_missing_for_nearest": "director_gate,country_gate,genre_gate",
+        "fields_absent": "country,genres"
+      },
+      {
+        "filename": "unroutable/Lord of Illusions Unrated Directors Cut - Clive Barker 1995 Eng Rus Multi Subs 1080p [H264-mp4].mp4",
+        "title": "Clive Barker",
+        "year": "1995",
+        "director": "Lord of Illusions Unrated Directors Cut",
+        "country": "",
+        "nearest_miss": "Brazilian Exploitation",
+        "gates_missing_for_nearest": "director_gate,country_gate,genre_gate",
+        "fields_absent": "country,genres"
+      }
+    ]
+  }
+]

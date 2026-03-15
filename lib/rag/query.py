@@ -12,7 +12,8 @@ from .retriever import RAGRetriever
 def query_docs(
     query_text: str,
     top_k: int = config.DEFAULT_TOP_K,
-    filter_status: Optional[List[str]] = None
+    filter_status: Optional[List[str]] = None,
+    filter_governance_levels: Optional[List[int]] = None,
 ) -> List[Dict[str, Any]]:
     """
     Programmatic query interface.
@@ -27,12 +28,18 @@ def query_docs(
         query_text: Natural language query
         top_k: Number of results to return
         filter_status: Optional status filter (e.g., ["AUTHORITATIVE"])
+        filter_governance_levels: Optional governance-level filter (e.g., [1, 2, 4])
 
     Returns:
         List of result dicts with chunks and scores
     """
     retriever = RAGRetriever()
-    return retriever.query(query_text, top_k, filter_status)
+    return retriever.query(
+        query_text,
+        top_k,
+        filter_status=filter_status,
+        filter_governance_levels=filter_governance_levels,
+    )
 
 
 def print_results_table(results: List[Dict[str, Any]]):
@@ -46,12 +53,18 @@ def print_results_table(results: List[Dict[str, Any]]):
         score = result["final_score"]
         ref = result["section_reference"]
         status = chunk["metadata"].get("status", "unmarked")
+        governance_level = chunk["metadata"].get("governance_level")
         source = chunk["source_file"]
         line_range = chunk["line_range"]
 
-        status_str = f"({status})" if status != "unmarked" else ""
+        metadata_tags = []
+        if status != "unmarked":
+            metadata_tags.append(status)
+        if governance_level is not None:
+            metadata_tags.append(f"L{governance_level}")
+        status_str = f" ({', '.join(metadata_tags)})" if metadata_tags else ""
 
-        print(f"\n{i}. [{score:.2f}] {ref} {status_str}")
+        print(f"\n{i}. [{score:.2f}] {ref}{status_str}")
         print(f"   {source}:{line_range[0]}-{line_range[1]}")
 
         sem_score = result["semantic_score"]
@@ -166,6 +179,7 @@ Examples:
   python -m lib.rag.query "How does authentication work?"
   python -m lib.rag.query "deployment procedure" --top 10
   python -m lib.rag.query "API contracts" --filter AUTHORITATIVE
+  python -m lib.rag.query "governance chain" --level 1 2 4
   python -m lib.rag.query "error handling" --json
         """
     )
@@ -186,6 +200,13 @@ Examples:
         help="Filter by document status"
     )
     parser.add_argument(
+        "--level",
+        type=int,
+        choices=[1, 2, 3, 4, 5],
+        nargs="+",
+        help="Filter by governance level (1=Theory ... 5=Code/implementation records)"
+    )
+    parser.add_argument(
         "--json",
         action="store_true",
         help="Output as JSON"
@@ -202,7 +223,8 @@ Examples:
         results = query_docs(
             args.query,
             top_k=args.top,
-            filter_status=args.filter
+            filter_status=args.filter,
+            filter_governance_levels=args.level,
         )
     except Exception as e:
         print(f"Error during query: {e}")

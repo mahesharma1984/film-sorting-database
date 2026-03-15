@@ -3,7 +3,7 @@
 **Purpose:** Central metadata registry for the RAG (Retrieval-Augmented Generation) query system. This file defines document authority levels, provides quick reference lookups, and maps concepts to their canonical sources.
 
 **Version:** 1.2
-**Last Updated:** 2026-02-17
+**Last Updated:** 2026-03-15
 **Status:** AUTHORITATIVE
 
 ---
@@ -62,6 +62,7 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | I don't know what's wrong — how do I start investigating? | Problem classification decision tree + component lookup | `docs/WORK_ROUTER.md` §0.1–§0.2 |
 | How do I trace data flow through the pipeline? | Map reads/produces/ignores; check §0.5 | `docs/WORK_ROUTER.md` §0.5 |
 | How do I write an issue spec? | 10-section mandatory template (Type 1/2/3) | `docs/ISSUE_SPEC_TEMPLATE.md` |
+| How do I run named engineering workflows? | Use atomic/composed procedures in workflow registry | `docs/WORKFLOW_REGISTRY.md` |
 | How do I map an existing system before changing it? | Exploration-First: map→audit→probe→build | `exports/skills/exploration-first.md` |
 | Why does map-before-modify prevent regressions? | Structured investigation theory | `exports/knowledge-base/exploration-theory.md` |
 | How do I prevent theory and code from drifting apart? | Governance Chain: 5-level constraint architecture (Theory→Architecture→Components→Dev Rules→Code) | `exports/skills/governance-chain.md` |
@@ -94,6 +95,7 @@ Maps concepts to their authoritative documentation. Documents tagged **AUTHORITA
 | **Thread discovery** | `docs/THREAD_DISCOVERY_GUIDE.md` | AUTHORITATIVE |
 | **Tentpole ranking procedure** | `docs/AI_TENTPOLE_RANKING.md` | AUTHORITATIVE |
 | **Debug runbook** | `docs/DEBUG_RUNBOOK.md` | AUTHORITATIVE |
+| **Workflow registry** | `docs/WORKFLOW_REGISTRY.md` | AUTHORITATIVE |
 | **Methodology** | `CLAUDE.md` | AUTHORITATIVE |
 | **Development skills** | `exports/skills/README.md` | STABLE |
 | **Theoretical foundations** | `exports/knowledge-base/` | STABLE |
@@ -120,6 +122,7 @@ python -m lib.rag.query "Films by Lucio Fulci"
 
 # Filtered queries
 python -m lib.rag.query "Satellite decade boundaries" --filter AUTHORITATIVE
+python -m lib.rag.query "governance chain routing" --level 1 2 4
 
 # Thread discovery
 python scripts/thread_query.py --discover "Deep Red (1975)"

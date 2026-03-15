@@ -8,7 +8,11 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional, TYPE_CHECKING
 
 from . import config
-from .metadata import get_authority_boost, parse_canonical_sources_table
+from .metadata import (
+    get_authority_boost,
+    parse_canonical_sources_table,
+    infer_governance_level,
+)
 
 # Optional dependencies
 try:
@@ -98,6 +102,7 @@ class RAGRetriever:
         query_text: str,
         top_k: int = config.DEFAULT_TOP_K,
         filter_status: Optional[List[str]] = None,
+        filter_governance_levels: Optional[List[int]] = None,
         enable_precision_filter: bool = True
     ) -> List[Dict[str, Any]]:
         """
@@ -107,13 +112,14 @@ class RAGRetriever:
             query_text: Natural language query
             top_k: Number of results to return
             filter_status: Optional filter ["AUTHORITATIVE", "STABLE"]
+            filter_governance_levels: Optional governance-level filter [1,2,3,4,5]
             enable_precision_filter: Enable Phase A precision pre-filter
 
         Returns:
             List of chunks with scores, sorted by final_score desc
         """
         if not query_text:
-            return self._top_authoritative(top_k)
+            return self._top_authoritative(top_k, filter_status, filter_governance_levels)
 
         # ========== STEP 1: STRUCTURED LOOKUP ==========
         if config.ENABLE_STRUCTURED_LOOKUP and self.qr_entries:
@@ -131,7 +137,9 @@ class RAGRetriever:
                     match.file_paths,
                     top_k,
                     query_embedding,
-                    query_text
+                    query_text,
+                    filter_status=filter_status,
+                    filter_governance_levels=filter_governance_levels,
                 )
                 for r in results:
                     r["lookup_method"] = match.match_type
@@ -145,7 +153,14 @@ class RAGRetriever:
         if not config.ENABLE_STRUCTURED_LOOKUP:
             qr_files = self._check_quick_reference(query_text)
             if qr_files:
-                return self._get_chunks_from_files(qr_files, top_k, query_embedding, query_text)
+                return self._get_chunks_from_files(
+                    qr_files,
+                    top_k,
+                    query_embedding,
+                    query_text,
+                    filter_status=filter_status,
+                    filter_governance_levels=filter_governance_levels,
+                )
 
         # ========== PHASE A: PRECISION PRE-FILTER ==========
         if enable_precision_filter and config.ENABLE_PRECISION_FILTER:
@@ -215,7 +230,7 @@ class RAGRetriever:
         results = self._rank_and_format_subset(
             final_scores, semantic_scores, keyword_scores,
             authority_scores, candidate_chunks, candidate_indices,
-            top_k, filter_status,
+            top_k, filter_status, filter_governance_levels,
             precision_filtered=enable_precision_filter
         )
 
@@ -232,6 +247,11 @@ class RAGRetriever:
                 try:
                     chunk = json.loads(line)
                     chunk.pop('embedding', None)
+                    metadata = chunk.setdefault("metadata", {})
+                    if metadata.get("governance_level") is None:
+                        inferred = infer_governance_level(chunk.get("source_file", ""))
+                        if inferred is not None:
+                            metadata["governance_level"] = inferred
                     chunks.append(chunk)
                 except json.JSONDecodeError:
                     continue
@@ -342,6 +362,27 @@ class RAGRetriever:
         text = text.lower()
         return re.findall(r"[a-z0-9]+(?:\.[0-9]+)?", text)
 
+    def _metadata_matches_filters(
+        self,
+        metadata: Dict[str, Any],
+        filter_status: Optional[List[str]],
+        filter_governance_levels: Optional[List[int]],
+    ) -> bool:
+        """Return True if a chunk metadata row passes active filters."""
+        if filter_status and metadata.get("status", "unmarked") not in filter_status:
+            return False
+
+        if filter_governance_levels:
+            level = metadata.get("governance_level")
+            try:
+                level = int(level) if level is not None else None
+            except (ValueError, TypeError):
+                level = None
+            if level not in filter_governance_levels:
+                return False
+
+        return True
+
     def _check_quick_reference(self, query_text: str) -> Optional[List[str]]:
         """Check if query matches Quick Reference questions (embedding-based)."""
         if not self.quick_ref_index or not config.ENABLE_QUICK_REFERENCE:
@@ -367,7 +408,9 @@ class RAGRetriever:
 
     def _get_chunks_from_files(
         self, file_paths: List[str], top_k: int,
-        query_embedding, query_text: Optional[str] = None
+        query_embedding, query_text: Optional[str] = None,
+        filter_status: Optional[List[str]] = None,
+        filter_governance_levels: Optional[List[int]] = None,
     ) -> List[Dict[str, Any]]:
         """Get chunks from specific files and rank semantically within them."""
         matching_indices = []
@@ -401,10 +444,15 @@ class RAGRetriever:
         else:
             final_scores = 0.8 * semantic_scores + 0.2 * authority_scores
 
-        sorted_indices = np.argsort(final_scores)[::-1][:top_k]
+        sorted_indices = np.argsort(final_scores)[::-1]
 
         results = []
         for idx in sorted_indices:
+            metadata = matching_chunks[idx].get("metadata", {})
+            if not self._metadata_matches_filters(
+                metadata, filter_status, filter_governance_levels
+            ):
+                continue
             result = {
                 "chunk": matching_chunks[idx],
                 "final_score": round(float(final_scores[idx]), 3),
@@ -415,6 +463,8 @@ class RAGRetriever:
                 "layer": "quick_reference"
             }
             results.append(result)
+            if len(results) >= top_k:
+                break
 
         return results
 
@@ -471,20 +521,19 @@ class RAGRetriever:
         self, final_scores, semantic_scores, keyword_scores,
         authority_scores, chunks: List[Dict], original_indices: List[int],
         top_k: int, filter_status: Optional[List[str]],
+        filter_governance_levels: Optional[List[int]],
         precision_filtered: bool = False
     ) -> List[Dict[str, Any]]:
         """Rank and format results."""
-        if filter_status:
-            filter_mask = np.array([
-                chunk["metadata"].get("status", "unmarked") in filter_status
-                for chunk in chunks
-            ])
-            final_scores = final_scores * filter_mask
-
-        top_subset_indices = np.argsort(final_scores)[::-1][:top_k]
+        top_subset_indices = np.argsort(final_scores)[::-1]
 
         results = []
         for subset_idx in top_subset_indices:
+            metadata = chunks[subset_idx].get("metadata", {})
+            if not self._metadata_matches_filters(
+                metadata, filter_status, filter_governance_levels
+            ):
+                continue
             result = {
                 "chunk": chunks[subset_idx],
                 "final_score": round(float(final_scores[subset_idx]), 3),
@@ -496,6 +545,8 @@ class RAGRetriever:
             if precision_filtered:
                 result["precision_filtered"] = True
             results.append(result)
+            if len(results) >= top_k:
+                break
 
         return results
 
@@ -537,13 +588,23 @@ class RAGRetriever:
 
         return filtered_results
 
-    def _top_authoritative(self, top_k: int) -> List[Dict[str, Any]]:
+    def _top_authoritative(
+        self,
+        top_k: int,
+        filter_status: Optional[List[str]] = None,
+        filter_governance_levels: Optional[List[int]] = None,
+    ) -> List[Dict[str, Any]]:
         """Return top-k most authoritative docs (for empty queries)."""
         authority_scores = self._authority_boost(self.chunks)
-        top_indices = np.argsort(authority_scores)[::-1][:top_k]
+        top_indices = np.argsort(authority_scores)[::-1]
 
         results = []
         for idx in top_indices:
+            metadata = self.chunks[idx].get("metadata", {})
+            if not self._metadata_matches_filters(
+                metadata, filter_status, filter_governance_levels
+            ):
+                continue
             result = {
                 "chunk": self.chunks[idx],
                 "final_score": round(float(authority_scores[idx]), 3),
@@ -553,5 +614,7 @@ class RAGRetriever:
                 "section_reference": self.chunks[idx]["section_reference"]
             }
             results.append(result)
+            if len(results) >= top_k:
+                break
 
         return results

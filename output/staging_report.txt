@@ -1,2951 +1,2126 @@
 FILMS REQUIRING MANUAL REVIEW
 ============================================================
 
-Total: 491 films
+Total: 350 films
 
-File: Carmen Jones (1954).mkv
-Title: Carmen Jones
-Year: 1954
-Director: Otto Preminger
+File: Ritmo, Traicion y Muerte La Cumbia Asesina (Christian Gonzalez, 1991).mp4
+Title: Ritmo, Traicion y Muerte La Cumbia Asesina
+Year: 1991
+Director: Christian Gonzalez
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: From Beyond (1986) {edition-Uncut}.mkv
-Title: From Beyond {edition-Uncut}
-Year: 1986
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Kamikaze Girls (2004).mkv
-Title: Kamikaze Girls
-Year: 2004
-Director: Tetsuya Nakashima
+File: Blue.Murder.1995.E01.DVDRip.x264-HANDJOB.mkv
+Title: Blue Murder
+Year: 1995
+Director: Michael Jenkins
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Red Shoe Diaries (1992) {edition-R-Rated Cut} - 480p.mkv
-Title: Red Shoe Diaries{edition-R-Rated Cut}
-Year: 1992
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Lili St. Cyr in Color - Love Moods (1950) & A Bedroom Fantasy (1953) (SP Hi-Fi Stereo VHS to SWV DVD-R Rip Upscaled in HD).mp4
-Title: Lili St Cyr in Color - Love Moods & A Bedroom Fantasy (SP Hi-Fi Stereo VHS to SWV DVD-R Rip Upscaled in
-Year: 1950
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Andrew Dice Clay For Ladies (1992).m4v
-Title: Andrew Dice Clay For Ladies
-Year: 1992
-Director: Gary Halvorson
+File: Blue.Murder.1995.E02.DVDRip.x264-HANDJOB.mkv
+Title: Blue Murder
+Year: 1995
+Director: Michael Jenkins
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: A Fêmea do Mar (1980).mp4
-Title: A Fêmea do Mar
-Year: 1980
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Braindead (1992) {edition-Uncut} - LaserDisc.mp4
-Title: Braindead{edition-Uncut}
-Year: 1992
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Make Way for Tomorrow (1937).mkv
-Title: Make Way for Tomorrow
-Year: 1937
-Director: Leo McCarey
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Take a Giant Step (1959).mkv
-Title: Take a Giant Step
-Year: 1959
-Director: Philip Leacock
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Driver (1978) Uncut.mkv
-Title: The Driver Uncut
-Year: 1978
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Tokyo Godfathers_-_(Dual Audio_10bit_BD1080p_x265).mkv
-Title: Tokyo Godfathers - (Dual Audio 10bit BD
+File: How To Stuff A Wild Bikini.mkv
+Title: How To Stuff A Wild Bikini
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: 2-Old.Boy.2003.1080p.x265.AC3.mkv
-Title: 2-Old Boy
-Year: 2003
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Lili Marleen (1981, Rainer Werner Fassbinder  - HDTV 1080).mkv
-Title: 
-Year: 1080
-Director: Lili Marleen (1981, Rainer Werner Fassbinder
+File: Matinee 1993 1080p BluRay x264-OFT.mkv
+Title: Matinee
+Year: 1993
+Director: Joe Dante
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Lilford Hall (1969) 1080p.mp4
-Title: Lilford Hall
-Year: 1969
-Director: Peter Whitehead
+File: Os.Herdeiros.1970.1080p.iT.WEB-DL.AAC2.0.H.264-TROPEiRO.mkv
+Title: Os Herdeiros
+Year: 1970
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: Resurrection 2025 1080p WEB-DL DDP5 1 H 264-HDSWEB.mkv
+Title: Resurrection
+Year: 2025
+Director: Bi Gan
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Gendai koshoku-den..Teroru no kisetsu [Season of Terror] - Koji Wakamatsu (1969).mkv
-Title: Gendai koshoku-den Teroru no kisetsu [Season of Terror] - Koji Wakamatsu
-Year: 1969
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Juegos de verano (1973).avi
-Title: Juegos de verano
-Year: 1973
-Director: Juan Antonio Serna
+File: The.Second.Civil.War.1997.WEB-DL.1080p.mkv
+Title: The Second Civil War
+Year: 1997
+Director: Joe Dante
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Rumble in the Bronx - Hong Kong Cut (1995) {edition-Hong Kong Cut}.mkv
-Title: Rumble in the Bronx - Hong Kong Cut {edition-Hong Kong Cut}
-Year: 1995
-Director: UNKNOWN
-Reason: unsorted_no_director
+File: Fortress (1985) DVDrip.mkv
+Title: Fortress
+Year: 1985
+Director: Arch Nicholson
+Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Interview - Rodney Hill (2014).mkv
-Title: Rodney Hill
-Year: 2014
-Director: UNKNOWN
-Reason: unsorted_no_director
+File: The Man Inside.1958.576p.BDRip-AVC.ZONE.mkv
+Title: The Man Inside
+Year: 1958
+Director: John Gilling
+Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Interview - Catherine Deneuve at the National Film Theatre (1983).mkv
-Title: Catherine Deneuve at the National Film Theatre
-Year: 1983
-Director: UNKNOWN
-Reason: unsorted_no_director
+File: Taxandria (1994) DVDRIP x264 AC3 KJNU.mkv
+Title: Taxandria
+Year: 1994
+Director: Raoul Servais
+Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Interview - Jacques Demy and Michel Legrand - Cinepanorama (1964).mkv
-Title: Jacques Demy and Michel Legrand - Cinepanorama
-Year: 1964
-Director: UNKNOWN
-Reason: unsorted_no_director
+File: Saint Flournoy Lobos-Logos and the Eastern Europe Fetus Taxing Japan Brides in West Coast Places Sucking Alabama Air (Will Hindle, 1970).avi
+Title: Saint Flournoy Lobos-Logos and the Eastern Europe Fetus Taxing Japan Brides in West Coast Places Sucking Alabama Air
+Year: 1970
+Director: Will Hindle
+Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Interview - Michel Legrand at the National Film Theatre (1991).mkv
-Title: Michel Legrand at the National Film Theatre
-Year: 1991
-Director: UNKNOWN
-Reason: unsorted_no_director
+File: Redux.Redux.2025.1080p.WEBRip.x264.AAC5.1-[YTS.BZ].mp4
+Title: Redux Redux
+Year: 2025
+Director: Kevin McManus
+Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Pandora Peaks - Russ Meyer 2001 [ENG-DEU].avi
+File: unroutable/Malena - Uncut (2000).mkv
+Title: Uncut
+Year: 2000
+Director: Malena
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/One-Eyed Jacks (1961) 1080p h265 {imdb-tt0055257}.mkv
+Title: One-Eyed Jacks
+Year: 1961
+Director: Marlon Brando
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Raoul Walsh - Marines Let's Go (1961).avi
+Title: Marines Let's Go
+Year: 1961
+Director: Raoul Walsh
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/The.Brain.That.Wouldn't.Die.1962.1080p.BluRay.x264.mp4
+Title: The Brain That Wouldn't Die
+Year: 1962
+Director: Joseph Green
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/The.Pusher.1960.REPACK.576p.BluRay.AAC.1.0.x264-PTP.mkv
+Title: The Pusher
+Year: 1960
+Director: Gene Milford
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Warren Sonbert - The Bad and The Beautiful (1967).mkv
+Title: The Bad and The Beautiful
+Year: 1967
+Director: Warren Sonbert
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Cherry Harry e Raquel - Russ Meyer 1970 [DvdRip XviD Eng].avi
 Title: Russ Meyer
+Year: 1970
+Director: Cherry Harry e Raquel
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Satan's School for Girls (1973).mp4
+Title: Satan's School for Girls
+Year: 1973
+Director: David Lowell Rich
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/The Stepford Wives (Bryan Forbes, 1975).mkv
+Title: The Stepford Wives
+Year: 1975
+Director: Bryan Forbes
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Public.Affairs.1983.Bdrip.1080p.x264.mkv
+Title: Public Affairs
+Year: 1983
+Director: Henri Pachard
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Adventures in Dinosaur City (1991).mp4
+Title: Adventures in Dinosaur City
+Year: 1991
+Director: Brett Thompson
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Meditations on Revolution Part I—Lonely Planet (Robert Fenz, 1997).avi
+Title: Meditations on Revolution Part I—Lonely Planet
+Year: 1997
+Director: Robert Fenz
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Queen.of.Diamonds.1991.720p.BluRay.x264-PTP.mkv
+Title: Queen of Diamonds
+Year: 1991
+Director: Nina Menkes
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/The Water Engine (1992).mp4
+Title: The Water Engine
+Year: 1992
+Director: Steven Schachter
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Meditations on Revolution Part III—Soledad (Robert Fenz, 2001).avi
+Title: Meditations on Revolution Part III—Soledad
 Year: 2001
-Director: Pandora Peaks
+Director: Robert Fenz
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Holds up the Ceiling - interview with Bruno Gantillon - part 2 (2025).mkv
-Title: Holds up the Ceiling - interview with Bruno Gantillon - part 2
-Year: 2025
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Holds up the Ceiling - interview with Bruno Gantillon - part 1 (2025).mkv
-Title: Holds up the Ceiling - interview with Bruno Gantillon - part 1
-Year: 2025
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interview - Stanley Kubrick (1966).mkv
-Title: Stanley Kubrick
-Year: 1966
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interviews - Henry Jaglom, Gary Graver, Martin Ritt, Peter Bogdanovich, and Frank Marshall - Knowing Welles (1990).mkv
-Title: Henry Jaglom, Gary Graver, Martin Ritt, Peter Bogdanovich, and Frank Marshall - Knowing Welles
-Year: 1990
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interview - Farran Smith Nehme (2021).mkv
-Title: Farran Smith Nehme
-Year: 2021
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interview - Joseph Cotten - Granada Television (1966).mkv
-Title: Joseph Cotten - Granada Television
-Year: 1966
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interviews - Robert Wise, Ruth Warrick, and Linwood Dunn - Working on Kane (1990).mkv
-Title: Robert Wise, Ruth Warrick, and Linwood Dunn - Working on Kane
-Year: 1990
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Short - The Hearts of Age (1934).mkv
-Title: The Hearts of Age
-Year: 1934
-Director: William Vance
+File: unroutable/Meditations on Revolution Part IV—Greenville, MS (Robert Fenz, 2001).avi
+Title: Meditations on Revolution Part IV—Greenville, MS
+Year: 2001
+Director: Robert Fenz
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: The South Bank Show (1978) - S12E11 - John Houseman (1988).mkv
-Title: The South Bank Show
-Year: 1978
-Director: UNKNOWN
-Reason: unsorted_no_director
+File: unroutable/Meditations on Revolution Part V—Foreign City (Robert Fenz, 2003).mp4
+Title: Meditations on Revolution Part V—Foreign City
+Year: 2003
+Director: Robert Fenz
+Reason: unsorted_no_match
 ------------------------------------------------------------
-File: The Merv Griffin Show (1962) - S16E234 (1979).mkv
-Title: The Merv Griffin Show
+File: unroutable/Kiss.and.Tell.1996.DVDRip.x264-CG.mkv
+Title: Kiss and Tell
+Year: 1996
+Director: Andy Wolk
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/L'astragale (Guy Casaril, 1968).mkv
+Title: L'astragale
+Year: 1968
+Director: Guy Casaril
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Death.of.a.Salesman.1985.1080p.BluRay.x264-OFT.mkv
+Title: Death of a Salesman
+Year: 1985
+Director: Volker Schlöndorff
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Le livre de Marie (Anne-Marie Miéville, 1985).mkv
+Title: Le livre de Marie
+Year: 1985
+Director: Anne-Marie Miéville
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/New York Stories.1989.576p.BDRip-AVC.ZONE.mkv
+Title: New York Stories
+Year: 1989
+Director: Woody Allen
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/No Man's Land.1987.576p.BDRip-AVC.ZONE.mkv
+Title: No Man's Land
+Year: 1987
+Director: Peter Werner
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Lord of Illusions Unrated Directors Cut - Clive Barker 1995 Eng Rus Multi Subs 1080p [H264-mp4].mp4
+Title: Clive Barker
+Year: 1995
+Director: Lord of Illusions Unrated Directors Cut
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Motorcycle.Gang.1994.dvdrip_[1.46]_[teko].avi
+Title: Motorcycle Gang
+Year: 1994
+Director: John Milius
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Hamlet (2010).mkv
+Title: Hamlet
+Year: 2010
+Director: Kevin Duffy
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: unroutable/Kurotokage (Umetsugu Inoue, 1962).mkv
+Title: Kurotokage
+Year: 1962
+Director: Umetsugu Inoue
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_data/The.Sweet.Life.1960.REPACK.1080p.BluRay.FLAC1.0.x264-RO.mkv
+Title: The Sweet Life
+Year: 1960
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Les.Sept.Peches.Capitaux.1962.FRENCH.1080p.WEB.H264.mkv
+Title: Les Sept Peches Capitaux
 Year: 1962
 Director: UNKNOWN
 Reason: unsorted_no_director
 ------------------------------------------------------------
-File: Radio Play - His Honor, The Mayor (1941).mkv
-Title: His Honor, The Mayor
-Year: 1941
+File: no_data/Kapurush.1965.1080p.BluRay.FLAC1.0.x264-ZoroSenpai.mkv
+Title: Kapurush
+Year: 1965
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Tacones lejanos (1991) High Heels 1080p- HighCode.mkv
+Title: Tacones lejanos
+Year: 1991
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Agantuk.1991.1080p.AMZN.WEB-DL.DD+2.0.x264-Cinefeel.mkv
+Title: Agantuk
+Year: 1991
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Eloge.de.l.amour.2001.FRENCH.1080p.WEB.H264-LiDHL.mkv
+Title: Eloge de l amour
+Year: 2001
 Director: UNKNOWN
 Reason: unsorted_no_director
 ------------------------------------------------------------
-File: Radio Play - Heart of Darkness (1938).mkv
-Title: Heart of Darkness
-Year: 1938
+File: no_data/Combat.d'amour.en.songe.2000.dvdrip_[2.18].avi
+Title: Combat d'amour en songe
+Year: 2000
 Director: UNKNOWN
-Reason: unsorted_no_director
+Reason: unsorted_insufficient_data
 ------------------------------------------------------------
-File: Radio Play - Dracula (1938).mkv
-Title: Dracula
-Year: 1938
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interviews - Craig Barron and Ben Burtt (2021).mkv
-Title: Craig Barron and Ben Burtt
-Year: 2021
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interviews - Allen Daviau, Haskell Wexler, and Vilmos Zsigmond - On Toland (1990).mkv
-Title: Allen Daviau, Haskell Wexler, and Vilmos Zsigmond - On Toland
-Year: 1990
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interview - William Alland (1996).mkv
-Title: William Alland
-Year: 1996
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Video Essay - Robert Carringer - Rosebud Reconsidered (2021).mkv
-Title: Robert Carringer - Rosebud Reconsidered
-Year: 2021
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interview - Racquel J. Gates - Reframing Kane (2021).mkv
-Title: Racquel J Gates - Reframing Kane
-Year: 2021
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interview - Jacques Tourneur (1979).mkv
-Title: Jacques Tourneur
-Year: 1979
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Trailer - United Artists 1970 Reissue.mkv
-Title: United Artists
-Year: 1970
-Director: Trailer
+File: no_data/Hollywood Boulevard (1976).mkv
+Title: Hollywood Boulevard
+Year: 1976
+Director: Allan Arkush
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Trailer - Warner Brothers 1951.mkv
-Title: Warner Brothers
-Year: 1951
-Director: Trailer
+File: no_data/O Padre e a Moça (1966).mp4
+Title: O Padre e a Moça
+Year: 1966
+Director: Miguel M. Delgado
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Trailer - 20th Century Fox 1958 Reissue.mkv
-Title: 20th Century Fox
-Year: 1958
-Director: Trailer
+File: no_data/O Abismo (1977).mkv
+Title: O Abismo
+Year: 1977
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Anjos da Noite (1987).avi
+Title: Anjos da Noite
+Year: 1987
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Os.Sete.Gatinhos.1980.HDTV.AVC.MKOff-NaMoral.mkv
+Title: Os Sete Gatinhos
+Year: 1980
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Jean-Marc ou La Vie Conjugale.1964.576p.BDrip-AVC.ZONE.mkv
+Title: Jean Marc ou La Vie Conjugale
+Year: 1964
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Sette contro la morte (1964) 576p AAC WEB-DL.mkv
+Title: Sette contro la morte
+Year: 1964
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Anima.Persa.1977.1080p.BluRay.x264.AAC-[YTS.MX].mp4
+Title: Anima Persa
+Year: 1977
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/I Nuovi Mostri (1977).HDRip.1080p.AV1.PlamenNik.mkv
+Title: I Nuovi Mostri
+Year: 1977
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Ars amandi.1983.576p.BDRip-AVC.ZONE.mkv
+Title: Ars amandi
+Year: 1983
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Cat, The (1992).mkv
+Title: The Cat
+Year: 1992
+Director: Michael Meadows
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Beyrouth ma ville - Jocelyne Saab.mkv
-Title: Beyrouth ma ville - Jocelyne Saab
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Die endlose Nacht (1963) WEB-DL 1080p.mkv
-Title: Die endlose Nacht
-Year: 1963
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: La classe americaine (1993) [2010.Special.Edition.99c][cyclim.se].mkv
-Title: La classe americaine [2010 Special Edition 99c][cyclim se]
-Year: 1993
-Director: Michel Hazanavicius
+File: no_data/Mikes.Murder.1984.1080p.MA.WEB-DL.DDP2.0.H.264-FLUX.mkv
+Title: Mikes Murder
+Year: 1984
+Director: James Bridges
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Las.Islas.Marias.1951.1080p.WEB-DL.AAC2.0.H.264.mkv
-Title: Las Islas Marias
-Year: 1951
+File: no_data/1999 - Come Te Nessuno Mai.DVDRip.576p.x264.mkv
+Title: Come Te Nessuno Mai
+Year: 1999
 Director: UNKNOWN
-Reason: unsorted_no_director
+Reason: unsorted_insufficient_data
 ------------------------------------------------------------
-File: mountains.may.depart.2015.limited.bdrip.x264-bipolar.mkv
-Title: mountains may depart limited
-Year: 2015
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The Explosive Generation (1961) MGM Limited DVDRip x264 BBM [CG].mkv
-Title: The Explosive Generation MGM Limited
-Year: 1961
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The Laundromat 1985 dir. Robert Altman.mp4
-Title: The Laundromat dir Robert Altman
-Year: 1985
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The Seduction of Angela (Cinemax).mkv
-Title: The Seduction of Angela (Cinemax)
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The.Argyle.Secrets.1948.1080p.HULU.WEB-DL.AAC2.0.H.264-PLiSSKEN.mkv
-Title: The Argyle Secrets
-Year: 1948
-Director: Cy Endfield
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The.Dark.at.the.Top.of.the.Stairs.1960.404p.AMZN.WEB-DL.DDP2.0.H.264.mkv
-Title: The Dark at the Top of the Stairs 404p
-Year: 1960
-Director: Delbert Mann
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The.Speed.of.Life.1080p.AMZN.WEB-DL.AC3.H.264-Koza.mkv
-Title: The Speed of Life
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: La.Cicatrice.Interieure.AKA.The.Inner.Scar.1972.720p.BluRay.x264-SPiRiT.mkv
-Title: La Cicatrice Interieure AKA The Inner Scar
-Year: 1972
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Ivan Andonov - (1988) Yesterday.mkv
-Title: Yesterday
-Year: 1988
-Director: Ivan Andonov
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: A.Mulher.Que.Eu.Abandonei.aka.Watashi.ga.suteta.onna.1969.1080p.FLMN.WEB-DL.H264-CKTV.mkv
-Title: A Mulher Que Eu Abandonei aka Watashi ga suteta onna
-Year: 1969
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: 2-Assa-2.2008.DVDRip.x264-BNBP.mkv
-Title: 2-Assa-2
-Year: 2008
-Director: Sergey Solovyov
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: 16mm Airplane TV.mkv
-Title: 16mm Airplane TV
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Karina, Objeto Do Prazer (1981) Jean Garret.MKO.mkv
-Title: Karina, Objeto Do Prazer Jean Garret MKO
-Year: 1981
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Tchau Amor, Jean Garret, 1982.avi
-Title: Tchau Amor, Jean Garret,
-Year: 1982
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: ESTRANHO DESEJO.avi
-Title: ESTRANHO DESEJO
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Avidacomoelae(1).mkv
-Title: Avidacomoelae(1)
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Avidacomoelae(4).mkv
-Title: Avidacomoelae(4)
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Avidacomoelae(3).mkv
-Title: Avidacomoelae(3)
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Avidacomoelae(2).mkv
-Title: Avidacomoelae(2)
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: A Woman Under the Influence.mkv
-Title: A Woman Under the I
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: A.New.Wave.1990.DVDRip.x264-HANDJOB.mkv
-Title: A New Wave
-Year: 1990
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Absences repetees.mp4
-Title: Absences repetees
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: AGRAHARATHIL_KAZHUTAI.mkv
-Title: AGRAHARATHIL KAZHUTAI
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Ai.futatabi.1971.AKA.To.Love.Again.REPACK.1080p.AMZN.WEB-DL.DDP2.0.H.264-NTb.mkv
-Title: Ai futatabi AKA To Love Again
-Year: 1971
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Allan Dwan - 1952 - Montana Belle -La bella de Montana [dual español-inglés] ֍1264.avi
-Title: Allan Dwan - - Montana Belle -La bella de Montana [dual español-inglés] ֍1264
-Year: 1952
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Amateur.mkv
-Title: Amateur
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: AMMA ARIYAN.mkv
-Title: AMMA ARIYAN
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Kon Ichikawa - An Actor's Revenge.mkv
-Title: Kon Ichikawa - An Actor's Revenge
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: An.Affair.To.Remember.1957.1080p.BluRay.x264.DTS-FGT.mkv
-Title: An Affair To Remember
-Year: 1957
-Director: Leo McCarey
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: ANGEL TERMINATORS x264.mkv
-Title: ANGEL TERMINATORS
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Anna.mkv
-Title: Anna
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Bacalhau (1975 - 360p - Português).mp4
-Title: Bacalhau (1975 - 360p - Português)
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Bachelor in Paradise.1961.576p.BDRip-AVC.ZONE.mkv
-Title: Bachelor in Paradise 576p
-Year: 1961
-Director: Jack Arnold
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Beautiful But Dangerous AKA La donna piu bella del mondo - 1955 - Robert Z. Leonard.mkv
-Title: Beautiful But Dangerous AKA La donna piu bella del mondo - - Robert Z Leonard
-Year: 1955
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: BENEAT~1.MKV
-Title: BENEAT~1
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Beyond the Clouds (1995) -- Michelangelo Antonioni Wim Wenders.mkv
-Title: Beyond the Clouds -- Michelangelo Antonioni Wim Wenders
+File: no_data/A.Comedia.de.Deus.1995.1080p.AMZN.WEB-DL.DDP2.0.H.264-TEMHO.mkv
+Title: A Comedia de Deus
 Year: 1995
 Director: UNKNOWN
-Reason: unsorted_no_director
+Reason: unsorted_insufficient_data
 ------------------------------------------------------------
-File: Bitter Stems, The (1956) - 1080p.mp4
-Title: Bitter Stems, The
-Year: 1956
+File: no_data/The.Passage.to.Japan.1991.1080p.AMZN.WEB-DL.DDP2.0.H.264-ARiN.mkv
+Title: The Passage to Japan
+Year: 1991
 Director: UNKNOWN
-Reason: unsorted_no_director
+Reason: unsorted_insufficient_data
 ------------------------------------------------------------
-File: Black.Girl.1972.mkv
-Title: Black Girl 1972
-Year: UNKNOWN
+File: no_data/Cha.No.Aji.2004.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
+Title: Cha No Aji
+Year: 2004
 Director: UNKNOWN
-Reason: unsorted_no_year
+Reason: unsorted_insufficient_data
 ------------------------------------------------------------
-File: Blue Magic.mkv
-Title: Blue Magic
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Bonjour.tristesse.1958.Hybrid.1080p.BluRay.FLAC1.0.x264-RO.mkv
-Title: Bonjour tristesse
-Year: 1958
-Director: Otto Preminger
+File: no_data/Cooler, The (2003).mp4
+Title: The Cooler
+Year: 2003
+Director: Wayne Kramer
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: But.the.Flesh.is.Weak.1957.1080p.AMZN.WEB-DL.DDP2.0.H.264-ASO.mkv
-Title: But the Flesh is Weak
-Year: 1957
+File: no_data/La.ragazza.del.lago.2007.1080p.AMZN.WEB-DL.DD5.1.H.264-WELP.mkv
+Title: La ragazza del lago
+Year: 2007
 Director: UNKNOWN
-Reason: unsorted_no_director
+Reason: unsorted_insufficient_data
 ------------------------------------------------------------
-File: The Making Of Captain EO.mp4
+File: no_data/Los.Reyes.Del.Mundo.2022.1080p.NF.WEB-DL.DDP5.1.x264-DODEN.mkv
+Title: Los Reyes Del Mundo
+Year: 2022
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_data/Jokyo.1960.1080p.WEB-DL.DD+2.0.H.264-SbR.mkv
+Title: Jokyo
+Year: 1960
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: no_year/The Making Of Captain EO.mp4
 Title: The Making Of Captain EO
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Captain EO [RoughCut].mp4
+File: no_year/Captain EO [RoughCut].mp4
 Title: Captain EO [RoughCut]
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Celine and Julie Go Boating.mkv
-Title: Celine and Julie Go Boating
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Center.Stage.1991.USA.1080p.BluRay.x265.10bit.FLAC.2.0.2Audio-SONYHD.mkv
-Title: Center Stage USA
-Year: 1991
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: CHIDAMBARAM.mkv
-Title: CHIDAMBARAM
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Choose Me.mkv
-Title: Choose Me
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Christmas Story, A (1983).mp4
-Title: Christmas Story, A
-Year: 1983
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: La.ville.des.pirates.AKA.City.of.Pirates.1983.DVDRip.x264-HANDJOB.mkv
-Title: La ville des pirates AKA City of Pirates
-Year: 1983
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Raoul.Ruiz.2000.Comedy.of.Innocence.mkv
-Title: Raoul Ruiz Comedy of Innocence
-Year: 2000
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Cronica.De.Un.Nino.Solo.1964.720p.WEB.x264-gooz.mkv
-Title: Cronica De Un Nino Solo
-Year: 1964
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Daisies.1966.SR.1080p.BluRay.x265.HEVC.AAC-SARTRE.mkv
-Title: Daisies SR
-Year: 1966
-Director: Vera Chytilová
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Das Tripas Coração (1982).mp4
-Title: Das Tripas Coração
-Year: 1982
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Dead.Reckoning.1947.576p.BluRay.x264.AAC-PLAINVIEW.mkv
-Title: Dead Reckoning 576p
-Year: 1947
-Director: John Cromwell
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Depravação Orgia das Taras.mkv
-Title: Depravação Orgia das Taras
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Sale comme un ange DVD Remux.mkv
-Title: Sale comme un ange DVD Remux
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Don Juan ou si Don Juan était une femme.mp4
-Title: Don Juan ou si Don Juan était une femme
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Engraçadinha.1981.720p.mkv
-Title: Engraçadinha
-Year: 1981
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Estrela Nua.mkv
-Title: Estrela Nua
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Every.Man.for.Himself.1980.(J-Luc.Godard).1080p.BRRip.x264-Classics.mkv
-Title: Every Man for Himself (J-Luc Godard)
-Year: 1980
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Farewell China çˆ±åœ¨åˆ«ä¹¡çš„å­£èŠ‚ 1990.mkv
-Title: Farewell China çˆ±åœ¨åˆ«ä¹¡çš„å­£èŠ‚
-Year: 1990
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Fascination.mkv
-Title: Fascination
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Faster Pussycat Kill Kill_1965_1080p.mkv
-Title: Faster Pussycat Kill Kill 1965
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Angst.vor.der.Angst.AKA.Fear.of.Fear.1975.1080p.BluRay.FLAC.x264-HANDJOB.mkv
-Title: Angst vor der Angst AKA Fear of Fear
-Year: 1975
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Femmine.carnivore.1970.mkv
-Title: Femmine carnivore 1970
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Film_ Sonnenstrahl.mp4
-Title: Film Sonnenstrahl
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Fin.de.fiesta.1960.VHSrip.XVID.MP3.G17.clan-sudamerica.net.avi
-Title: Fin de fiesta VHSrip XVID MP3 G17 clan-sudamerica net
-Year: 1960
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Flirt.mp4
-Title: Flirt
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Frankenstein.Punk.mp4
+File: no_year/Frankenstein.Punk.mp4
 Title: Frankenstein Punk
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Godard par Godard.mkv
-Title: Godard par Godard
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Passion.1982.(Jean.Luc.Godard-Isabelle.Huppert-Drama).1080P.Brrip.X264-Classics.mp4
-Title: Passion (Jean Luc Godard-Isabelle Huppert-Drama)
-Year: 1982
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Buongiorno, notte_( Good Morning, Night)_2003_DVDRip-AVC_ (1).mkv
-Title: Buongiorno, notte ( Good Morning, Night) 2003
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Grass.Labyrinth.1979.1080i.HDTV.MPEG2.AAC.mkv
-Title: Grass Labyrinth 1080i
-Year: 1979
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Gun for a Coward.1957.576p.BDRip-AVC.ZONE.mkv
-Title: Gun for a Coward 576p
-Year: 1957
-Director: Abner Biberman
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Haruyoshi Noguchi - Gambling Kitten.mkv
-Title: Haruyoshi Noguchi - Gambling Kitten
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Hot Rock, The (1972).mp4
-Title: Hot Rock, The
-Year: 1972
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Human.Desire.1954.MOC.1080p.BluRay.x265.HEVC.FLAC-SARTRE.mkv
-Title: Human Desire MOC
-Year: 1954
-Director: Fritz Lang
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Un mari a prix fixe.avi
-Title: Un mari a prix fixe
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Hustler, The (1961).mp4
-Title: Hustler, The
-Year: 1961
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Idol of the Crowds (1937).mkv
-Title: Idol of the Crowds
-Year: 1937
-Director: Arthur Lubin
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Ikarie XB 1 (1963).mkv
-Title: Ikarie XB 1
-Year: 1963
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: In Harms Way 1965 1080p BluRay x264-OFT.mkv
-Title: In Harms Way
-Year: 1965
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Intrepidos.Punks.1980.1080p.BluRay.FLAC.x264-HANDJOB.mkv
-Title: Intrepidos Punks
-Year: 1980
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Irma.Vep.1996.FRENCH.VOF.1080p.HDLight.AC3.5.1.H264-NoTag.mkv
-Title: Irma Vep FRENCH VOF
-Year: 1996
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Jana Aranya AKA The Middleman (1975).avi
-Title: Jana Aranya AKA The Middleman
-Year: 1975
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Okamoto kihachi - Jazz Daimyo.avi
-Title: Okamoto kihachi - Jazz Daimyo
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Jean-Christophe Averty - 1970 - Soft Self-Portrait of Salvador Dalí [VHS].mkv
-Title: Jean-Christophe Averty - - Soft Self-Portrait of Salvador Dalí [VHS]
-Year: 1970
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Johnny Minotaur.mkv
-Title: Johnny Minotaur
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Jutta Hercher, Maria Hemmleb - 1989 - Mein Herz schlägt blau (Ella Bergmann-Michel) [DVD-PAL].mkv
-Title: Jutta Hercher, Maria Hemmleb - - Mein Herz schlägt blau (Ella Bergmann-Michel) [DVD-PAL]
-Year: 1989
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Kosei Saito - G.I. Samurai.mkv
-Title: Kosei Saito - G I Samurai
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: L-esquive.AKA.Games.of.Love.and.Chance.2003.DVDRip.mkv
-Title: L-esquive AKA Games of Love and Chance
-Year: 2003
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: L'Amour Fou.mkv
-Title: L'Amour Fou
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: L'Éden et après (Alain Robbe-Grillet, 1970).mp4
-Title: L'Éden et après
-Year: 1970
-Director: Alain Robbe-Grillet
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: La Belle Noiseuse.mkv
-Title: La Belle Noiseuse
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: La Condanna.mkv
-Title: La Condanna
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: La Estrategia del Caracol.mkv
-Title: La Estrategia del Caracol
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: La mujer murciélago (1968) 1080p.mkv
-Title: La mujer murciélago
-Year: 1968
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: La soldadera (1967) Blu-ray 1080p.mkv
-Title: La soldadera Blu-ray
-Year: 1967
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Le.DÃ©luge.Gli.Ultimi.Giorni.Di.Maria.Antonietta.2024.iTA-FRE.Bluray.1080p.x264-CYBER.mkv
-Title: Le DÃ©luge Gli Ultimi Giorni Di Maria Antonietta iTA-FRE
-Year: 2024
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Le.joli.mai.AKA.The.Lovely.Month.of.May.1963.1080p.WEB-DL.AAC2.0.H.264-Art.mkv
-Title: Le joli mai AKA The Lovely Month of May
-Year: 1963
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Le.paria.1969.576p.BDRip-AVC.ZONE.mkv
-Title: Le paria 576p
-Year: 1969
-Director: Claude Carliez
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Le voyage dans la lune (Georges Méliès, 1902).mp4
-Title: Le voyage dans la lune (Georges Méliès, 1902)
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Le.mepris.AKA.Contempt.1963.720p.BluRay.FLAC.2.0.x264-Uld.mkv
-Title: Le mepris AKA Contempt
-Year: 1963
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Le Plein De Super 1976 1080p FR X264 AAC-mHDgz.mkv
-Title: Le Plein De Super
-Year: 1976
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Le.Protecteur.1974.mkv
-Title: Le Protecteur 1974
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Les Copains.1965.576p.BDRip-AVC.ZONE.mkv
-Title: Les Copains 576p
-Year: 1965
-Director: Yves Robert
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Les Egouts de Paradis.1979.576p.BDRip-AVC.ZONE.mkv
-Title: Les Egouts de Paradis 576p
-Year: 1979
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Les.Mauvaises.Rencontres.AKA.Bad.Liaisons.1955.TVRip.x264-HANDJOB.mkv
-Title: Les Mauvaises Rencontres AKA Bad Liaisons TVRip
-Year: 1955
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The.Castaways.of.Turtle.Island.1976.1008p.AMZN.WEB-DL.DDP2.0.H.264-Kitsune.mkv
-Title: The Castaways of Turtle Island 1008p
-Year: 1976
-Director: Jacques Rozier
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Limonadovy Joe aneb Konska opera (1964).BDRip.CZ.EN.1080p.mkv
-Title: Limonadovy Joe aneb Konska opera
-Year: 1964
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: 1972.Lo.scopone.scientifico.1080p.BluRay.x264.ITA.mkv
-Title: 1972 Lo scopone scientifico
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Lo.mau.AKA.The.Cat.1991.576p.BluRay.AAC.x264-HANDJOB.mkv
-Title: Lo mau AKA The Cat 576p
-Year: 1991
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Looking.for.Mister.Perfect.2003.1080p.MyTVS.WEB-DL.H265.AAC-YingWEB.mkv
-Title: Looking for Mister Perfect
-Year: 2003
-Director: Ringo Lam
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Looking for Mr. Goodbar.mkv
-Title: Looking for Mr Goodbar
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Lorna.2014.1080p.HC.WEB-DL.AAC2.0.x264-RSG.mkv
-Title: Lorna
-Year: 2014
-Director: Sigrid Andrea Bernardo
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Los.Olvidados.1950.JP.1080p.BluRay.x265.HEVC.FLAC-SARTRE.mkv
-Title: Los Olvidados JP
-Year: 1950
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: sample.avi
+File: no_year/sample.avi
 Title: sample
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Luigi Cozzi's Cozzilla (1977) - 1080p.mkv
-Title: Luigi Cozzi's Cozzilla
-Year: 1977
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Lumiere.D.Ete.1943.1080p.UniversCine.WebDL.mkv
-Title: Lumiere D Ete
-Year: 1943
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: I vampiri AKA Lust of the Vampire 1957 1080p Bluray FLAC x264-Manji.mkv
-Title: I vampiri AKA Lust of the Vampire
-Year: 1957
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Mañana te cuento(2005).mkv
-Title: Mañana te cuento
-Year: 2005
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Mar.De.Rosas.1977.Remasterizado.mp4
-Title: Mar De Rosas Remasterizado
-Year: 1977
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Marehito.mkv
-Title: Marehito
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Cobra Woman (Robert Siodmak, 1944).mp4
-Title: Cobra Woman
-Year: 1944
-Director: Robert Siodmak
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Arabian Nights (John Rawlins, 1942).mp4
-Title: Arabian Nights
-Year: 1942
-Director: John Rawlins
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Gypsy Wildcat (Roy William Neill, 1944).mp4
-Title: 
-Year: 1944
-Director: Roy William Neill
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Marnie.mkv
-Title: Marnie
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Meditations on Revolution Part II—The Space in Between (Robert Fenz, 1997).avi
-Title: Meditations on Revolution Part II—The Space in Between
-Year: 1997
-Director: Robert Fenz
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Mei.gui.di.gu.shi.AKA.Lost.Romance.1985.DVDRip.x264-HANDJOB.mkv
-Title: Mei gui di gu shi AKA Lost Romance
-Year: 1985
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Les amants de Montparnasse (Montparnasse 19) (Jacques Becker, 1958).m4v
-Title: Les amants de Montparnasse
-Year: 1958
-Director: Montparnasse 19) (Jacques Becker
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Morir...dormir...tal.vez.soñar...1976.1080p.FO.WEB-DL.AAC2.0.H.264-CREATiVE.mkv
-Title: Morir dormir tal vez soñar
-Year: 1976
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Nada Sera Como Antes; A Música do Clube da Esquina (2023).mp4
-Title: Nada Sera Como Antes; A Música do Clube da Esquina
-Year: 2023
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Naked Alibi (Jerry Hopper, 1954).mkv
-Title: Naked Alibi
-Year: 1954
-Director: Jerry Hopper
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Cristiana Devil Nun (aka Our Lady of Lust) (1972) [edition-X-Rated English Cut] 1080p h265 {imdb-tt0069929}.mkv
-Title: Cristiana Devil Nun (aka Our Lady of Lust) [edition-X-Rated English Cut]
-Year: 1972
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Nénette et Boni (1996).mkv
-Title: Nénette et Boni
-Year: 1996
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: No me digas adiós (1950).mp4
-Title: No me digas adiós
-Year: 1950
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Noite.2015.Paula.Gaitan.1080p.WEB.x264-gooz.mkv
-Title: Noite Paula Gaitan
-Year: 2015
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Noites_de_Iemanja.avi
-Title: Noites de Iemanja
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Noyade.interdite.1987.FRENCH.1080p.WEB.H264-FW.mkv
-Title: Noyade interdite FRENCH
-Year: 1987
-Director: Pierre Granier-Deferre
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: O Inseto do Amor.mp4
-Title: O Inseto do Amor
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: O Vampiro da Cinemateca.avi
-Title: O Vampiro da Cinemateca
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Ocean's 11 (1960).mp4
-Title: Ocean's 11
-Year: 1960
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Omega Man, The (1971).mkv
-Title: Omega Man, The
-Year: 1971
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Palm Springs Weekend [1963 - Taurog, Norman].mkv
-Title: Palm Springs Weekend [1963 - Taurog, Norman]
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Pandora and the Flying Dutchman (Albert Lewin 1951).mkv
-Title: Pandora and the Flying Dutchman
-Year: 1951
-Director: Albert Lewin
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Picnic.On.The.Grass.1959.1080p.BluRay.x264-[YTS.LT].mp4
-Title: Picnic On The Grass
-Year: 1959
-Director: Jean Renoir
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Pink Force Commando (1982) Widescreen VHSrip (Eng Dub).m4v
-Title: Pink Force Commando Widescreen VHSrip (Eng Dub)
-Year: 1982
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Plataforma.2000.mkv
-Title: Plataforma 2000
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Quiet Family, The (1998) - 1080p.mp4
-Title: Quiet Family, The
-Year: 1998
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Quiet Man, The (1952).mp4
-Title: Quiet Man, The
-Year: 1952
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Ran.mkv
-Title: Ran
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Rekopis Znaleziony w Saragossie (1965).mkv
-Title: Rekopis Znaleziony w Saragossie
-Year: 1965
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Requiem for a Vampire.mkv
-Title: Requiem for a Vampire
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Resan.till.Melonia.AKA.The.Journey.to.Melonia.1989.DVDRip.x264.mkv
-Title: Resan till Melonia AKA The Journey to Melonia
-Year: 1989
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The Killers (Robert Siodmak, 1946).mp4
-Title: The Killers
-Year: 1946
-Director: Robert Siodmak
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Dark Mirror (Robert Siodmak, 1946).mp4
-Title: The Dark Mirror
-Year: 1946
-Director: Robert Siodmak
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Suspect (Robert Siodmak, 1944).mp4
-Title: The Suspect
-Year: 1944
-Director: Robert Siodmak
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Spiral Staircase (Robert Siodmak, 1946).mkv
-Title: The Spiral Staircase
-Year: 1946
-Director: Robert Siodmak
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Strange Affair of Uncle Harry (Robert Siodmak, 1945).mkv
-Title: The Strange Affair of Uncle Harry
-Year: 1945
-Director: Robert Siodmak
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Cry of the City (Robert Siodmak, 1948).mp4
-Title: Cry of the City
-Year: 1948
-Director: Robert Siodmak
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Deported (Robert Siodmak, 1950).mp4
-Title: Deported
-Year: 1950
-Director: Robert Siodmak
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The File on Thelma Jordon (Robert Siodmak, 1950).mp4
-Title: The File on Thelma Jordon
-Year: 1950
-Director: Robert Siodmak
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Rocco.and.His.Brothers.1960.SC.1080p.BluRay.x265.HEVC.AAC.mkv
-Title: Rocco and His Brothers SC
-Year: 1960
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Rome.Open.City.1945.(Thriller.War).1080p.BRRip.x264-Classics.mkv
-Title: Rome Open City (Thriller War)
-Year: 1945
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Rosa.de.Areia.1989.1080p.WEB-DL.AAC2.0.H264-ZETA.mkv
-Title: Rosa de Areia
-Year: 1989
-Director: Margarida Cordeiro
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: S01E06.mp4
-Title: S01E06
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: S01E05.mp4
-Title: S01E05
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: S01E09.mp4
-Title: S01E09
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: S01E11.mp4
-Title: S01E11
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: S01E07.mp4
-Title: S01E07
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: S01E04.mp4
-Title: S01E04
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: S01E03.mp4
-Title: S01E03
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: S01E02.mp4
-Title: S01E02
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: S01E10.mp4
-Title: S01E10
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: S01E08.mp4
-Title: S01E08
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: S01E01.mp4
-Title: S01E01
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: São Paulo Sociedade Anônima (1965).mkv
-Title: São Paulo Sociedade Anônima
-Year: 1965
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Screaming Mimi (Gerd Oswald, 1958).mkv
-Title: Screaming Mimi
-Year: 1958
-Director: Gerd Oswald
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Secret Defense.mkv
-Title: Secret Defense
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: serialmom-1080p.mkv
-Title: serialmom-
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Interview with Mcelwee.mkv
+File: no_year/Interview with Mcelwee.mkv
 Title: Interview with Mcelwee
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Sherman's March (1986).mkv
-Title: Sherman's March
-Year: 1986
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Simple Men.mkv
-Title: Simple Men
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Sofia.e.a.Educacao.Sexual.1974.576p.DVDRip.x264.DD.2.0-CRVLX.mkv
-Title: Sofia e a Educacao Sexual 576p
-Year: 1974
-Director: Eduardo Geada
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Zirneklis.1992.1080p.BluRay.x264.AAC-[YTS.MX].mp4
-Title: Zirneklis
-Year: 1992
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Stephen Sayadian - 1982 - Café Flesh [dual inglés+comments].mkv
-Title: Stephen Sayadian - - Café Flesh [dual inglés+comments]
-Year: 1982
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Stolen.Kisses.1968.(F.Truffaut).1080p.BRRip.x264-Classics.mkv
-Title: Stolen Kisses (F Truffaut)
-Year: 1968
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Theatrical trailer (English) - Strip Nude for Your Killer.mkv
-Title: Theatrical trailer (English) - Strip Nude for Your Killer
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Theatrical trailer (Italian) - Strip Nude for Your Killer.mkv
-Title: Theatrical trailer (Italian) - Strip Nude for Your Killer
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Surviving Desire.mkv
-Title: Surviving Desire
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Star Wars Episode IV A New Hope 4K77 v1.4 No DNR.mkv
-Title: Star Wars Episode IV A New Hope
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Star Wars Episode VI Return of the Jedi 4K83 v1.3 DNR.mkv
-Title: Star Wars Episode VI Return of the Jedi
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Empire Strikes Back 4K80 Beta5.mkv
-Title: Empire Strikes Back
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Tavaszi zápor (Fejős Pál, 1932).mp4
-Title: Tavaszi zápor
-Year: 1932
-Director: Fejős Pál
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Teenage.Gang.Debs.1966.576p.BluRay.x264.AAC-PLAINVIEW.mkv
-Title: Teenage Gang Debs 576p
-Year: 1966
-Director: Sande N. Johnsen
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Terminal.City.Ricochet.1990.REPACK.DVDRip.x264-HANDJOB.mkv
-Title: Terminal City Ricochet
-Year: 1990
-Director: Zale Dalen
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Accused (William Dieterle, 1949).mp4
-Title: The Accused
-Year: 1949
-Director: William Dieterle
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Adventures of Huckleberry Finn.1973.mkv
-Title: The Adventures of Huckleberry Finn 1973
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Big Heat åŸŽå¸‚ç‰¹è­¦.mkv
-Title: The Big Heat åŸŽå¸‚ç‰¹è­¦
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Big Operator.1959.576p.BDRip-AVC.ZONE.mkv
-Title: The Big Operator 576p
-Year: 1959
-Director: Charles F. Haas
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Big Town.mkv
-Title: The Big Town
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Aozora.Musume.AKA.The.Blue.Sky.Maiden.1957.JAPANESE.1080p.H.264.AAC-ACV.mkv
-Title: Aozora Musume AKA The Blue Sky Maiden JAPANESE
-Year: 1957
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The Brain from Planet Arous (Nathan Hertz, 1957).mp4
-Title: The Brain from Planet Arous
-Year: 1957
-Director: Nathan Hertz
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Company of Wolves [465162].mp4
-Title: The Company of Wolves [465162]
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Curse of the Cat People (Gunther von Fritsch & Robert Wise, 1944).mkv
-Title: The Curse of the Cat People
-Year: 1944
-Director: Gunther von Fritsch & Robert Wise
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The.Exiles.1961.Milestone.1080p.BluRay.x265.HEVC.FLAC-SARTRE.mkv
-Title: The Exiles Milestone
-Year: 1961
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The Game They Called Sex LDRip.mkv
-Title: The Game They Called Sex LDRip
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Grapes of Death.mkv
-Title: The Grapes of Death
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Hidden Fortress.mkv
-Title: The Hidden Fortress
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Incredible Melting Man.1977.576p.BDRip-AVC.ZONE.mkv
-Title: The Incredible Melting Man 576p
-Year: 1977
-Director: William Sachs
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Iron Rose.mkv
-Title: The Iron Rose
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Long Goodbye 1973 Blu-ray 1080p x264 multisub-HighCode.mkv
-Title: The Long Goodbye Blu-ray
-Year: 1973
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The Man Who Knew Too Much.mkv
-Title: The Man Who Knew Too Much
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The.Scenic.Route.1978.1080p.WEBRip.x264.AAC-[YTS.MX].mp4
-Title: The Scenic Route
-Year: 1978
-Director: Mark Rappaport
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The Shape of Night.mp4
-Title: The Shape of Night
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The.Skeleton.Of.Mrs.Morales.1960.SPANISH.1080p.BluRay.x265-VXT.mp4
-Title: The Skeleton Of Mrs Morales SPANISH
-Year: 1960
-Director: Rogelio A. González
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: La.valigia.dei.sogni.1953.1080p.WEB-DL.AAC2.0.x264-KG.mkv
-Title: La valigia dei sogni
-Year: 1953
-Director: Luigi Comencini
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The.Train.1964.Arrow.1080p.BluRay.x265.HEVC.AAC-SARTRE.mkv
-Title: The Train Arrow
-Year: 1964
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The Trouble With Harry.mkv
-Title: The Trouble With Harry
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Unbelievable Truth.mkv
-Title: The Unbelievable Truth
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Wrong Man.mkv
-Title: The Wrong Man
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The.Acid.Eaters1968.DVDRip.x264.mkv
-Title: The Acid Eaters1968
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The.Blackout.1997.DVD.mkv
-Title: The Blackout DVD
-Year: 1997
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The.Hunger.1983.WCA.1080p.BluRay.x265.HEVC.AAC-SARTRE.mkv
-Title: The Hunger WCA
-Year: 1983
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The.Rolling.Stones.Rock.And.Roll.Circus.1996.WS.1080p.MBluRay.x264-TREBLE.mkv
-Title: The Rolling Stones Rock And Roll Circus WS
-Year: 1996
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The.Rose.Seller.1998.1080p.AMZN.WEB-DL.DDP.2.0.H.264-MiON.mkv
-Title: The Rose Seller
-Year: 1998
-Director: Víctor Gaviria
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The.Tall.Men.1955.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
-Title: The Tall Men
-Year: 1955
-Director: Raoul Walsh
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The.Violent.Years.1956.576p.BluRay.x264.AAC-PLAINVIEW.mkv
-Title: The Violent Years 576p
-Year: 1956
-Director: William Morgan
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: The.Young.Girls.of.Rochefort.1967.mkv
-Title: The Young Girls of Rochefort 1967
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Making of The First U.S. Visit.mkv
-Title: The Making of The First U S Visit
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: They Shoot Horses, Don't They (1969) [BD 1080p x265 10bit] (RARBG).mkv
-Title: They Shoot Horses, Don't They [BD
-Year: 1969
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Toda Nudez Será Castigada [Arnaldo Jabor] (1973).720p.mp4
-Title: Toda Nudez Será Castigada [Arnaldo Jabor]
-Year: 1973
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Trapeze.1956.1080p.BluRay.x264-[YTS.LT].mp4
-Title: Trapeze
-Year: 1956
-Director: Carol Reed
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Triumph Over Violence.Mikhail Romm.1965.WEB-DL.mkv
-Title: Triumph Over Violence Mikhail Romm
-Year: 1965
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Trust.mkv
-Title: Trust
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Twilights.Last.Gleaming.1977.1080p.BluRay.x265-RARBG.mp4
-Title: Twilights Last Gleaming
-Year: 1977
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Ulzanas.Raid.1972.1080p.BluRay.x265-RARBG.mp4
-Title: Ulzanas Raid
-Year: 1972
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Une.femme.mariee.AKA.A.Married.Woman.1964.720p.BluRay.x264.FLAC.2.0-dps.mkv
-Title: Une femme mariee AKA A Married Woman
-Year: 1964
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: une.fille.pour.l'ete-KG.mkv
-Title: une fille pour l'ete-KG
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Va Savoir DC.mkv
-Title: Va Savoir DC
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Vendredi.Soir.2002.PAL.DVDRip.AC3.x264-trand.mkv
-Title: Vendredi Soir PAL
-Year: 2002
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Verão Fantasma 2022 1080p WEB-DL NACIONAL.mkv
-Title: Verão Fantasma
-Year: 2022
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Videodrome.1983.PROPER.1080p.BluRay.x264-SADPANDA.mkv
-Title: Videodrome PROPER
-Year: 1983
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Vidhyarthigale.Ithile.Ithile.1972.1080p.WEBRip.AAC2.0.x264.mkv
-Title: Vidhyarthigale Ithile Ithile
-Year: 1972
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Wacko.mkv
-Title: Wacko
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Werewolf Bitches From Outer Space (2016).mkv
-Title: Werewolf Bitches From Outer Space
-Year: 2016
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Who Fears the Devil_ (1972) 1080p h265 with optional audio commentray {imdb-tt0070295}.mkv
-Title: Who Fears the Devil
-Year: 1972
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Women å¥³äººå¿ƒ 1985.mkv
-Title: Women å¥³äººå¿ƒ
-Year: 1985
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Yasuzō Masumura - Vixen [1969].mkv
-Title: Yasuzō Masumura - Vixen
-Year: 1969
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Yojimbo.mkv
-Title: Yojimbo
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Yoru.ga.mata.kuru.AKA.Alone.in.the.Night.1994.1080p.BluRay.FLAC.x264-HANDJOB.mkv
-Title: Yoru ga mata kuru AKA Alone in the Night
-Year: 1994
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Zanjeer.mkv
-Title: Zanjeer
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Zombi 35mm scan.mkv
-Title: Zombi 35mm
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Your.Vice.Is.a.Locked.Room.and.Only.I.Have.the.Key.1972.mp4
-Title: Your Vice Is a Locked Room and Only I Have the Key 1972
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Xiao hai 1991 NTSC DVD DD2.0 x264-Mdr.mkv
-Title: Xiao hai NTSC DVD DD2 0
-Year: 1991
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Abismos de Pasión - 1953(SD).mp4
-Title: Abismos de Pasión - 1953(SD)
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Wuthering.Heights.AKA.Arashi.Ga.Oka.1988.1080p.WEB-DL.mkv
-Title: Wuthering Heights AKA Arashi Ga Oka
-Year: 1988
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Wuthering.Heights.1939.(William.Wyler).1080p.x264-Classics.mkv
-Title: Wuthering Heights (William Wyler)
-Year: 1939
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: When.The.Cat.Comes.1963.1080p.BluRay.x264.AAC5.1-[YTS.MX].mp4
-Title: When The Cat Comes
-Year: 1963
-Director: Vojtech Jasný
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: War.and.Peace.Part.2.Natasha.Rostova WEB-DL 1080p.mkv
-Title: War and Peace Part 2 Natasha Rostova
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: War.and.Peace.Part.1.Andrey.Bolkonsky WEB-DL 1080p.mkv
-Title: War and Peace Part 1 Andrey Bolkonsky
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: War.and.Peace.Part.3.1812 WEB-DL 1080p.mkv
-Title: War and Peace Part 3 1812
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: War.and.Peace.Part.4.Pierre.Bezoukhov WEB-DL 1080p.mkv
-Title: War and Peace Part 4 Pierre Bezoukhov
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Punk.Samurai.Slash.Down.2018.JAPANESE.1080p.BluRay.x265-VXT.mp4
-Title: Punk Samurai Slash Down JAPANESE
-Year: 2018
-Director: Gakuryû Ishii
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Interview With Damien Thomas, Conducted On Stage By Wayne Kinsey.mkv
+File: no_year/Interview With Damien Thomas, Conducted On Stage By Wayne Kinsey.mkv
 Title: Interview With Damien Thomas, Conducted On Stage By Wayne Kinsey
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Deleted Scene.mkv
-Title: Deleted Scene
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Interview With Director John Hough, Conducted By Marcus Hearn In 2013.mkv
-Title: Interview With Director John Hough, Conducted By Marcus Hearn In
-Year: 2013
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Super-8 Version.mkv
-Title: Super-8 Version
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Props That Hammer Built The Kinsey Collection Featurette (2012).mkv
-Title: The Props That Hammer Built The Kinsey Collection Featurette
-Year: 2012
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The Flesh And The Fury X-posing Twins of Evil (directors cut)  Exploring Hammers Karnstein Trilogy.mkv
+File: no_year/The Flesh And The Fury X-posing Twins of Evil (directors cut)  Exploring Hammers Karnstein Trilogy.mkv
 Title: The Flesh And The Fury X-posing Twins of Evil (directors cut)  Exploring Hammers Karnstein Trilogy
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Satanic Decadence & The Legacy Of Sheridan Le Fanu In Hammers Twins of Evil  A Visual Essay by Kat Ellinger.mkv
+File: no_year/Satanic Decadence & The Legacy Of Sheridan Le Fanu In Hammers Twins of Evil  A Visual Essay by Kat Ellinger.mkv
 Title: Satanic Decadence & The Legacy Of Sheridan Le Fanu In Hammers Twins of Evil  A Visual Essay by Kat Ellinger
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Turtles.Swim.Faster.Than.Expected.2005.1080p.NF.WEB-DL.DDP2.0.x264-ker4mat.mkv
-Title: Turtles Swim Faster Than Expected
-Year: 2005
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Cidade.Oculta.MemoriadaTV.720p.mkv
-Title: Cidade Oculta MemoriadaTV
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Vampire Lovers, The (1970) 1080p h265 with 4 optional audio commentaries {imdb-tt0066518}.mkv
-Title: Vampire Lovers, The
-Year: 1970
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Trailer - The Vampire Lovers.mkv
-Title: Trailer - The Vampire Lovers
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Radio spots - The Vampire Lovers.mkv
-Title: Radio spots - The Vampire Lovers
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Trailers From Hell - The Vampire Lovers.mkv
+File: no_year/Trailers From Hell - The Vampire Lovers.mkv
 Title: Trailers From Hell - The Vampire Lovers
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Feminine Fantastique - Resurrecting The Vampire Lovers.mkv
+File: no_year/Feminine Fantastique - Resurrecting The Vampire Lovers.mkv
 Title: Feminine Fantastique - Resurrecting The Vampire Lovers
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Carnal Crimson Kim Newman on the Carmilla Legend - The Vampire Lovers.mkv
+File: no_year/Carnal Crimson Kim Newman on the Carmilla Legend - The Vampire Lovers.mkv
 Title: Carnal Crimson Kim Newman on the Carmilla Legend - The Vampire Lovers
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: To Love a Vampire - The Vampire Lovers.mkv
+File: no_year/To Love a Vampire - The Vampire Lovers.mkv
 Title: To Love a Vampire - The Vampire Lovers
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Excerpts from Carmilla read by Ingrid Pitt - Vampire Lovers.mkv
+File: no_year/Excerpts from Carmilla read by Ingrid Pitt - Vampire Lovers.mkv
 Title: Excerpts from Carmilla read by Ingrid Pitt - Vampire Lovers
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Madeline Smith, Vampire Lover - Vampire Lovers.mkv
+File: no_year/Madeline Smith, Vampire Lover - Vampire Lovers.mkv
 Title: Madeline Smith, Vampire Lover - Vampire Lovers
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: New Blood Hammer Enters the 70s - The Vampire Lovers.mkv
+File: no_year/New Blood Hammer Enters the 70s - The Vampire Lovers.mkv
 Title: New Blood Hammer Enters the 70s - The Vampire Lovers
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Fangs for the Memories Remembering The Vampire Lovers.mkv
+File: no_year/Fangs for the Memories Remembering The Vampire Lovers.mkv
 Title: Fangs for the Memories Remembering The Vampire Lovers
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Extended scene - The Vampire Lovers.mkv
-Title: Extended scene - The Vampire Lovers
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Trailer.mkv
-Title: Trailer
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Restoration Demonstration.mkv
-Title: Restoration Demonstration
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The.Good.the.Bad.the.Weird.2008.KOREAN.1080p.BluRay.x264.DD5.1-FGT.mkv
-Title: The Good the Bad the Weird KOREAN
-Year: 2008
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Portrait of Sergei Urusevsky.mkv
+File: no_year/Portrait of Sergei Urusevsky.mkv
 Title: Portrait of Sergei Urusevsky
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: The Road to Cannes.mkv
+File: no_year/The Road to Cannes.mkv
 Title: The Road to Cannes
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Hurricane Kalatozov.mkv
-Title: Hurricane Kalatozov
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Mikhail Kalatozov.mkv
+File: no_year/Mikhail Kalatozov.mkv
 Title: Mikhail Kalatozov
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Ian Christie.mkv
+File: no_year/Ian Christie.mkv
 Title: Ian Christie
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Supervixens.1975.mkv
-Title: Supervixens 1975
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Strip-tease (1963) (Jacques Poitrenaud) 1080p Blu-ray h264 FR MrH.mkv
-Title: Strip-tease (Jacques Poitrenaud)
-Year: 1963
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Fantastic.Planet.1973.1080p.BluRay.x264-[YTS.AM].mp4
-Title: Fantastic Planet
-Year: 1973
-Director: René Laloux
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Remembering and Restoring a Hitchcock Classic.mkv
+File: no_year/Remembering and Restoring a Hitchcock Classic.mkv
 Title: Remembering and Restoring a Hitchcock Classic
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: The Sound of Hitchcock.mkv
+File: no_year/The Sound of Hitchcock.mkv
 Title: The Sound of Hitchcock
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Masters of Cinema.mkv
+File: no_year/Masters of Cinema.mkv
 Title: Masters of Cinema
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Production Photographs.mkv
+File: no_year/Production Photographs.mkv
 Title: Production Photographs
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: A Conversation with Screenwriter John Michael Hayes.mkv
-Title: A Conversation with Screenwriter John Michael Hayes
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Hitchcock-Truffaut Interview Excerpts.mkv
+File: no_year/Hitchcock-Truffaut Interview Excerpts.mkv
 Title: Hitchcock-Truffaut Interview Excerpts
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Trailer_1.mkv
+File: no_year/Trailer_1.mkv
 Title: Trailer 1
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Through the Eyes of Hitchcock.mkv
+File: no_year/Through the Eyes of Hitchcock.mkv
 Title: Through the Eyes of Hitchcock
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Plein.soleil.1960.FRENCH.VFF.1080p.BLURAY.x264-BzH29.mkv
-Title: Plein soleil FRENCH VFF
-Year: 1960
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Beyond Playtime.mkv
+File: no_year/Beyond Playtime.mkv
 Title: Beyond Playtime
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Cours du soir (1967).mkv
-Title: Cours du soir
-Year: 1967
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Selected Scene Commentary by Jerome Deschamps.mkv
-Title: Selected Scene Commentary by Jerome Deschamps
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Selected Scene Commentary by Stephane Goudet.mkv
-Title: Selected Scene Commentary by Stephane Goudet
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Jacques Tati in Monsieur Hulots Work (1976).mkv
-Title: Jacques Tati in Monsieur Hulots Work
-Year: 1976
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Tativille.mkv
+File: no_year/Tativille.mkv
 Title: Tativille
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Selected Scene Commentary by Philip Kent.mkv
-Title: Selected Scene Commentary by Philip Kent
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Introduction by Terry Jones.mkv
-Title: Introduction by Terry Jones
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Script supervisor Sylvette Baudrot.mkv
+File: no_year/Script supervisor Sylvette Baudrot.mkv
 Title: Script supervisor Sylvette Baudrot
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Like Home.mkv
+File: no_year/Like Home.mkv
 Title: Like Home
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: RiffTrax - s01e052 - Plan 9 From Outer Space (Three Riffer Edition).mkv
-Title: RiffTrax - s01e052 - Plan 9 From Outer Space (Three Riffer Edition)
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Trailers From Hell - Dana Gould on PLAN 9 FROM OUTER SPACE.mkv
+File: no_year/Trailers From Hell - Dana Gould on PLAN 9 FROM OUTER SPACE.mkv
 Title: Trailers From Hell - Dana Gould on PLAN 9 FROM OUTER SPACE
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Flying Saucers Over Hollywood - The Plan 9 Companion.mp4
+File: no_year/Flying Saucers Over Hollywood - The Plan 9 Companion.mp4
 Title: Flying Saucers Over Hollywood - The Plan 9 Companion
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Plan 9 From Outer Space (1958) Movie Trailer.mkv
-Title: Plan 9 From Outer Space Movie Trailer
-Year: 1958
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Haunted World of Edward D Wood Jr, The (1955) 480p h264 {imdb-tt0113270}.mp4
-Title: Haunted World of Edward D Wood Jr, The 480p
-Year: 1955
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: The Incredibly Strange Film Show - Ed Wood.mp4
+File: no_year/The Incredibly Strange Film Show - Ed Wood.mp4
 Title: The Incredibly Strange Film Show - Ed Wood
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Ophelia—The Cat Lady (Tom Chomont, 1969).mkv
-Title: Ophelia—The Cat Lady
-Year: 1969
-Director: Tom Chomont
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Trailer - One-Eyed Jacks.mkv
-Title: Trailer - One-Eyed Jacks
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Conversations with Marlon Brando - One-Eyed Jacks.mkv
-Title: Conversations with Marlon Brando - One-Eyed Jacks
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: I Ain't Hung Yet - The Style and Structure of One-Eyed Jacks.mkv
+File: no_year/I Ain't Hung Yet - The Style and Structure of One-Eyed Jacks.mkv
 Title: I Ain't Hung Yet - The Style and Structure of One-Eyed Jacks
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: A Million Feet of Film - The Making of One-Eyed Jacks.mkv
-Title: A Million Feet of Film - The Making of One-Eyed Jacks
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Introduction by Martin Scorsese - One-Eyed Jacks.mkv
-Title: Introduction by Martin Scorsese - One-Eyed Jacks
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Sisters of Vice and Virtue - The Marquis de Sade and Nunsploitation.mkv
+File: no_year/Sisters of Vice and Virtue - The Marquis de Sade and Nunsploitation.mkv
 Title: Sisters of Vice and Virtue - The Marquis de Sade and Nunsploitation
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Restoration notes (Extended Italian Cut) - Cristiana Devil Nun.mkv
-Title: Restoration notes (Extended Italian Cut) - Cristiana Devil Nun
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Deleted footage with audio commentary - Images of a Convent.mkv
-Title: Deleted footage with audio commentary - Images of a Convent
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Trailer - Story a Cloistered Nun.mkv
-Title: Trailer - Story a Cloistered Nun
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: A Nun's Story - Interview with actress Eleonora Giorgi.mkv
-Title: A Nun's Story - Interview with actress Eleonora Giorgi
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Down the Well - Interview with actress Martine Brochard.mkv
-Title: Down the Well - Interview with actress Martine Brochard
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Within a Cloister - Interview with camera operator Daniele Nannuzzi.mkv
-Title: Within a Cloister - Interview with camera operator Daniele Nannuzzi
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Sister Zore - Interview with actress Zora Kerova.mkv
-Title: Sister Zore - Interview with actress Zora Kerova
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Cross and the Sin - Interview with screenwriter Claudio Fragasso.mkv
-Title: The Cross and the Sin - Interview with screenwriter Claudio Fragasso
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: 1980 Nárcisz és Psyché iii.mkv
-Title: 1980 Nárcisz és Psyché iii
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: 1980 Nárcisz és Psyché ii.mkv
-Title: 1980 Nárcisz és Psyché ii
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: 1980 Nárcisz és Psyché i.mkv
-Title: 1980 Nárcisz és Psyché i
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: A Place in the Sun (George Stevens, 1951).mp4
-Title: A Place in the Sun
-Year: 1951
-Director: George Stevens
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Video Essay - Adam Holender.mkv
-Title: Video Essay - Adam Holender
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Jon Voight - Screen Tests.mkv
+File: no_year/Jon Voight - Screen Tests.mkv
 Title: Jon Voight - Screen Tests
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Waldo Salt - A Screenwriter's Journey.mkv
-Title: Waldo Salt - A Screenwriter's Journey
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Gallery.mkv
-Title: Gallery
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Controversy and Acclaim.mkv
+File: no_year/Controversy and Acclaim.mkv
 Title: Controversy and Acclaim
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: The Crowd Around the Cowboy.mkv
+File: no_year/The Crowd Around the Cowboy.mkv
 Title: The Crowd Around the Cowboy
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: John Schlesinger - 2000 BAFTA Interview.mkv
-Title: John Schlesinger - BAFTA Interview
-Year: 2000
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Jon Voight - The David Frost Show.mkv
+File: no_year/Jon Voight - The David Frost Show.mkv
 Title: Jon Voight - The David Frost Show
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Trailer_2.mkv
+File: no_year/Trailer_2.mkv
 Title: Trailer 2
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: After Midnight - Reflections on the Classic.mkv
+File: no_year/After Midnight - Reflections on the Classic.mkv
 Title: After Midnight - Reflections on the Classic
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: John Schlesinger - 2002 BAFTA Tribute.mkv
-Title: John Schlesinger - BAFTA Tribute
-Year: 2002
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Princess Yang Kwei Fei (Kenji Mizoguchi, 1955).mkv
-Title: Princess Yang Kwei Fei
-Year: 1955
-Director: Kenji Mizoguchi
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Blue.Velvet.1986.mp4
-Title: Blue Velvet 1986
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Original.Behind.the.Scenes.Footage-Grym.mkv
-Title: Original Behind the Scenes Footage-Grym
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Deleted.Scenes-Grym.mkv
+File: no_year/Deleted.Scenes-Grym.mkv
 Title: Deleted Scenes-Grym
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: A.Note.from.Clive.Barker-Grym.mkv
+File: no_year/A.Note.from.Clive.Barker-Grym.mkv
 Title: A Note from Clive Barker-Grym
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: A.Gathering.of.Magic-Grym.mkv
-Title: A Gathering of Magic-Grym
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Drawing.Boards-Grym.mkv
+File: no_year/Drawing.Boards-Grym.mkv
 Title: Drawing Boards-Grym
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Photo.Gallery-Grym.mkv
-Title: Photo Gallery-Grym
+File: no_year/Melville on set (Le cercle rouge 70).mkv
+Title: Melville on set
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Melville on set (Le cercle rouge 70).mkv
-Title: Melville on set (Le cercle rouge 70)
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: 1970 Le cercle rouge trailer.mkv
+File: no_year/1970 Le cercle rouge trailer.mkv
 Title: 1970 Le cercle rouge trailer
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Melville on set ii (Le cercle rouge 70).mkv
-Title: Melville on set ii (Le cercle rouge 70)
+File: no_year/Melville on set ii (Le cercle rouge 70).mkv
+Title: Melville on set ii
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Melville interview ii (Le cercle rouge 70).mkv
-Title: Melville interview ii (Le cercle rouge 70)
+File: no_year/Melville interview ii (Le cercle rouge 70).mkv
+Title: Melville interview ii
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Melville interview (Le cercle rouge 70).mkv
-Title: Melville interview (Le cercle rouge 70)
+File: no_year/Melville interview (Le cercle rouge 70).mkv
+Title: Melville interview
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Lady Vampire AKA Onna Kyuketsuki 1959 DVDrip x264.mp4
-Title: Lady Vampire AKA Onna Kyuketsuki
-Year: 1959
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Trailer - Jade.mkv
-Title: Trailer - Jade
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Restoration notes (theatrical cut) - Jade.mkv
-Title: Restoration notes (theatrical cut) - Jade
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Restoration notes (director's cut) - Jade.mkv
-Title: Restoration notes (director's cut) - Jade
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Extended cut - Jade.mkv
-Title: Extended cut - Jade
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: William Friedkin on The Charlie Rose Show - Jade.mkv
+File: no_year/William Friedkin on The Charlie Rose Show - Jade.mkv
 Title: William Friedkin on The Charlie Rose Show - Jade
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Hysterical Blindness William Friedkin at Paramount - Jade.mkv
+File: no_year/Hysterical Blindness William Friedkin at Paramount - Jade.mkv
 Title: Hysterical Blindness William Friedkin at Paramount - Jade
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Eszterhas, Friedkin, & Jade.mkv
+File: no_year/Eszterhas, Friedkin, & Jade.mkv
 Title: Eszterhas, Friedkin, & Jade
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Hardcore.2004..mkv
-Title: Hardcore
-Year: 2004
-Director: Dennis Iliadis
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Interview with actress Dominique Delpierre (2025).mkv
-Title: Interview with actress Dominique Delpierre
-Year: 2025
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Interview with Bruno Gantillon (2004).mp4
-Title: Interview with Bruno Gantillon
-Year: 2004
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Fallet S01E04.mp4
-Title: Fallet S01E04
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Fallet S01E05.mp4
-Title: Fallet S01E05
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Fallet S01E07.mp4
-Title: Fallet S01E07
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Fallet S01E06.mp4
-Title: Fallet S01E06
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Fallet S01E02.mp4
-Title: Fallet S01E02
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Fallet S01E03.mp4
-Title: Fallet S01E03
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Fallet S01E01.mp4
-Title: Fallet S01E01
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Fallet S01E08.mp4
-Title: Fallet S01E08
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Trailer - El Topo.mkv
-Title: Trailer - El Topo
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Jodorowsky Remembers El Topo.mkv
+File: no_year/Jodorowsky Remembers El Topo.mkv
 Title: Jodorowsky Remembers El Topo
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: An introduction to El Topo by Richard Peña.mkv
-Title: An introduction to El Topo by Richard Peña
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Father of Midnight Movies with Alejandro Jodorowsky - El Topo.mkv
+File: no_year/The Father of Midnight Movies with Alejandro Jodorowsky - El Topo.mkv
 Title: The Father of Midnight Movies with Alejandro Jodorowsky - El Topo
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Interview with Alejandro Jodorowsky's son, Brontis Jodorowsky - El Topo.mkv
+File: no_year/Interview with Alejandro Jodorowsky's son, Brontis Jodorowsky - El Topo.mkv
 Title: Interview with Alejandro Jodorowsky's son, Brontis Jodorowsky - El Topo
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: The Theremin.mkv
+File: no_year/The Theremin.mkv
 Title: The Theremin
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Making Bela.mkv
+File: no_year/Making Bela.mkv
 Title: Making Bela
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Deleted Scenes.mkv
-Title: Deleted Scenes
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Let's Shoot this F#%@r!.mkv
+File: no_year/Let's Shoot this F#%@r!.mkv
 Title: Let's Shoot this F#%@r!
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Pie Plates Over Hollywood.mkv
+File: no_year/Pie Plates Over Hollywood.mkv
 Title: Pie Plates Over Hollywood
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Music Video.mkv
+File: no_year/Music Video.mkv
 Title: Music Video
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Señor Droopy (Tex Avery, 1949).mkv
-Title: Señor Droopy
-Year: 1949
-Director: Tex Avery
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Northwest Hounded Police (Tex Avery, 1946).mkv
-Title: Northwest Hounded Police
-Year: 1946
-Director: Tex Avery
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Wild and Woolfy (Tex Avery, 1945).mkv
-Title: Wild and Woolfy
-Year: 1945
-Director: Tex Avery
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Wags to Riches (Tex Avery, 1949).mkv
-Title: Wags to Riches
-Year: 1949
-Director: Tex Avery
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: No Fighting in the War Room.mkv
+File: no_year/No Fighting in the War Room.mkv
 Title: No Fighting in the War Room
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Best Sellers.mkv
+File: no_year/Best Sellers.mkv
 Title: Best Sellers
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Stanley Kubrick Considers the Bomb.mkv
+File: no_year/Stanley Kubrick Considers the Bomb.mkv
 Title: Stanley Kubrick Considers the Bomb
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Interview - Joe Dunton and Kelvin Pike.mkv
-Title: Interview - Joe Dunton and Kelvin Pike
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Interview - Rodney Hill.mkv
-Title: Interview - Rodney Hill
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Today Show Clips.mkv
+File: no_year/The Today Show Clips.mkv
 Title: The Today Show Clips
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Inside Dr. Strangelove.mkv
-Title: Inside Dr Strangelove
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Interview - Mick Broderick.mkv
-Title: Interview - Mick Broderick
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Split-Screen Interviews - Peter Sellers and George C. Scott.mkv
+File: no_year/Split-Screen Interviews - Peter Sellers and George C. Scott.mkv
 Title: Split-Screen Interviews - Peter Sellers and George C Scott
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Trailer - Exhibitors.mkv
-Title: Trailer - Exhibitors
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Trailer - Theatrical.mkv
-Title: Trailer - Theatrical
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: The Art of Stanley Kubrick.mkv
+File: no_year/The Art of Stanley Kubrick.mkv
 Title: The Art of Stanley Kubrick
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Interview - David George.mkv
-Title: Interview - David George
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Interview - Richard Daniels.mkv
-Title: Interview - Richard Daniels
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Dead.Men.Dont.Wear.Plaid.1982.1080p.BluRay.DDP2.0.x265.10bit-GalaxyRG265.mkv
-Title: Dead Men Dont Wear Plaid
-Year: 1982
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: TV Spots.mkv
-Title: TV Spots
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Buttometer Preview.mkv
+File: no_year/Buttometer Preview.mkv
 Title: Buttometer
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Radio Spots.mkv
-Title: Radio Spots
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Trailer_3.mkv
+File: no_year/Trailer_3.mkv
 Title: Trailer 3
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Daisies (1966).mp4
-Title: Daisies
-Year: 1966
-Director: Vera Chytilová
-Reason: unsorted_no_match
-------------------------------------------------------------
-File: Trailer_4.mkv
+File: no_year/Trailer_4.mkv
 Title: Trailer 4
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: The Opening - The World Premiere of Citizen Kane.mkv
+File: no_year/The Opening - The World Premiere of Citizen Kane.mkv
 Title: The Opening - The World Premiere of Citizen Kane
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Joseph Cotten's 1975 AFI speech for Orson Welles' Lifetime Achievement Award.mkv
-Title: Joseph Cotten's AFI speech for Orson Welles' Lifetime Achievement Award
-Year: 1975
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Production.mkv
+File: no_year/Production.mkv
 Title: Production
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: My Guest is Orson Welles.mkv
-Title: My Guest is Orson Welles
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Post Production.mkv
-Title: Post Production
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Interviews - Ruth Warrick and Robert Wise.mkv
+File: no_year/Interviews - Ruth Warrick and Robert Wise.mkv
 Title: Interviews - Ruth Warrick and Robert Wise
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Trailer_5.mkv
+File: no_year/Trailer_5.mkv
 Title: Trailer 5
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Interview - John Bailey.mkv
-Title: Interview - John Bailey
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: cowry-bcrazy-rp.avi
-Title: cowry-bcrazy-rp
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Audio essay by author and critic Alexandra Heller-Nicholas.mkv
-Title: Audio essay by author and critic Alexandra Heller-Nicholas
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Odin.iz.tysyach.2010.DVDRip.XviD.BwTorrents.avi
-Title: Odin iz tysyach
-Year: 2010
-Director: UNKNOWN
-Reason: unsorted_no_director
-------------------------------------------------------------
-File: Censorship and Desire.mkv
+File: no_year/Censorship and Desire.mkv
 Title: Censorship and Desire
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: North and the Music of the South.mkv
+File: no_year/North and the Music of the South.mkv
 Title: North and the Music of the South
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Audio Outtakes.mkv
-Title: Audio Outtakes
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: A Streetcar in Hollywood.mkv
+File: no_year/A Streetcar in Hollywood.mkv
 Title: A Streetcar in Hollywood
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: A Streetcar on Broadway.mkv
+File: no_year/A Streetcar on Broadway.mkv
 Title: A Streetcar on Broadway
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Marlon Brando Screen Test.mkv
+File: no_year/Marlon Brando Screen Test.mkv
 Title: Marlon Brando Screen Test
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: An Actor Named Brando.mkv
+File: no_year/An Actor Named Brando.mkv
 Title: An Actor Named Brando
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: Outtakes.mkv
-Title: Outtakes
-Year: UNKNOWN
-Director: UNKNOWN
-Reason: unsorted_no_year
-------------------------------------------------------------
-File: Elia Kazan - A Director's Journey.mkv
+File: no_year/Elia Kazan - A Director's Journey.mkv
 Title: Elia Kazan - A Director's Journey
 Year: UNKNOWN
 Director: UNKNOWN
 Reason: unsorted_no_year
 ------------------------------------------------------------
-File: 12 (2007).mp4
-Title: 12
-Year: 2007
-Director: Nikita Mikhalkov
+File: insufficient_data/Lo scopone scientifico (1972).mkv
+Title: Lo scopone scientifico
+Year: 1972
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/A New Wave (1990).mkv
+Title: A New Wave
+Year: 1990
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Ai futatabi (1971).mkv
+Title: Ai futatabi
+Year: 1971
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Angst vor der Angst (1975).mkv
+Title: Angst vor der Angst
+Year: 1975
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Lili St. Cyr in Color - Love Moods (1950) & A Bedroom Fantasy (1953) (SP Hi-Fi Stereo VHS to SWV DVD-R Rip Upscaled in HD).mp4
+Title: Lili St Cyr in Color - Love Moods
+Year: 1950
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/A Fêmea do Mar (1980).mp4
+Title: A Fêmea do Mar
+Year: 1980
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Aozora Musume (1957).mkv
+Title: Aozora Musume
+Year: 1957
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/But the Flesh is Weak (1957).mkv
+Title: But the Flesh is Weak
+Year: 1957
+Director: Kō Nakahira
 Reason: unsorted_no_match
 ------------------------------------------------------------
-File: Os Fuzis (1964) [Staging-Unknown- (Cinema Novo - might be Core)].mkv
-Title: Os Fuzis[Staging-Unknown- (Cinema Novo
+File: insufficient_data/The Driver (1978) Uncut.mkv
+Title: The Driver
+Year: 1978
+Director: Walter Hill
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Cronica De Un Nino Solo (1964).mkv
+Title: Cronica De Un Nino Solo
 Year: 1964
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Dead Men Dont Wear Plaid (1982).mkv
+Title: Dead Men Dont Wear Plaid
+Year: 1982
+Director: Carl Reiner
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Intrepidos Punks (1980).mkv
+Title: Intrepidos Punks
+Year: 1980
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/L-esquive (2003).mkv
+Title: L-esquive
+Year: 2003
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/La Cicatrice Interieure (1972).mkv
+Title: La Cicatrice Interieure
+Year: 1972
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/La ville des pirates (1983).mkv
+Title: La ville des pirates
+Year: 1983
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Las Islas Marias (1951).mkv
+Title: Las Islas Marias
+Year: 1951
+Director: Emilio Fernández
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Le DÃ©luge Gli Ultimi Giorni Di Maria Antonietta (2024).mkv
+Title: Le DÃ©luge Gli Ultimi Giorni Di Maria Antonietta
+Year: 2024
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Lo mau (1991).mkv
+Title: Lo mau
+Year: 1991
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Los Olvidados (1950).mkv
+Title: Los Olvidados
+Year: 1950
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Lumiere D Ete (1943).mkv
+Title: Lumiere D Ete
+Year: 1943
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Mei gui di gu shi (1985).mkv
+Title: Mei gui di gu shi
+Year: 1985
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Morir dormir tal vez soñar (1976).mkv
+Title: Morir dormir tal vez soñar
+Year: 1976
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Odin iz tysyach (2010).avi
+Title: Odin iz tysyach
+Year: 2010
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Plein soleil (1960).mkv
+Title: Plein soleil
+Year: 1960
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Turtles Swim Faster Than Expected (2005).mkv
+Title: Turtles Swim Faster Than Expected
+Year: 2005
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Twilights Last Gleaming (1977).mp4
+Title: Twilights Last Gleaming
+Year: 1977
+Director: Robert Aldrich
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Ulzanas Raid (1972).mp4
+Title: Ulzanas Raid
+Year: 1972
+Director: Robert Aldrich
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Une femme mariee (1964).mkv
+Title: Une femme mariee
+Year: 1964
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Vendredi Soir (2002).mkv
+Title: Vendredi Soir
+Year: 2002
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Vidhyarthigale Ithile Ithile (1972).mkv
+Title: Vidhyarthigale Ithile Ithile
+Year: 1972
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Yoru ga mata kuru (1994).mkv
+Title: Yoru ga mata kuru
+Year: 1994
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Zirneklis (1992).mp4
+Title: Zirneklis
+Year: 1992
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Interviews - Henry Jaglom, Gary Graver, Martin Ritt, Peter Bogdanovich, and Frank Marshall - Knowing Welles (1990).mkv
+Title: Henry Jaglom, Gary Graver, Martin Ritt, Peter Bogdanovich, and Frank Marshall - Knowing Welles
+Year: 1990
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Interviews - Robert Wise, Ruth Warrick, and Linwood Dunn - Working on Kane (1990).mkv
+Title: Robert Wise, Ruth Warrick, and Linwood Dunn - Working on Kane
+Year: 1990
 Director: UNKNOWN
 Reason: unsorted_no_director
 ------------------------------------------------------------
-File: Plan 9 From Outer Space (1959) [colorized].mkv
-Title: Plan 9 From Outer Space [colorized]
-Year: 1959
-Director: Edward D. Wood Jr.
+File: insufficient_data/The Merv Griffin Show (1962) - S16E234 (1979).mkv
+Title: The Merv Griffin Show
+Year: 1962
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Radio Play - His Honor, The Mayor (1941).mkv
+Title: His Honor, The Mayor
+Year: 1941
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Radio Play - Heart of Darkness (1938).mkv
+Title: Heart of Darkness
+Year: 1938
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Radio Play - Dracula (1938).mkv
+Title: Dracula
+Year: 1938
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Interviews - Craig Barron and Ben Burtt (2021).mkv
+Title: Craig Barron and Ben Burtt
+Year: 2021
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Interviews - Allen Daviau, Haskell Wexler, and Vilmos Zsigmond - On Toland (1990).mkv
+Title: Allen Daviau, Haskell Wexler, and Vilmos Zsigmond - On Toland
+Year: 1990
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/The Explosive Generation (1961) MGM Limited DVDRip x264 BBM [CG].mkv
+Title: The Explosive Generation
+Year: 1961
+Director: Buzz Kulik
 Reason: unsorted_no_match
 ------------------------------------------------------------
+File: insufficient_data/Karina, Objeto Do Prazer (1981) Jean Garret.MKO.mkv
+Title: Karina, Objeto Do Prazer
+Year: 1981
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Tchau Amor, Jean Garret, 1982.avi
+Title: Tchau Amor, Jean Garret,
+Year: 1982
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Allan Dwan - 1952 - Montana Belle -La bella de Montana [dual español-inglés] ֍1264.avi
+Title: Allan Dwan
+Year: 1952
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Bitter Stems, The (1956) - 1080p.mp4
+Title: The Bitter Stems
+Year: 1956
+Director: Fernando Ayala
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Raoul.Ruiz.2000.Comedy.of.Innocence.mkv
+Title: Raoul Ruiz
+Year: 2000
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Das Tripas Coração (1982).mp4
+Title: Das Tripas Coração
+Year: 1982
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Engraçadinha.1981.720p.mkv
+Title: Engraçadinha
+Year: 1981
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Farewell China çˆ±åœ¨åˆ«ä¹¡çš„å­£èŠ‚ 1990.mkv
+Title: Farewell China çˆ±åœ¨åˆ«ä¹¡çš„å­£èŠ‚
+Year: 1990
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Femmine.carnivore.1970.mkv
+Title: Femmine carnivore
+Year: 1970
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Hot Rock, The (1972).mp4
+Title: The Hot Rock
+Year: 1972
+Director: Peter Yates
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Hustler, The (1961).mp4
+Title: The Hustler
+Year: 1961
+Director: Robert Rossen
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/In Harms Way 1965 1080p BluRay x264-OFT.mkv
+Title: In Harms Way
+Year: 1965
+Director: Otto Preminger
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Jean-Christophe Averty - 1970 - Soft Self-Portrait of Salvador Dalí [VHS].mkv
+Title: Jean Christophe Averty
+Year: 1970
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Jutta Hercher, Maria Hemmleb - 1989 - Mein Herz schlägt blau (Ella Bergmann-Michel) [DVD-PAL].mkv
+Title: Jutta Hercher, Maria Hemmleb
+Year: 1989
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/La mujer murciélago (1968) 1080p.mkv
+Title: La mujer murciélago
+Year: 1968
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Le Plein De Super 1976 1080p FR X264 AAC-mHDgz.mkv
+Title: Le Plein De Super
+Year: 1976
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Les Egouts de Paradis.1979.576p.BDRip-AVC.ZONE.mkv
+Title: Les Egouts de Paradis
+Year: 1979
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Limonadovy Joe aneb Konska opera (1964).BDRip.CZ.EN.1080p.mkv
+Title: Limonadovy Joe aneb Konska opera
+Year: 1964
+Director: Oldřich Lipský
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Luigi Cozzi's Cozzilla (1977) - 1080p.mkv
+Title: Luigi Cozzi's Cozzilla
+Year: 1977
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/I vampiri AKA Lust of the Vampire 1957 1080p Bluray FLAC x264-Manji.mkv
+Title: I vampiri
+Year: 1957
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Mañana te cuento(2005).mkv
+Title: Mañana te cuento
+Year: 2005
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Mar.De.Rosas.1977.Remasterizado.mp4
+Title: Mar De Rosas
+Year: 1977
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Nada Sera Como Antes; A Música do Clube da Esquina (2023).mp4
+Title: Nada Sera Como Antes; A Música do Clube da Esquina
+Year: 2023
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Nénette et Boni (1996).mkv
+Title: Nénette et Boni
+Year: 1996
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/No me digas adiós (1950).mp4
+Title: No me digas adiós
+Year: 1950
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Ocean's 11 (1960).mp4
+Title: Ocean's 11
+Year: 1960
+Director: Lewis Milestone
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Omega Man, The (1971).mkv
+Title: The Omega Man
+Year: 1971
+Director: Boris Sagal
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Pink Force Commando (1982) Widescreen VHSrip (Eng Dub).m4v
+Title: Pink Force Commando
+Year: 1982
+Director: Kevin Chu
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Rekopis Znaleziony w Saragossie (1965).mkv
+Title: Rekopis Znaleziony w Saragossie
+Year: 1965
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/São Paulo Sociedade Anônima (1965).mkv
+Title: São Paulo Sociedade Anônima
+Year: 1965
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Sherman's March (1986).mkv
+Title: Sherman's March
+Year: 1986
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Stephen Sayadian - 1982 - Café Flesh [dual inglés+comments].mkv
+Title: Stephen Sayadian
+Year: 1982
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/The Adventures of Huckleberry Finn.1973.mkv
+Title: The Adventures of Huckleberry Finn
+Year: 1973
+Director: Roman Davydov
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Toda Nudez Será Castigada [Arnaldo Jabor] (1973).720p.mp4
+Title: Toda Nudez Será Castigada [Arnaldo Jabor]
+Year: 1973
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Triumph Over Violence.Mikhail Romm.1965.WEB-DL.mkv
+Title: Triumph Over Violence Mikhail Romm
+Year: 1965
+Director: Mikhail Romm
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Verão Fantasma 2022 1080p WEB-DL NACIONAL.mkv
+Title: Verão Fantasma
+Year: 2022
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Werewolf Bitches From Outer Space (2016).mkv
+Title: Werewolf Bitches From Outer Space
+Year: 2016
+Director: Ashley McKenzie
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Who Fears the Devil_ (1972) 1080p h265 with optional audio commentray {imdb-tt0070295}.mkv
+Title: Who Fears the Devil
+Year: 1972
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Women å¥³äººå¿ƒ 1985.mkv
+Title: Women å¥³äººå¿ƒ
+Year: 1985
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Yasuzō Masumura - Vixen [1969].mkv
+Title: Yasuzō Masumura - Vixen
+Year: 1969
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Xiao hai 1991 NTSC DVD DD2.0 x264-Mdr.mkv
+Title: Xiao hai
+Year: 1991
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Interview With Director John Hough, Conducted By Marcus Hearn In 2013.mkv
+Title: Interview With Director John Hough, Conducted By Marcus Hearn In
+Year: 2013
+Director: Perry Bhandal
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/The Props That Hammer Built The Kinsey Collection Featurette (2012).mkv
+Title: The Props That Hammer Built The Kinsey Collection Featurette
+Year: 2012
+Director: Daniel Griffith
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Vampire Lovers, The (1970) 1080p h265 with 4 optional audio commentaries {imdb-tt0066518}.mkv
+Title: The Vampire Lovers
+Year: 1970
+Director: Roy Ward Baker
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Strip-tease (1963) (Jacques Poitrenaud) 1080p Blu-ray h264 FR MrH.mkv
+Title: Strip-tease
+Year: 1963
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Cours du soir (1967).mkv
+Title: Cours du soir
+Year: 1967
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Jacques Tati in Monsieur Hulots Work (1976).mkv
+Title: Jacques Tati in Monsieur Hulots Work
+Year: 1976
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Plan 9 From Outer Space (1958) Movie Trailer.mkv
+Title: Plan 9 From Outer Space
+Year: 1958
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Haunted World of Edward D Wood Jr, The (1955) 480p h264 {imdb-tt0113270}.mp4
+Title: The Haunted World of Edward D Wood Jr
+Year: 1955
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/John Schlesinger - 2000 BAFTA Interview.mkv
+Title: John Schlesinger
+Year: 2000
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/John Schlesinger - 2002 BAFTA Tribute.mkv
+Title: John Schlesinger
+Year: 2002
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Lady Vampire AKA Onna Kyuketsuki 1959 DVDrip x264.mp4
+Title: Lady Vampire
+Year: 1959
+Director: Nobuo Nakagawa
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Interview with actress Dominique Delpierre (2025).mkv
+Title: Interview with actress Dominique Delpierre
+Year: 2025
+Director: Frédéric Ambroisine
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: insufficient_data/Interview with Bruno Gantillon (2004).mp4
+Title: Interview with Bruno Gantillon
+Year: 2004
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Joseph Cotten's 1975 AFI speech for Orson Welles' Lifetime Achievement Award.mkv
+Title: Joseph Cotten's
+Year: 1975
+Director: UNKNOWN
+Reason: unsorted_insufficient_data
+------------------------------------------------------------
+File: insufficient_data/Star Wars Episode IV A New Hope 4K77 v1.4 No DNR.mkv
+Title: Star Wars Episode IV A New Hope 4K77 v1 4 No DNR
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Empire Strikes Back 4K80 Beta5.mkv
+Title: Empire Strikes Back 4K80 Beta5
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Star Wars Episode VI Return of the Jedi 4K83 v1.3 DNR.mkv
+Title: Star Wars Episode VI Return of the Jedi 4K83 v1 3 DNR
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Zombi 35mm scan.mkv
+Title: Zombi 35mm
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Kosei Saito - G.I. Samurai.mkv
+Title: Kosei Saito - G I Samurai
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Haruyoshi Noguchi - Gambling Kitten.mkv
+Title: Haruyoshi Noguchi - Gambling Kitten
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/serialmom-1080p.mkv
+Title: serialmom-
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Big Heat åŸŽå¸‚ç‰¹è­¦.mkv
+Title: The Big Heat åŸŽå¸‚ç‰¹è­¦
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Faster Pussycat Kill Kill_1965_1080p.mkv
+Title: Faster Pussycat Kill Kill 1965
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Kon Ichikawa - An Actor's Revenge.mkv
+Title: Kon Ichikawa - An Actor's Revenge
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/L'Amour Fou.mkv
+Title: L'Amour Fou
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Big Town.mkv
+Title: The Big Town
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/16mm Airplane TV.mkv
+Title: 16mm Airplane TV
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/CHIDAMBARAM.mkv
+Title: CHIDAMBARAM
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Speed of Life.mkv
+Title: The Speed of Life
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Hidden Fortress.mkv
+Title: The Hidden Fortress
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/La Belle Noiseuse.mkv
+Title: La Belle Noiseuse
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Film_ Sonnenstrahl.mp4
+Title: Film Sonnenstrahl
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Va Savoir DC.mkv
+Title: Va Savoir DC
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Anna.mkv
+Title: Anna
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Celine and Julie Go Boating.mkv
+Title: Celine and Julie Go Boating
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Sale comme un ange DVD Remux.mkv
+Title: Sale comme un ange DVD
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Ran.mkv
+Title: Ran
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Secret Defense.mkv
+Title: Secret Defense
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/ANGEL TERMINATORS x264.mkv
+Title: ANGEL TERMINATORS
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Iron Rose.mkv
+Title: The Iron Rose
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Johnny Minotaur.mkv
+Title: Johnny Minotaur
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Looking for Mr. Goodbar.mkv
+Title: Looking for Mr Goodbar
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Zanjeer.mkv
+Title: Zanjeer
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Yojimbo.mkv
+Title: Yojimbo
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Requiem for a Vampire.mkv
+Title: Requiem for a Vampire
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Marnie.mkv
+Title: Marnie
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Making of The First U.S. Visit.mkv
+Title: The Making of The First U S Visit
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/AGRAHARATHIL_KAZHUTAI.mkv
+Title: AGRAHARATHIL KAZHUTAI
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Man Who Knew Too Much.mkv
+Title: The Man Who Knew Too Much
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Amateur.mkv
+Title: Amateur
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Choose Me.mkv
+Title: Choose Me
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Godard par Godard.mkv
+Title: Godard par Godard
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Wrong Man.mkv
+Title: The Wrong Man
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Trust.mkv
+Title: Trust
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Trouble With Harry.mkv
+Title: The Trouble With Harry
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Grapes of Death.mkv
+Title: The Grapes of Death
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Simple Men.mkv
+Title: Simple Men
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Beyrouth ma ville - Jocelyne Saab.mkv
+Title: Beyrouth ma ville - Jocelyne Saab
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/AMMA ARIYAN.mkv
+Title: AMMA ARIYAN
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Buongiorno, notte_( Good Morning, Night)_2003_DVDRip-AVC_ (1).mkv
+Title: Buongiorno, notte 2003
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Shape of Night.mp4
+Title: The Shape of Night
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Wacko.mkv
+Title: Wacko
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Fascination.mkv
+Title: Fascination
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Unbelievable Truth.mkv
+Title: The Unbelievable Truth
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/La Estrategia del Caracol.mkv
+Title: La Estrategia del Caracol
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Flirt.mp4
+Title: Flirt
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Don Juan ou si Don Juan était une femme.mp4
+Title: Don Juan ou si Don Juan était une femme
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/BENEAT~1.MKV
+Title: BENEAT~1
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Original.Behind.the.Scenes.Footage-Grym.mkv
+Title: Original Behind the Scenes Footage-Grym
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Depravação Orgia das Taras.mkv
+Title: Depravação Orgia das Taras
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Palm Springs Weekend [1963 - Taurog, Norman].mkv
+Title: Palm Springs Weekend [1963 - Taurog, Norman]
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Okamoto kihachi - Jazz Daimyo.avi
+Title: Okamoto kihachi - Jazz Daimyo
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Avidacomoelae(1).mkv
+Title: Avidacomoelae(1)
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Avidacomoelae(3).mkv
+Title: Avidacomoelae(3)
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/1980 Nárcisz és Psyché iii.mkv
+Title: 1980 Nárcisz és Psyché iii
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/1980 Nárcisz és Psyché i.mkv
+Title: 1980 Nárcisz és Psyché i
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/une.fille.pour.l'ete-KG.mkv
+Title: une fille pour l'ete-KG
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/La Condanna.mkv
+Title: La Condanna
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Estrela Nua.mkv
+Title: Estrela Nua
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Seduction of Angela (Cinemax).mkv
+Title: The Seduction of Angela (Cinemax)
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Company of Wolves [465162].mp4
+Title: The Company of Wolves [465162]
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Avidacomoelae(2).mkv
+Title: Avidacomoelae(2)
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Avidacomoelae(4).mkv
+Title: Avidacomoelae(4)
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Surviving Desire.mkv
+Title: Surviving Desire
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/1980 Nárcisz és Psyché ii.mkv
+Title: 1980 Nárcisz és Psyché ii
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Acid Eaters1968.mkv
+Title: The Acid Eaters1968
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Noites_de_Iemanja.avi
+Title: Noites de Iemanja
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Blue Magic.mkv
+Title: Blue Magic
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/The Game They Called Sex LDRip.mkv
+Title: The Game They Called Sex LDRip
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Un mari a prix fixe.avi
+Title: Un mari a prix fixe
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/cowry-bcrazy-rp.avi
+Title: cowry-bcrazy-rp
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/O Vampiro da Cinemateca.avi
+Title: O Vampiro da Cinemateca
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Absences repetees.mp4
+Title: Absences repetees
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Cidade Oculta MemoriadaTV.mkv
+Title: Cidade Oculta MemoriadaTV
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/RiffTrax - s01e052 - Plan 9 From Outer Space (Three Riffer Edition).mkv
+Title: RiffTrax - s01e052 - Plan 9 From Outer Space
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Abismos de Pasión - 1953(SD).mp4
+Title: Abismos de Pasión - 1953(SD)
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/My Guest is Orson Welles.mkv
+Title: My Guest is Orson Welles
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Waldo Salt - A Screenwriter's Journey.mkv
+Title: Waldo Salt - A Screenwriter's Journey
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/ESTRANHO DESEJO.avi
+Title: ESTRANHO DESEJO
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Inside Dr. Strangelove.mkv
+Title: Inside Dr Strangelove
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Hurricane Kalatozov.mkv
+Title: Hurricane Kalatozov
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Marehito.mkv
+Title: Marehito
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/A.Gathering.of.Magic-Grym.mkv
+Title: A Gathering of Magic-Grym
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/Le voyage dans la lune (Georges Méliès, 1902).mp4
+Title: Le voyage dans la lune
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: insufficient_data/O Inseto do Amor.mp4
+Title: O Inseto do Amor
+Year: UNKNOWN
+Director: UNKNOWN
+Reason: unsorted_no_year
+------------------------------------------------------------
+File: no_match/Le paria (1969).mkv
+Title: Le paria
+Year: 1969
+Director: Claude Carliez
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Lorna (2014).mkv
+Title: Lorna
+Year: 2014
+Director: Sigrid Andrea Bernardo
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Rosa de Areia (1989).mkv
+Title: Rosa de Areia
+Year: 1989
+Director: Margarida Cordeiro
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/The Rose Seller (1998).mkv
+Title: The Rose Seller
+Year: 1998
+Director: Víctor Gaviria
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/The Scenic Route (1978).mp4
+Title: The Scenic Route
+Year: 1978
+Director: Mark Rappaport
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Lilford Hall (1969) 1080p.mp4
+Title: Lilford Hall
+Year: 1969
+Director: Peter Whitehead
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Juegos de verano (1973).avi
+Title: Juegos de verano
+Year: 1973
+Director: Juan Antonio Serna
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Pandora Peaks - Russ Meyer 2001 [ENG-DEU].avi
+Title: Russ Meyer
+Year: 2001
+Director: Pandora Peaks
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Bachelor in Paradise.1961.576p.BDRip-AVC.ZONE.mkv
+Title: Bachelor in Paradise
+Year: 1961
+Director: Jack Arnold
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Gypsy Wildcat (Roy William Neill, 1944).mp4
+Title: 
+Year: 1944
+Director: Roy William Neill
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Meditations on Revolution Part II—The Space in Between (Robert Fenz, 1997).avi
+Title: Meditations on Revolution Part II—The Space in Between
+Year: 1997
+Director: Robert Fenz
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Les amants de Montparnasse (Montparnasse 19) (Jacques Becker, 1958).m4v
+Title: Les amants de Montparnasse (Montparnasse 19)
+Year: 1958
+Director: Jacques Becker
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Tavaszi zápor (Fejős Pál, 1932).mp4
+Title: Tavaszi zápor
+Year: 1932
+Director: Fejős Pál
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Ophelia—The Cat Lady (Tom Chomont, 1969).mkv
+Title: Ophelia—The Cat Lady
+Year: 1969
+Director: Tom Chomont
+Reason: unsorted_no_match
+------------------------------------------------------------
+File: no_match/Señor Droopy (Tex Avery, 1949).mkv
+Title: Señor Droopy
+Year: 1949
+Director: Tex Avery
+Reason: unsorted_no_match
+------------------------------------------------------------
+
+
+============================================================
+DATA QUALITY FEEDBACK
+============================================================
+
+Data readiness distribution:
+  R0:  173
+  R1:   93
+  R2:   15
+  R3:   80
+
+R1 promotions this run: 13 (subtitle truncation)
+
+Actionable next steps:
+  R1 remaining: 93 films — API returned no data.
+    → Consider manual_enrichment.csv for known films.
+  unsorted_no_match: 81 films — data present, no routing rule.
+    → Add SORTING_DATABASE pins or expand routing rules.
+  review_flagged: 1 films — conflicting signals.
+    → Curator review needed (may be parser title/director swap).
