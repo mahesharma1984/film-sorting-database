@@ -168,7 +168,8 @@ class FilmClassifier:
             logger.info(f"Loaded manual enrichment: {len(self.enrichment)} entries")
 
         # Layer 1 ground truth corpus (Issue #38) — optional; disabled if no corpora dir
-        corpora_dir = project_path / 'data' / 'corpora'
+        # Corpora live at project root (data/corpora/), not inside docs/ (project_path)
+        corpora_dir = Path(__file__).parent / 'data' / 'corpora'
         self.corpus_lookup = CorpusLookup(corpora_dir)
         stats = self.corpus_lookup.get_stats()
         if stats['total_entries'] > 0:
