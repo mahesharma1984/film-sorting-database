@@ -53,11 +53,20 @@ class CorpusLookup:
         else:
             logger.info(f"Corpora directory not found: {corpora_dir} — corpus lookup disabled")
 
+    # Map filename stems to canonical SATELLITE_ROUTING_RULES category names
+    # where .title() casing would produce the wrong result.
+    _FILENAME_TO_CATEGORY = {
+        'hong-kong-category-iii': 'Hong Kong Category III',
+    }
+
     def _load_all(self, corpora_dir: Path) -> None:
         for csv_path in sorted(corpora_dir.glob('*.csv')):
             # Derive category name from filename: giallo.csv → Giallo
             # Multi-word: brazilian-exploitation.csv → Brazilian Exploitation
-            category = csv_path.stem.replace('-', ' ').title()
+            stem = csv_path.stem
+            category = self._FILENAME_TO_CATEGORY.get(
+                stem, stem.replace('-', ' ').title()
+            )
             count = self._load_category(csv_path, category)
             logger.info(f"Loaded corpus: {category} ({count} entries from {csv_path.name})")
 
