@@ -2,8 +2,13 @@
 
 **Purpose:** Central metadata registry for the RAG (Retrieval-Augmented Generation) query system. This file defines document authority levels, provides quick reference lookups, and maps concepts to their canonical sources.
 
-**Version:** 1.2
-**Last Updated:** 2026-03-15
+**Role boundary (Issue #55):** This file is a RAG *data source* — it feeds the retrieval engine with authority metadata and deterministic Q&A pairs. It is not a routing system.
+- For problem routing → `docs/WORK_ROUTER.md`
+- For named repeatable procedures → `docs/WORKFLOW_REGISTRY.md`
+- For programmatic doc queries → `lib/rag/contracts.py` (`route_problem`, `governance_preflight`, `find_workflow`)
+
+**Version:** 1.3
+**Last Updated:** 2026-03-16
 **Status:** AUTHORITATIVE
 
 ---
@@ -34,11 +39,11 @@ Fast deterministic lookup for common questions. The RAG system checks this table
 | How do I find and fix systematic routing failures? | Run analyze_cohorts.py after classify; act on HIGH-confidence hypotheses | `docs/CURATOR_WORKFLOW.md` Phase B3–B4 |
 | What published research grounds the frameworks? | Deming, Ranganathan, Settles, Bourdieu, Bowker & Star, signal detection | `docs/theory/THEORETICAL_GROUNDING.md` |
 | Why does the pipeline keep hitting dead ends? | Information destruction at every stage; single-loop learning | `docs/architecture/VALIDATION_ARCHITECTURE.md` §2 |
-| How does the classifier decide between director vs structural evidence? | Two-signal architecture: score_director + score_structure → integrate_signals priority table (P1–P10) | `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md`, `lib/signals.py` |
+| How does the classifier decide between director vs structural evidence? | Two-signal architecture: score_director + score_structure → integrate_signals priority table (P1–P8, Issue #55) | `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md`, `lib/signals.py` |
 | How do I populate director lists for a Satellite category? | Literature review: structural bounds → published scholarship → extract director roster → apply SATELLITE_DEPTH §3 gates | `docs/architecture/TWO_SIGNAL_ARCHITECTURE.md` §4 |
-| What are the heuristic reason codes? | `both_agree`, `director_signal`, `structural_signal`, `director_disambiguates`, `review_flagged`, `reference_canon`, `user_tag_recovery`, `popcorn_*` | `lib/signals.py` |
-| What does `review_flagged` mean? | Multiple structural categories matched, no director to resolve — routed to highest priority but flagged for curator review | `lib/signals.py integrate_signals()` P8 |
-| What does `both_agree` mean? | Director identity + structural triangulation independently matched same Satellite category — highest confidence heuristic classification | `lib/signals.py integrate_signals()` P2 |
+| What are the heuristic reason codes? | `both_agree`, `director_signal`, `structural_signal`, `review_flagged`, `reference_canon`, `user_tag_recovery`, `popcorn_*` | `lib/signals.py`, `classify.py` |
+| What does `review_flagged` mean? | Signals conflict (director vs structure mismatch) or multiple ambiguous structural matches — routed to highest priority but flagged for curator review | `lib/signals.py integrate_signals()` P2/P7 |
+| What does `both_agree` mean? | Director identity + structural triangulation independently matched same Satellite category — highest confidence heuristic classification | `lib/signals.py integrate_signals()` P1 |
 | What is the DIRECTOR_REGISTRY? | Single lookup index of all satellite directors built from SATELLITE_ROUTING_RULES at import time; keyed by normalized name | `lib/constants.py DIRECTOR_REGISTRY` |
 | What is evidence architecture? | Per-film evidence trails, failure cohorts, hypothesis generation | `docs/architecture/VALIDATION_ARCHITECTURE.md` §2 |
 | What are ground truth corpora? | Scholarship-sourced per-category CSV files for external validation | `docs/architecture/VALIDATION_ARCHITECTURE.md` §3 |

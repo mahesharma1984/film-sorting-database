@@ -86,68 +86,45 @@ Start here: What kind of problem is this?
 | Parser | CLAUDE.md Rule 1 (PRECISION) | RECURSIVE_CURATION_MODEL.md §1 | `lib/parser.py` | `pytest tests/test_parser.py -v` | `no_year` |
 | Explicit lookup | CLAUDE.md Rule 2 (priority 1) | VALIDATION_ARCHITECTURE.md §1 | `lib/lookup.py` | `pytest tests/test_lookup.py -v` | `explicit_lookup` |
 | Corpus lookup | CLAUDE.md Rule 2 (priority 2) | VALIDATION_ARCHITECTURE.md §3 | `lib/corpus.py` | `pytest tests/test_corpus_lookup.py -v` | `corpus_lookup` |
-| Reference canon | CLAUDE.md Rule 2 (priority 3) | RECURSIVE_CURATION_MODEL.md §3 | `lib/constants.py REFERENCE_CANON` | `pytest tests/ -k reference` | `reference_canon` |
-| Satellite routing | CLAUDE.md Rule 2 (priority 4) | RECURSIVE_CURATION_MODEL.md §4 | `lib/satellite.py`, `lib/signals.py` | `pytest tests/test_satellite.py tests/test_signals.py -v` | `both_agree`, `director_signal`, `structural_signal`, `director_disambiguates`, `review_flagged` |
-| Core director | CLAUDE.md Rule 2 (priority 6) | RECURSIVE_CURATION_MODEL.md §3 | `lib/core_directors.py`, `lib/signals.py` | `pytest tests/ -k core` | `director_signal` (Core tier) |
-| Signal integration | CLAUDE.md Rule 2 (priorities 2–8) | Issue #42 | `lib/signals.py integrate_signals()` | `pytest tests/test_signals.py -v` | `both_agree`, `director_signal`, `structural_signal`, `director_disambiguates`, `review_flagged` |
-| Popcorn check | CLAUDE.md Rule 2 (priority 7) | RECURSIVE_CURATION_MODEL.md §6 | `lib/popcorn.py`, `lib/signals.py` | `pytest tests/ -k popcorn` | `popcorn_*` |
+| Reference canon | CLAUDE.md Rule 2 (priority 3) | RECURSIVE_CURATION_MODEL.md §3 | `classify.py _resolve_reference()`, `lib/constants.py REFERENCE_CANON` | `pytest tests/ -k reference` | `reference_canon` |
+| Satellite routing | CLAUDE.md Rule 2 (priority 4) | RECURSIVE_CURATION_MODEL.md §4 | `lib/satellite.py`, `lib/signals.py` | `pytest tests/test_satellite.py tests/test_signals.py -v` | `both_agree`, `director_signal`, `structural_signal`, `review_flagged` |
+| Core director | CLAUDE.md Rule 2 (priority 4) | RECURSIVE_CURATION_MODEL.md §3 | `lib/core_directors.py`, `lib/signals.py` | `pytest tests/ -k core` | `director_signal` (Core tier) |
+| Signal integration | CLAUDE.md Rule 2 (priorities 1–8) | Issues #42, #55 | `lib/signals.py integrate_signals()` | `pytest tests/test_signals.py -v` | `both_agree`, `director_signal`, `structural_signal`, `review_flagged` |
+| Popcorn check | CLAUDE.md Rule 2 (priority 5) | RECURSIVE_CURATION_MODEL.md §6 | `lib/popcorn.py`, `classify.py _resolve_popcorn()` | `pytest tests/ -k popcorn` | `popcorn_*` |
 | API enrichment | CLAUDE.md §4 Dual-Source | VALIDATION_ARCHITECTURE.md §2 | `lib/tmdb.py`, `lib/omdb.py` | `python scripts/validate_handoffs.py` | (enrichment, not routing) |
 | Evidence trails | CLAUDE.md Rule 7 | VALIDATION_ARCHITECTURE.md §2 | `lib/constants.py GateResult` | `pytest tests/test_evidence_trails.py -v` | (diagnostic only) |
 
 ### §0.3 Theory Check
 
-When classification points to a theory problem:
+When classification points to a theory problem → **`docs/WORKFLOW_REGISTRY.md` WF-THEORY-CHECK**
 
-1. Identify which CLAUDE.md Rule or theory doc governs this behavior
-2. Read the relevant section — does it define the correct behavior?
-3. If yes → the code drifted from the theory. Fix code to match.
-4. If no → the theory needs updating. Update theory first, then code.
-5. Check: is the theory grounded in scholarship? (Domain Grounding — CLAUDE.md Rule 4)
+Quick path: identify the CLAUDE.md Rule or `docs/theory/` essay → read it → fix code to match (or update theory first if the theory is missing).
 
 ### §0.4 Architecture Check
 
-When classification points to an architecture problem:
+When classification points to an architecture problem → **`docs/WORKFLOW_REGISTRY.md` WF-ARCH-CHECK**
 
-1. Find the relevant stage in `docs/architecture/RECURSIVE_CURATION_MODEL.md`
-2. Verify: does the upstream stage output what the contract says?
-3. Verify: does the downstream stage read what the contract says?
-4. Run `python scripts/validate_handoffs.py` — checks all stage boundaries
-5. If mismatch → fix the stage that violates the contract
+Quick path: find the stage in `RECURSIVE_CURATION_MODEL.md` → verify contracts upstream and downstream → run `python scripts/validate_handoffs.py`.
 
 ### §0.5 Data Flow Trace
 
-When you need to understand how a film moves through the pipeline:
+When you need to trace how a film moves through the pipeline → **`docs/WORKFLOW_REGISTRY.md` WF-DATA-TRACE**
 
-1. Start at the stage where the problem is visible (check `reason` code)
-2. Trace backward: what does this stage consume? From where?
-3. Trace forward: what does this stage produce? Who consumes it?
-4. Document: reads / produces / ignores (the "ignores" dimension reveals drift)
-5. This is a PRECISION task — observe the code deterministically, don't interpret yet
-
-Key pipeline flow:
+Key pipeline flow (Issue #55):
 ```
 filename → Normaliser (Stage 0) → Parser → API enrichment → R1 promotion (if needed)
-    → [explicit_lookup → corpus_lookup → two-signal integration → user_tag → popcorn] → Unsorted
-                                              ↑
-                                  score_director + score_structure → integrate_signals
+    → [explicit_lookup → corpus_lookup → reference_canon → two-signal → popcorn → user_tag] → Unsorted
+                                                               ↑
+                                               score_director + score_structure → integrate_signals
 ```
 
 Stage 0 normalisation (`lib/normalizer.py`) cleans dot-separated junk tokens before the parser runs. Token lists: `RELEASE_TAGS` (shared with parser) + `DOT_SEPARATOR_TAGS` (normaliser-only) from `lib/constants.py`. R1 promotion (`_attempt_r1_promotion()`) tries shorter title variants as API queries for films where enrichment returned no data.
 
 ### §0.6 Drift Audit
 
-When a component hasn't been updated in a while, or a new upstream stage was added:
+When a component hasn't been updated in a while → **`docs/WORKFLOW_REGISTRY.md` WF-DRIFT-AUDIT**
 
-1. Identify the component + the issue/commit it was designed for
-2. Map what it reads, produces, and ignores (§0.5)
-3. Check: did any upstream stages add data since this component was designed?
-4. Check: does the component consume that new data, or ignore it?
-5. If ignoring new upstream data → likely highest-leverage fix
-
-Common drift patterns in this project:
-- New API field added (e.g. keywords) but satellite routing doesn't check it
-- New corpus added but reaudit script doesn't check that category
-- SORTING_DATABASE entry format changed but lookup parser still uses old format
+Quick path: identify component design date → map reads/produces/ignores → check what upstream data is being ignored.
 
 ### §0.7 Investigation → Spec Workflow
 
@@ -177,6 +154,19 @@ Investigation complete
 
 Use this before modifying any output generator logic (classification, routing, validation, report generation).
 
+**Programmatic interface (Issue #55):** `lib/rag/contracts.py` implements this workflow as `governance_preflight(component)`. It queries governance levels 1-4 and partitions results into theory/architecture/components/dev_rules.
+
+```python
+from lib.rag.contracts import governance_preflight
+ctx = governance_preflight("satellite routing")
+# ctx.theory       → L1 docs
+# ctx.architecture → L2 docs
+# ctx.components   → L3 docs
+# ctx.dev_rules    → L4 docs
+```
+
+**Manual procedure:**
+
 1. **L1 Theory:** Read the governing principle first
    - `exports/knowledge-base/governance-chain-theory.md`
    - Relevant theory doc in `docs/theory/` for the behavior you are changing
@@ -189,7 +179,7 @@ Use this before modifying any output generator logic (classification, routing, v
 4. **L4 Dev Rules:** Apply implementation guardrails before editing
    - `CLAUDE.md` Rule 13 (Governance Chain)
    - `docs/DEVELOPER_GUIDE.md`
-   - `docs/WORKFLOW_REGISTRY.md`
+   - `docs/WORKFLOW_REGISTRY.md` WF-GOV-PREFLIGHT
 
 If L1-L4 conflict, fix at the highest divergent level before changing code.
 
