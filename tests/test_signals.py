@@ -5,10 +5,14 @@ Updated for Issue #55: score_structure() narrowed to Satellite structural only.
 Reference canon → _resolve_reference() in classify.py (P3 resolver).
 Popcorn → _resolve_popcorn() in classify.py (P5 resolver).
 
+Updated for Issue #56: partial structural matches (genre data absent ≠ gate failure).
+StructuralMatch gains uncertainty field. integrate_signals() adds P3.5 and P7.5.
+
 Covers:
   - score_director(): Satellite and Core matches, decade validity, tradition vs movement
   - score_structure(): COUNTRY_TO_WAVE and satellite structural only (no Reference/Popcorn)
-  - integrate_signals(): Director × structure combinations only (P1-P8)
+  - integrate_signals(): Director × structure combinations (P1-P8, P3.5, P7.5)
+  - Partial structural matches: uncertainty field, reduced confidence, review_flagged routing
 """
 
 import pytest
@@ -348,3 +352,122 @@ class TestIntegrateSignals:
                            source='core_whitelist', decade_valid=True)
         result = integrate_signals([dm], [], '1990s', 'R3')
         assert result.destination == 'Core/1990s/Jean-Luc Godard/'
+
+
+# ---------------------------------------------------------------------------
+# Issue #56: Partial structural matches (uncertainty > 0)
+# ---------------------------------------------------------------------------
+
+class TestPartialStructuralMatches:
+    """Issue #56: absent genre data ≠ gate failure.
+
+    Tier 1-2 categories should produce partial matches (uncertainty=0.5) when
+    country+decade match but genre data is absent. Integrate_signals adds P3.5
+    (director + partial agree → both_agree at reduced confidence) and P7.5
+    (partial structural only → review_flagged with near-miss evidence).
+    """
+
+    def _partial(self, category):
+        return StructuralMatch(tier='Satellite', category=category,
+                               match_type='partial_structural', uncertainty=0.5)
+
+    def _full(self, category):
+        return StructuralMatch(tier='Satellite', category=category,
+                               match_type='country_genre', uncertainty=0.0)
+
+    def _sat_dir(self, category):
+        return DirectorMatch(tier='Satellite', category=category, canonical_name=None,
+                             source='satellite_rules', decade_valid=True)
+
+    # --- StructuralMatch dataclass ---
+
+    def test_structural_match_default_uncertainty_zero(self):
+        """Existing StructuralMatch construction is backward-compatible (uncertainty defaults to 0)."""
+        sm = StructuralMatch(tier='Satellite', category='Giallo', match_type='country_genre')
+        assert sm.uncertainty == 0.0
+
+    def test_structural_match_partial_uncertainty(self):
+        """StructuralMatch carries uncertainty when explicitly set."""
+        sm = StructuralMatch(tier='Satellite', category='Giallo',
+                             match_type='partial_structural', uncertainty=0.5)
+        assert sm.uncertainty == 0.5
+
+    # --- P7.5: partial structural only (no director, no full structural) ---
+
+    def test_partial_structural_only_routes_review_flagged(self):
+        """P7.5: partial structural only → review_flagged with reduced confidence."""
+        result = integrate_signals([], [self._partial('Giallo')], '1970s', 'R3')
+        assert result.reason == 'review_flagged'
+        assert result.tier == 'Satellite'
+        assert result.category == 'Giallo'
+        assert result.confidence < 0.5  # below review queue threshold
+
+    def test_partial_structural_confidence_reflects_uncertainty(self):
+        """P7.5: confidence = 0.4 * (1 - uncertainty) = 0.4 * 0.5 = 0.20."""
+        result = integrate_signals([], [self._partial('Giallo')], '1970s', 'R3')
+        assert result.confidence == pytest.approx(0.2, abs=0.01)
+
+    def test_partial_structural_destination_format(self):
+        """P7.5: destination follows tier-first format."""
+        result = integrate_signals([], [self._partial('Giallo')], '1970s', 'R3')
+        assert result.destination == 'Satellite/Giallo/1970s/'
+
+    def test_partial_structural_explanation_mentions_genre_absent(self):
+        """P7.5: explanation surfaces what evidence is missing."""
+        result = integrate_signals([], [self._partial('Giallo')], '1970s', 'R3')
+        assert 'genre' in result.explanation.lower() or 'absent' in result.explanation.lower()
+
+    def test_full_structural_wins_over_partial(self):
+        """Full structural match (P6) takes priority over partial (P7.5)."""
+        result = integrate_signals(
+            [],
+            [self._partial('Giallo'), self._full('Giallo')],
+            '1970s', 'R3',
+        )
+        assert result.reason == 'structural_signal'
+        assert result.confidence == pytest.approx(0.65)
+
+    # --- P3.5: director + partial structural agree ---
+
+    def test_director_plus_partial_structural_same_cat_both_agree(self):
+        """P3.5: director + partial structural same category → both_agree at reduced confidence."""
+        result = integrate_signals(
+            [self._sat_dir('Giallo')],
+            [self._partial('Giallo')],
+            '1970s', 'R3',
+        )
+        assert result.reason == 'both_agree'
+        assert result.tier == 'Satellite'
+        assert result.category == 'Giallo'
+
+    def test_director_plus_partial_structural_confidence_reduced(self):
+        """P3.5: confidence = 0.85 * (1 - 0.5) = 0.425 (lower than full both_agree 0.85)."""
+        result = integrate_signals(
+            [self._sat_dir('Giallo')],
+            [self._partial('Giallo')],
+            '1970s', 'R3',
+        )
+        assert result.confidence < 0.85
+        assert result.confidence == pytest.approx(0.42, abs=0.02)
+
+    def test_full_structural_both_agree_takes_priority_over_partial(self):
+        """P1 (full both_agree at 0.85) wins over P3.5 (partial both_agree at 0.42)."""
+        result = integrate_signals(
+            [self._sat_dir('Giallo')],
+            [self._full('Giallo')],
+            '1970s', 'R3',
+        )
+        assert result.reason == 'both_agree'
+        assert result.confidence == pytest.approx(0.85)
+
+    def test_director_only_still_director_signal_no_partial(self):
+        """P3: when no structural match (full or partial), director signal only."""
+        result = integrate_signals([self._sat_dir('Giallo')], [], '1970s', 'R3')
+        assert result.reason == 'director_signal'
+
+    # --- No-signal fallback is unaffected ---
+
+    def test_no_signal_no_partial_still_unsorted(self):
+        """P8: empty structural + empty director → unsorted (unchanged)."""
+        result = integrate_signals([], [], '1970s', 'R3')
+        assert result.tier == 'Unsorted'

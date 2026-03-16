@@ -437,6 +437,17 @@ class SatelliteClassifier:
             if tier >= 3:
                 return 'country_genre'
 
+        # Tier 1-2 partial structural match (Issue #56): country+decade pass, genre data absent.
+        # Only in classify_structural() mode (include_director=False) — structural signal only.
+        # Absent evidence ≠ negative evidence (Dempster-Shafer): surface as partial match with
+        # uncertainty rather than silently discarding. Caller (score_structure) sets uncertainty=0.5.
+        # Tier 4 categories (manual-only) are excluded (tier < 3 guard).
+        if (not include_director and structural_enabled and country_match
+                and genre_match is None and rules['country_codes'] is not None):
+            tier = CATEGORY_CERTAINTY_TIERS.get(category_name, 2)
+            if tier < 3:
+                return 'partial_structural'
+
         # Keyword Tier A: country match + keyword hit waives the genre gate (Issue #29)
         keyword_signals = rules.get('keyword_signals')
         if keyword_signals and country_match and genre_match is not True:

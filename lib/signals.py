@@ -65,7 +65,10 @@ class StructuralMatch:
     tier: str                    # 'Reference', 'Satellite', or 'Popcorn'
     category: Optional[str]      # Satellite category name; None for Reference/Popcorn
     match_type: str              # 'reference_canon', 'country_wave', 'country_genre',
-                                 # 'keyword_tier_a', 'keyword_tier_b', or popcorn reason
+                                 # 'keyword_tier_a', 'keyword_tier_b', 'partial_structural',
+                                 # or popcorn reason
+    uncertainty: float = 0.0     # Issue #56: 0.0 = all gates tested and pass;
+                                 # 0.5 = genre gate untestable (data absent, not failing)
 
 
 @dataclass
@@ -211,10 +214,14 @@ def score_structure(
 
     # --- SATELLITE_ROUTING_RULES structural matching (via satellite_classifier) ---
     for category_name, match_type in satellite_classifier.classify_structural(metadata, tmdb_data):
+        # Issue #56: partial_structural = genre gate untestable (data absent, not failing).
+        # uncertainty=0.5 means one tested gate (genre) is untestable — confidence capped downstream.
+        uncertainty = 0.5 if match_type == 'partial_structural' else 0.0
         results.append(StructuralMatch(
             tier='Satellite',
             category=category_name,
             match_type=match_type,
+            uncertainty=uncertainty,
         ))
 
     return results
@@ -260,36 +267,53 @@ def integrate_signals(
         )
 
     # Partition matches by tier and validity
-    sat_struct   = [m for m in structural_matches if m.tier == 'Satellite']
+    sat_struct_all = [m for m in structural_matches if m.tier == 'Satellite']
 
-    sat_dir_valid   = [m for m in director_matches if m.tier == 'Satellite' and m.decade_valid]
-    core_dir        = [m for m in director_matches if m.tier == 'Core']
+    # Issue #56: separate full matches (all gates tested+passed) from partial (genre untestable)
+    sat_struct_full    = [m for m in sat_struct_all if m.uncertainty == 0.0]
+    sat_struct_partial = [m for m in sat_struct_all if m.uncertainty > 0.0]
 
-    # Deduplicate structural Satellite categories (preserve SATELLITE_ROUTING_RULES order)
-    sat_struct_cats: List[str] = list(dict.fromkeys(
-        m.category for m in sat_struct if m.category
+    sat_dir_valid = [m for m in director_matches if m.tier == 'Satellite' and m.decade_valid]
+    core_dir      = [m for m in director_matches if m.tier == 'Core']
+
+    # Deduplicate Satellite categories (preserve SATELLITE_ROUTING_RULES order)
+    sat_struct_full_cats: List[str] = list(dict.fromkeys(
+        m.category for m in sat_struct_full if m.category
+    ))
+    sat_struct_partial_cats: List[str] = list(dict.fromkeys(
+        m.category for m in sat_struct_partial if m.category
     ))
 
-    # === P1 + P2 + P3: Director Satellite with decade_valid ===
+    # === P1 + P2 + P3 + P3.5: Director Satellite with decade_valid ===
     if sat_dir_valid:
         dm = sat_dir_valid[0]  # first match (SATELLITE_ROUTING_RULES order preserved)
-        structural_same = any(sm.category == dm.category for sm in sat_struct)
-        structural_diff = sat_struct_cats and not structural_same
+        structural_same = any(sm.category == dm.category for sm in sat_struct_full)
+        structural_diff = sat_struct_full_cats and not structural_same
 
         if structural_same:
-            # P1: both signals agree
+            # P1: both signals fully agree
             reason = 'both_agree'
             conf = _cap(0.85)
             explanation = f'director + structure both matched {dm.category}'
         elif structural_diff:
-            # P2: director and structure conflict — flag for review (Issue #51)
+            # P2: director and full structural conflict — flag for review (Issue #51)
             # Previously director_disambiguates at 0.75, but accuracy was 52.9%.
             # Conflicting signals are ambiguity, not a case for director override.
             reason = 'review_flagged'
             conf = _cap(0.4)
             explanation = (
                 f'director matched {dm.category}, '
-                f'structure matched {sat_struct_cats} — signals conflict, needs review'
+                f'structure matched {sat_struct_full_cats} — signals conflict, needs review'
+            )
+        elif any(sm.category == dm.category for sm in sat_struct_partial):
+            # P3.5 (Issue #56): director + partial structural agree — genre data absent
+            # Confidence reduced proportionally to uncertainty (0.85 * 0.5 = ~0.43)
+            sm_partial = next(s for s in sat_struct_partial if s.category == dm.category)
+            reason = 'both_agree'
+            conf = _cap(round(0.85 * (1.0 - sm_partial.uncertainty), 2))
+            explanation = (
+                f'director + partial structural match {dm.category} '
+                f'(genre data absent — confidence reduced)'
             )
         else:
             # P3: director signal only
@@ -303,9 +327,9 @@ def integrate_signals(
             confidence=conf, reason=reason, explanation=explanation,
         )
 
-    # === P4: Director Core + structural Satellite → Satellite wins (Issue #25) ===
-    if core_dir and sat_struct_cats:
-        sat_cat = sat_struct_cats[0]
+    # === P4: Director Core + full structural Satellite → Satellite wins (Issue #25) ===
+    if core_dir and sat_struct_full_cats:
+        sat_cat = sat_struct_full_cats[0]
         return IntegrationResult(
             tier='Satellite', category=sat_cat, decade=decade,
             destination=f'Satellite/{sat_cat}/{decade}/',
@@ -316,7 +340,7 @@ def integrate_signals(
             ),
         )
 
-    # === P5: Director Core, no structural Satellite ===
+    # === P5: Director Core, no full structural Satellite ===
     if core_dir:
         dm = core_dir[0]
         canonical = dm.canonical_name or dm.category
@@ -327,9 +351,9 @@ def integrate_signals(
             explanation='Core director whitelist match',
         )
 
-    # === P6: Structural Satellite, unique category ===
-    if len(sat_struct_cats) == 1:
-        sat_cat = sat_struct_cats[0]
+    # === P6: Full structural Satellite, unique category ===
+    if len(sat_struct_full_cats) == 1:
+        sat_cat = sat_struct_full_cats[0]
         return IntegrationResult(
             tier='Satellite', category=sat_cat, decade=decade,
             destination=f'Satellite/{sat_cat}/{decade}/',
@@ -337,14 +361,31 @@ def integrate_signals(
             explanation=f'structural match {sat_cat}',
         )
 
-    # === P7: Structural Satellite, multiple ambiguous categories ===
-    if len(sat_struct_cats) > 1:
-        sat_cat = sat_struct_cats[0]  # highest-priority by SATELLITE_ROUTING_RULES order
+    # === P7: Full structural Satellite, multiple ambiguous categories ===
+    if len(sat_struct_full_cats) > 1:
+        sat_cat = sat_struct_full_cats[0]  # highest-priority by SATELLITE_ROUTING_RULES order
         return IntegrationResult(
             tier='Satellite', category=sat_cat, decade=decade,
             destination=f'Satellite/{sat_cat}/{decade}/',
             confidence=_cap(0.4), reason='review_flagged',
-            explanation=f'ambiguous structural match: {sat_struct_cats} — routed to {sat_cat}',
+            explanation=f'ambiguous structural match: {sat_struct_full_cats} — routed to {sat_cat}',
+        )
+
+    # === P7.5 (Issue #56): Partial structural only — no director, no full structural ===
+    # Provisional routing: country+decade match confirmed, genre data absent.
+    # Routes to review queue (confidence < REVIEW_CONFIDENCE_THRESHOLD) with evidence.
+    if sat_struct_partial_cats:
+        sat_cat = sat_struct_partial_cats[0]
+        sm_partial = next(s for s in sat_struct_partial if s.category == sat_cat)
+        return IntegrationResult(
+            tier='Satellite', category=sat_cat, decade=decade,
+            destination=f'Satellite/{sat_cat}/{decade}/',
+            confidence=_cap(round(0.4 * (1.0 - sm_partial.uncertainty), 2)),
+            reason='review_flagged',
+            explanation=(
+                f'partial structural match {sat_cat} '
+                f'(country+decade match; genre data absent — needs curator review)'
+            ),
         )
 
     # === P8: No signal — caller falls through to _resolve_popcorn ===
